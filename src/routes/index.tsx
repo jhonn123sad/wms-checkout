@@ -67,9 +67,8 @@ function Index() {
         errorMessage = "A API de pagamentos retornou um erro.";
       }
 
-      toast.error(errorMessage);
-      toast.info("Exibindo modo de demonstração como alternativa.");
-       navigate({ to: "/pagamento/demo-preview" });
+       toast.error(errorMessage);
+       // Removido redirecionamento para demo-preview em produção
      } finally {
       setLoading(false);
     }
@@ -130,30 +129,36 @@ function Index() {
             />
           </div>
 
-          {/* Action Button */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-black text-white h-14 rounded-xl font-semibold text-base transition-transform active:scale-[0.98] mb-6 disabled:opacity-50"
-          >
-            {loading ? "Processando..." : "Gerar Pix"}
-          </button>
-        </form>
-
-        {/* Demo Box */}
-        <div className="w-full bg-[#F5F5F7] border border-[#D2D2D7]/50 rounded-xl p-4">
-          <p className="text-[12px] text-[#86868B] text-center leading-relaxed italic">
-            Modo demonstração: esta é apenas a interface visual inicial.
-          </p>
-        </div>
+           {/* Action Button */}
+           <button
+             type="submit"
+             disabled={loading}
+             className="w-full bg-black text-white h-14 rounded-xl font-semibold text-base transition-transform active:scale-[0.98] mb-4 disabled:opacity-50 flex items-center justify-center gap-2"
+           >
+             {loading ? (
+               <>
+                 <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                 Gerando Pix...
+               </>
+             ) : (
+               "Gerar Pix"
+             )}
+           </button>
+ 
+           {loading && (
+             <p className="text-[11px] text-[#0071E3] font-medium text-center animate-pulse mb-6">
+               Aguarde, estamos gerando seu Pix com segurança.
+             </p>
+           )}
+         </form>
       </div>
 
       {/* Footer Disclaimer */}
-      <div className="max-w-[500px] mt-10 px-4">
-        <p className="text-[10px] md:text-[11px] text-[#86868B] text-center leading-relaxed">
-          A PUSHIN PAY atua exclusivamente como processadora de pagamentos e não possui qualquer responsabilidade pela entrega, suporte, conteúdo, qualidade ou cumprimento das obrigações relacionadas aos produtos ou serviços oferecidos pelo vendedor.
+      <footer className="max-w-[440px] mt-10 px-6 pb-8 opacity-40 hover:opacity-100 transition-opacity">
+        <p className="text-[9px] text-[#86868B] text-center leading-relaxed">
+          A PUSHIN PAY atua exclusivamente como processadora de pagamentos e não possui responsabilidade pela entrega ou suporte dos produtos oferecidos pelo vendedor.
         </p>
-      </div>
+      </footer>
     </div>
   );
 }
