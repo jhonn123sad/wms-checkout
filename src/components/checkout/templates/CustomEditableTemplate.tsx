@@ -122,7 +122,7 @@
  
              {content.preFormText && (
                <p className="text-sm font-bold mb-6 text-center underline decoration-2 underline-offset-4" 
-                  style={{ decorationColor: styles.accent }}>
+                  style={{ textDecorationColor: styles.accent }}>
                  {content.preFormText}
                </p>
              )}
