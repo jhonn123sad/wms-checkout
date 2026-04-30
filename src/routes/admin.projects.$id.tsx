@@ -111,7 +111,13 @@ function ProjectEdit() {
     }
   };
 
-  if (loading) return <div>Carregando...</div>;
+   if (loading) {
+     return (
+       <div className="flex items-center justify-center h-64">
+         <div className="text-gray-500">Carregando detalhes do projeto...</div>
+       </div>
+     );
+   }
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 pb-12">
