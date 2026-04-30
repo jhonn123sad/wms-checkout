@@ -55,7 +55,9 @@ Deno.serve(async (req) => {
     const priceCents = product?.price_cents ?? 50;
     const productId = product?.id ?? null;
 
-    // Create order (status=created)
+    // Create order (status=created) with a secure random access token
+    const publicAccessToken = crypto.randomUUID();
+    
     const { data: order, error: orderError } = await supabase
       .from("orders")
       .insert({
@@ -69,6 +71,7 @@ Deno.serve(async (req) => {
         utm_campaign: utm.utm_campaign ?? null,
         utm_content: utm.utm_content ?? null,
         utm_term: utm.utm_term ?? null,
+        public_access_token: publicAccessToken,
       })
       .select()
       .single();
@@ -143,6 +146,7 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({
         orderId: order.id,
+        accessToken: publicAccessToken,
         status: "waiting_payment",
         amount_cents: priceCents,
         qr_code: qrCode,
