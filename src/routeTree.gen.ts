@@ -21,6 +21,7 @@ import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminPagesIndexRouteImport } from './routes/admin.pages.index'
 import { Route as AdminCheckoutsIndexRouteImport } from './routes/admin.checkouts.index'
 import { Route as AdminProjectsIdRouteImport } from './routes/admin.projects.$id'
+import { Route as AdminPagesIdRouteImport } from './routes/admin.pages.$id'
 import { Route as AdminCheckoutsIdRouteImport } from './routes/admin.checkouts.$id'
 
 const AdminRoute = AdminRouteImport.update({
@@ -83,6 +84,11 @@ const AdminProjectsIdRoute = AdminProjectsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AdminProjectsRoute,
 } as any)
+const AdminPagesIdRoute = AdminPagesIdRouteImport.update({
+  id: '/pages/$id',
+  path: '/pages/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminCheckoutsIdRoute = AdminCheckoutsIdRouteImport.update({
   id: '/checkouts/$id',
   path: '/checkouts/$id',
@@ -100,6 +106,7 @@ export interface FileRoutesByFullPath {
   '/pagamento/demo-preview': typeof PagamentoDemoPreviewRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/checkouts/$id': typeof AdminCheckoutsIdRoute
+  '/admin/pages/$id': typeof AdminPagesIdRoute
   '/admin/projects/$id': typeof AdminProjectsIdRoute
   '/admin/checkouts/': typeof AdminCheckoutsIndexRoute
   '/admin/pages/': typeof AdminPagesIndexRoute
@@ -114,6 +121,7 @@ export interface FileRoutesByTo {
   '/pagamento/demo-preview': typeof PagamentoDemoPreviewRoute
   '/admin': typeof AdminIndexRoute
   '/admin/checkouts/$id': typeof AdminCheckoutsIdRoute
+  '/admin/pages/$id': typeof AdminPagesIdRoute
   '/admin/projects/$id': typeof AdminProjectsIdRoute
   '/admin/checkouts': typeof AdminCheckoutsIndexRoute
   '/admin/pages': typeof AdminPagesIndexRoute
@@ -130,6 +138,7 @@ export interface FileRoutesById {
   '/pagamento/demo-preview': typeof PagamentoDemoPreviewRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/checkouts/$id': typeof AdminCheckoutsIdRoute
+  '/admin/pages/$id': typeof AdminPagesIdRoute
   '/admin/projects/$id': typeof AdminProjectsIdRoute
   '/admin/checkouts/': typeof AdminCheckoutsIndexRoute
   '/admin/pages/': typeof AdminPagesIndexRoute
@@ -147,6 +156,7 @@ export interface FileRouteTypes {
     | '/pagamento/demo-preview'
     | '/admin/'
     | '/admin/checkouts/$id'
+    | '/admin/pages/$id'
     | '/admin/projects/$id'
     | '/admin/checkouts/'
     | '/admin/pages/'
@@ -161,6 +171,7 @@ export interface FileRouteTypes {
     | '/pagamento/demo-preview'
     | '/admin'
     | '/admin/checkouts/$id'
+    | '/admin/pages/$id'
     | '/admin/projects/$id'
     | '/admin/checkouts'
     | '/admin/pages'
@@ -176,6 +187,7 @@ export interface FileRouteTypes {
     | '/pagamento/demo-preview'
     | '/admin/'
     | '/admin/checkouts/$id'
+    | '/admin/pages/$id'
     | '/admin/projects/$id'
     | '/admin/checkouts/'
     | '/admin/pages/'
@@ -276,6 +288,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProjectsIdRouteImport
       parentRoute: typeof AdminProjectsRoute
     }
+    '/admin/pages/$id': {
+      id: '/admin/pages/$id'
+      path: '/pages/$id'
+      fullPath: '/admin/pages/$id'
+      preLoaderRoute: typeof AdminPagesIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/checkouts/$id': {
       id: '/admin/checkouts/$id'
       path: '/checkouts/$id'
@@ -303,6 +322,7 @@ interface AdminRouteChildren {
   AdminProjectsRoute: typeof AdminProjectsRouteWithChildren
   AdminIndexRoute: typeof AdminIndexRoute
   AdminCheckoutsIdRoute: typeof AdminCheckoutsIdRoute
+  AdminPagesIdRoute: typeof AdminPagesIdRoute
   AdminCheckoutsIndexRoute: typeof AdminCheckoutsIndexRoute
   AdminPagesIndexRoute: typeof AdminPagesIndexRoute
 }
@@ -312,6 +332,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminProjectsRoute: AdminProjectsRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
   AdminCheckoutsIdRoute: AdminCheckoutsIdRoute,
+  AdminPagesIdRoute: AdminPagesIdRoute,
   AdminCheckoutsIndexRoute: AdminCheckoutsIndexRoute,
   AdminPagesIndexRoute: AdminPagesIndexRoute,
 }
