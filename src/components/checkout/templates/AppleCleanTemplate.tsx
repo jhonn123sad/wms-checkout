@@ -29,49 +29,54 @@
      radius: theme.borderRadius || "24px"
    };
  
-   return (
-     <div className="min-h-screen flex flex-col items-center py-8 px-4 md:py-12" style={{ backgroundColor: styles.bg, color: styles.text }}>
-       {/* Header / Logo Section */}
-       <div className="w-full max-w-[440px] mb-8 flex flex-col items-center">
-         {theme.logoUrl && (
-           <img src={theme.logoUrl} alt={project.name} className="h-12 mb-8 object-contain" />
-         )}
- 
-         {(content.badge || theme.showUrgency !== false) && (
-           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-6 bg-white border border-black/5">
-             {content.urgencyText ? (
-               <Zap size={12} className="text-orange-500 fill-orange-500" />
-             ) : (
-               <ShieldCheck size={12} style={{ color: styles.accent }} />
-             )}
-             <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: styles.muted }}>
-               {content.badge || content.urgencyText || "Pagamento Seguro"}
-             </span>
-           </div>
-         )}
- 
-         <h1 className="text-3xl md:text-4xl font-black tracking-tight text-center mb-3 px-4">
-           {content.heroTitle || project.headline || "Finalize seu acesso"}
-         </h1>
-         <p className="text-sm text-center px-6 leading-relaxed mb-4 opacity-70">
-           {content.heroSubtitle || project.subheadline || "Pague com Pix e receba a liberação imediata."}
-         </p>
-       </div>
- 
-       {/* Checkout Card */}
-       <div className="w-full max-w-[480px] p-8 md:p-10 shadow-2xl shadow-black/5 border relative overflow-hidden"
-            style={{ backgroundColor: styles.card, borderRadius: styles.radius, borderColor: "rgba(0,0,0,0.05)" }}>
-         
-         {/* Product Info */}
-         <div className="w-full rounded-2xl p-5 mb-8 flex justify-between items-center bg-[#F5F5F7]">
-           <div className="flex-1 pr-4">
-             <h2 className="font-bold text-base">{offer.name}</h2>
-             <p className="text-xs mt-0.5 line-clamp-2 opacity-60">{offer.description}</p>
-           </div>
-           <div className="text-xl font-black shrink-0">{formatPrice(offer.price_cents)}</div>
-         </div>
- 
-          {paymentData ? (
+  return (
+    <div className="min-h-screen flex flex-col items-center py-6 px-4 md:py-10 overflow-x-hidden" style={{ backgroundColor: styles.bg, color: styles.text }}>
+      {/* Header / Logo Section */}
+      <div className="w-full max-w-[420px] mb-6 flex flex-col items-center text-center">
+        {theme.logoUrl ? (
+          <img src={theme.logoUrl} alt={project.name} className="h-8 mb-6 object-contain" />
+        ) : (
+          <div className="flex items-center gap-1.5 font-black text-[9px] tracking-[0.2em] mb-6 opacity-30">
+            <ShieldCheck size={14} />
+            <span>CHECKOUT</span>
+          </div>
+        )}
+
+        {(content.badge || theme.showUrgency !== false) && (
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full mb-4 bg-white border border-black/5 shadow-sm">
+            {content.urgencyText ? (
+              <Zap size={10} className="text-orange-500 fill-orange-500" />
+            ) : (
+              <ShieldCheck size={10} style={{ color: styles.accent }} />
+            )}
+            <span className="text-[9px] font-black uppercase tracking-widest text-gray-400">
+              {content.badge || content.urgencyText || "Pagamento Seguro"}
+            </span>
+          </div>
+        )}
+
+        <h1 className="text-2xl md:text-3xl font-black tracking-tight mb-2 px-2 leading-tight">
+          {content.heroTitle || project.headline || "Finalize seu pedido"}
+        </h1>
+        <p className="text-xs opacity-50 px-6 leading-relaxed mb-2">
+          {content.heroSubtitle || project.subheadline || "Aprovação instantânea via Pix."}
+        </p>
+      </div>
+
+      {/* Checkout Card */}
+      <div className="w-full max-w-[420px] p-6 md:p-8 shadow-2xl shadow-black/[0.03] border relative overflow-hidden"
+           style={{ backgroundColor: styles.card, borderRadius: styles.radius, borderColor: "rgba(0,0,0,0.05)" }}>
+        
+        {/* Product Info Compact */}
+        <div className="w-full rounded-2xl p-4 mb-6 flex justify-between items-center bg-[#F5F5F7]/80 backdrop-blur-sm">
+          <div className="flex-1 pr-3">
+            <h2 className="font-bold text-sm text-gray-800 line-clamp-1">{offer.name}</h2>
+            <p className="text-[10px] mt-0.5 line-clamp-1 opacity-50">Acesso imediato</p>
+          </div>
+          <div className="text-lg font-black tracking-tighter shrink-0">{formatPrice(offer.price_cents)}</div>
+        </div>
+
+        {paymentData ? (
             <InlinePixPanel 
               paymentData={paymentData}
               paymentStatus={paymentStatus || "waiting_payment"}
