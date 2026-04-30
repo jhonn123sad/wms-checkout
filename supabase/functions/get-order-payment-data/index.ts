@@ -1,3 +1,7 @@
+/**
+ * CHECKOUT CORE - NÃO ALTERAR SEM TESTE DE REGRESSÃO
+ * Fornece os dados do QR Code e valor para a página de pagamento.
+ */
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { corsHeaders } from "../_shared/cors.ts";
 
