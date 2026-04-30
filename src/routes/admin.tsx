@@ -1,11 +1,41 @@
-import { useEffect, useState } from "react";
-import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
+ import { useEffect, useState, ReactNode } from "react";
+ import { createFileRoute, Link, Outlet, useNavigate, useRouter } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, Settings, LogOut, Briefcase } from "lucide-react";
+ import { LayoutDashboard, Settings, LogOut, Briefcase, AlertTriangle, Loader2 } from "lucide-react";
+ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+ 
+ function AdminErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+   const router = useRouter();
+   return (
+     <div className="p-8">
+       <Alert variant="destructive">
+         <AlertTriangle className="h-4 w-4" />
+         <AlertTitle>Erro no Admin</AlertTitle>
+         <AlertDescription className="mt-2">
+           <p className="mb-4">Ocorreu um erro ao carregar esta seção do painel.</p>
+           <div className="flex gap-2">
+             <Button variant="outline" size="sm" onClick={() => { router.invalidate(); reset(); }}>
+               Tentar novamente
+             </Button>
+             <Button variant="outline" size="sm" asChild>
+               <Link to="/admin">Ir para Dashboard</Link>
+             </Button>
+           </div>
+         </AlertDescription>
+       </Alert>
+       {import.meta.env.DEV && (
+         <pre className="mt-4 p-4 bg-red-50 text-red-800 rounded text-xs overflow-auto">
+           {error.message}
+         </pre>
+       )}
+     </div>
+   );
+ }
 
 export const Route = createFileRoute("/admin")({
   component: AdminLayout,
+   errorComponent: AdminErrorComponent,
 });
 
 function AdminLayout() {
@@ -44,7 +74,24 @@ function AdminLayout() {
     navigate({ to: "/admin/login" });
   };
 
-  if (checking) return null;
+   if (checking) {
+     return (
+       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+         <div className="text-center">
+           <Loader2 className="h-8 w-8 animate-spin mx-auto text-gray-400" />
+           <p className="mt-2 text-sm text-gray-500">Verificando permissões...</p>
+           <Button 
+             variant="ghost" 
+             size="sm" 
+             className="mt-4"
+             onClick={() => navigate({ to: "/admin/login" })}
+           >
+             Ir para Login
+           </Button>
+         </div>
+       </div>
+     );
+   }
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
