@@ -37,11 +37,13 @@
            <h1 className="text-3xl font-bold">Checkouts MVP</h1>
            <p className="text-muted-foreground">Gerencie seus checkouts personalizados</p>
          </div>
-         <Button asChild>
-           <Link to="/admin/checkouts/new">
-             <Plus className="mr-2 h-4 w-4" /> Novo Checkout
-           </Link>
-         </Button>
+          <Link 
+            to="/admin/checkouts/$id" 
+            params={{ id: "new" }}
+            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            <Plus className="mr-2 h-4 w-4" /> Novo Checkout
+          </Link>
        </div>
  
        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -90,18 +92,23 @@
                      <Users className="w-4 h-4 mr-1" />
                      {checkout.checkout_leads?.[0]?.count || 0} leads
                    </div>
-                   <div className="flex gap-2">
-                     <Button variant="ghost" size="icon" asChild>
-                       <Link to={`/checkout/${checkout.slug}`} target="_blank">
-                         <ExternalLink className="w-4 h-4" />
-                       </Link>
-                     </Button>
-                     <Button variant="ghost" size="icon" asChild>
-                       <Link to={`/admin/checkouts/${checkout.id}`}>
-                         <Edit className="w-4 h-4" />
-                       </Link>
-                     </Button>
-                   </div>
+                    <div className="flex gap-2 items-center">
+                      <a 
+                        href={`/checkout/${checkout.slug}`} 
+                        target="_blank" 
+                        rel="noreferrer"
+                        className="inline-flex items-center justify-center rounded-md p-2 hover:bg-accent text-muted-foreground transition-colors"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                      <Link 
+                        to="/admin/checkouts/$id" 
+                        params={{ id: checkout.id }}
+                        className="inline-flex items-center justify-center rounded-md p-2 hover:bg-accent text-muted-foreground transition-colors"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </Link>
+                    </div>
                  </div>
                </div>
              </Card>
