@@ -62,6 +62,7 @@ export type Database = {
           collect_email: boolean | null
           collect_name: boolean | null
           collect_phone: boolean | null
+          content_json: Json | null
           created_at: string | null
           headline: string | null
           id: string
@@ -80,6 +81,7 @@ export type Database = {
           collect_email?: boolean | null
           collect_name?: boolean | null
           collect_phone?: boolean | null
+          content_json?: Json | null
           created_at?: string | null
           headline?: string | null
           id?: string
@@ -98,6 +100,7 @@ export type Database = {
           collect_email?: boolean | null
           collect_name?: boolean | null
           collect_phone?: boolean | null
+          content_json?: Json | null
           created_at?: string | null
           headline?: string | null
           id?: string
@@ -116,8 +119,10 @@ export type Database = {
         Row: {
           amount_cents: number
           created_at: string | null
-          customer_cpf: string
-          customer_name: string
+          customer_cpf: string | null
+          customer_email: string | null
+          customer_name: string | null
+          customer_phone: string | null
           end_to_end_id: string | null
           expires_at: string | null
           id: string
@@ -143,8 +148,10 @@ export type Database = {
         Insert: {
           amount_cents: number
           created_at?: string | null
-          customer_cpf: string
-          customer_name: string
+          customer_cpf?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
           end_to_end_id?: string | null
           expires_at?: string | null
           id?: string
@@ -170,8 +177,10 @@ export type Database = {
         Update: {
           amount_cents?: number
           created_at?: string | null
-          customer_cpf?: string
-          customer_name?: string
+          customer_cpf?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
           end_to_end_id?: string | null
           expires_at?: string | null
           id?: string

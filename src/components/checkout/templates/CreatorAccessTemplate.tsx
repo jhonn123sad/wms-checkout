@@ -208,13 +208,15 @@
          </div>
        </div>
  
-       {/* FOOTER NOTICE */}
-       <footer className="py-8 px-4 border-t border-white/5 flex flex-col items-center">
-         <div className="flex items-center gap-1.5 opacity-20 hover:opacity-40 transition-opacity">
-           <ShieldCheck size={10} />
-           <span className="text-[8px] font-bold uppercase tracking-widest">Processado via Pushin Pay</span>
-         </div>
-       </footer>
-     </div>
-   );
- };
+      </div>
+
+      {/* FOOTER NOTICE */}
+      <footer className="py-8 px-4 border-t border-white/5 flex flex-col items-center">
+        <div className="flex items-center gap-1.5 opacity-20 hover:opacity-40 transition-opacity">
+          <ShieldCheck size={10} />
+          <span className="text-[8px] font-bold uppercase tracking-widest">Processado via Pushin Pay</span>
+        </div>
+      </footer>
+    </div>
+  );
+};
