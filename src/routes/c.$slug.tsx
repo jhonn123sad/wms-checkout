@@ -184,7 +184,7 @@ export const Route = createFileRoute("/c/$slug")({
      if (!content.guaranteeText) return null;
      return (
        <div className="w-full mt-8 p-6 rounded-2xl border flex flex-col items-center text-center gap-3" 
-            style={{ borderColor: styles.template === 'dark-premium' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)', backgroundColor: 'rgba(0,0,0,0.02)' }}>
+            style={{ borderColor: theme.template === 'dark-premium' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)', backgroundColor: 'rgba(0,0,0,0.02)' }}>
          <Shield size={32} style={{ color: styles.accent }} />
          <div>
            <h4 className="font-bold text-sm" style={{ color: styles.text }}>{content.guaranteeTitle || "Garantia de Satisfação"}</h4>
