@@ -48,7 +48,7 @@ Deno.serve(async (req) => {
       return jsonError("DB_ERROR_PRODUCT", 500);
     }
 
-    const priceCents = product?.price_cents ?? 2500;
+    const priceCents = product?.price_cents ?? 50;
     const productId = product?.id ?? null;
 
     // Create order (status=created)

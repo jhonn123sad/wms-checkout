@@ -79,7 +79,7 @@ function Index() {
             <h2 className="font-semibold text-base">Produto Teste</h2>
             <p className="text-xs text-[#86868B] mt-0.5">Acesso liberado após confirmação do Pix.</p>
           </div>
-          <div className="text-lg font-bold">R$ 25,00</div>
+          <div className="text-lg font-bold">R$ 0,50</div>
         </div>
 
         {/* Form Fields */}
