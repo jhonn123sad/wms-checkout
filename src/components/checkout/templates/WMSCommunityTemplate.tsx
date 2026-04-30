@@ -2,6 +2,7 @@
  import { CheckoutTemplateProps } from "../types";
  import { Loader2, ShieldCheck, Zap, ArrowRight, Bot, Code, Terminal, Users, Globe } from "lucide-react";
  import { InlinePixPanel } from "../InlinePixPanel";
+ import { CheckoutVisualAsset } from "../visuals/CheckoutVisualAsset";
  
  export const WMSCommunityTemplate: React.FC<CheckoutTemplateProps> = ({
    project,
@@ -62,9 +63,24 @@
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start w-full">
-          {/* LEFT: TECH CONTENT COMPACT */}
-          <div className="flex flex-col items-center lg:items-end space-y-6">
-            {/* TECH GRID COMPACT */}
+           {/* LEFT: TECH CONTENT COMPACT — ÁREA VISUAL EDITÁVEL */}
+           <div className="flex flex-col items-center lg:items-end space-y-6">
+             {/* THEMATIC ASSET */}
+             <div className="w-full max-w-[340px] relative group">
+                <div className="absolute -inset-1 bg-green-500/20 rounded-xl blur opacity-20 group-hover:opacity-40 transition-opacity"></div>
+                <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-neutral-800 bg-black shadow-2xl">
+                  {theme.heroImageUrl ? (
+                    <img src={theme.heroImageUrl} alt="WMS Asset" className="w-full h-full object-cover" />
+                  ) : (
+                    <CheckoutVisualAsset type="wms" className="w-full h-full" />
+                  )}
+                  <div className="absolute bottom-2 left-2 px-1.5 py-0.5 bg-black/80 backdrop-blur-sm border border-green-500/30 rounded text-[7px] font-mono text-green-500 uppercase tracking-widest">
+                    SECURE_NODE_0x1
+                  </div>
+                </div>
+             </div>
+
+             {/* TECH GRID COMPACT */}
             <div className="grid grid-cols-2 gap-3 w-full max-w-[340px]">
               {[
                 { icon: <Code size={16} />, title: "PROMPTS" },
@@ -113,18 +129,19 @@
                   </div>
                 </div>
 
-                {paymentData ? (
-                  <div className="relative z-10 py-4">
-                    <InlinePixPanel 
-                      paymentData={paymentData}
-                      paymentStatus={paymentStatus || "waiting_payment"}
-                      onReset={onResetPayment || (() => {})}
-                      formatPrice={formatPrice}
-                      theme={theme}
-                    />
-                  </div>
-                ) : (
-                  <form onSubmit={onSubmit} className="space-y-6 font-sans">
+                 {/* NÃO ALTERAR onSubmit, formData, setFormData, isLoading ou lógica de pagamento */}
+                 {paymentData ? (
+                   <div className="relative z-10 py-4">
+                     <InlinePixPanel 
+                       paymentData={paymentData}
+                       paymentStatus={paymentStatus || "waiting_payment"}
+                       onReset={onResetPayment || (() => {})}
+                       formatPrice={formatPrice}
+                       theme={theme}
+                     />
+                   </div>
+                 ) : (
+                   <form onSubmit={onSubmit} className="space-y-6 font-sans">
                     {requiredFields.collect_name && (
                       <div className="space-y-2">
                         <label className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest ml-1">Usuário / Nome</label>
