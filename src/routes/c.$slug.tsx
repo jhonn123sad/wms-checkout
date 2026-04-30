@@ -166,130 +166,118 @@ export const Route = createFileRoute("/c/$slug")({
     currency: 'BRL'
   });
 
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 md:p-6" style={{ backgroundColor: bgColor }}>
-      <div className="w-full max-w-[440px] bg-white rounded-[24px] shadow-sm border border-[#D2D2D7]/30 p-8 md:p-10 flex flex-col items-center">
-        
-        {/* Logo if exists */}
-        {theme.logoUrl && (
-          <img src={theme.logoUrl} alt={project.name} className="h-12 mb-6 object-contain" />
-        )}
-
-        {/* Badge */}
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#F5F5F7] rounded-full mb-6">
-          <ShieldCheck size={12} className="text-[#86868B]" />
-          <span className="text-[11px] font-semibold text-[#86868B] uppercase tracking-wider">Pagamento seguro</span>
-        </div>
-
-        {/* Header */}
-        <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-center mb-2" style={{ color: primaryColor }}>
-          {project.headline || "Finalize seu acesso"}
-        </h1>
-        <p className="text-[#86868B] text-sm text-center mb-8 leading-relaxed">
-          {project.subheadline || "Pague com Pix e receba a liberação rápida."}
-        </p>
-
-        {/* Product Box */}
-        <div className="w-full bg-[#F5F5F7] rounded-2xl p-5 mb-8 flex justify-between items-center">
-          <div>
-            <h2 className="font-semibold text-base">{offer.name}</h2>
-            <p className="text-xs text-[#86868B] mt-0.5">{offer.description}</p>
-          </div>
-          <div className="text-lg font-bold">{formattedPrice}</div>
-        </div>
-
-        {/* Form Fields */}
-        <form onSubmit={handleGeneratePix} className="w-full space-y-4 mb-8">
-          {project.collect_name && (
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#86868B] ml-1">Nome completo</label>
-              <input 
-                type="text" 
-                required
-                value={formData.name || ""}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="Como no seu documento"
-                className="w-full h-12 px-4 rounded-xl border border-[#D2D2D7] focus:outline-none focus:ring-2 focus:ring-[#0071E3] transition-all text-sm"
-              />
-            </div>
-          )}
-          {project.collect_cpf && (
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#86868B] ml-1">CPF</label>
-              <input 
-                type="text" 
-                required
-                value={formData.cpf || ""}
-                onChange={(e) => setFormData({ ...formData, cpf: e.target.value })}
-                placeholder="000.000.000-00"
-                className="w-full h-12 px-4 rounded-xl border border-[#D2D2D7] focus:outline-none focus:ring-2 focus:ring-[#0071E3] transition-all text-sm"
-              />
-            </div>
-          )}
-          {project.collect_email && (
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#86868B] ml-1">E-mail</label>
-              <input 
-                type="email" 
-                required
-                value={formData.email || ""}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                placeholder="seu@email.com"
-                className="w-full h-12 px-4 rounded-xl border border-[#D2D2D7] focus:outline-none focus:ring-2 focus:ring-[#0071E3] transition-all text-sm"
-              />
-            </div>
-          )}
-          {project.collect_phone && (
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#86868B] ml-1">Telefone</label>
-              <input 
-                type="tel" 
-                required
-                value={formData.phone || ""}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                placeholder="(00) 00000-0000"
-                className="w-full h-12 px-4 rounded-xl border border-[#D2D2D7] focus:outline-none focus:ring-2 focus:ring-[#0071E3] transition-all text-sm"
-              />
-            </div>
-          )}
-
-           <button
-             type="submit"
-             disabled={loading}
-             className="w-full text-white h-14 rounded-xl font-semibold text-base transition-transform active:scale-[0.98] mb-4 disabled:opacity-50 flex items-center justify-center gap-2"
-             style={{ backgroundColor: btnColor }}
-           >
-             {loading ? (
-               <>
-                 <Loader2 className="h-5 w-5 animate-spin" />
-                 Gerando Pix...
-               </>
-             ) : (
-               "Gerar Pix"
-             )}
-           </button>
-           
-           {loading && (
-             <p className="text-[11px] font-medium text-center animate-pulse mb-6" style={{ color: primaryColor }}>
-               Aguarde, estamos gerando seu Pix com segurança.
-             </p>
-           )}
-         </form>
+   const renderCheckoutForm = () => (
+     <form onSubmit={handleGeneratePix} className="w-full space-y-4">
+       {content.preFormText && (
+         <p className="text-sm font-medium mb-2" style={{ color: styles.text }}>{content.preFormText}</p>
+       )}
  
-         {project.legal_text && (
-           <div className="w-full bg-[#F5F5F7]/50 border border-[#D2D2D7]/30 rounded-xl p-4">
-             <p className="text-[11px] text-[#86868B] text-center leading-relaxed italic">
-               {project.legal_text}
-             </p>
+       {project.collect_name && (
+         <div className="space-y-1.5">
+           <label className="text-xs font-semibold ml-1" style={{ color: styles.muted }}>Nome completo</label>
+           <input 
+             type="text" 
+             required
+             value={formData.name || ""}
+             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+             placeholder="Como no seu documento"
+             className="w-full h-12 px-4 rounded-xl border transition-all text-sm outline-none"
+             style={{ 
+               backgroundColor: theme.template === 'dark-premium' ? 'rgba(255,255,255,0.05)' : '#FFFFFF',
+               borderColor: theme.template === 'dark-premium' ? 'rgba(255,255,255,0.1)' : '#D2D2D7',
+               color: styles.text
+             }}
+           />
+         </div>
+       )}
+       {project.collect_cpf && (
+         <div className="space-y-1.5">
+           <label className="text-xs font-semibold ml-1" style={{ color: styles.muted }}>CPF</label>
+           <input 
+             type="text" 
+             required
+             value={formData.cpf || ""}
+             onChange={(e) => setFormData({ ...formData, cpf: e.target.value })}
+             placeholder="000.000.000-00"
+             className="w-full h-12 px-4 rounded-xl border transition-all text-sm outline-none"
+             style={{ 
+               backgroundColor: theme.template === 'dark-premium' ? 'rgba(255,255,255,0.05)' : '#FFFFFF',
+               borderColor: theme.template === 'dark-premium' ? 'rgba(255,255,255,0.1)' : '#D2D2D7',
+               color: styles.text
+             }}
+           />
+         </div>
+       )}
+       {project.collect_email && (
+         <div className="space-y-1.5">
+           <label className="text-xs font-semibold ml-1" style={{ color: styles.muted }}>E-mail</label>
+           <input 
+             type="email" 
+             required
+             value={formData.email || ""}
+             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+             placeholder="seu@email.com"
+             className="w-full h-12 px-4 rounded-xl border transition-all text-sm outline-none"
+             style={{ 
+               backgroundColor: theme.template === 'dark-premium' ? 'rgba(255,255,255,0.05)' : '#FFFFFF',
+               borderColor: theme.template === 'dark-premium' ? 'rgba(255,255,255,0.1)' : '#D2D2D7',
+               color: styles.text
+             }}
+           />
+         </div>
+       )}
+       {project.collect_phone && (
+         <div className="space-y-1.5">
+           <label className="text-xs font-semibold ml-1" style={{ color: styles.muted }}>Telefone</label>
+           <input 
+             type="tel" 
+             required
+             value={formData.phone || ""}
+             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+             placeholder="(00) 00000-0000"
+             className="w-full h-12 px-4 rounded-xl border transition-all text-sm outline-none"
+             style={{ 
+               backgroundColor: theme.template === 'dark-premium' ? 'rgba(255,255,255,0.05)' : '#FFFFFF',
+               borderColor: theme.template === 'dark-premium' ? 'rgba(255,255,255,0.1)' : '#D2D2D7',
+               color: styles.text
+             }}
+           />
+         </div>
+       )}
+ 
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full h-14 rounded-xl font-bold text-lg transition-all active:scale-[0.98] mt-4 disabled:opacity-50 flex flex-col items-center justify-center gap-0.5 shadow-lg shadow-black/5"
+          style={{ backgroundColor: styles.button, color: styles.buttonText }}
+        >
+          {loading ? (
+            <div className="flex items-center gap-2">
+              <Loader2 className="h-5 w-5 animate-spin" />
+              <span>Gerando Pix...</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <span>{content.ctaText || "Gerar Pix"}</span>
+              <ArrowRight size={18} />
+            </div>
+          )}
+        </button>
+        
+        {loading && (
+          <p className="text-[11px] font-medium text-center animate-pulse mt-2" style={{ color: styles.accent }}>
+            Aguarde, estamos preparando seu pagamento com segurança.
+          </p>
+        )}
+ 
+        {content.securePaymentText !== null && (
+           <div className="flex items-center justify-center gap-1.5 mt-4 opacity-60">
+             <Lock size={12} style={{ color: styles.muted }} />
+             <span className="text-[10px] font-medium uppercase tracking-wider" style={{ color: styles.muted }}>
+               {content.securePaymentText || "Pagamento 100% Seguro & Encriptado"}
+             </span>
            </div>
-         )}
-      </div>
-
-      <footer className="max-w-[440px] mt-10 px-6 pb-8 opacity-40 hover:opacity-100 transition-opacity">
-        <p className="text-[9px] text-[#86868B] text-center leading-relaxed">
-          A PUSHIN PAY atua exclusivamente como processadora de pagamentos e não possui responsabilidade pela entrega ou suporte dos produtos oferecidos pelo vendedor.
-        </p>
-      </footer>
-    </div>
-  );
+        )}
+      </form>
+   );
 }
