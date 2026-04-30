@@ -103,7 +103,7 @@ function CheckoutPage() {
       <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
         <div className="space-y-8">
           <Card className="overflow-hidden border-[#333] bg-[#1a1a1a] shadow-2xl">
-            <MediaDisplay media={{ url: checkout.media_url, type: checkout.media_type, provider: 'external' }} />
+            <MediaDisplay media={{ url: checkout.media_url, type: checkout.media_type as any, provider: 'external' }} />
           </Card>
           
           <div>
