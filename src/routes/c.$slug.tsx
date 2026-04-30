@@ -6,7 +6,7 @@
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, ShieldCheck } from "lucide-react";
+ import { Loader2, ShieldCheck, CheckCircle2, Shield, Zap, Info, ArrowRight, Lock } from "lucide-react";
 
 export const Route = createFileRoute("/c/$slug")({
   loader: async ({ params }) => {
@@ -52,8 +52,45 @@ export const Route = createFileRoute("/c/$slug")({
   )
 });
 
-function DynamicCheckout() {
-  const { project, offer } = Route.useLoaderData();
+ interface ThemeConfig {
+   template?: 'apple-clean' | 'dark-premium' | 'image-left' | 'longform-simple';
+   background?: string;
+   card?: string;
+   text?: string;
+   muted?: string;
+   button?: string;
+   buttonText?: string;
+   accent?: string;
+   logoUrl?: string;
+   heroImageUrl?: string;
+   coverImageUrl?: string;
+   showHeroImage?: boolean;
+   showBenefits?: boolean;
+   showTestimonials?: boolean;
+   showGuarantee?: boolean;
+   showUrgency?: boolean;
+   borderRadius?: string;
+   layout?: 'centered' | 'wide';
+ }
+ 
+ interface ContentConfig {
+   badge?: string;
+   heroTitle?: string;
+   heroSubtitle?: string;
+   preFormText?: string;
+   benefits?: string[];
+   guaranteeTitle?: string;
+   guaranteeText?: string;
+   ctaText?: string;
+   footerNote?: string;
+   heroBullets?: string[];
+   urgencyText?: string;
+   securePaymentText?: string;
+   imageCaption?: string;
+ }
+ 
+ function DynamicCheckout() {
+   const { project, offer } = Route.useLoaderData();
   const navigate = useNavigate();
   const searchParams = useSearch({ from: "/c/$slug" }) as any;
   const [loading, setLoading] = useState(false);
@@ -70,10 +107,20 @@ function DynamicCheckout() {
     setUtms(capturedUtms);
   }, [searchParams]);
 
-   const theme: any = project.theme_json || {};
-  const bgColor = theme.backgroundColor || "#F5F5F7";
-  const primaryColor = theme.primaryColor || "#000000";
-  const btnColor = theme.buttonColor || "#000000";
+   const theme: ThemeConfig = (project.theme_json as any) || {};
+   const content: ContentConfig = (project.content_json as any) || {};
+ 
+   // Fallback values
+   const styles = {
+     bg: theme.background || (theme.template === 'dark-premium' ? '#0A0A0B' : '#F5F5F7'),
+     card: theme.card || (theme.template === 'dark-premium' ? '#161618' : '#FFFFFF'),
+     text: theme.text || (theme.template === 'dark-premium' ? '#FFFFFF' : '#1D1D1F'),
+     muted: theme.muted || (theme.template === 'dark-premium' ? '#86868B' : '#86868B'),
+     button: theme.button || (theme.template === 'dark-premium' ? '#0071E3' : '#000000'),
+     buttonText: theme.buttonText || '#FFFFFF',
+     accent: theme.accent || '#0071E3',
+     radius: theme.borderRadius || '24px'
+   };
 
   const handleGeneratePix = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
