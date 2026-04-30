@@ -14,22 +14,40 @@ function AdminDashboard() {
     paidOrders: 0
   });
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      const [{ count: pCount }, { count: oCount }, { count: sCount }] = await Promise.all([
-        supabase.from("checkout_projects").select("*", { count: 'exact', head: true }),
-        supabase.from("orders").select("*", { count: 'exact', head: true }),
-        supabase.from("orders").select("*", { count: 'exact', head: true }).eq("status", "paid")
-      ]);
-
-      setStats({
-        projects: pCount || 0,
-        orders: oCount || 0,
-        paidOrders: sCount || 0
-      });
-    };
-    fetchStats();
-  }, []);
+   const [loading, setLoading] = useState(true);
+   const [error, setError] = useState<string | null>(null);
+ 
+   useEffect(() => {
+     const fetchStats = async () => {
+       try {
+         const [pRes, oRes, sRes] = await Promise.all([
+           supabase.from("checkout_projects").select("*", { count: 'exact', head: true }),
+           supabase.from("orders").select("*", { count: 'exact', head: true }),
+           supabase.from("orders").select("*", { count: 'exact', head: true }).eq("status", "paid")
+         ]);
+ 
+         setStats({
+           projects: pRes.count || 0,
+           orders: oRes.count || 0,
+           paidOrders: sRes.count || 0
+         });
+       } catch (err: any) {
+         console.error("Error fetching stats:", err);
+         setError("Erro ao carregar estatísticas");
+       } finally {
+         setLoading(false);
+       }
+     };
+     fetchStats();
+   }, []);
+ 
+   if (loading) {
+     return (
+       <div className="flex items-center justify-center h-48">
+         <div className="text-gray-500">Carregando dashboard...</div>
+       </div>
+     );
+   }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

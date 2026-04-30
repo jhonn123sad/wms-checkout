@@ -1,4 +1,4 @@
-import { useState } from "react";
+ import { useState, useEffect } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -15,7 +15,15 @@ function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+   const [authReady, setAuthReady] = useState(true);
   const navigate = useNavigate();
+ 
+   useEffect(() => {
+     // Basic check if supabase is responsive
+     supabase.auth.getSession().catch(() => {
+       setAuthReady(false);
+     });
+   }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,7 +69,13 @@ function AdminLogin() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
+           {!authReady && (
+             <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-md text-amber-800 text-sm">
+               Autenticação admin ainda não configurada ou instável. 
+               Verifique sua conexão com o Supabase.
+             </div>
+           )}
+           <form onSubmit={handleLogin} className="space-y-4 opacity-100">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input

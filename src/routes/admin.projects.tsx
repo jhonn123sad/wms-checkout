@@ -18,14 +18,23 @@ function ProjectsList() {
     fetchProjects();
   }, []);
 
-  const fetchProjects = async () => {
-    const { data } = await supabase
-      .from("checkout_projects")
-      .select("*")
-      .order("created_at", { ascending: false });
-    setProjects(data || []);
-    setLoading(false);
-  };
+   const fetchProjects = async () => {
+     setLoading(true);
+     try {
+       const { data, error } = await supabase
+         .from("checkout_projects")
+         .select("*")
+         .order("created_at", { ascending: false });
+       
+       if (error) throw error;
+       setProjects(data || []);
+     } catch (err) {
+       console.error("Error fetching projects:", err);
+       setProjects([]);
+     } finally {
+       setLoading(false);
+     }
+   };
 
   return (
     <div className="space-y-6">
