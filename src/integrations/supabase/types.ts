@@ -14,6 +14,76 @@ export type Database = {
   }
   public: {
     Tables: {
+      checkout_fields: {
+        Row: {
+          checkout_id: string
+          created_at: string
+          field_label: string
+          field_name: string
+          field_type: string
+          id: string
+          required: boolean
+          sort_order: number
+        }
+        Insert: {
+          checkout_id: string
+          created_at?: string
+          field_label: string
+          field_name: string
+          field_type?: string
+          id?: string
+          required?: boolean
+          sort_order?: number
+        }
+        Update: {
+          checkout_id?: string
+          created_at?: string
+          field_label?: string
+          field_name?: string
+          field_type?: string
+          id?: string
+          required?: boolean
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checkout_fields_checkout_id_fkey"
+            columns: ["checkout_id"]
+            isOneToOne: false
+            referencedRelation: "checkouts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      checkout_leads: {
+        Row: {
+          checkout_id: string
+          created_at: string
+          data: Json
+          id: string
+        }
+        Insert: {
+          checkout_id: string
+          created_at?: string
+          data: Json
+          id?: string
+        }
+        Update: {
+          checkout_id?: string
+          created_at?: string
+          data?: Json
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checkout_leads_checkout_id_fkey"
+            columns: ["checkout_id"]
+            isOneToOne: false
+            referencedRelation: "checkouts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       checkout_offers: {
         Row: {
           active: boolean | null
@@ -112,6 +182,48 @@ export type Database = {
           thank_you_url?: string | null
           theme_json?: Json | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      checkouts: {
+        Row: {
+          active: boolean
+          created_at: string
+          cta_text: string
+          id: string
+          media_type: string
+          media_url: string
+          price: number
+          slug: string
+          subtitle: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          cta_text?: string
+          id?: string
+          media_type: string
+          media_url: string
+          price: number
+          slug: string
+          subtitle?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          cta_text?: string
+          id?: string
+          media_type?: string
+          media_url?: string
+          price?: number
+          slug?: string
+          subtitle?: string | null
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
