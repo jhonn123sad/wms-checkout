@@ -26,6 +26,9 @@
    const navigate = useNavigate();
    const searchParams = useSearch({ strict: false }) as any;
    const [isLoading, setIsLoading] = useState(false);
+   const [paymentData, setPaymentData] = useState<any>(null);
+   const [paymentStatus, setPaymentStatus] = useState("waiting_payment");
+   const [isPolling, setIsPolling] = useState(false);
    const [formData, setFormData] = useState<Record<string, string>>({});
    const [utms, setUtms] = useState<Record<string, string>>({});
    const [error, setError] = useState<string | null>(null);
@@ -85,13 +88,13 @@
          throw new Error(data?.error || invokeError?.message || "Erro ao gerar Pix");
        }
  
-       console.log("[Core] Pix gerado com sucesso, orderId:", data.orderId);
-       
-       navigate({ 
-         to: `/pagamento/${data.orderId}`, 
-         search: { token: data.accessToken } 
-       } as any);
-       
+         console.log("[Core] Pix gerado com sucesso, orderId:", data.orderId);
+         setPaymentData(data);
+         setIsPolling(true);
+
+         // Toast success
+         toast.success("Pix gerado com sucesso!");
+
      } catch (err: any) {
        const msg = err.message || "Erro ao processar pagamento";
        setError(msg);
@@ -101,6 +104,49 @@
      }
    };
  
+   // Polling Logic
+   useEffect(() => {
+     if (!isPolling || !paymentData?.orderId || !paymentData?.accessToken || paymentStatus === 'paid') return;
+
+     let pollCount = 0;
+     const maxPolls = (15 * 60) / 7; // 15 minutes, every 7 seconds
+
+     const checkStatus = async () => {
+       if (pollCount >= maxPolls) {
+         setIsPolling(false);
+         return;
+       }
+       pollCount++;
+
+       try {
+         const { data, error } = await supabase.functions.invoke("get-order-status", {
+           body: { 
+             orderId: paymentData.orderId, 
+             token: paymentData.accessToken 
+           },
+           method: 'POST'
+         });
+
+         if (!error && data?.status === 'paid') {
+           setPaymentStatus('paid');
+           setIsPolling(false);
+           toast.success("Pagamento confirmado!");
+           
+           if (data.thank_you_url) {
+             setTimeout(() => {
+               window.location.href = data.thank_you_url;
+             }, 1500);
+           }
+         }
+       } catch (err) {
+         console.error("[Core Polling] Erro:", err);
+       }
+     };
+
+     const interval = setInterval(checkStatus, 7000);
+     return () => clearInterval(interval);
+   }, [isPolling, paymentData, paymentStatus]);
+
    const templateProps = {
      project,
      offer,
@@ -111,8 +157,16 @@
      requiredFields,
      isLoading,
      error,
-     onSubmit: handleSubmit,
-     formatPrice
+       onSubmit: handleSubmit,
+       formatPrice,
+       paymentData,
+       paymentStatus,
+       isPollingPayment: isPolling,
+       onResetPayment: () => {
+         setPaymentData(null);
+         setPaymentStatus("waiting_payment");
+         setIsPolling(false);
+       }
    };
  
    // Mapeamento automático por slug prioritário
