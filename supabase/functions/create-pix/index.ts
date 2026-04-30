@@ -74,11 +74,20 @@ Deno.serve(async (req) => {
       return jsonError("DB_ERROR_ORDER", 500);
     }
 
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const projectRef = new URL(supabaseUrl).hostname.split('.')[0];
+    const webhookUrl = `https://${projectRef}.supabase.co/functions/v1/pushinpay-webhook`;
+
     const cleanBase = baseUrl.replace(/\/+$/, "");
     const endpoint = `${cleanBase}/pix/cashIn`;
-    const reqBody = { value: priceCents, split_rules: [] as unknown[] };
+    const reqBody = { 
+      value: priceCents, 
+      webhook_url: webhookUrl,
+      split_rules: [] as unknown[] 
+    };
 
     log("POST", endpoint, "body:", reqBody);
+    log("Webhook URL being sent:", webhookUrl);
 
     const ppResp = await fetch(endpoint, {
       method: "POST",
