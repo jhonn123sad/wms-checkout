@@ -41,72 +41,34 @@ export const Route = createFileRoute("/admin")({
 function AdminLayout() {
   const navigate = useNavigate();
   const [checking, setChecking] = useState(true);
-   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
      let isMounted = true;
-     const timeoutId = setTimeout(() => {
-       if (isMounted && checking) {
-         console.log("auth check timeout");
-         setError("Tempo de resposta excedido. Verifique sua conexão.");
-         setChecking(false);
-       }
-     }, 5000);
- 
     const checkAuth = async () => {
-       console.log("auth check started");
        try {
-         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-         
-         if (sessionError) throw sessionError;
+        const { data: { session } } = await supabase.auth.getSession();
  
          if (!session) {
-           console.log("auth check unauthenticated");
-           if (isMounted) {
-             console.log("redirecting to /admin/login");
-             navigate({ to: "/admin/login" });
-           }
-           return;
-         }
- 
-         const { data: role, error: roleError } = await supabase
-           .from("user_roles")
-           .select("role")
-           .eq("user_id", session.user.id)
-           .eq("role", "admin")
-           .maybeSingle();
- 
-         if (roleError) throw roleError;
- 
-         if (!role) {
-           console.log("auth check no admin role");
-           await supabase.auth.signOut();
-           if (isMounted) {
-             console.log("redirecting to /admin/login");
-             navigate({ to: "/admin/login" });
-           }
-           return;
-         }
- 
-         console.log("auth check success");
-         if (isMounted) {
-           clearTimeout(timeoutId);
-           setChecking(false);
-         }
-       } catch (err: any) {
-         console.error("auth check error:", err);
-         if (isMounted) {
-           setError(err.message || "Erro ao validar permissões");
-           setChecking(false);
-         }
-       }
+          if (isMounted) {
+            navigate({ to: "/admin/login" });
+          }
+        } else {
+          if (isMounted) {
+            setChecking(false);
+          }
+        }
+      } catch (err) {
+        console.error("Auth check failed:", err);
+        if (isMounted) {
+          navigate({ to: "/admin/login" });
+        }
+      }
     };
 
     checkAuth();
  
      return () => {
        isMounted = false;
-       clearTimeout(timeoutId);
      };
   }, []);
 
@@ -117,49 +79,9 @@ function AdminLayout() {
 
    if (checking) {
      return (
-       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-         <div className="text-center">
-           <Loader2 className="h-8 w-8 animate-spin mx-auto text-gray-400" />
-           <p className="mt-2 text-sm text-gray-500">Verificando permissões...</p>
-           <div className="mt-4">
-             <Button 
-               variant="outline" 
-               size="sm" 
-               onClick={() => {
-                 console.log("Manual redirect to login clicked");
-                 navigate({ to: "/admin/login" });
-               }}
-             >
-               Ir para Login
-             </Button>
-           </div>
-         </div>
-       </div>
-     );
-   }
- 
-   if (error) {
-     return (
-       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-         <div className="max-w-md w-full">
-           <Alert variant="destructive">
-             <AlertTriangle className="h-4 w-4" />
-             <AlertTitle>Falha na Autenticação</AlertTitle>
-             <AlertDescription className="mt-2">
-               <p className="mb-4">{error}</p>
-               <Button 
-                 className="w-full"
-                 onClick={() => {
-                   console.log("Error state redirect to login clicked");
-                   navigate({ to: "/admin/login" });
-                 }}
-               >
-                 Voltar para Login
-               </Button>
-             </AlertDescription>
-           </Alert>
-         </div>
-       </div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+      </div>
      );
    }
 
