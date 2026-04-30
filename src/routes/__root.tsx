@@ -63,4 +63,6 @@ function RootShell({ children }: { children: React.ReactNode }) {
   );
 }
 
-const RootComponent = () => <Outlet />;
+function RootComponent() {
+  return <Outlet />;
+}
