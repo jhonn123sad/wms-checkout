@@ -13,9 +13,11 @@ CREATE TABLE IF NOT EXISTS public.orders (
     customer_cpf text NOT NULL,
     status text NOT NULL DEFAULT 'pending',
     amount numeric NOT NULL,
-    pix_code text,
-    created_at timestamptz DEFAULT now()
-);
+     pix_code text,
+     pix_qr_code_base64 text,
+     pushinpay_transaction_id text,
+     created_at timestamptz DEFAULT now()
+ );
 
 -- Habilitar RLS
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
