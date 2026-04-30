@@ -14,10 +14,10 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as PagamentoDemoPreviewRouteImport } from './routes/pagamento.demo-preview'
 import { Route as PagamentoOrderIdRouteImport } from './routes/pagamento.$orderId'
+import { Route as CSlugRouteImport } from './routes/c.$slug'
 import { Route as AdminProjectsRouteImport } from './routes/admin.projects'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
-import { Route as CRouteImport } from './routes/c.'
-import { Route as AdminProjectsRouteImport } from './routes/admin.projects.'
+import { Route as AdminProjectsIdRouteImport } from './routes/admin.projects.$id'
 
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
@@ -44,6 +44,11 @@ const PagamentoOrderIdRoute = PagamentoOrderIdRouteImport.update({
   path: '/pagamento/$orderId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CSlugRoute = CSlugRouteImport.update({
+  id: '/c/$slug',
+  path: '/c/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminProjectsRoute = AdminProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
@@ -54,87 +59,84 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AdminRoute,
 } as any)
-const CRoute = CRouteImport.update({
-  id: '/c/',
-  path: '/c/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminProjectsRoute = AdminProjectsRouteImport.update({
-  id: '/',
-  path: '/',
+const AdminProjectsIdRoute = AdminProjectsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
   getParentRoute: () => AdminProjectsRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
-  '/c/': typeof CRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/projects': typeof AdminProjectsRouteWithChildren
+  '/c/$slug': typeof CSlugRoute
   '/pagamento/$orderId': typeof PagamentoOrderIdRoute
   '/pagamento/demo-preview': typeof PagamentoDemoPreviewRoute
   '/admin/': typeof AdminIndexRoute
-  '/admin/projects/': typeof AdminProjectsRoute
+  '/admin/projects/$id': typeof AdminProjectsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/c': typeof CRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/projects': typeof AdminProjectsRouteWithChildren
+  '/c/$slug': typeof CSlugRoute
   '/pagamento/$orderId': typeof PagamentoOrderIdRoute
   '/pagamento/demo-preview': typeof PagamentoDemoPreviewRoute
   '/admin': typeof AdminIndexRoute
-  '/admin/projects': typeof AdminProjectsRoute
+  '/admin/projects/$id': typeof AdminProjectsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
-  '/c/': typeof CRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/projects': typeof AdminProjectsRouteWithChildren
+  '/c/$slug': typeof CSlugRoute
   '/pagamento/$orderId': typeof PagamentoOrderIdRoute
   '/pagamento/demo-preview': typeof PagamentoDemoPreviewRoute
   '/admin/': typeof AdminIndexRoute
-  '/admin/projects/': typeof AdminProjectsRoute
+  '/admin/projects/$id': typeof AdminProjectsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/admin'
-    | '/c/'
     | '/admin/login'
     | '/admin/projects'
+    | '/c/$slug'
     | '/pagamento/$orderId'
     | '/pagamento/demo-preview'
     | '/admin/'
-    | '/admin/projects/'
+    | '/admin/projects/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/c'
     | '/admin/login'
+    | '/admin/projects'
+    | '/c/$slug'
     | '/pagamento/$orderId'
     | '/pagamento/demo-preview'
     | '/admin'
-    | '/admin/projects'
+    | '/admin/projects/$id'
   id:
     | '__root__'
     | '/'
     | '/admin'
-    | '/c/'
     | '/admin/login'
     | '/admin/projects'
+    | '/c/$slug'
     | '/pagamento/$orderId'
     | '/pagamento/demo-preview'
     | '/admin/'
-    | '/admin/projects/'
+    | '/admin/projects/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
-  CRoute: typeof CRoute
+  CSlugRoute: typeof CSlugRoute
   PagamentoOrderIdRoute: typeof PagamentoOrderIdRoute
   PagamentoDemoPreviewRoute: typeof PagamentoDemoPreviewRoute
 }
@@ -176,6 +178,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PagamentoOrderIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/c/$slug': {
+      id: '/c/$slug'
+      path: '/c/$slug'
+      fullPath: '/c/$slug'
+      preLoaderRoute: typeof CSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/projects': {
       id: '/admin/projects'
       path: '/projects'
@@ -190,29 +199,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/c/': {
-      id: '/c/'
-      path: '/c'
-      fullPath: '/c/'
-      preLoaderRoute: typeof CRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/projects/': {
-      id: '/admin/projects/'
-      path: '/'
-      fullPath: '/admin/projects/'
-      preLoaderRoute: typeof AdminProjectsRouteImport
+    '/admin/projects/$id': {
+      id: '/admin/projects/$id'
+      path: '/$id'
+      fullPath: '/admin/projects/$id'
+      preLoaderRoute: typeof AdminProjectsIdRouteImport
       parentRoute: typeof AdminProjectsRoute
     }
   }
 }
 
 interface AdminProjectsRouteChildren {
-  AdminProjectsRoute: typeof AdminProjectsRoute
+  AdminProjectsIdRoute: typeof AdminProjectsIdRoute
 }
 
 const AdminProjectsRouteChildren: AdminProjectsRouteChildren = {
-  AdminProjectsRoute: AdminProjectsRoute,
+  AdminProjectsIdRoute: AdminProjectsIdRoute,
 }
 
 const AdminProjectsRouteWithChildren = AdminProjectsRoute._addFileChildren(
@@ -236,10 +238,19 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
-  CRoute: CRoute,
+  CSlugRoute: CSlugRoute,
   PagamentoOrderIdRoute: PagamentoOrderIdRoute,
   PagamentoDemoPreviewRoute: PagamentoDemoPreviewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
