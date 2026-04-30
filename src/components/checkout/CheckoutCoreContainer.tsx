@@ -7,6 +7,10 @@
  import { ImageLeftTemplate } from "./templates/ImageLeftTemplate";
  import { LongformSimpleTemplate } from "./templates/LongformSimpleTemplate";
  import { CustomEditableTemplate } from "./templates/CustomEditableTemplate";
+ import { CreatorAccessTemplate } from "./templates/CreatorAccessTemplate";
+ import { RecipeEbookTemplate } from "./templates/RecipeEbookTemplate";
+ import { VisagismoAITemplate } from "./templates/VisagismoAITemplate";
+ import { WMSCommunityTemplate } from "./templates/WMSCommunityTemplate";
  
  interface CheckoutCoreContainerProps {
    project: any;
@@ -111,21 +115,22 @@
      formatPrice
    };
  
-   // TEMPLATE SELECTOR
-   const templateName = theme.template || 'apple-clean';
+   // Mapeamento automático por slug prioritário
+   const slugTemplates: Record<string, any> = {
+     'acesso-reservado': CreatorAccessTemplate,
+     'receitas-praticas': RecipeEbookTemplate,
+     'visagismo-ia': VisagismoAITemplate,
+     'comunidade-wms': WMSCommunityTemplate
+   };
  
-   switch (templateName) {
-     case 'apple-clean':
-       return <AppleCleanTemplate {...templateProps} />;
-     case 'dark-premium':
-       return <DarkPremiumTemplate {...templateProps} />;
-     case 'image-left':
-       return <ImageLeftTemplate {...templateProps} />;
-     case 'longform-simple':
-       return <LongformSimpleTemplate {...templateProps} />;
-     case 'custom-editable':
-       return <CustomEditableTemplate {...templateProps} />;
-     default:
-       return <AppleCleanTemplate {...templateProps} />;
-   }
+   // Se o slug estiver mapeado, usa ele. Senão, usa theme.template ou fallback.
+   const Component = slugTemplates[project.slug] || 
+                   (theme.template === 'apple-clean' ? AppleCleanTemplate :
+                    theme.template === 'dark-premium' ? DarkPremiumTemplate :
+                    theme.template === 'image-left' ? ImageLeftTemplate :
+                    theme.template === 'longform-simple' ? LongformSimpleTemplate :
+                    theme.template === 'custom-editable' ? CustomEditableTemplate :
+                    AppleCleanTemplate);
+ 
+   return <Component {...templateProps} />;
  };
