@@ -41,28 +41,28 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    const { data: order, error } = await supabase
+    const { data: fetchedOrder, error: fetchError } = await supabase
       .from("orders")
       .select("id,status,amount_cents,pix_qr_code,pix_qr_code_base64,expires_at,created_at,public_access_token")
       .eq("id", orderId)
       .maybeSingle();
 
-    if (error || !order) {
-      console.error("[get-order-payment-data] Order not found:", orderId, error);
+    if (fetchError || !fetchedOrder) {
+      console.error("[get-order-payment-data] Order not found:", orderId, fetchError);
       return json({ error: "ORDER_NOT_FOUND" }, 404);
     }
 
-    const dbToken = (order.public_access_token || "").trim();
+    const dbToken = (fetchedOrder.public_access_token || "").trim();
     const providedToken = (token || "").trim();
     const isValid = dbToken === providedToken;
 
     console.log("[get-order-payment-data] Auth details:", {
-      orderFound: !!order,
+      orderFound: !!fetchedOrder,
       dbTokenPresent: !!dbToken,
       providedTokenPresent: !!providedToken,
       isValid,
-      qr_code_present: !!order.pix_qr_code,
-      qr_code_base64_present: !!order.pix_qr_code_base64
+      qr_code_present: !!fetchedOrder.pix_qr_code,
+      qr_code_base64_present: !!fetchedOrder.pix_qr_code_base64
     });
 
     if (!isValid) {
@@ -71,13 +71,13 @@ Deno.serve(async (req) => {
     
     // Retorna apenas dados mínimos necessários, nunca CPF ou dados sensíveis.
     return json({
-      orderId: order.id,
-      status: order.status,
-      amount_cents: order.amount_cents,
-      qr_code: order.pix_qr_code,
-      qr_code_base64: order.pix_qr_code_base64,
-      expires_at: order.expires_at,
-      created_at: order.created_at,
+      orderId: fetchedOrder.id,
+      status: fetchedOrder.status,
+      amount_cents: fetchedOrder.amount_cents,
+      qr_code: fetchedOrder.pix_qr_code,
+      qr_code_base64: fetchedOrder.pix_qr_code_base64,
+      expires_at: fetchedOrder.expires_at,
+      created_at: fetchedOrder.created_at,
     });
   } catch (err) {
     console.error("[get-order-payment-data]", err);
