@@ -1,7 +1,7 @@
-/**
- * CHECKOUT CORE - NÃO ALTERAR SEM TESTE DE REGRESSÃO
- * Responsável por criar pedidos e gerar o Pix na Pushin Pay.
- */
+ /**
+  * CORE DE PAGAMENTO — NÃO ALTERAR SEM TESTE DE REGRESSÃO
+  * Responsável por criar pedidos e gerar o Pix na Pushin Pay.
+  */
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { corsHeaders } from "../_shared/cors.ts";
 

@@ -1,7 +1,7 @@
-/**
- * CHECKOUT CORE - NÃO ALTERAR SEM TESTE DE REGRESSÃO
- * Usado pelo frontend para verificar se o Pix foi pago e obter URL de redirecionamento.
- */
+ /**
+  * CORE DE PAGAMENTO — NÃO ALTERAR SEM TESTE DE REGRESSÃO
+  * Usado pelo frontend para verificar se o Pix foi pago e obter URL de redirecionamento.
+  */
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { corsHeaders } from "../_shared/cors.ts";
 

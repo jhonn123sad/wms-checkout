@@ -1,4 +1,8 @@
-import { useState, useEffect } from "react";
+ /**
+  * CORE DE PAGAMENTO — NÃO ALTERAR SEM TESTE DE REGRESSÃO
+  * Responsável pela coleta de dados do cliente e início do fluxo de pagamento.
+  */
+ import { useState, useEffect } from "react";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -66,7 +70,7 @@ function DynamicCheckout() {
     setUtms(capturedUtms);
   }, [searchParams]);
 
-  const theme = project.theme_json || {};
+   const theme: any = project.theme_json || {};
   const bgColor = theme.backgroundColor || "#F5F5F7";
   const primaryColor = theme.primaryColor || "#000000";
   const btnColor = theme.buttonColor || "#000000";
