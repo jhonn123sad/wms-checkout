@@ -33,7 +33,11 @@ Deno.serve(async (req) => {
       payload = Object.fromEntries(params.entries());
     }
 
+    log("--- WEBHOOK INCOMING ---");
+    log("Headers:", Object.fromEntries(req.headers.entries()));
     log("Payload received:", payload);
+    log("Payload status:", payload.status);
+    log("Payload ID:", payload.id || payload.transaction_id);
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -74,36 +78,51 @@ Deno.serve(async (req) => {
     };
     const newStatus = statusMap[incomingStatus] || null;
 
-    if (newStatus) {
-      const update: Record<string, unknown> = { status: newStatus };
-      if (newStatus === "paid") {
-        update.paid_at = new Date().toISOString();
-        if (payload.payer_name) update.payer_name = payload.payer_name;
-        if (payload.payer_national_registration)
-          update.payer_national_registration = payload.payer_national_registration;
-        if (payload.end_to_end_id) update.end_to_end_id = payload.end_to_end_id;
-      }
-
-      const { error: updErr } = await supabase
-        .from("orders")
-        .update(update)
-        .eq("pushinpay_transaction_id", transactionId);
-
-      if (updErr) {
-        log("Order update error:", updErr);
-        await supabase
-          .from("webhook_events")
-          .update({ processed: false, error_message: updErr.message })
-          .eq("transaction_id", transactionId)
-          .order("created_at", { ascending: false })
-          .limit(1);
-      } else {
-        await supabase
-          .from("webhook_events")
-          .update({ processed: true })
-          .eq("transaction_id", transactionId);
-      }
+    if (!newStatus) {
+      log("Unknown status received:", incomingStatus);
+      return new Response(JSON.stringify({ ok: true, message: "status ignored" }));
     }
+
+    const update: Record<string, unknown> = { status: newStatus };
+    if (newStatus === "paid") {
+      update.paid_at = new Date().toISOString();
+      if (payload.payer_name) update.payer_name = payload.payer_name;
+      if (payload.payer_national_registration)
+        update.payer_national_registration = payload.payer_national_registration;
+      if (payload.end_to_end_id) update.end_to_end_id = payload.end_to_end_id;
+    }
+
+    log("Updating order with transactionId:", transactionId, "to status:", newStatus);
+
+    const { data: updatedOrder, error: updErr } = await supabase
+      .from("orders")
+      .update(update)
+      .eq("pushinpay_transaction_id", transactionId)
+      .select();
+
+    if (updErr) {
+      log("Order update error:", updErr);
+      await supabase
+        .from("webhook_events")
+        .update({ processed: false, error_message: updErr.message })
+        .eq("transaction_id", transactionId)
+        .order("created_at", { ascending: false })
+        .limit(1);
+      return new Response(JSON.stringify({ ok: false, error: updErr.message }), { status: 500 });
+    }
+
+    if (!updatedOrder || updatedOrder.length === 0) {
+      log("No order found with transactionId:", transactionId);
+    } else {
+      log("Order updated successfully:", updatedOrder[0].id);
+    }
+
+    await supabase
+      .from("webhook_events")
+      .update({ processed: true })
+      .eq("transaction_id", transactionId)
+      .order("created_at", { ascending: false })
+      .limit(1);
 
     return new Response(JSON.stringify({ ok: true }), {
       headers: { "Content-Type": "application/json" },

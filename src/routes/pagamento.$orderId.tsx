@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { AlertCircle, RefreshCw } from "lucide-react";
@@ -57,6 +58,57 @@ export const Route = createFileRoute("/pagamento/$orderId")({
 
 function PaymentReal() {
   const loaderData = Route.useLoaderData();
+  const router = useRouter();
+  const [currentStatus, setCurrentStatus] = useState(loaderData?.status || "pendente");
+
+  useEffect(() => {
+    if (currentStatus === 'paid') return;
+
+    const orderId = loaderData?.orderId;
+    if (!orderId) return;
+
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+    const statusUrl = `${supabaseUrl}/functions/v1/get-order-status?orderId=${encodeURIComponent(orderId)}`;
+
+    console.log("[polling] Inicando verificação de status para order:", orderId);
+
+    const checkStatus = async () => {
+      try {
+        const resp = await fetch(statusUrl, {
+          headers: {
+            apikey: supabaseKey,
+            Authorization: `Bearer ${supabaseKey}`,
+          },
+        });
+        
+        if (!resp.ok) {
+          console.error("[polling] Falha ao verificar status:", resp.status);
+          return;
+        }
+
+        const data = await resp.json();
+        console.log("[polling] Status recebido:", data.status);
+        
+        if (data.status === 'paid') {
+          setCurrentStatus('paid');
+          toast.success("Pagamento confirmado!");
+          
+          if (data.thank_you_url) {
+            console.log("[polling] Redirecionando para:", data.thank_you_url);
+            window.location.href = data.thank_you_url;
+          } else {
+            console.warn("[polling] thank_you_url não encontrado na resposta");
+          }
+        }
+      } catch (err) {
+        console.error("[polling] Erro ao buscar status:", err);
+      }
+    };
+
+    const interval = setInterval(checkStatus, 7000); // 7 segundos
+    return () => clearInterval(interval);
+  }, [loaderData?.orderId, currentStatus]);
   
   // Safe data extraction
   const data = {
@@ -83,9 +135,9 @@ function PaymentReal() {
         
         {/* Status Badge */}
         <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#F5F5F7] rounded-full mb-6">
-          <div className="h-2 w-2 rounded-full bg-orange-400 animate-pulse"></div>
+          <div className={`h-2 w-2 rounded-full animate-pulse ${currentStatus === 'paid' ? 'bg-green-500' : 'bg-orange-400'}`}></div>
           <span className="text-[11px] font-semibold text-[#86868B] uppercase tracking-wider">
-            {data.status === 'waiting_payment' ? 'Aguardando pagamento' : String(data.status)}
+            {currentStatus === 'paid' ? 'Pagamento confirmado' : (currentStatus === 'waiting_payment' ? 'Aguardando pagamento' : String(currentStatus))}
           </span>
         </div>
 
@@ -145,7 +197,7 @@ function PaymentReal() {
         <div className="grid grid-cols-2 gap-x-4 gap-y-1">
           <span>Source: Real</span>
           <span>Order: {data.orderId.slice(0, 8)}...</span>
-          <span>Status: {data.status}</span>
+          <span>Status: {currentStatus}</span>
           <span>HasQR: {hasQrCode ? "Yes" : "No"}</span>
           <span>HasImg: {hasQrImage ? "Yes" : "No"}</span>
         </div>
