@@ -1,3 +1,7 @@
+/**
+ * CHECKOUT CORE - NÃO ALTERAR SEM TESTE DE REGRESSÃO
+ * Página inicial de checkout (Home). Inicia o fluxo de pagamento.
+ */
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -93,6 +97,7 @@ function Index() {
             <h2 className="font-semibold text-base">Produto Teste</h2>
             <p className="text-xs text-[#86868B] mt-0.5">Acesso liberado após confirmação do Pix.</p>
           </div>
+          {/* PRODUTO CONFIGURÁVEL NO BANCO DE DADOS - EXIBIÇÃO TEMPORÁRIA R$ 0,50 */}
           <div className="text-lg font-bold">R$ 0,50</div>
         </div>
 

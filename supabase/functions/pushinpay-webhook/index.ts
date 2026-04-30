@@ -1,3 +1,7 @@
+/**
+ * CHECKOUT CORE - NÃO ALTERAR SEM TESTE DE REGRESSÃO
+ * Responsável por processar as notificações de pagamento da Pushin Pay.
+ */
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 // Public webhook — no JWT verification (configured via verify_jwt=false in config.toml)

@@ -1,3 +1,7 @@
+/**
+ * CHECKOUT CORE - NÃO ALTERAR SEM TESTE DE REGRESSÃO
+ * Página de exibição do Pix e monitoramento de pagamento (Polling).
+ */
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { toast } from "sonner";
