@@ -1,0 +1,1 @@
+UPDATE public.products SET price_cents = 50 WHERE name = 'Produto Teste';
