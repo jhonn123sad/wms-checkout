@@ -29,123 +29,98 @@
      radius: theme.borderRadius || "24px"
    };
  
-   return (
-     <div className="min-h-screen font-sans bg-[#fdfdff]" style={{ color: styles.text }}>
-       {/* TOP NAV/HEADER */}
-       <header className="py-6 px-4 border-b border-gray-100 bg-white/80 backdrop-blur-md sticky top-0 z-50">
-         <div className="max-w-6xl mx-auto flex justify-between items-center">
-           {theme.logoUrl ? (
-             <img src={theme.logoUrl} alt="Logo" className="h-8 object-contain" />
-           ) : (
-             <div className="flex items-center gap-2 font-bold text-indigo-600">
-               <Sparkles size={20} />
-               <span>Visagismo IA</span>
-             </div>
-           )}
-           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-indigo-500">
-             <ShieldCheck size={14} />
-             <span className="hidden sm:inline">Checkout Seguro</span>
-           </div>
-         </div>
-       </header>
- 
-       <main className="max-w-6xl mx-auto px-4 py-12 md:py-20">
-         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-           
-           {/* LEFT: CONTENT & TECH VISUAL */}
-           <div className="lg:col-span-7 space-y-12">
-             <div className="space-y-6">
-               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-100">
-                 <Sparkles size={12} className="animate-pulse" />
-                 <span className="text-[10px] font-bold uppercase tracking-widest">{content.badge || "Análise personalizada"}</span>
-               </div>
-               <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-[1.1]">
-                 {content.heroTitle || project.headline || "Descubra a imagem que mais valoriza você"}
-               </h1>
-               <p className="text-lg md:text-xl text-slate-500 max-w-xl leading-relaxed">
-                 {content.heroSubtitle || project.subheadline || "Uma análise com IA para orientar seu corte de cabelo, estilo e apresentação visual baseada na sua estrutura facial."}
-               </p>
-             </div>
- 
-             {/* AI ANALYSIS VISUAL */}
-             <div className="relative group max-w-2xl">
-               <div className="absolute inset-0 bg-indigo-500/10 rounded-3xl blur-3xl opacity-50"></div>
-               <div className="relative aspect-video rounded-[32px] border-2 border-white shadow-2xl overflow-hidden bg-slate-50">
-                 {theme.heroImageUrl ? (
-                   <img src={theme.heroImageUrl} alt="Análise IA" className="w-full h-full object-cover" />
-                 ) : (
-                   <div className="w-full h-full flex items-center justify-center relative">
-                     {/* Abstract AI Grid */}
-                     <div className="absolute inset-0 grid grid-cols-6 grid-rows-4 opacity-20">
-                       {Array.from({ length: 24 }).map((_, i) => (
-                         <div key={i} className="border-[0.5px] border-indigo-200"></div>
-                       ))}
-                     </div>
-                     {/* Analysis Scan Effect */}
-                     <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-indigo-500 to-transparent animate-scan shadow-[0_0_15px_indigo]"></div>
-                     
-                     <div className="z-10 flex flex-col items-center gap-4">
-                       <div className="w-24 h-24 rounded-full border-2 border-dashed border-indigo-300 flex items-center justify-center">
-                         <Camera size={40} className="text-indigo-400" />
-                       </div>
-                       <p className="text-xs font-bold uppercase tracking-[0.3em] text-indigo-400">Scanning face structure...</p>
-                     </div>
-                   </div>
-                 )}
-               </div>
-             </div>
- 
-             {/* HOW IT WORKS / STEPS */}
-             <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 pt-8">
-               {[
-                 { icon: <UserCheck size={24} />, title: "1. Informe seus dados", desc: "Preencha o formulário e faça o pagamento via Pix." },
-                 { icon: <Camera size={24} />, title: "2. Envie suas fotos", desc: "Siga o guia para capturar sua estrutura facial corretamente." },
-                 { icon: <Sparkles size={24} />, title: "3. Receba a análise", desc: "Nossa IA processa e gera seu dossiê de imagem." },
-               ].map((step, i) => (
-                 <div key={i} className="space-y-4">
-                   <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
-                     {step.icon}
-                   </div>
-                   <h4 className="font-bold text-slate-800">{step.title}</h4>
-                   <p className="text-sm text-slate-500 leading-relaxed">{step.desc}</p>
-                 </div>
-               ))}
-             </div>
- 
-             {/* ANALYSIS CARDS */}
-             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-               {[
-                 { icon: <Sparkles size={16} />, label: "Estrutura facial" },
-                 { icon: <Scissors size={16} />, label: "Cabelo e estilo" },
-                 { icon: <Palette size={16} />, label: "Harmonia visual" },
-                 { icon: <Zap size={16} />, label: "Plano de ação" },
-               ].map((card, i) => (
-                 <div key={i} className="p-4 rounded-2xl bg-white border border-slate-100 shadow-sm flex flex-col items-center text-center gap-2">
-                   <div className="text-indigo-500">{card.icon}</div>
-                   <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{card.label}</span>
-                 </div>
-               ))}
-             </div>
-           </div>
- 
-           {/* RIGHT: PREMIUM CHECKOUT CARD */}
-           <div className="lg:col-span-5">
-             <div className="sticky top-32 p-8 md:p-10 rounded-[40px] border border-gray-100 bg-white shadow-2xl shadow-indigo-500/5 relative overflow-hidden">
-               {/* BG GLOW */}
-               <div className="absolute -top-24 -right-24 w-48 h-48 bg-indigo-50 rounded-full blur-3xl opacity-50"></div>
-               
-               {/* OFFER HEADER */}
-               <div className="relative mb-10 flex justify-between items-start">
-                 <div className="space-y-1">
-                   <h3 className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Sua análise exclusiva:</h3>
-                   <h2 className="text-2xl font-black">{offer.name}</h2>
-                 </div>
-                 <div className="text-3xl font-black text-indigo-600">
-                   {formatPrice(offer.price_cents)}
-                 </div>
-               </div>
- 
-                {paymentData ? (
+  return (
+    <div className="min-h-screen font-sans bg-[#fdfdff] flex flex-col overflow-x-hidden" style={{ color: styles.text }}>
+      {/* COMPACT NAV */}
+      <header className="py-4 px-4 border-b border-gray-100 bg-white/80 backdrop-blur-md sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto flex justify-between items-center">
+          {theme.logoUrl ? (
+            <img src={theme.logoUrl} alt="Logo" className="h-6 object-contain" />
+          ) : (
+            <div className="flex items-center gap-2 font-black text-indigo-600 text-sm italic">
+              <Sparkles size={16} />
+              <span>VISAGISMO IA</span>
+            </div>
+          )}
+          <div className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-indigo-400 bg-indigo-50 px-2 py-1 rounded-full">
+            <ShieldCheck size={10} />
+            <span>Ambiente Seguro</span>
+          </div>
+        </div>
+      </header>
+
+      <main className="flex-1 max-w-6xl mx-auto px-4 py-8 md:py-12 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          
+          {/* LEFT: CONTENT & TECH VISUAL */}
+          <div className="lg:col-span-7 space-y-8">
+            <div className="space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-100">
+                <Sparkles size={12} className="animate-pulse" />
+                <span className="text-[9px] font-black uppercase tracking-widest">{content.badge || "IA Visagismo"}</span>
+              </div>
+              <h1 className="text-3xl md:text-5xl font-black tracking-tight leading-[1.1] text-slate-900">
+                {content.heroTitle || project.headline || "Sua melhor versão"}
+              </h1>
+              <p className="text-base text-slate-500 max-w-xl leading-relaxed">
+                {content.heroSubtitle || project.subheadline || "Análise facial avançada com Inteligência Artificial."}
+              </p>
+            </div>
+
+            {/* AI ANALYSIS VISUAL COMPACT */}
+            <div className="relative group max-w-lg">
+              <div className="absolute inset-0 bg-indigo-500/5 rounded-2xl blur-2xl opacity-50"></div>
+              <div className="relative aspect-video rounded-3xl border border-white shadow-xl overflow-hidden bg-slate-50">
+                {theme.heroImageUrl ? (
+                  <img src={theme.heroImageUrl} alt="Análise IA" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center relative bg-slate-100">
+                    <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#6366f1 0.5px, transparent 0.5px)', backgroundSize: '16px 16px' }}></div>
+                    <div className="z-10 flex flex-col items-center gap-3">
+                      <div className="w-16 h-16 rounded-full border border-dashed border-indigo-300 flex items-center justify-center">
+                        <Camera size={24} className="text-indigo-400" />
+                      </div>
+                      <p className="text-[9px] font-black uppercase tracking-[0.3em] text-indigo-400">Scanning structure...</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* QUICK FEATURES GRID */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-xl">
+              {[
+                { icon: <Sparkles size={14} />, label: "Estrutura" },
+                { icon: <Scissors size={14} />, label: "Estilo" },
+                { icon: <Palette size={14} />, label: "Harmonia" },
+                { icon: <UserCheck size={14} />, label: "Dossiê" },
+              ].map((card, i) => (
+                <div key={i} className="p-3 rounded-xl bg-white border border-slate-100 shadow-sm flex flex-col items-center text-center gap-1.5 group hover:border-indigo-200 transition-colors">
+                  <div className="text-indigo-500">{card.icon}</div>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">{card.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* RIGHT: PREMIUM CHECKOUT CARD */}
+          <div className="lg:col-span-5 flex justify-center lg:sticky lg:top-24">
+            <div className="w-full max-w-[420px] p-6 md:p-8 rounded-[32px] border border-gray-100 bg-white shadow-2xl shadow-indigo-500/5 relative overflow-hidden">
+              {/* BG GLOW */}
+              <div className="absolute -top-12 -right-12 w-32 h-32 bg-indigo-50/50 rounded-full blur-3xl"></div>
+              
+              {/* OFFER HEADER COMPACT */}
+              <div className="relative mb-6 flex justify-between items-start border-b border-slate-50 pb-5">
+                <div className="space-y-0.5 pr-4">
+                  <h3 className="text-[8px] font-black uppercase tracking-widest text-indigo-400 opacity-70">Sua análise:</h3>
+                  <h2 className="text-lg font-black text-slate-800 line-clamp-1">{offer.name}</h2>
+                </div>
+                <div className="text-2xl font-black text-indigo-600 tracking-tighter shrink-0">
+                  {formatPrice(offer.price_cents)}
+                </div>
+              </div>
+
+              {paymentData ? (
                   <div className="relative z-10">
                     <InlinePixPanel 
                       paymentData={paymentData}
