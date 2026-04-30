@@ -37,6 +37,7 @@ Deno.serve(async (req) => {
       status: order.status,
       paid_at: order.paid_at,
       thank_you_url,
+      redirect_url: thank_you_url, // Alias requested by user
     });
   } catch (err) {
     console.error("[get-order-status]", err);

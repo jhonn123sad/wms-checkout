@@ -88,9 +88,10 @@ function PaymentReal() {
         }
 
         const data = await resp.json();
-        console.log("[polling] Status recebido:", data.status);
+        console.log("[polling] Status recebido:", data.status, "Redirect URL:", data.thank_you_url);
         
         if (data.status === 'paid') {
+          console.log("[polling] Pagamento CONFIRMADO! Iniciando redirecionamento...");
           setCurrentStatus('paid');
           toast.success("Pagamento confirmado!");
           

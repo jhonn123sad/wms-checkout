@@ -44,8 +44,9 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    const transactionId: string | null =
-      payload.id || payload.transaction_id || payload.pushinpay_transaction_id || null;
+    const rawId = payload.id || payload.transaction_id || payload.pushinpay_transaction_id || "";
+    const transactionId = String(rawId).trim();
+
     const incomingStatus: string = String(payload.status || "").toLowerCase();
 
     // Log event
@@ -92,12 +93,31 @@ Deno.serve(async (req) => {
       if (payload.end_to_end_id) update.end_to_end_id = payload.end_to_end_id;
     }
 
-    log("Updating order with transactionId:", transactionId, "to status:", newStatus);
+    log("Searching order with transactionId (case-insensitive):", transactionId);
+
+    // First, find the order using case-insensitive search
+    const { data: orderToUpdate, error: findErr } = await supabase
+      .from("orders")
+      .select("id")
+      .ilike("pushinpay_transaction_id", transactionId)
+      .maybeSingle();
+
+    if (findErr) {
+      log("Error finding order:", findErr);
+      return new Response(JSON.stringify({ ok: false, error: findErr.message }), { status: 500 });
+    }
+
+    if (!orderToUpdate) {
+      log("No order found with transactionId:", transactionId);
+      return new Response(JSON.stringify({ ok: true, message: "order not found" }));
+    }
+
+    log("Order found! ID:", orderToUpdate.id, "Updating to status:", newStatus);
 
     const { data: updatedOrder, error: updErr } = await supabase
       .from("orders")
       .update(update)
-      .eq("pushinpay_transaction_id", transactionId)
+      .eq("id", orderToUpdate.id)
       .select();
 
     if (updErr) {
