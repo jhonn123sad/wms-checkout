@@ -31,9 +31,8 @@
  
   return (
     <div className="min-h-screen font-sans bg-[#fdfdff] flex flex-col overflow-x-hidden" style={{ color: styles.text }}>
-      {/* COMPACT NAV */}
       <header className="py-4 px-4 border-b border-gray-100 bg-white/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto flex justify-between items-center">
+        <div className="max-w-5xl mx-auto flex justify-between items-center">
           {theme.logoUrl ? (
             <img src={theme.logoUrl} alt="Logo" className="h-6 object-contain" />
           ) : (
@@ -49,28 +48,27 @@
         </div>
       </header>
 
-      <main className="flex-1 max-w-6xl mx-auto px-4 py-8 md:py-12 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-          
-          {/* LEFT: CONTENT & TECH VISUAL */}
-          <div className="lg:col-span-7 space-y-8">
-            <div className="space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-100">
-                <Sparkles size={12} className="animate-pulse" />
-                <span className="text-[9px] font-black uppercase tracking-widest">{content.badge || "IA Visagismo"}</span>
-              </div>
-              <h1 className="text-3xl md:text-5xl font-black tracking-tight leading-[1.1] text-slate-900">
-                {content.heroTitle || project.headline || "Sua melhor versão"}
-              </h1>
-              <p className="text-base text-slate-500 max-w-xl leading-relaxed">
-                {content.heroSubtitle || project.subheadline || "Análise facial avançada com Inteligência Artificial."}
-              </p>
-            </div>
+      <main className="flex-1 max-w-5xl mx-auto px-4 py-8 md:py-12 w-full flex flex-col items-center">
+        <div className="w-full text-center mb-8 space-y-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-100">
+            <Sparkles size={12} className="animate-pulse" />
+            <span className="text-[10px] font-black uppercase tracking-widest">{content.badge || "IA Visagismo"}</span>
+          </div>
+          <h1 className="text-3xl md:text-4xl font-black tracking-tight leading-tight text-slate-900">
+            {content.heroTitle || project.headline || "Sua melhor versão"}
+          </h1>
+          <p className="text-sm text-slate-500 max-w-xl mx-auto">
+            {content.heroSubtitle || project.subheadline || "Análise facial avançada com Inteligência Artificial."}
+          </p>
+        </div>
 
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start w-full">
+          {/* LEFT: CONTENT & TECH VISUAL COMPACT */}
+          <div className="flex flex-col items-center lg:items-end space-y-6">
             {/* AI ANALYSIS VISUAL COMPACT */}
-            <div className="relative group max-w-lg">
+            <div className="relative group w-full max-w-[340px]">
               <div className="absolute inset-0 bg-indigo-500/5 rounded-2xl blur-2xl opacity-50"></div>
-              <div className="relative aspect-video rounded-3xl border border-white shadow-xl overflow-hidden bg-slate-50">
+              <div className="relative aspect-square rounded-3xl border border-white shadow-xl overflow-hidden bg-slate-50">
                 {theme.heroImageUrl ? (
                   <img src={theme.heroImageUrl} alt="Análise IA" className="w-full h-full object-cover" />
                 ) : (
@@ -80,7 +78,7 @@
                       <div className="w-16 h-16 rounded-full border border-dashed border-indigo-300 flex items-center justify-center">
                         <Camera size={24} className="text-indigo-400" />
                       </div>
-                      <p className="text-[9px] font-black uppercase tracking-[0.3em] text-indigo-400">Scanning structure...</p>
+                      <p className="text-[9px] font-black uppercase tracking-[0.3em] text-indigo-400">Scanning...</p>
                     </div>
                   </div>
                 )}
@@ -88,7 +86,7 @@
             </div>
 
             {/* QUICK FEATURES GRID */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-xl">
+            <div className="grid grid-cols-2 gap-3 w-full max-w-[340px]">
               {[
                 { icon: <Sparkles size={14} />, label: "Estrutura" },
                 { icon: <Scissors size={14} />, label: "Estilo" },
@@ -103,16 +101,15 @@
             </div>
           </div>
 
-          {/* RIGHT: PREMIUM CHECKOUT CARD */}
-          <div className="lg:col-span-5 flex justify-center lg:sticky lg:top-24">
+          {/* RIGHT: PREMIUM CHECKOUT CARD COMPACT */}
+          <div className="flex justify-center items-start">
             <div className="w-full max-w-[420px] p-6 md:p-8 rounded-[32px] border border-gray-100 bg-white shadow-2xl shadow-indigo-500/5 relative overflow-hidden">
-              {/* BG GLOW */}
               <div className="absolute -top-12 -right-12 w-32 h-32 bg-indigo-50/50 rounded-full blur-3xl"></div>
               
               {/* OFFER HEADER COMPACT */}
-              <div className="relative mb-6 flex justify-between items-start border-b border-slate-50 pb-5">
+              <div className="relative mb-6 flex justify-between items-center border-b border-slate-50 pb-5">
                 <div className="space-y-0.5 pr-4">
-                  <h3 className="text-[8px] font-black uppercase tracking-widest text-indigo-400 opacity-70">Sua análise:</h3>
+                  <h3 className="text-[8px] font-black uppercase tracking-widest text-indigo-400 opacity-70">Oferta:</h3>
                   <h2 className="text-lg font-black text-slate-800 line-clamp-1">{offer.name}</h2>
                 </div>
                 <div className="text-2xl font-black text-indigo-600 tracking-tighter shrink-0">
