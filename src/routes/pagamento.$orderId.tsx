@@ -175,6 +175,7 @@ function PaymentReal() {
   }
 
   return (
+    <div className="min-h-screen bg-[#F5F5F7] text-[#1D1D1F] font-sans flex flex-col items-center justify-center p-4 md:p-6 overflow-x-hidden">
       <div className="w-full max-w-[440px] bg-white rounded-[24px] shadow-sm border border-[#D2D2D7]/30 p-8 md:p-10 flex flex-col items-center">
         
         {/* Status Badge */}
