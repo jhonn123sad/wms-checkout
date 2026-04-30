@@ -29,13 +29,17 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "AquaLav — Lavanderia com coleta e entrega" },
-      { name: "description", content: "Lavanderia profissional com coleta e entrega. Roupas limpas, passadas e cuidadas com carinho." },
-      { property: "og:title", content: "AquaLav — Lavanderia com coleta e entrega" },
-      { property: "og:description", content: "Lavanderia profissional com coleta e entrega na sua porta." },
+      { title: "Checkout - wms" },
+      { name: "description", content: "Checkout wms" },
+      { property: "og:title", content: "Checkout - wms" },
+      { property: "og:description", content: "Checkout wms" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Checkout - wms" },
+      { name: "twitter:description", content: "Checkout wms" },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b9c75ec5-f991-494c-98cf-b988bd579a34/id-preview-c0f483a8--a93ff747-7dc7-4b62-ac69-edba92b61da7.lovable.app-1777529856088.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b9c75ec5-f991-494c-98cf-b988bd579a34/id-preview-c0f483a8--a93ff747-7dc7-4b62-ac69-edba92b61da7.lovable.app-1777529856088.png" },
     ],
     links: [
       {
