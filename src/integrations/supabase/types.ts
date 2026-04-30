@@ -191,10 +191,12 @@ export type Database = {
           created_at: string
           cta_text: string
           id: string
+          media_asset_id: string | null
           media_type: string
           media_url: string
           price: number
           slug: string
+          status: string | null
           subtitle: string | null
           title: string
           updated_at: string
@@ -204,10 +206,12 @@ export type Database = {
           created_at?: string
           cta_text?: string
           id?: string
+          media_asset_id?: string | null
           media_type: string
           media_url: string
           price: number
           slug: string
+          status?: string | null
           subtitle?: string | null
           title: string
           updated_at?: string
@@ -217,13 +221,53 @@ export type Database = {
           created_at?: string
           cta_text?: string
           id?: string
+          media_asset_id?: string | null
           media_type?: string
           media_url?: string
           price?: number
           slug?: string
+          status?: string | null
           subtitle?: string | null
           title?: string
           updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checkouts_media_asset_id_fkey"
+            columns: ["media_asset_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      media_assets: {
+        Row: {
+          created_at: string
+          id: string
+          name: string | null
+          provider: string
+          storage_path: string | null
+          type: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name?: string | null
+          provider: string
+          storage_path?: string | null
+          type: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string | null
+          provider?: string
+          storage_path?: string | null
+          type?: string
+          url?: string
         }
         Relationships: []
       }
@@ -339,6 +383,36 @@ export type Database = {
           },
         ]
       }
+      pages: {
+        Row: {
+          created_at: string
+          id: string
+          seo_data: Json | null
+          slug: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          seo_data?: Json | null
+          slug: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          seo_data?: Json | null
+          slug?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           active: boolean
@@ -368,6 +442,44 @@ export type Database = {
           thank_you_url?: string | null
         }
         Relationships: []
+      }
+      sections: {
+        Row: {
+          content: Json
+          created_at: string
+          id: string
+          page_id: string | null
+          sort_order: number
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          content?: Json
+          created_at?: string
+          id?: string
+          page_id?: string | null
+          sort_order?: number
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          id?: string
+          page_id?: string | null
+          sort_order?: number
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sections_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
