@@ -8,13 +8,6 @@
    className?: string;
  }
  
- interface CheckoutVisualAssetProps {
-   slug: string;
-   theme: CheckoutTheme;
-   content: CheckoutContent;
-   className?: string;
- }
- 
  export const CheckoutVisualAsset: React.FC<CheckoutVisualAssetProps> = ({ 
    slug, 
    theme, 
