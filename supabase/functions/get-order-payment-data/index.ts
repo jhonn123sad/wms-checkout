@@ -13,14 +13,39 @@ Deno.serve(async (req) => {
     const orderId = url.searchParams.get("orderId") || "";
     const token = url.searchParams.get("token") || "";
     
-    if (!orderId || !token) {
-      return json({ error: "ORDER_ID_AND_TOKEN_REQUIRED" }, 400);
+    console.log("[get-order-payment-data] Request received:", { orderId, hasToken: !!token });
+
+    if (!orderId) {
+      return json({ error: "ORDER_ID_REQUIRED" }, 400);
+    }
+    
+    if (!token) {
+      return json({ error: "TOKEN_REQUIRED" }, 401);
     }
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
+
+    const { data: order, error } = await supabase
+      .from("orders")
+      .select("id,status,amount_cents,pix_qr_code,pix_qr_code_base64,expires_at,created_at,public_access_token")
+      .eq("id", orderId)
+      .maybeSingle();
+
+    if (error || !order) {
+      console.error("[get-order-payment-data] Order not found:", orderId, error);
+      return json({ error: "ORDER_NOT_FOUND" }, 404);
+    }
+
+    // Validate token
+    if (order.public_access_token !== token) {
+      console.error("[get-order-payment-data] Invalid token for order:", orderId);
+      return json({ error: "INVALID_TOKEN" }, 403);
+    }
+
+    console.log("[get-order-payment-data] Token validated successfully for order:", orderId);
 
     const { data: order, error } = await supabase
       .from("orders")

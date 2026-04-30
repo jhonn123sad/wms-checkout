@@ -228,17 +228,20 @@ Deno.serve(async (req) => {
 
     if (updateError) log("Order update error:", updateError);
 
-    return new Response(
-      JSON.stringify({
-        orderId: order.id,
-        accessToken: publicAccessToken,
-        status: "waiting_payment",
-        amount_cents: priceCents,
-        qr_code: qrCode,
-        qr_code_base64: qrCodeBase64,
-      }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    const responsePayload = {
+      orderId: order.id,
+      accessToken: publicAccessToken,
+      status: "waiting_payment",
+      amount_cents: priceCents,
+      qr_code: qrCode,
+      qr_code_base64: qrCodeBase64,
+    };
+
+    log("Pix generated successfully, sending response with accessToken:", !!publicAccessToken);
+
+    return new Response(JSON.stringify(responsePayload), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   } catch (err) {
     console.error("[create-pix] Unhandled:", err);
     return jsonError("UNHANDLED_ERROR", 500, { message: String((err as Error)?.message || err) });
