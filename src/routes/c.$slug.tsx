@@ -6,7 +6,7 @@
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, ShieldCheck } from "lucide-react";
+ import { Loader2, ShieldCheck, CheckCircle2, Shield, Zap, Info, ArrowRight, Lock } from "lucide-react";
 
 export const Route = createFileRoute("/c/$slug")({
   loader: async ({ params }) => {
@@ -52,8 +52,45 @@ export const Route = createFileRoute("/c/$slug")({
   )
 });
 
-function DynamicCheckout() {
-  const { project, offer } = Route.useLoaderData();
+ interface ThemeConfig {
+   template?: 'apple-clean' | 'dark-premium' | 'image-left' | 'longform-simple';
+   background?: string;
+   card?: string;
+   text?: string;
+   muted?: string;
+   button?: string;
+   buttonText?: string;
+   accent?: string;
+   logoUrl?: string;
+   heroImageUrl?: string;
+   coverImageUrl?: string;
+   showHeroImage?: boolean;
+   showBenefits?: boolean;
+   showTestimonials?: boolean;
+   showGuarantee?: boolean;
+   showUrgency?: boolean;
+   borderRadius?: string;
+   layout?: 'centered' | 'wide';
+ }
+ 
+ interface ContentConfig {
+   badge?: string;
+   heroTitle?: string;
+   heroSubtitle?: string;
+   preFormText?: string;
+   benefits?: string[];
+   guaranteeTitle?: string;
+   guaranteeText?: string;
+   ctaText?: string;
+   footerNote?: string;
+   heroBullets?: string[];
+   urgencyText?: string;
+   securePaymentText?: string;
+   imageCaption?: string;
+ }
+ 
+ function DynamicCheckout() {
+   const { project, offer } = Route.useLoaderData();
   const navigate = useNavigate();
   const searchParams = useSearch({ from: "/c/$slug" }) as any;
   const [loading, setLoading] = useState(false);
@@ -70,10 +107,20 @@ function DynamicCheckout() {
     setUtms(capturedUtms);
   }, [searchParams]);
 
-   const theme: any = project.theme_json || {};
-  const bgColor = theme.backgroundColor || "#F5F5F7";
-  const primaryColor = theme.primaryColor || "#000000";
-  const btnColor = theme.buttonColor || "#000000";
+   const theme: ThemeConfig = (project as any).theme_json || {};
+   const content: ContentConfig = (project as any).content_json || {};
+ 
+   // Fallback values
+   const styles = {
+     bg: theme.background || (theme.template === 'dark-premium' ? '#0A0A0B' : '#F5F5F7'),
+     card: theme.card || (theme.template === 'dark-premium' ? '#161618' : '#FFFFFF'),
+     text: theme.text || (theme.template === 'dark-premium' ? '#FFFFFF' : '#1D1D1F'),
+     muted: theme.muted || (theme.template === 'dark-premium' ? '#86868B' : '#86868B'),
+     button: theme.button || (theme.template === 'dark-premium' ? '#0071E3' : '#000000'),
+     buttonText: theme.buttonText || '#FFFFFF',
+     accent: theme.accent || '#0071E3',
+     radius: theme.borderRadius || '24px'
+   };
 
   const handleGeneratePix = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -114,135 +161,290 @@ function DynamicCheckout() {
     }
   };
 
-  const formattedPrice = (offer.price_cents / 100).toLocaleString('pt-BR', {
-    style: 'currency',
-    currency: 'BRL'
-  });
-
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 md:p-6" style={{ backgroundColor: bgColor }}>
-      <div className="w-full max-w-[440px] bg-white rounded-[24px] shadow-sm border border-[#D2D2D7]/30 p-8 md:p-10 flex flex-col items-center">
-        
-        {/* Logo if exists */}
-        {theme.logoUrl && (
-          <img src={theme.logoUrl} alt={project.name} className="h-12 mb-6 object-contain" />
-        )}
-
-        {/* Badge */}
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#F5F5F7] rounded-full mb-6">
-          <ShieldCheck size={12} className="text-[#86868B]" />
-          <span className="text-[11px] font-semibold text-[#86868B] uppercase tracking-wider">Pagamento seguro</span>
-        </div>
-
-        {/* Header */}
-        <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-center mb-2" style={{ color: primaryColor }}>
-          {project.headline || "Finalize seu acesso"}
-        </h1>
-        <p className="text-[#86868B] text-sm text-center mb-8 leading-relaxed">
-          {project.subheadline || "Pague com Pix e receba a liberação rápida."}
-        </p>
-
-        {/* Product Box */}
-        <div className="w-full bg-[#F5F5F7] rounded-2xl p-5 mb-8 flex justify-between items-center">
-          <div>
-            <h2 className="font-semibold text-base">{offer.name}</h2>
-            <p className="text-xs text-[#86868B] mt-0.5">{offer.description}</p>
-          </div>
-          <div className="text-lg font-bold">{formattedPrice}</div>
-        </div>
-
-        {/* Form Fields */}
-        <form onSubmit={handleGeneratePix} className="w-full space-y-4 mb-8">
-          {project.collect_name && (
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#86868B] ml-1">Nome completo</label>
-              <input 
-                type="text" 
-                required
-                value={formData.name || ""}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="Como no seu documento"
-                className="w-full h-12 px-4 rounded-xl border border-[#D2D2D7] focus:outline-none focus:ring-2 focus:ring-[#0071E3] transition-all text-sm"
-              />
-            </div>
-          )}
-          {project.collect_cpf && (
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#86868B] ml-1">CPF</label>
-              <input 
-                type="text" 
-                required
-                value={formData.cpf || ""}
-                onChange={(e) => setFormData({ ...formData, cpf: e.target.value })}
-                placeholder="000.000.000-00"
-                className="w-full h-12 px-4 rounded-xl border border-[#D2D2D7] focus:outline-none focus:ring-2 focus:ring-[#0071E3] transition-all text-sm"
-              />
-            </div>
-          )}
-          {project.collect_email && (
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#86868B] ml-1">E-mail</label>
-              <input 
-                type="email" 
-                required
-                value={formData.email || ""}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                placeholder="seu@email.com"
-                className="w-full h-12 px-4 rounded-xl border border-[#D2D2D7] focus:outline-none focus:ring-2 focus:ring-[#0071E3] transition-all text-sm"
-              />
-            </div>
-          )}
-          {project.collect_phone && (
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#86868B] ml-1">Telefone</label>
-              <input 
-                type="tel" 
-                required
-                value={formData.phone || ""}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                placeholder="(00) 00000-0000"
-                className="w-full h-12 px-4 rounded-xl border border-[#D2D2D7] focus:outline-none focus:ring-2 focus:ring-[#0071E3] transition-all text-sm"
-              />
-            </div>
-          )}
-
-           <button
-             type="submit"
-             disabled={loading}
-             className="w-full text-white h-14 rounded-xl font-semibold text-base transition-transform active:scale-[0.98] mb-4 disabled:opacity-50 flex items-center justify-center gap-2"
-             style={{ backgroundColor: btnColor }}
-           >
-             {loading ? (
-               <>
-                 <Loader2 className="h-5 w-5 animate-spin" />
-                 Gerando Pix...
-               </>
-             ) : (
-               "Gerar Pix"
-             )}
-           </button>
-           
-           {loading && (
-             <p className="text-[11px] font-medium text-center animate-pulse mb-6" style={{ color: primaryColor }}>
-               Aguarde, estamos gerando seu Pix com segurança.
-             </p>
-           )}
-         </form>
+   const formattedPrice = (offer.price_cents / 100).toLocaleString('pt-BR', {
+     style: 'currency',
+     currency: 'BRL'
+   });
  
-         {project.legal_text && (
-           <div className="w-full bg-[#F5F5F7]/50 border border-[#D2D2D7]/30 rounded-xl p-4">
-             <p className="text-[11px] text-[#86868B] text-center leading-relaxed italic">
-               {project.legal_text}
-             </p>
+   const renderBenefits = () => {
+     if (!content.benefits || content.benefits.length === 0) return null;
+     return (
+       <div className="w-full space-y-3 my-8">
+         {content.benefits.map((benefit, idx) => (
+           <div key={idx} className="flex gap-3">
+             <CheckCircle2 size={18} className="shrink-0 mt-0.5" style={{ color: styles.accent }} />
+             <span className="text-sm leading-snug" style={{ color: styles.text }}>{benefit}</span>
+           </div>
+         ))}
+       </div>
+     );
+   };
+ 
+   const renderGuarantee = () => {
+     if (!content.guaranteeText) return null;
+     return (
+       <div className="w-full mt-8 p-6 rounded-2xl border flex flex-col items-center text-center gap-3" 
+            style={{ borderColor: theme.template === 'dark-premium' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)', backgroundColor: 'rgba(0,0,0,0.02)' }}>
+         <Shield size={32} style={{ color: styles.accent }} />
+         <div>
+           <h4 className="font-bold text-sm" style={{ color: styles.text }}>{content.guaranteeTitle || "Garantia de Satisfação"}</h4>
+           <p className="text-xs mt-1 leading-relaxed" style={{ color: styles.muted }}>{content.guaranteeText}</p>
+         </div>
+       </div>
+     );
+   };
+ 
+   const renderProductBox = () => (
+     <div className="w-full rounded-2xl p-5 mb-8 flex justify-between items-center border" 
+          style={{ 
+            backgroundColor: theme.template === 'dark-premium' ? 'rgba(255,255,255,0.03)' : '#F5F5F7',
+            borderColor: theme.template === 'dark-premium' ? 'rgba(255,255,255,0.05)' : 'transparent'
+          }}>
+       <div className="flex-1 pr-4">
+         <h2 className="font-bold text-base" style={{ color: styles.text }}>{offer.name}</h2>
+         <p className="text-xs mt-0.5 line-clamp-2" style={{ color: styles.muted }}>{offer.description}</p>
+       </div>
+       <div className="text-xl font-black shrink-0" style={{ color: styles.text }}>{formattedPrice}</div>
+     </div>
+   );
+
+   const renderCheckoutForm = () => (
+     <form onSubmit={handleGeneratePix} className="w-full space-y-4">
+       {content.preFormText && (
+         <p className="text-sm font-medium mb-2" style={{ color: styles.text }}>{content.preFormText}</p>
+       )}
+ 
+       {project.collect_name && (
+         <div className="space-y-1.5">
+           <label className="text-xs font-semibold ml-1" style={{ color: styles.muted }}>Nome completo</label>
+           <input 
+             type="text" 
+             required
+             value={formData.name || ""}
+             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+             placeholder="Como no seu documento"
+             className="w-full h-12 px-4 rounded-xl border transition-all text-sm outline-none"
+             style={{ 
+               backgroundColor: theme.template === 'dark-premium' ? 'rgba(255,255,255,0.05)' : '#FFFFFF',
+               borderColor: theme.template === 'dark-premium' ? 'rgba(255,255,255,0.1)' : '#D2D2D7',
+               color: styles.text
+             }}
+           />
+         </div>
+       )}
+       {project.collect_cpf && (
+         <div className="space-y-1.5">
+           <label className="text-xs font-semibold ml-1" style={{ color: styles.muted }}>CPF</label>
+           <input 
+             type="text" 
+             required
+             value={formData.cpf || ""}
+             onChange={(e) => setFormData({ ...formData, cpf: e.target.value })}
+             placeholder="000.000.000-00"
+             className="w-full h-12 px-4 rounded-xl border transition-all text-sm outline-none"
+             style={{ 
+               backgroundColor: theme.template === 'dark-premium' ? 'rgba(255,255,255,0.05)' : '#FFFFFF',
+               borderColor: theme.template === 'dark-premium' ? 'rgba(255,255,255,0.1)' : '#D2D2D7',
+               color: styles.text
+             }}
+           />
+         </div>
+       )}
+       {project.collect_email && (
+         <div className="space-y-1.5">
+           <label className="text-xs font-semibold ml-1" style={{ color: styles.muted }}>E-mail</label>
+           <input 
+             type="email" 
+             required
+             value={formData.email || ""}
+             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+             placeholder="seu@email.com"
+             className="w-full h-12 px-4 rounded-xl border transition-all text-sm outline-none"
+             style={{ 
+               backgroundColor: theme.template === 'dark-premium' ? 'rgba(255,255,255,0.05)' : '#FFFFFF',
+               borderColor: theme.template === 'dark-premium' ? 'rgba(255,255,255,0.1)' : '#D2D2D7',
+               color: styles.text
+             }}
+           />
+         </div>
+       )}
+       {project.collect_phone && (
+         <div className="space-y-1.5">
+           <label className="text-xs font-semibold ml-1" style={{ color: styles.muted }}>Telefone</label>
+           <input 
+             type="tel" 
+             required
+             value={formData.phone || ""}
+             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+             placeholder="(00) 00000-0000"
+             className="w-full h-12 px-4 rounded-xl border transition-all text-sm outline-none"
+             style={{ 
+               backgroundColor: theme.template === 'dark-premium' ? 'rgba(255,255,255,0.05)' : '#FFFFFF',
+               borderColor: theme.template === 'dark-premium' ? 'rgba(255,255,255,0.1)' : '#D2D2D7',
+               color: styles.text
+             }}
+           />
+         </div>
+       )}
+ 
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full h-14 rounded-xl font-bold text-lg transition-all active:scale-[0.98] mt-4 disabled:opacity-50 flex flex-col items-center justify-center gap-0.5 shadow-lg shadow-black/5"
+          style={{ backgroundColor: styles.button, color: styles.buttonText }}
+        >
+          {loading ? (
+            <div className="flex items-center gap-2">
+              <Loader2 className="h-5 w-5 animate-spin" />
+              <span>Gerando Pix...</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <span>{content.ctaText || "Gerar Pix"}</span>
+              <ArrowRight size={18} />
+            </div>
+          )}
+        </button>
+        
+        {loading && (
+          <p className="text-[11px] font-medium text-center animate-pulse mt-2" style={{ color: styles.accent }}>
+            Aguarde, estamos preparando seu pagamento com segurança.
+          </p>
+        )}
+ 
+        {content.securePaymentText !== null && (
+           <div className="flex items-center justify-center gap-1.5 mt-4 opacity-60">
+             <Lock size={12} style={{ color: styles.muted }} />
+             <span className="text-[10px] font-medium uppercase tracking-wider" style={{ color: styles.muted }}>
+               {content.securePaymentText || "Pagamento 100% Seguro & Encriptado"}
+             </span>
+           </div>
+        )}
+      </form>
+    );
+ 
+   return (
+     <div className="min-h-screen flex flex-col items-center py-8 px-4 md:py-12" style={{ backgroundColor: styles.bg }}>
+       
+       {/* Header / Logo Section */}
+       <div className="w-full max-w-[440px] mb-8 flex flex-col items-center">
+         {theme.logoUrl && (
+           <img src={theme.logoUrl} alt={project.name} className="h-12 mb-8 object-contain" />
+         )}
+ 
+         {(content.badge || theme.showUrgency !== false) && (
+           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-6" 
+                style={{ backgroundColor: theme.template === 'dark-premium' ? 'rgba(255,255,255,0.05)' : '#FFFFFF', border: '1px solid rgba(0,0,0,0.05)' }}>
+             {content.urgencyText ? (
+               <Zap size={12} className="text-orange-500 fill-orange-500" />
+             ) : (
+               <ShieldCheck size={12} style={{ color: styles.accent }} />
+             )}
+             <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: styles.muted }}>
+               {content.badge || content.urgencyText || "Pagamento Seguro"}
+             </span>
            </div>
          )}
-      </div>
-
-      <footer className="max-w-[440px] mt-10 px-6 pb-8 opacity-40 hover:opacity-100 transition-opacity">
-        <p className="text-[9px] text-[#86868B] text-center leading-relaxed">
-          A PUSHIN PAY atua exclusivamente como processadora de pagamentos e não possui responsabilidade pela entrega ou suporte dos produtos oferecidos pelo vendedor.
-        </p>
-      </footer>
-    </div>
-  );
-}
+ 
+         <h1 className="text-3xl md:text-4xl font-black tracking-tight text-center mb-3 px-4" style={{ color: styles.text }}>
+           {content.heroTitle || project.headline || "Finalize seu acesso"}
+         </h1>
+         <p className="text-sm text-center px-6 leading-relaxed mb-4" style={{ color: styles.muted }}>
+           {content.heroSubtitle || project.subheadline || "Pague com Pix e receba a liberação imediata."}
+         </p>
+ 
+         {content.heroBullets && content.heroBullets.length > 0 && (
+           <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 px-4 mt-2">
+             {content.heroBullets.map((bullet, idx) => (
+               <div key={idx} className="flex items-center gap-1.5">
+                 <CheckCircle2 size={12} style={{ color: styles.accent }} />
+                 <span className="text-[11px] font-bold" style={{ color: styles.text }}>{bullet}</span>
+               </div>
+             ))}
+           </div>
+         )}
+       </div>
+ 
+       {/* Main Layout Container */}
+       <div className={`w-full ${theme.template === 'image-left' ? 'max-w-[1000px] flex flex-col md:flex-row gap-8 items-start' : 'max-w-[480px]'}`}>
+         
+         {/* Image/Hero Section for image-left or longform */}
+         {(theme.template === 'image-left' || (theme.template === 'longform-simple' && theme.showHeroImage !== false)) && (theme.heroImageUrl || theme.coverImageUrl) && (
+           <div className={`${theme.template === 'image-left' ? 'flex-1 w-full' : 'w-full mb-8'}`}>
+             <div className="rounded-[24px] overflow-hidden shadow-2xl shadow-black/10 aspect-video md:aspect-auto border border-black/5">
+               <img 
+                 src={theme.heroImageUrl || theme.coverImageUrl} 
+                 alt="Hero" 
+                 className="w-full h-full object-cover"
+               />
+             </div>
+             {content.imageCaption && (
+               <p className="text-center mt-3 text-xs italic" style={{ color: styles.muted }}>{content.imageCaption}</p>
+             )}
+             
+             {theme.template === 'image-left' && (
+               <>
+                 {renderBenefits()}
+                 {renderGuarantee()}
+               </>
+             )}
+           </div>
+         )}
+ 
+         {/* Checkout Card */}
+         <div className={`flex-1 w-full p-8 md:p-10 shadow-2xl shadow-black/5 border relative overflow-hidden`}
+              style={{ 
+                backgroundColor: styles.card, 
+                borderRadius: styles.radius,
+                borderColor: theme.template === 'dark-premium' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'
+              }}>
+           
+           {/* Content for apple-clean / dark-premium / longform if no image */}
+           {theme.template !== 'image-left' && (
+             <>
+               {renderProductBox()}
+               {renderCheckoutForm()}
+               {theme.showBenefits !== false && renderBenefits()}
+               {theme.showGuarantee !== false && renderGuarantee()}
+             </>
+           )}
+ 
+           {/* content for image-left template in the card */}
+           {theme.template === 'image-left' && (
+             <>
+               {renderProductBox()}
+               {renderCheckoutForm()}
+             </>
+           )}
+           
+           {content.footerNote && (
+             <p className="text-[11px] text-center mt-8 px-4" style={{ color: styles.muted }}>
+               {content.footerNote}
+             </p>
+           )}
+ 
+           {project.legal_text && (
+             <div className="mt-8 pt-6 border-t border-dashed opacity-50" style={{ borderColor: theme.template === 'dark-premium' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)' }}>
+               <p className="text-[10px] italic text-center leading-relaxed" style={{ color: styles.muted }}>
+                 {project.legal_text}
+               </p>
+             </div>
+           )}
+         </div>
+       </div>
+ 
+       {/* Discrete Footer Disclaimer */}
+       <footer className="w-full max-w-[440px] mt-16 px-6 pb-12 opacity-30 hover:opacity-80 transition-opacity">
+         <div className="flex flex-col items-center gap-3">
+           <div className="flex items-center gap-2 grayscale brightness-0">
+             <ShieldCheck size={14} className="text-[#86868B]" />
+             <span className="text-[10px] font-bold tracking-widest text-[#86868B] uppercase">Checkout Verificado</span>
+           </div>
+           <p className="text-[9px] text-[#86868B] text-center leading-relaxed max-w-[300px]">
+             A PUSHIN PAY atua exclusivamente como processadora de pagamentos e não possui responsabilidade pela entrega ou suporte dos produtos oferecidos pelo vendedor.
+           </p>
+         </div>
+       </footer>
+     </div>
+   );
+ }
