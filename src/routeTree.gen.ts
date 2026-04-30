@@ -10,33 +10,43 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PagamentoDemoPreviewRouteImport } from './routes/pagamento.demo-preview'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PagamentoDemoPreviewRoute = PagamentoDemoPreviewRouteImport.update({
+  id: '/pagamento/demo-preview',
+  path: '/pagamento/demo-preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/pagamento/demo-preview': typeof PagamentoDemoPreviewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/pagamento/demo-preview': typeof PagamentoDemoPreviewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/pagamento/demo-preview': typeof PagamentoDemoPreviewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/pagamento/demo-preview'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/pagamento/demo-preview'
+  id: '__root__' | '/' | '/pagamento/demo-preview'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PagamentoDemoPreviewRoute: typeof PagamentoDemoPreviewRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +58,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pagamento/demo-preview': {
+      id: '/pagamento/demo-preview'
+      path: '/pagamento/demo-preview'
+      fullPath: '/pagamento/demo-preview'
+      preLoaderRoute: typeof PagamentoDemoPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PagamentoDemoPreviewRoute: PagamentoDemoPreviewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
