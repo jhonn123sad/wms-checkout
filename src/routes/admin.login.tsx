@@ -1,4 +1,4 @@
- import { useState, useEffect } from "react";
+import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -15,40 +15,18 @@ function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-   const [authReady, setAuthReady] = useState(true);
   const navigate = useNavigate();
- 
-   useEffect(() => {
-     // Basic check if supabase is responsive
-     supabase.auth.getSession().catch(() => {
-       setAuthReady(false);
-     });
-   }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) throw error;
-
-      // Check for admin role
-      const { data: roles } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", data.user.id)
-        .eq("role", "admin")
-        .maybeSingle();
-
-      if (!roles) {
-        await supabase.auth.signOut();
-        toast.error("Acesso negado. Você não tem permissão de administrador.");
-        return;
-      }
 
       toast.success("Login realizado com sucesso!");
       navigate({ to: "/admin" });
@@ -69,13 +47,7 @@ function AdminLogin() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-           {!authReady && (
-             <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-md text-amber-800 text-sm">
-               Autenticação admin ainda não configurada ou instável. 
-               Verifique sua conexão com o Supabase.
-             </div>
-           )}
-           <form onSubmit={handleLogin} className="space-y-4 opacity-100">
+          <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
