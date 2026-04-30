@@ -1,6 +1,7 @@
  import React from "react";
  import { CheckoutTemplateProps } from "../types";
  import { Loader2, ShieldCheck, CheckCircle2, Shield, Zap, Lock, ArrowRight } from "lucide-react";
+ import { InlinePixPanel } from "../InlinePixPanel";
  
  export const AppleCleanTemplate: React.FC<CheckoutTemplateProps> = ({
    project,
@@ -11,8 +12,11 @@
    setFormData,
    requiredFields,
    isLoading,
-   onSubmit,
-   formatPrice
+     onSubmit,
+     formatPrice,
+     paymentData,
+     paymentStatus,
+     onResetPayment
  }) => {
    const styles = {
      bg: theme.background || "#F5F5F7",
@@ -67,78 +71,87 @@
            <div className="text-xl font-black shrink-0">{formatPrice(offer.price_cents)}</div>
          </div>
  
-         {/* Form */}
-         <form onSubmit={onSubmit} className="space-y-4">
-           {content.preFormText && <p className="text-sm font-medium mb-2">{content.preFormText}</p>}
-           
-           {requiredFields.collect_name && (
-             <div className="space-y-1.5">
-               <label className="text-xs font-semibold ml-1 opacity-60">Nome completo</label>
-               <input 
-                 type="text" required value={formData.name || ""}
-                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                 className="w-full h-12 px-4 rounded-xl border bg-white outline-none text-sm"
-                 style={{ borderColor: "#D2D2D7" }}
-               />
-             </div>
-           )}
-           {requiredFields.collect_cpf && (
-             <div className="space-y-1.5">
-               <label className="text-xs font-semibold ml-1 opacity-60">CPF</label>
-               <input 
-                 type="text" required value={formData.cpf || ""}
-                 onChange={(e) => setFormData({ ...formData, cpf: e.target.value })}
-                 className="w-full h-12 px-4 rounded-xl border bg-white outline-none text-sm"
-                 style={{ borderColor: "#D2D2D7" }}
-               />
-             </div>
-           )}
-           {requiredFields.collect_email && (
-             <div className="space-y-1.5">
-               <label className="text-xs font-semibold ml-1 opacity-60">E-mail</label>
-               <input 
-                 type="email" required value={formData.email || ""}
-                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                 className="w-full h-12 px-4 rounded-xl border bg-white outline-none text-sm"
-                 style={{ borderColor: "#D2D2D7" }}
-               />
-             </div>
-           )}
-           {requiredFields.collect_phone && (
-             <div className="space-y-1.5">
-               <label className="text-xs font-semibold ml-1 opacity-60">Telefone</label>
-               <input 
-                 type="tel" required value={formData.phone || ""}
-                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                 className="w-full h-12 px-4 rounded-xl border bg-white outline-none text-sm"
-                 style={{ borderColor: "#D2D2D7" }}
-               />
-             </div>
-           )}
- 
-           <button
-             type="submit" disabled={isLoading}
-             className="w-full h-14 rounded-xl font-bold text-lg transition-all active:scale-[0.98] mt-4 disabled:opacity-50 flex flex-col items-center justify-center gap-0.5 shadow-lg shadow-black/5"
-             style={{ backgroundColor: styles.button, color: styles.buttonText }}
-           >
-             {isLoading ? (
-               <div className="flex items-center gap-2">
-                 <Loader2 className="h-5 w-5 animate-spin" />
-                 <span>Gerando Pix...</span>
-               </div>
-             ) : (
-               <div className="flex items-center gap-2">
-                 <span>{content.ctaText || "Gerar Pix"}</span>
-                 <ArrowRight size={18} />
-               </div>
-             )}
-           </button>
- 
-           <div className="flex items-center justify-center gap-1.5 mt-4 opacity-40">
-             <Lock size={12} />
-             <span className="text-[10px] font-medium uppercase tracking-wider">Pagamento 100% Seguro</span>
-           </div>
-         </form>
+          {paymentData ? (
+            <InlinePixPanel 
+              paymentData={paymentData}
+              paymentStatus={paymentStatus || "waiting_payment"}
+              onReset={onResetPayment || (() => {})}
+              formatPrice={formatPrice}
+              theme={theme}
+            />
+          ) : (
+            <form onSubmit={onSubmit} className="space-y-4">
+              {content.preFormText && <p className="text-sm font-medium mb-2">{content.preFormText}</p>}
+              
+              {requiredFields.collect_name && (
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold ml-1 opacity-60">Nome completo</label>
+                  <input 
+                    type="text" required value={formData.name || ""}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full h-12 px-4 rounded-xl border bg-white outline-none text-sm"
+                    style={{ borderColor: "#D2D2D7" }}
+                  />
+                </div>
+              )}
+              {requiredFields.collect_cpf && (
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold ml-1 opacity-60">CPF</label>
+                  <input 
+                    type="text" required value={formData.cpf || ""}
+                    onChange={(e) => setFormData({ ...formData, cpf: e.target.value })}
+                    className="w-full h-12 px-4 rounded-xl border bg-white outline-none text-sm"
+                    style={{ borderColor: "#D2D2D7" }}
+                  />
+                </div>
+              )}
+              {requiredFields.collect_email && (
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold ml-1 opacity-60">E-mail</label>
+                  <input 
+                    type="email" required value={formData.email || ""}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full h-12 px-4 rounded-xl border bg-white outline-none text-sm"
+                    style={{ borderColor: "#D2D2D7" }}
+                  />
+                </div>
+              )}
+              {requiredFields.collect_phone && (
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold ml-1 opacity-60">Telefone</label>
+                  <input 
+                    type="tel" required value={formData.phone || ""}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    className="w-full h-12 px-4 rounded-xl border bg-white outline-none text-sm"
+                    style={{ borderColor: "#D2D2D7" }}
+                  />
+                </div>
+              )}
+    
+              <button
+                type="submit" disabled={isLoading}
+                className="w-full h-14 rounded-xl font-bold text-lg transition-all active:scale-[0.98] mt-4 disabled:opacity-50 flex flex-col items-center justify-center gap-0.5 shadow-lg shadow-black/5"
+                style={{ backgroundColor: styles.button, color: styles.buttonText }}
+              >
+                {isLoading ? (
+                  <div className="flex items-center gap-2">
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                    <span>Gerando Pix...</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <span>{content.ctaText || "Gerar Pix"}</span>
+                    <ArrowRight size={18} />
+                  </div>
+                )}
+              </button>
+    
+              <div className="flex items-center justify-center gap-1.5 mt-4 opacity-40">
+                <Lock size={12} />
+                <span className="text-[10px] font-medium uppercase tracking-wider">Pagamento 100% Seguro</span>
+              </div>
+            </form>
+          )}
  
          {theme.showBenefits !== false && content.benefits && content.benefits.length > 0 && (
            <div className="w-full space-y-3 my-8 pt-8 border-t border-black/5">
