@@ -12,14 +12,20 @@ function Index() {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({ name: "", cpf: "" });
 
-  const handleGeneratePix = async () => {
+  const handleGeneratePix = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    console.log("[Home] Clique no botão 'Gerar Pix' detectado");
+    
     if (!formData.name || !formData.cpf) {
+      console.log("[Home] Validação falhou: campos vazios");
       toast.error("Preencha todos os campos");
       return;
     }
 
+    console.log("[Home] Validação OK:", { name: formData.name, cpf: "***" });
     setLoading(true);
     try {
+      console.log("[Home] Chamando create-pix via Supabase Functions...");
       const { data, error } = await supabase.functions.invoke("create-pix", {
         body: {
           customer_name: formData.name,
@@ -27,9 +33,17 @@ function Index() {
         },
       });
 
-      if (error) throw error;
-      if (!data || data.error) throw new Error(data?.error || "UNKNOWN_ERROR");
+      if (error) {
+        console.error("[Home] Erro do invoke:", error);
+        throw error;
+      }
+      
+      if (!data || data.error) {
+        console.error("[Home] Resposta da function contém erro:", data?.error);
+        throw new Error(data?.error || "UNKNOWN_ERROR");
+      }
 
+      console.log("[Home] Pix gerado com sucesso, navegando para:", data.orderId);
       navigate({ to: `/pagamento/$orderId`, params: { orderId: data.orderId } });
      } catch (err: any) {
        console.error("Erro na integração real:", err);
@@ -83,7 +97,10 @@ function Index() {
         </div>
 
         {/* Form Fields */}
-        <div className="w-full space-y-4 mb-8">
+        <form 
+          onSubmit={handleGeneratePix}
+          className="w-full space-y-4 mb-8"
+        >
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-[#86868B] ml-1">Nome completo</label>
             <input 
@@ -104,16 +121,16 @@ function Index() {
               className="w-full h-12 px-4 rounded-xl border border-[#D2D2D7] focus:outline-none focus:ring-2 focus:ring-[#0071E3] transition-all text-sm"
             />
           </div>
-        </div>
 
-        {/* Action Button */}
-        <button
-          disabled={loading}
-          onClick={handleGeneratePix}
-          className="w-full bg-black text-white h-14 rounded-xl font-semibold text-base transition-transform active:scale-[0.98] mb-6 disabled:opacity-50"
-        >
-          {loading ? "Processando..." : "Gerar Pix"}
-        </button>
+          {/* Action Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-black text-white h-14 rounded-xl font-semibold text-base transition-transform active:scale-[0.98] mb-6 disabled:opacity-50"
+          >
+            {loading ? "Processando..." : "Gerar Pix"}
+          </button>
+        </form>
 
         {/* Demo Box */}
         <div className="w-full bg-[#F5F5F7] border border-[#D2D2D7]/50 rounded-xl p-4">
