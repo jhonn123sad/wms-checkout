@@ -7,11 +7,25 @@ import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { AlertCircle, RefreshCw } from "lucide-react";
 
+type PaymentSearch = {
+  token?: string;
+};
+
 export const Route = createFileRoute("/pagamento/$orderId")({
-  loader: async ({ params }) => {
+  validateSearch: (search: Record<string, unknown>): PaymentSearch => {
+    return {
+      token: search.token as string | undefined,
+    };
+  },
+  loader: async ({ params, search }) => {
+    const token = (search as PaymentSearch).token;
+    if (!token) {
+      console.error("[Loader] Token de acesso não fornecido na URL");
+    }
+
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
     const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-    const url = `${supabaseUrl}/functions/v1/get-order-payment-data?orderId=${encodeURIComponent(params.orderId)}`;
+    const url = `${supabaseUrl}/functions/v1/get-order-payment-data?orderId=${encodeURIComponent(params.orderId)}&token=${encodeURIComponent(token || "")}`;
     const resp = await fetch(url, {
       headers: {
         apikey: supabaseKey,
@@ -67,13 +81,14 @@ function PaymentReal() {
 
   useEffect(() => {
     if (currentStatus === 'paid') return;
+    const token = (Route.useSearch() as PaymentSearch).token;
 
     const orderId = loaderData?.orderId;
     if (!orderId) return;
 
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
     const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-    const statusUrl = `${supabaseUrl}/functions/v1/get-order-status?orderId=${encodeURIComponent(orderId)}`;
+    const statusUrl = `${supabaseUrl}/functions/v1/get-order-status?orderId=${encodeURIComponent(orderId)}&token=${encodeURIComponent(token || "")}`;
 
     console.log("[polling] Inicando verificação de status para order:", orderId);
 
