@@ -10,8 +10,12 @@ Deno.serve(async (req) => {
 
   try {
     const url = new URL(req.url);
-    const orderId = url.searchParams.get("orderId");
-    if (!orderId) return json({ error: "ORDER_ID_REQUIRED" }, 400);
+    const orderId = url.searchParams.get("orderId") || "";
+    const token = url.searchParams.get("token") || "";
+    
+    if (!orderId || !token) {
+      return json({ error: "ORDER_ID_AND_TOKEN_REQUIRED" }, 400);
+    }
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -20,11 +24,12 @@ Deno.serve(async (req) => {
 
     const { data: order, error } = await supabase
       .from("orders")
-      .select("id,status,paid_at,product_id")
+      .select("id,status,paid_at,product_id,public_access_token")
       .eq("id", orderId)
+      .eq("public_access_token", token)
       .maybeSingle();
-
-    if (error || !order) return json({ error: "NOT_FOUND" }, 404);
+      
+    if (error || !order) return json({ error: "ORDER_NOT_FOUND_OR_INVALID_TOKEN" }, 404);
 
     let thank_you_url: string | null = null;
     if (order.status === "paid" && order.product_id) {
