@@ -1,7 +1,8 @@
  import React from "react";
  import { CheckoutTemplateProps } from "../types";
- import { Loader2, CheckCircle2, ShieldCheck, BookOpen, Utensils, Heart, Clock } from "lucide-react";
+ import { Loader2, CheckCircle2, ShieldCheck, BookOpen, Utensils, Heart, Clock, Star } from "lucide-react";
  import { InlinePixPanel } from "../InlinePixPanel";
+ import { CheckoutVisualAsset } from "../visuals/CheckoutVisualAsset";
  
  export const RecipeEbookTemplate: React.FC<CheckoutTemplateProps> = ({
    project,
@@ -57,19 +58,23 @@
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start w-full">
           {/* LEFT: CONTENT & PROMISE COMPACT */}
           <div className="flex flex-col items-center lg:items-end space-y-6">
-            {/* MOCKUP EBOOK COMPACT */}
-            <div className="relative group w-full max-w-[320px]">
-              <div className="absolute -inset-3 bg-orange-500/5 rounded-[30px] blur-xl"></div>
-              <div className="relative aspect-square rounded-2xl overflow-hidden shadow-xl border-4 border-white bg-white">
-                {theme.heroImageUrl ? (
-                  <img src={theme.heroImageUrl} alt="Ebook" className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center p-8 text-orange-200">
-                    <BookOpen size={64} strokeWidth={1} />
-                  </div>
-                )}
-              </div>
-            </div>
+             {/* ÁREA VISUAL EDITÁVEL — pode substituir este asset/imagem sem alterar o Pix */}
+             <div className="relative group w-full max-w-[320px]">
+               <div className="absolute -inset-4 bg-orange-500/10 rounded-[30px] blur-2xl opacity-50"></div>
+               <div className="relative aspect-square rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-white">
+                 {theme.heroImageUrl ? (
+                   <img src={theme.heroImageUrl} alt="Ebook" className="w-full h-full object-cover" />
+                 ) : (
+                   <CheckoutVisualAsset type="recipe" className="w-full h-full" />
+                 )}
+                 <div className="absolute top-3 right-3">
+                    <div className="flex items-center gap-1 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full border border-orange-100 shadow-sm">
+                      <Star size={10} className="text-orange-500" fill="currentColor" />
+                      <span className="text-[9px] font-black text-orange-900">PREMIUM</span>
+                    </div>
+                 </div>
+               </div>
+             </div>
 
             {/* BENEFITS PILLS */}
             <div className="grid grid-cols-2 gap-3 w-full max-w-[320px]">
@@ -101,16 +106,17 @@
                 </div>
               </div>
 
-              {paymentData ? (
-                  <InlinePixPanel 
-                    paymentData={paymentData}
-                    paymentStatus={paymentStatus || "waiting_payment"}
-                    onReset={onResetPayment || (() => {})}
-                    formatPrice={formatPrice}
-                    theme={theme}
-                  />
-                ) : (
-                  <form onSubmit={onSubmit} className="space-y-4">
+               {/* NÃO ALTERAR onSubmit, formData, setFormData, isLoading ou lógica de pagamento */}
+               {paymentData ? (
+                   <InlinePixPanel 
+                     paymentData={paymentData}
+                     paymentStatus={paymentStatus || "waiting_payment"}
+                     onReset={onResetPayment || (() => {})}
+                     formatPrice={formatPrice}
+                     theme={theme}
+                   />
+                 ) : (
+                   <form onSubmit={onSubmit} className="space-y-4">
                     {requiredFields.collect_name && (
                       <div className="space-y-1.5">
                         <label className="text-xs font-bold text-orange-800/60 ml-1">Seu nome completo</label>
