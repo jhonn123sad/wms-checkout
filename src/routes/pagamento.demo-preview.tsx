@@ -11,6 +11,13 @@ function PaymentDemo() {
     <div className="min-h-screen bg-[#F5F5F7] text-[#1D1D1F] font-sans flex flex-col items-center justify-center p-4 md:p-6">
       <div className="w-full max-w-[440px] bg-white rounded-[24px] shadow-sm border border-[#D2D2D7]/30 p-8 md:p-10 flex flex-col items-center">
         
+         {/* Warning for internal use */}
+         <div className="w-full bg-amber-50 border border-amber-200 rounded-lg p-2 mb-4">
+           <p className="text-[10px] text-amber-700 font-bold text-center uppercase">
+             Ambiente de Teste Interno
+           </p>
+         </div>
+ 
         {/* Status Badge */}
         <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#F5F5F7] rounded-full mb-6">
           <div className="h-2 w-2 rounded-full bg-orange-400 animate-pulse"></div>

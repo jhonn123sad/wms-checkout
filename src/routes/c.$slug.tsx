@@ -206,30 +206,43 @@ function DynamicCheckout() {
             </div>
           )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full text-white h-14 rounded-xl font-semibold text-base transition-transform active:scale-[0.98] mb-6 disabled:opacity-50 flex items-center justify-center"
-            style={{ backgroundColor: btnColor }}
-          >
-            {loading ? <Loader2 className="animate-spin" /> : "Gerar Pix"}
-          </button>
-        </form>
-
-        {project.legal_text && (
-          <div className="w-full bg-[#F5F5F7] border border-[#D2D2D7]/50 rounded-xl p-4">
-            <p className="text-[12px] text-[#86868B] text-center leading-relaxed italic">
-              {project.legal_text}
-            </p>
-          </div>
-        )}
+           <button
+             type="submit"
+             disabled={loading}
+             className="w-full text-white h-14 rounded-xl font-semibold text-base transition-transform active:scale-[0.98] mb-4 disabled:opacity-50 flex items-center justify-center gap-2"
+             style={{ backgroundColor: btnColor }}
+           >
+             {loading ? (
+               <>
+                 <Loader2 className="h-5 w-5 animate-spin" />
+                 Gerando Pix...
+               </>
+             ) : (
+               "Gerar Pix"
+             )}
+           </button>
+           
+           {loading && (
+             <p className="text-[11px] font-medium text-center animate-pulse mb-6" style={{ color: primaryColor }}>
+               Aguarde, estamos gerando seu Pix com segurança.
+             </p>
+           )}
+         </form>
+ 
+         {project.legal_text && (
+           <div className="w-full bg-[#F5F5F7]/50 border border-[#D2D2D7]/30 rounded-xl p-4">
+             <p className="text-[11px] text-[#86868B] text-center leading-relaxed italic">
+               {project.legal_text}
+             </p>
+           </div>
+         )}
       </div>
 
-      <div className="max-w-[500px] mt-10 px-4">
-        <p className="text-[10px] md:text-[11px] text-[#86868B] text-center leading-relaxed">
-          A PUSHIN PAY atua exclusivamente como processadora de pagamentos e não possui qualquer responsabilidade pela entrega, suporte, conteúdo, qualidade ou cumprimento das obrigações relacionadas aos produtos ou serviços oferecidos pelo vendedor.
+      <footer className="max-w-[440px] mt-10 px-6 pb-8 opacity-40 hover:opacity-100 transition-opacity">
+        <p className="text-[9px] text-[#86868B] text-center leading-relaxed">
+          A PUSHIN PAY atua exclusivamente como processadora de pagamentos e não possui responsabilidade pela entrega ou suporte dos produtos oferecidos pelo vendedor.
         </p>
-      </div>
+      </footer>
     </div>
   );
 }
