@@ -1,30 +1,21 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AlertCircle, RefreshCw } from "lucide-react";
 
 export const Route = createFileRoute("/pagamento/$orderId")({
   loader: async ({ params }) => {
-    const { data, error } = await supabase.functions.invoke("get-order-payment-data", {
-      method: "GET",
-      headers: {},
-      body: undefined as any,
-      // @ts-ignore — supabase-js v2 supports query via fetch URL only; we pass orderId via body fallback
-    });
-    // supabase.functions.invoke doesn't support query params natively;
-    // call directly via fetch instead:
-    const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/get-order-payment-data?orderId=${encodeURIComponent(params.orderId)}`;
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+    const url = `${supabaseUrl}/functions/v1/get-order-payment-data?orderId=${encodeURIComponent(params.orderId)}`;
     const resp = await fetch(url, {
       headers: {
-        apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        apikey: supabaseKey,
+        Authorization: `Bearer ${supabaseKey}`,
       },
     });
     if (!resp.ok) throw new Error(`HTTP_${resp.status}`);
     const json = await resp.json();
     if (json?.error) throw new Error(json.error);
-    // suppress unused vars
-    void data; void error;
     return json;
   },
   component: PaymentReal,
