@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Upload, Link as LinkIcon, X, Check, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 
 export interface MediaValue {
   url: string;
@@ -23,7 +23,6 @@ interface MediaFieldProps {
 export const MediaField = ({ value, onChange, label }: MediaFieldProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const [externalUrl, setExternalUrl] = useState(value?.provider !== "upload" ? value?.url || "" : "");
-  const { toast } = useToast();
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -55,9 +54,9 @@ export const MediaField = ({ value, onChange, label }: MediaFieldProps) => {
 
       // Opcionalmente salvar na tabela media_assets aqui ou deixar para o salvamento da seção
       onChange(mediaData);
-      toast({ title: "Upload concluído", description: "Mídia enviada com sucesso." });
+      toast.success("Mídia enviada com sucesso.");
     } catch (error: any) {
-      toast({ variant: "destructive", title: "Erro no upload", description: error.message });
+      toast.error("Erro no upload: " + error.message);
     } finally {
       setIsUploading(false);
     }
@@ -86,7 +85,7 @@ export const MediaField = ({ value, onChange, label }: MediaFieldProps) => {
     }
 
     onChange({ url: externalUrl, type, provider });
-    toast({ title: "Link salvo", description: "URL externa configurada." });
+    toast.success("URL externa configurada.");
   };
 
   const clearMedia = () => {
