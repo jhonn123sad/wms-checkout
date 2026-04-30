@@ -24,7 +24,7 @@ Deno.serve(async (req) => {
 
     const { data: order, error } = await supabase
       .from("orders")
-      .select("id,status,paid_at,product_id,public_access_token")
+      .select("id,status,paid_at,product_id,project_id,public_access_token")
       .eq("id", orderId)
       .eq("public_access_token", token)
       .maybeSingle();
@@ -32,15 +32,23 @@ Deno.serve(async (req) => {
     if (error || !order) return json({ error: "ORDER_NOT_FOUND_OR_INVALID_TOKEN" }, 404);
 
     let thank_you_url: string | null = null;
-    if (order.status === "paid" && order.product_id) {
-      const { data: product } = await supabase
-        .from("products")
-        .select("thank_you_url")
-        .eq("id", order.product_id)
-        .maybeSingle();
-      thank_you_url = product?.thank_you_url ?? Deno.env.get("THANK_YOU_URL") ?? null;
+    if (order.status === "paid") {
+      if (order.project_id) {
+        const { data: project } = await supabase
+          .from("checkout_projects")
+          .select("thank_you_url")
+          .eq("id", order.project_id)
+          .maybeSingle();
+        thank_you_url = project?.thank_you_url ?? null;
+      } else if (order.product_id) {
+        const { data: product } = await supabase
+          .from("products")
+          .select("thank_you_url")
+          .eq("id", order.product_id)
+          .maybeSingle();
+        thank_you_url = product?.thank_you_url ?? Deno.env.get("THANK_YOU_URL") ?? null;
+      }
     }
-
     return json({
       orderId: order.id,
       status: order.status,
