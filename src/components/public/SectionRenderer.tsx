@@ -1,5 +1,5 @@
 import React from "react";
-import { MediaValue } from "@/components/admin/MediaField";
+import { MediaDisplay } from "./MediaDisplay";
 
 interface SectionProps {
   type: string;
@@ -68,41 +68,4 @@ export const SectionRenderer = ({ type, content }: SectionProps) => {
     default:
       return <div className="p-8 text-center text-muted-foreground">Seção não suportada: {type}</div>;
   }
-};
-
-const MediaDisplay = ({ media }: { media: MediaValue }) => {
-  if (!media) return null;
-
-  if (media.type === "image" || media.type === "gif") {
-    return <img src={media.url} alt="" className="w-full h-full object-cover" />;
-  }
-
-  if (media.provider === "youtube") {
-    const videoId = media.url.includes("v=") ? media.url.split("v=")[1].split("&")[0] : media.url.split("/").pop();
-    return (
-      <div className="aspect-video w-full">
-        <iframe 
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`}
-          className="w-full h-full"
-          allow="autoplay; encrypted-media"
-          allowFullScreen
-        />
-      </div>
-    );
-  }
-
-  if (media.type === "video") {
-    return (
-      <video 
-        src={media.url} 
-        className="w-full h-full object-cover" 
-        autoPlay 
-        loop 
-        muted 
-        playsInline 
-      />
-    );
-  }
-
-  return <div className="p-4 bg-muted text-center text-xs">Formato de mídia não suportado ({media.provider})</div>;
 };
