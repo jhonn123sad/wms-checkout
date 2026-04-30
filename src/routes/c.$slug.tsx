@@ -349,9 +349,20 @@ export const Route = createFileRoute("/c/$slug")({
          <h1 className="text-3xl md:text-4xl font-black tracking-tight text-center mb-3 px-4" style={{ color: styles.text }}>
            {content.heroTitle || project.headline || "Finalize seu acesso"}
          </h1>
-         <p className="text-sm text-center px-6 leading-relaxed" style={{ color: styles.muted }}>
+         <p className="text-sm text-center px-6 leading-relaxed mb-4" style={{ color: styles.muted }}>
            {content.heroSubtitle || project.subheadline || "Pague com Pix e receba a liberação imediata."}
          </p>
+ 
+         {content.heroBullets && content.heroBullets.length > 0 && (
+           <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 px-4 mt-2">
+             {content.heroBullets.map((bullet, idx) => (
+               <div key={idx} className="flex items-center gap-1.5">
+                 <CheckCircle2 size={12} style={{ color: styles.accent }} />
+                 <span className="text-[11px] font-bold" style={{ color: styles.text }}>{bullet}</span>
+               </div>
+             ))}
+           </div>
+         )}
        </div>
  
        {/* Main Layout Container */}
