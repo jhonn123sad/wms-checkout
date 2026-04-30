@@ -1,4 +1,8 @@
-import { useState, useEffect } from "react";
+ /**
+  * CORE DE PAGAMENTO — NÃO ALTERAR SEM TESTE DE REGRESSÃO
+  * Responsável pela coleta de dados do cliente e início do fluxo de pagamento.
+  */
+ import { useState, useEffect } from "react";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
