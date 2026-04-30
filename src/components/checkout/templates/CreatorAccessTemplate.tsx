@@ -56,11 +56,12 @@
              <div className="w-full max-w-[340px] relative group">
                <div className="absolute -inset-1 bg-gradient-to-r from-purple-600/40 to-pink-600/40 rounded-[28px] blur-lg opacity-40 group-hover:opacity-60 transition duration-1000"></div>
                <div className="relative aspect-square rounded-[28px] overflow-hidden bg-black/40 border border-white/10 backdrop-blur-3xl shadow-2xl">
-                 {theme.heroImageUrl ? (
-                   <img src={theme.heroImageUrl} alt="Acesso" className="w-full h-full object-cover" />
-                 ) : (
-                   <CheckoutVisualAsset type="creator" className="w-full h-full" />
-                 )}
+                  <CheckoutVisualAsset 
+                    slug={project.slug} 
+                    theme={theme} 
+                    content={content} 
+                    className="w-full h-full" 
+                  />
                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
                  <div className="absolute bottom-4 left-4 right-4">
                    <div className="flex items-center gap-2.5 p-3 rounded-xl bg-black/40 border border-white/10 backdrop-blur-md">

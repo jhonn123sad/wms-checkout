@@ -69,11 +69,12 @@
              <div className="w-full max-w-[340px] relative group">
                 <div className="absolute -inset-1 bg-green-500/20 rounded-xl blur opacity-20 group-hover:opacity-40 transition-opacity"></div>
                 <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-neutral-800 bg-black shadow-2xl">
-                  {theme.heroImageUrl ? (
-                    <img src={theme.heroImageUrl} alt="WMS Asset" className="w-full h-full object-cover" />
-                  ) : (
-                    <CheckoutVisualAsset type="wms" className="w-full h-full" />
-                  )}
+                  <CheckoutVisualAsset 
+                    slug={project.slug} 
+                    theme={theme} 
+                    content={content} 
+                    className="w-full h-full" 
+                  />
                   <div className="absolute bottom-2 left-2 px-1.5 py-0.5 bg-black/80 backdrop-blur-sm border border-green-500/30 rounded text-[7px] font-mono text-green-500 uppercase tracking-widest">
                     SECURE_NODE_0x1
                   </div>

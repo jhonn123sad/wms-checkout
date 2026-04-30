@@ -62,11 +62,12 @@
              <div className="relative group w-full max-w-[320px]">
                <div className="absolute -inset-4 bg-orange-500/10 rounded-[30px] blur-2xl opacity-50"></div>
                <div className="relative aspect-square rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-white">
-                 {theme.heroImageUrl ? (
-                   <img src={theme.heroImageUrl} alt="Ebook" className="w-full h-full object-cover" />
-                 ) : (
-                   <CheckoutVisualAsset type="recipe" className="w-full h-full" />
-                 )}
+                  <CheckoutVisualAsset 
+                    slug={project.slug} 
+                    theme={theme} 
+                    content={content} 
+                    className="w-full h-full" 
+                  />
                  <div className="absolute top-3 right-3">
                     <div className="flex items-center gap-1 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full border border-orange-100 shadow-sm">
                       <Star size={10} className="text-orange-500" fill="currentColor" />

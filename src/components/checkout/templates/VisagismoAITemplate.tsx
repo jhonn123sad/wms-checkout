@@ -70,11 +70,12 @@
              <div className="relative group w-full max-w-[340px]">
                <div className="absolute -inset-4 bg-indigo-500/10 rounded-3xl blur-2xl opacity-40"></div>
                <div className="relative aspect-square rounded-3xl border border-white shadow-2xl overflow-hidden bg-slate-50 transition-transform duration-500 group-hover:scale-[1.02]">
-                 {theme.heroImageUrl ? (
-                   <img src={theme.heroImageUrl} alt="Análise IA" className="w-full h-full object-cover" />
-                 ) : (
-                   <CheckoutVisualAsset type="visagismo" className="w-full h-full" />
-                 )}
+                  <CheckoutVisualAsset 
+                    slug={project.slug} 
+                    theme={theme} 
+                    content={content} 
+                    className="w-full h-full" 
+                  />
                  <div className="absolute top-4 left-4">
                    <div className="bg-indigo-600/10 backdrop-blur-md border border-indigo-600/20 px-2 py-1 rounded-lg">
                      <p className="text-[8px] font-black text-indigo-600 uppercase tracking-widest">Digital Scanner V2.0</p>
