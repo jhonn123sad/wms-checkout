@@ -6,7 +6,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { CheckoutCoreContainer } from "@/components/checkout/CheckoutCoreContainer";
 
-export const Route = createFileRoute("/c/$slug")({
+export const Route = createFileRoute("/c/")({
   loader: async ({ params }) => {
     const { data: project, error: pError } = await supabase
       .from("checkout_projects")
