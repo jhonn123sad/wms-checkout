@@ -39,18 +39,12 @@ Deno.serve(async (req) => {
       
     if (error || !order) return json({ error: "ORDER_NOT_FOUND" }, 404);
 
-    if (order.public_access_token !== token) {
+    const dbToken = (order.public_access_token || "").trim();
+    const providedToken = (token || "").trim();
+
+    if (dbToken !== providedToken) {
       return json({ error: "INVALID_TOKEN" }, 403);
     }
-
-    const { data: order, error } = await supabase
-      .from("orders")
-      .select("id,status,paid_at,product_id,project_id,public_access_token")
-      .eq("id", orderId)
-      .eq("public_access_token", token)
-      .maybeSingle();
-      
-    if (error || !order) return json({ error: "ORDER_NOT_FOUND_OR_INVALID_TOKEN" }, 404);
 
     let thank_you_url: string | null = null;
     if (order.status === "paid") {
