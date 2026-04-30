@@ -1,6 +1,12 @@
  import React, { useState } from "react";
  import { User, Lock, Star, Utensils, Heart, Sparkles, Terminal } from "lucide-react";
- import { CheckoutTheme, CheckoutContent } from "../types";
+ 
+ interface CheckoutVisualAssetProps {
+   slug: string;
+   theme: any;
+   content: any;
+   className?: string;
+ }
  
  interface CheckoutVisualAssetProps {
    slug: string;
