@@ -119,7 +119,10 @@ Deno.serve(async (req) => {
 
     const qrCode: string | null = result.qr_code ?? null;
     const qrCodeBase64: string | null = result.qr_code_base64 ?? null;
-    const transactionId: string | null = result.id ?? null;
+    const transactionId = result.id ? String(result.id).trim() : null;
+
+    log("Pushin Pay ID received:", transactionId);
+    log("Order ID:", order.id);
 
     const { error: updateError } = await supabase
       .from("orders")
