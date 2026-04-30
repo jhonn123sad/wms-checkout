@@ -16,15 +16,19 @@ Deno.serve(async (req) => {
     const rawBody = await req.text();
     const secret = Deno.env.get("PUSHINPAY_WEBHOOK_SECRET");
 
-    // Optional signature/secret check — Pushin Pay may send the secret as a header or query param
+    // Required signature/secret check — Pushin Pay sends the secret as a header or query param
     const url = new URL(req.url);
     const providedSecret =
       req.headers.get("x-webhook-secret") ||
       req.headers.get("x-pushinpay-secret") ||
       url.searchParams.get("secret");
 
-    if (secret && providedSecret && providedSecret !== secret) {
-      log("Invalid webhook secret");
+    if (!secret) {
+      log("PUSHINPAY_WEBHOOK_SECRET not configured");
+      return new Response("Webhook not configured", { status: 500 });
+    }
+    if (!providedSecret || providedSecret !== secret) {
+      log("Invalid or missing webhook secret");
       return new Response("Invalid signature", { status: 401 });
     }
 

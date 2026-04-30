@@ -213,16 +213,18 @@ function PaymentReal() {
         </div>
       </div>
 
-      {/* Debug Box (Temporary) */}
-      <div className="mt-8 p-3 rounded-lg bg-black/5 border border-black/10 text-[9px] font-mono text-gray-500 max-w-[440px] w-full">
-        <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-          <span>Source: Real</span>
-          <span>Order: {data.orderId.slice(0, 8)}...</span>
-          <span>Status: {currentStatus}</span>
-          <span>HasQR: {hasQrCode ? "Yes" : "No"}</span>
-          <span>HasImg: {hasQrImage ? "Yes" : "No"}</span>
+      {/* Debug Box - DEV only */}
+      {import.meta.env.DEV && (
+        <div className="mt-8 p-3 rounded-lg bg-black/5 border border-black/10 text-[9px] font-mono text-gray-500 max-w-[440px] w-full">
+          <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+            <span>Source: Real</span>
+            <span>Order: {data.orderId.slice(0, 8)}...</span>
+            <span>Status: {currentStatus}</span>
+            <span>HasQR: {hasQrCode ? "Yes" : "No"}</span>
+            <span>HasImg: {hasQrImage ? "Yes" : "No"}</span>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
