@@ -28,32 +28,49 @@ Deno.serve(async (req) => {
     const body = await req.json().catch(() => ({}));
     const customer_name = String(body?.customer_name || "").trim();
     const customer_cpf = String(body?.customer_cpf || "").replace(/\D/g, "");
+    const project_id = body?.project_id || null;
+    const offer_id = body?.offer_id || null;
     const utm = body?.utm || {};
-
-    if (customer_name.length < 3) return jsonError("CUSTOMER_NAME_INVALID", 400);
-    if (customer_cpf.length !== 11) return jsonError("CPF_INVALID", 400);
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // Get active product
-    const { data: product, error: productError } = await supabase
-      .from("products")
-      .select("*")
-      .eq("active", true)
-      .order("created_at", { ascending: true })
-      .limit(1)
-      .maybeSingle();
+    let priceCents = 50;
+    let productId = null;
+    let currentProjectId = project_id;
+    let currentOfferId = offer_id;
 
-    if (productError) {
-      log("Product fetch error:", productError);
-      return jsonError("DB_ERROR_PRODUCT", 500);
+    if (currentProjectId && currentOfferId) {
+      // Multi-checkout flow
+      const { data: offer } = await supabase
+        .from("checkout_offers")
+        .select("*, project:checkout_projects(*)")
+        .eq("id", currentOfferId)
+        .eq("project_id", currentProjectId)
+        .maybeSingle();
+
+      if (!offer) return jsonError("OFFER_NOT_FOUND", 404);
+      priceCents = offer.price_cents;
+    } else {
+      // Fallback to legacy flow
+      const { data: product, error: productError } = await supabase
+        .from("products")
+        .select("*")
+        .eq("active", true)
+        .order("created_at", { ascending: true })
+        .limit(1)
+        .maybeSingle();
+
+      if (productError) {
+        log("Product fetch error:", productError);
+        return jsonError("DB_ERROR_PRODUCT", 500);
+      }
+
+      priceCents = product?.price_cents ?? 50;
+      productId = product?.id ?? null;
     }
-
-    const priceCents = product?.price_cents ?? 50;
-    const productId = product?.id ?? null;
 
     // Create order (status=created) with a secure random access token
     const publicAccessToken = crypto.randomUUID();
@@ -62,6 +79,8 @@ Deno.serve(async (req) => {
       .from("orders")
       .insert({
         product_id: productId,
+        project_id: currentProjectId,
+        offer_id: currentOfferId,
         customer_name,
         customer_cpf,
         amount_cents: priceCents,
