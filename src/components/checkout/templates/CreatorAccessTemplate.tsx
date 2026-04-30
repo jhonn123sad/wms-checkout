@@ -1,7 +1,8 @@
  import React from "react";
  import { CheckoutTemplateProps } from "../types";
- import { Loader2, ShieldCheck, Zap, Lock, ArrowRight, User } from "lucide-react";
+ import { Loader2, ShieldCheck, Zap, Lock, ArrowRight, User, Star } from "lucide-react";
  import { InlinePixPanel } from "../InlinePixPanel";
+ import { CheckoutVisualAsset } from "../visuals/CheckoutVisualAsset";
  
  export const CreatorAccessTemplate: React.FC<CheckoutTemplateProps> = ({
    project,
@@ -51,32 +52,29 @@
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start w-full">
           {/* LEFT COLUMN: VISUAL HERO */}
           <div className="flex flex-col items-center lg:items-end space-y-6">
-            {/* HERO IMAGE / PLACEHOLDER COMPACT */}
-            <div className="w-full max-w-[340px] relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-purple-600/30 to-pink-600/30 rounded-[28px] blur opacity-40 group-hover:opacity-60 transition duration-1000"></div>
-              <div className="relative aspect-square rounded-[28px] overflow-hidden bg-black/40 border border-white/10 backdrop-blur-3xl flex items-center justify-center">
-                {theme.heroImageUrl ? (
-                  <img src={theme.heroImageUrl} alt="Acesso" className="w-full h-full object-cover" />
-                ) : (
-                  <div className="flex flex-col items-center gap-3 opacity-20">
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                      <User size={32} className="text-white" />
-                    </div>
-                    <span className="text-[10px] font-black tracking-widest uppercase">Premium Member</span>
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
-                <div className="absolute bottom-4 left-4 right-4">
-                  <div className="flex items-center gap-2.5 p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center font-bold text-xs text-white">A</div>
-                    <div>
-                      <p className="text-[8px] font-black uppercase tracking-wider opacity-40">Status</p>
-                      <p className="text-[11px] font-bold text-white">Conexão Segura</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+             {/* ÁREA VISUAL EDITÁVEL — pode substituir este asset/imagem sem alterar o Pix */}
+             <div className="w-full max-w-[340px] relative group">
+               <div className="absolute -inset-1 bg-gradient-to-r from-purple-600/40 to-pink-600/40 rounded-[28px] blur-lg opacity-40 group-hover:opacity-60 transition duration-1000"></div>
+               <div className="relative aspect-square rounded-[28px] overflow-hidden bg-black/40 border border-white/10 backdrop-blur-3xl shadow-2xl">
+                 {theme.heroImageUrl ? (
+                   <img src={theme.heroImageUrl} alt="Acesso" className="w-full h-full object-cover" />
+                 ) : (
+                   <CheckoutVisualAsset type="creator" className="w-full h-full" />
+                 )}
+                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
+                 <div className="absolute bottom-4 left-4 right-4">
+                   <div className="flex items-center gap-2.5 p-3 rounded-xl bg-black/40 border border-white/10 backdrop-blur-md">
+                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center font-bold text-xs text-white">
+                       <Star size={12} fill="currentColor" />
+                     </div>
+                     <div>
+                       <p className="text-[8px] font-black uppercase tracking-wider opacity-40">Status</p>
+                       <p className="text-[11px] font-bold text-white tracking-tight">Conexão Segura Ativa</p>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+             </div>
 
             {/* QUICK BENEFITS PILLS */}
             <div className="grid grid-cols-2 gap-3 w-full max-w-[340px]">
@@ -109,16 +107,17 @@
                 </div>
               </div>
 
-              {paymentData ? (
-                <InlinePixPanel 
-                  paymentData={paymentData}
-                  paymentStatus={paymentStatus || "waiting_payment"}
-                  onReset={onResetPayment || (() => {})}
-                  formatPrice={formatPrice}
-                  theme={theme}
-                />
-              ) : (
-                <form onSubmit={onSubmit} className="space-y-5">
+               {/* NÃO ALTERAR onSubmit, formData, setFormData, isLoading ou lógica de pagamento */}
+               {paymentData ? (
+                 <InlinePixPanel 
+                   paymentData={paymentData}
+                   paymentStatus={paymentStatus || "waiting_payment"}
+                   onReset={onResetPayment || (() => {})}
+                   formatPrice={formatPrice}
+                   theme={theme}
+                 />
+               ) : (
+                 <form onSubmit={onSubmit} className="space-y-5">
                   {requiredFields.collect_name && (
                     <div className="space-y-2">
                       <label className="text-[10px] font-bold uppercase tracking-widest opacity-40 ml-1">Nome completo</label>
