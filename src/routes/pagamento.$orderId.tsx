@@ -17,8 +17,8 @@ export const Route = createFileRoute("/pagamento/$orderId")({
       token: search.token as string | undefined,
     };
   },
-  loader: async ({ params, search }) => {
-    const token = (search as PaymentSearch).token;
+  loader: async ({ params, deps }) => {
+    const token = (deps as any).token;
     if (!token) {
       console.error("[Loader] Token de acesso não fornecido na URL");
     }
@@ -37,6 +37,7 @@ export const Route = createFileRoute("/pagamento/$orderId")({
     if (json?.error) throw new Error(json.error);
     return json;
   },
+  loaderDeps: ({ search: { token } }) => ({ token }),
   component: PaymentReal,
   errorComponent: ({ error, reset }) => {
     const router = useRouter();
