@@ -9,9 +9,18 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const url = new URL(req.url);
-    const orderId = url.searchParams.get("orderId") || "";
-    const token = url.searchParams.get("token") || "";
+    let orderId = "";
+    let token = "";
+
+    if (req.method === "POST") {
+      const body = await req.json();
+      orderId = body.orderId || "";
+      token = body.token || "";
+    } else {
+      const url = new URL(req.url);
+      orderId = url.searchParams.get("orderId") || "";
+      token = url.searchParams.get("token") || "";
+    }
 
     if (!orderId || !token) {
       return json({ error: "ORDER_ID_AND_TOKEN_REQUIRED" }, 400);

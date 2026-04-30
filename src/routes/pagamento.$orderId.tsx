@@ -3,7 +3,8 @@
  * Página de exibição do Pix e monitoramento de pagamento (Polling).
  */
 import { useEffect, useState } from "react";
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter, useSearch } from "@tanstack/react-router";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AlertCircle, RefreshCw } from "lucide-react";
 
@@ -23,22 +24,28 @@ export const Route = createFileRoute("/pagamento/$orderId")({
       console.error("[Loader] Token de acesso não fornecido na URL");
     }
 
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-    const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+    if (!token) {
+      console.error("[Loader] Token de acesso ausente na URL");
+      throw new Error("TOKEN_MISSING");
+    }
+
     const orderId = params.orderId;
     if (!orderId) throw new Error("ORDER_ID_MISSING");
 
-    const url = `${supabaseUrl}/functions/v1/get-order-payment-data?orderId=${encodeURIComponent(orderId)}&token=${encodeURIComponent(token || "")}`;
-    const resp = await fetch(url, {
-      headers: {
-        apikey: supabaseKey,
-        Authorization: `Bearer ${supabaseKey}`,
-      },
+    console.log("[Loader] Buscando dados de pagamento para:", { orderId, hasToken: !!token });
+
+    const { data, error } = await supabase.functions.invoke("get-order-payment-data", {
+      body: { orderId, token },
+      method: 'POST'
     });
-    if (!resp.ok) throw new Error(`HTTP_${resp.status}`);
-    const json = await resp.json();
-    if (json?.error) throw new Error(json.error);
-    return json;
+
+    if (error) {
+      console.error("[Loader] Erro ao invocar function:", error);
+      throw error;
+    }
+    
+    if (data?.error) throw new Error(data.error);
+    return data;
   },
   loaderDeps: ({ search: { token } }) => ({ token }),
   component: PaymentReal,
@@ -83,36 +90,27 @@ export const Route = createFileRoute("/pagamento/$orderId")({
 function PaymentReal() {
   const loaderData = Route.useLoaderData();
   const router = useRouter();
-  const [currentStatus, setCurrentStatus] = useState(loaderData?.status || "pendente");
+  const search = useSearch({ from: '/pagamento/$orderId' }) as PaymentSearch;
+  const token = search.token;
+  const [currentStatus, setCurrentStatus] = useState(loaderData?.status || "waiting_payment");
 
   useEffect(() => {
-    if (currentStatus === 'paid') return;
-    const token = (Route.useSearch() as PaymentSearch).token;
+    if (currentStatus === 'paid' || !token || !loaderData?.orderId) return;
 
-    const orderId = loaderData?.orderId;
-    if (!orderId) return;
-
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-    const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-    const statusUrl = `${supabaseUrl}/functions/v1/get-order-status?orderId=${encodeURIComponent(orderId)}&token=${encodeURIComponent(token || "")}`;
-
-    console.log("[polling] Inicando verificação de status para order:", orderId);
+    const orderId = loaderData.orderId;
+    console.log("[polling] Iniciando verificação de status para order:", orderId);
 
     const checkStatus = async () => {
       try {
-        const resp = await fetch(statusUrl, {
-          headers: {
-            apikey: supabaseKey,
-            Authorization: `Bearer ${supabaseKey}`,
-          },
+        const { data, error } = await supabase.functions.invoke("get-order-status", {
+          body: { orderId, token },
+          method: 'POST'
         });
-        
-        if (!resp.ok) {
-          console.error("[polling] Falha ao verificar status:", resp.status);
+
+        if (error) {
+          console.error("[polling] Erro ao verificar status:", error);
           return;
         }
-
-        const data = await resp.json();
         console.log("[polling] Status recebido:", data.status, "Redirect URL:", data.thank_you_url);
         
         if (data.status === 'paid') {
@@ -155,8 +153,28 @@ function PaymentReal() {
   const hasQrCode = data.qr_code.length > 0;
   const hasQrImage = data.qr_code_base64 !== null;
 
+  const isTokenMissing = !token;
+
+  if (isTokenMissing) {
+    return (
+      <div className="min-h-screen bg-[#F5F5F7] flex flex-col items-center justify-center p-6 text-center font-sans">
+        <div className="w-full max-w-[440px] bg-white rounded-[24px] shadow-sm border border-[#D2D2D7]/30 p-8 flex flex-col items-center">
+          <div className="h-12 w-12 rounded-full bg-amber-50 flex items-center justify-center mb-4">
+            <AlertCircle className="h-6 w-6 text-amber-500" />
+          </div>
+          <h1 className="text-xl font-bold text-[#1D1D1F] mb-2">Link incompleto</h1>
+          <p className="text-[#86868B] text-sm mb-8 leading-relaxed">
+            O link de pagamento é inválido ou está incompleto. Por favor, utilize o link original enviado para você.
+          </p>
+          <Link to="/" className="w-full bg-black text-white h-12 rounded-xl font-semibold text-sm flex items-center justify-center transition-all">
+            Voltar ao início
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-[#F5F5F7] text-[#1D1D1F] font-sans flex flex-col items-center justify-center p-4 md:p-6 overflow-x-hidden">
       <div className="w-full max-w-[440px] bg-white rounded-[24px] shadow-sm border border-[#D2D2D7]/30 p-8 md:p-10 flex flex-col items-center">
         
         {/* Status Badge */}
