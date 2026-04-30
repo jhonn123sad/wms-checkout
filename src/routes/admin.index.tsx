@@ -48,9 +48,10 @@ function AdminDashboard() {
      return (
        <div className="flex items-center justify-center h-48">
          <div className="text-gray-500">Carregando dashboard...</div>
-       </div>
-     );
-   }
+      </div>
+    </div>
+  );
+}
 
   return (
     <div className="space-y-8">
