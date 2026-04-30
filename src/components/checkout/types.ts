@@ -15,4 +15,16 @@
    error?: string | null;
    onSubmit: (e?: React.FormEvent) => void;
    formatPrice: (cents: number) => string;
+ 
+   // Inline Pix props
+   paymentData?: {
+     orderId: string;
+     accessToken: string;
+     amount_cents: number;
+     qr_code: string;
+     qr_code_base64: string;
+   } | null;
+   paymentStatus?: string;
+   isPollingPayment?: boolean;
+   onResetPayment?: () => void;
  }
