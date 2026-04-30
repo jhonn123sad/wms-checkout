@@ -42,11 +42,9 @@ export const Route = createFileRoute("/pagamento/$orderId")({
   },
   loaderDeps: ({ search: { token } }) => ({ token }),
   component: PaymentReal,
-  errorComponent: ({ error, reset, params, search }) => {
+  errorComponent: ({ error, reset }) => {
     const router = useRouter();
-    const token = (search as any)?.token;
-
-    console.error("[Payment Error]", { error, params, tokenPresent: !!token });
+    console.error("[Payment Error]", error);
 
     return (
       <div className="min-h-screen bg-[#F5F5F7] flex flex-col items-center justify-center p-6 text-center font-sans">
