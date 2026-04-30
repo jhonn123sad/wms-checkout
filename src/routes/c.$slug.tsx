@@ -107,8 +107,8 @@ export const Route = createFileRoute("/c/$slug")({
     setUtms(capturedUtms);
   }, [searchParams]);
 
-   const theme: ThemeConfig = (project.theme_json as any) || {};
-   const content: ContentConfig = (project.content_json as any) || {};
+   const theme: ThemeConfig = (project as any).theme_json || {};
+   const content: ContentConfig = (project as any).content_json || {};
  
    // Fallback values
    const styles = {
