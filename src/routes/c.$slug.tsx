@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2, ShieldCheck } from "lucide-react";
 
-export const Route = createFileRoute("/c/")({
+export const Route = createFileRoute("/c/$slug")({
   loader: async ({ params }) => {
     const { data: project, error: pError } = await supabase
       .from("checkout_projects")
