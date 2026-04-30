@@ -47,12 +47,11 @@ function Index() {
         throw new Error(data?.error || "UNKNOWN_ERROR");
       }
 
-      console.log("[Home] Pix gerado com sucesso, navegando para:", data.orderId, "com token:", data.accessToken);
+      console.log("[Home] Pix gerado com sucesso, orderId:", data.orderId, "hasToken:", !!data.accessToken);
       navigate({ 
-        to: `/pagamento/$orderId`, 
-        params: { orderId: data.orderId },
-        search: { token: data.accessToken }
-      });
+        to: `/pagamento/${data.orderId}`, 
+        search: { token: data.accessToken } 
+      } as any);
      } catch (err: any) {
        console.error("Erro na integração real:", err);
 
