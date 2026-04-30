@@ -49,6 +49,7 @@ Deno.serve(async (req) => {
     let productId = null;
     let currentProjectId = body?.project_id || null;
     let currentOfferId = body?.offer_id || null;
+    let expirationMinutes = 30; // Default
 
     if (project_slug) {
       log("Searching project by slug:", project_slug);
@@ -80,6 +81,7 @@ Deno.serve(async (req) => {
       currentProjectId = project.id;
       currentOfferId = offer.id;
       priceCents = offer.price_cents;
+      expirationMinutes = project.pix_expiration_minutes || 30;
 
       // Dynamic Validations
       if (project.collect_name && (!customer_name || customer_name.length < 3)) {
@@ -131,6 +133,10 @@ Deno.serve(async (req) => {
     // Create order (status=created) with a secure random access token
     const publicAccessToken = crypto.randomUUID();
     
+    // Calculate expires_at
+    const expiresAt = new Date();
+    expiresAt.setMinutes(expiresAt.getMinutes() + expirationMinutes);
+    
     const { data: order, error: orderError } = await supabase
       .from("orders")
       .insert({
@@ -143,6 +149,7 @@ Deno.serve(async (req) => {
         customer_email,
         amount_cents: priceCents,
         status: "created",
+        expires_at: expiresAt.toISOString(),
         utm_source,
         utm_medium,
         utm_campaign,
