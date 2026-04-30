@@ -24,7 +24,9 @@
   */
  export const CheckoutCoreContainer: React.FC<CheckoutCoreContainerProps> = ({ project, offer }) => {
    const navigate = useNavigate();
-   const searchParams = useSearch({ strict: false }) as any;
+   const searchParams = useSearch({ strict: false }) as Record<string, any>;
+   const isPreviewMode = searchParams.previewPix === "1" || searchParams.previewPix === 1;
+ 
    const [isLoading, setIsLoading] = useState(false);
    const [paymentData, setPaymentData] = useState<any>(null);
    const [paymentStatus, setPaymentStatus] = useState("waiting_payment");
@@ -32,6 +34,22 @@
    const [formData, setFormData] = useState<Record<string, string>>({});
    const [utms, setUtms] = useState<Record<string, string>>({});
    const [error, setError] = useState<string | null>(null);
+ 
+ 
+   // Handle Preview Mode
+   useEffect(() => {
+     if (isPreviewMode && !paymentData) {
+       console.log("[Core] Ativando modo preview visual do Pix");
+       setPaymentData({
+         orderId: "preview",
+         accessToken: "preview",
+         qr_code: "00020101021226800014BR.GOV.BCB.PIX2558preview-pix-copia-e-cola-demo-para-design520400005303986540512.345802BR5920CHECKOUT PREVIEW6009SAO PAULO62070503***6304ABCD",
+         qr_code_base64: "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==", // Transparent pixel or placeholder
+         amount_cents: offer.price_cents,
+         status: "waiting_payment"
+       });
+     }
+   }, [isPreviewMode, offer.price_cents, paymentData]);
  
    useEffect(() => {
      const capturedUtms: Record<string, string> = {};
@@ -61,7 +79,12 @@
  
    const handleSubmit = async (e?: React.FormEvent) => {
      if (e) e.preventDefault();
-     
+ 
+     if (isPreviewMode) {
+       toast.info("Modo Preview: Pix não será gerado na rede real.");
+       return;
+     }
+ 
      // Validations
      if (requiredFields.collect_name && !formData.name) return toast.error("Preencha o nome completo");
      if (requiredFields.collect_cpf && !formData.cpf) return toast.error("Preencha o CPF");
@@ -106,7 +129,7 @@
  
    // Polling Logic
    useEffect(() => {
-     if (!isPolling || !paymentData?.orderId || !paymentData?.accessToken || paymentStatus === 'paid') return;
+     if (!isPolling || !paymentData?.orderId || !paymentData?.accessToken || paymentStatus === 'paid' || isPreviewMode) return;
 
      let pollCount = 0;
      const maxPolls = (15 * 60) / 7; // 15 minutes, every 7 seconds
@@ -186,5 +209,14 @@
                     theme.template === 'custom-editable' ? CustomEditableTemplate :
                     AppleCleanTemplate);
  
-   return <Component {...templateProps} />;
+    return (
+      <>
+        {isPreviewMode && (
+          <div className="fixed top-4 right-4 z-[9999] bg-yellow-500 text-black text-[10px] font-bold px-3 py-1 rounded-full shadow-lg border border-yellow-600 animate-pulse">
+            Preview visual do Pix
+          </div>
+        )}
+        <Component {...templateProps} />
+      </>
+    );
  };
