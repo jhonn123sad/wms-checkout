@@ -30,6 +30,7 @@ export type Database = {
           pix_qr_code: string | null
           pix_qr_code_base64: string | null
           product_id: string | null
+          public_access_token: string | null
           pushinpay_transaction_id: string | null
           status: string
           updated_at: string | null
@@ -54,6 +55,7 @@ export type Database = {
           pix_qr_code?: string | null
           pix_qr_code_base64?: string | null
           product_id?: string | null
+          public_access_token?: string | null
           pushinpay_transaction_id?: string | null
           status?: string
           updated_at?: string | null
@@ -78,6 +80,7 @@ export type Database = {
           pix_qr_code?: string | null
           pix_qr_code_base64?: string | null
           product_id?: string | null
+          public_access_token?: string | null
           pushinpay_transaction_id?: string | null
           status?: string
           updated_at?: string | null
