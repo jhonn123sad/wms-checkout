@@ -1,0 +1,52 @@
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { corsHeaders } from "../_shared/cors.ts";
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+
+  try {
+    const url = new URL(req.url);
+    const orderId = url.searchParams.get("orderId");
+    if (!orderId) return json({ error: "ORDER_ID_REQUIRED" }, 400);
+
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    );
+
+    const { data: order, error } = await supabase
+      .from("orders")
+      .select("id,status,paid_at,product_id")
+      .eq("id", orderId)
+      .maybeSingle();
+
+    if (error || !order) return json({ error: "NOT_FOUND" }, 404);
+
+    let thank_you_url: string | null = null;
+    if (order.status === "paid" && order.product_id) {
+      const { data: product } = await supabase
+        .from("products")
+        .select("thank_you_url")
+        .eq("id", order.product_id)
+        .maybeSingle();
+      thank_you_url = product?.thank_you_url ?? Deno.env.get("THANK_YOU_URL") ?? null;
+    }
+
+    return json({
+      orderId: order.id,
+      status: order.status,
+      paid_at: order.paid_at,
+      thank_you_url,
+    });
+  } catch (err) {
+    console.error("[get-order-status]", err);
+    return json({ error: "UNHANDLED_ERROR" }, 500);
+  }
+});
+
+function json(payload: unknown, status = 200) {
+  return new Response(JSON.stringify(payload), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+}
