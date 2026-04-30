@@ -2,6 +2,7 @@
  import { CheckoutTemplateProps } from "../types";
  import { Loader2, ShieldCheck, Sparkles, Zap, ArrowRight, Camera, Scissors, Palette, UserCheck } from "lucide-react";
  import { InlinePixPanel } from "../InlinePixPanel";
+ import { CheckoutVisualAsset } from "../visuals/CheckoutVisualAsset";
  
  export const VisagismoAITemplate: React.FC<CheckoutTemplateProps> = ({
    project,
@@ -65,25 +66,22 @@
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start w-full">
           {/* LEFT: CONTENT & TECH VISUAL COMPACT */}
           <div className="flex flex-col items-center lg:items-end space-y-6">
-            {/* AI ANALYSIS VISUAL COMPACT */}
-            <div className="relative group w-full max-w-[340px]">
-              <div className="absolute inset-0 bg-indigo-500/5 rounded-2xl blur-2xl opacity-50"></div>
-              <div className="relative aspect-square rounded-3xl border border-white shadow-xl overflow-hidden bg-slate-50">
-                {theme.heroImageUrl ? (
-                  <img src={theme.heroImageUrl} alt="Análise IA" className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center relative bg-slate-100">
-                    <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#6366f1 0.5px, transparent 0.5px)', backgroundSize: '16px 16px' }}></div>
-                    <div className="z-10 flex flex-col items-center gap-3">
-                      <div className="w-16 h-16 rounded-full border border-dashed border-indigo-300 flex items-center justify-center">
-                        <Camera size={24} className="text-indigo-400" />
-                      </div>
-                      <p className="text-[9px] font-black uppercase tracking-[0.3em] text-indigo-400">Scanning...</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
+             {/* ÁREA VISUAL EDITÁVEL — pode substituir este asset/imagem sem alterar o Pix */}
+             <div className="relative group w-full max-w-[340px]">
+               <div className="absolute -inset-4 bg-indigo-500/10 rounded-3xl blur-2xl opacity-40"></div>
+               <div className="relative aspect-square rounded-3xl border border-white shadow-2xl overflow-hidden bg-slate-50 transition-transform duration-500 group-hover:scale-[1.02]">
+                 {theme.heroImageUrl ? (
+                   <img src={theme.heroImageUrl} alt="Análise IA" className="w-full h-full object-cover" />
+                 ) : (
+                   <CheckoutVisualAsset type="visagismo" className="w-full h-full" />
+                 )}
+                 <div className="absolute top-4 left-4">
+                   <div className="bg-indigo-600/10 backdrop-blur-md border border-indigo-600/20 px-2 py-1 rounded-lg">
+                     <p className="text-[8px] font-black text-indigo-600 uppercase tracking-widest">Digital Scanner V2.0</p>
+                   </div>
+                 </div>
+               </div>
+             </div>
 
             {/* QUICK FEATURES GRID */}
             <div className="grid grid-cols-2 gap-3 w-full max-w-[340px]">
@@ -117,18 +115,19 @@
                 </div>
               </div>
 
-              {paymentData ? (
-                  <div className="relative z-10">
-                    <InlinePixPanel 
-                      paymentData={paymentData}
-                      paymentStatus={paymentStatus || "waiting_payment"}
-                      onReset={onResetPayment || (() => {})}
-                      formatPrice={formatPrice}
-                      theme={theme}
-                    />
-                  </div>
-                ) : (
-                  <form onSubmit={onSubmit} className="relative space-y-5">
+               {/* NÃO ALTERAR onSubmit, formData, setFormData, isLoading ou lógica de pagamento */}
+               {paymentData ? (
+                   <div className="relative z-10">
+                     <InlinePixPanel 
+                       paymentData={paymentData}
+                       paymentStatus={paymentStatus || "waiting_payment"}
+                       onReset={onResetPayment || (() => {})}
+                       formatPrice={formatPrice}
+                       theme={theme}
+                     />
+                   </div>
+                 ) : (
+                   <form onSubmit={onSubmit} className="relative space-y-5">
                     {requiredFields.collect_name && (
                       <div className="space-y-1.5">
                         <label className="text-xs font-bold text-slate-400 ml-1">Nome Completo</label>
