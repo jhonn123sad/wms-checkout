@@ -14,6 +14,104 @@ export type Database = {
   }
   public: {
     Tables: {
+      checkout_offers: {
+        Row: {
+          active: boolean | null
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          price_cents: number
+          project_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          price_cents: number
+          project_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          price_cents?: number
+          project_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checkout_offers_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "checkout_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      checkout_projects: {
+        Row: {
+          active: boolean | null
+          collect_cpf: boolean | null
+          collect_email: boolean | null
+          collect_name: boolean | null
+          collect_phone: boolean | null
+          created_at: string | null
+          headline: string | null
+          id: string
+          legal_text: string | null
+          name: string
+          pix_expiration_minutes: number | null
+          slug: string
+          subheadline: string | null
+          thank_you_url: string | null
+          theme_json: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          active?: boolean | null
+          collect_cpf?: boolean | null
+          collect_email?: boolean | null
+          collect_name?: boolean | null
+          collect_phone?: boolean | null
+          created_at?: string | null
+          headline?: string | null
+          id?: string
+          legal_text?: string | null
+          name: string
+          pix_expiration_minutes?: number | null
+          slug: string
+          subheadline?: string | null
+          thank_you_url?: string | null
+          theme_json?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          active?: boolean | null
+          collect_cpf?: boolean | null
+          collect_email?: boolean | null
+          collect_name?: boolean | null
+          collect_phone?: boolean | null
+          created_at?: string | null
+          headline?: string | null
+          id?: string
+          legal_text?: string | null
+          name?: string
+          pix_expiration_minutes?: number | null
+          slug?: string
+          subheadline?: string | null
+          thank_you_url?: string | null
+          theme_json?: Json | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           amount_cents: number
@@ -24,12 +122,14 @@ export type Database = {
           expires_at: string | null
           id: string
           metadata: Json | null
+          offer_id: string | null
           paid_at: string | null
           payer_name: string | null
           payer_national_registration: string | null
           pix_qr_code: string | null
           pix_qr_code_base64: string | null
           product_id: string | null
+          project_id: string | null
           public_access_token: string | null
           pushinpay_transaction_id: string | null
           status: string
@@ -49,12 +149,14 @@ export type Database = {
           expires_at?: string | null
           id?: string
           metadata?: Json | null
+          offer_id?: string | null
           paid_at?: string | null
           payer_name?: string | null
           payer_national_registration?: string | null
           pix_qr_code?: string | null
           pix_qr_code_base64?: string | null
           product_id?: string | null
+          project_id?: string | null
           public_access_token?: string | null
           pushinpay_transaction_id?: string | null
           status?: string
@@ -74,12 +176,14 @@ export type Database = {
           expires_at?: string | null
           id?: string
           metadata?: Json | null
+          offer_id?: string | null
           paid_at?: string | null
           payer_name?: string | null
           payer_national_registration?: string | null
           pix_qr_code?: string | null
           pix_qr_code_base64?: string | null
           product_id?: string | null
+          project_id?: string | null
           public_access_token?: string | null
           pushinpay_transaction_id?: string | null
           status?: string
@@ -92,10 +196,24 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "orders_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: false
+            referencedRelation: "checkout_offers"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "orders_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
             referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "checkout_projects"
             referencedColumns: ["id"]
           },
         ]
