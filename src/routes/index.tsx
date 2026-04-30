@@ -27,11 +27,22 @@ function Index() {
         }
       });
       navigate({ to: `/pagamento/$orderId`, params: { orderId: result.orderId } });
-    } catch (err) {
-      console.error("Erro na integração real:", err);
-      toast.info("Integração ainda não configurada. Exibindo modo de demonstração.");
-      navigate({ to: "/pagamento/demo-preview" });
-    } finally {
+     } catch (err: any) {
+       console.error("Erro na integração real:", err);
+       
+       let errorMessage = "Não foi possível gerar o Pix real.";
+       if (err.message?.includes("CONFIG_MISSING_PUSHINPAY_API_TOKEN")) {
+         errorMessage = "Erro de configuração: Token da Pushin Pay ausente.";
+       } else if (err.message?.includes("CONFIG_MISSING_PUSHINPAY_BASE_URL")) {
+         errorMessage = "Erro de configuração: URL da Pushin Pay ausente.";
+       } else if (err.message?.includes("API_ERROR")) {
+         errorMessage = "A API de pagamentos retornou um erro.";
+       }
+
+       toast.error(errorMessage);
+       toast.info("Exibindo modo de demonstração como alternativa.");
+       navigate({ to: "/pagamento/demo-preview" });
+     } finally {
       setLoading(false);
     }
   };
