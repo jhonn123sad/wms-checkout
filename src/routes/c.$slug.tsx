@@ -161,10 +161,52 @@ export const Route = createFileRoute("/c/$slug")({
     }
   };
 
-  const formattedPrice = (offer.price_cents / 100).toLocaleString('pt-BR', {
-    style: 'currency',
-    currency: 'BRL'
-  });
+   const formattedPrice = (offer.price_cents / 100).toLocaleString('pt-BR', {
+     style: 'currency',
+     currency: 'BRL'
+   });
+ 
+   const renderBenefits = () => {
+     if (!content.benefits || content.benefits.length === 0) return null;
+     return (
+       <div className="w-full space-y-3 my-8">
+         {content.benefits.map((benefit, idx) => (
+           <div key={idx} className="flex gap-3">
+             <CheckCircle2 size={18} className="shrink-0 mt-0.5" style={{ color: styles.accent }} />
+             <span className="text-sm leading-snug" style={{ color: styles.text }}>{benefit}</span>
+           </div>
+         ))}
+       </div>
+     );
+   };
+ 
+   const renderGuarantee = () => {
+     if (!content.guaranteeText) return null;
+     return (
+       <div className="w-full mt-8 p-6 rounded-2xl border flex flex-col items-center text-center gap-3" 
+            style={{ borderColor: styles.template === 'dark-premium' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)', backgroundColor: 'rgba(0,0,0,0.02)' }}>
+         <Shield size={32} style={{ color: styles.accent }} />
+         <div>
+           <h4 className="font-bold text-sm" style={{ color: styles.text }}>{content.guaranteeTitle || "Garantia de Satisfação"}</h4>
+           <p className="text-xs mt-1 leading-relaxed" style={{ color: styles.muted }}>{content.guaranteeText}</p>
+         </div>
+       </div>
+     );
+   };
+ 
+   const renderProductBox = () => (
+     <div className="w-full rounded-2xl p-5 mb-8 flex justify-between items-center border" 
+          style={{ 
+            backgroundColor: theme.template === 'dark-premium' ? 'rgba(255,255,255,0.03)' : '#F5F5F7',
+            borderColor: theme.template === 'dark-premium' ? 'rgba(255,255,255,0.05)' : 'transparent'
+          }}>
+       <div className="flex-1 pr-4">
+         <h2 className="font-bold text-base" style={{ color: styles.text }}>{offer.name}</h2>
+         <p className="text-xs mt-0.5 line-clamp-2" style={{ color: styles.muted }}>{offer.description}</p>
+       </div>
+       <div className="text-xl font-black shrink-0" style={{ color: styles.text }}>{formattedPrice}</div>
+     </div>
+   );
 
    const renderCheckoutForm = () => (
      <form onSubmit={handleGeneratePix} className="w-full space-y-4">
