@@ -1,3 +1,7 @@
+/**
+ * CHECKOUT CORE - NÃO ALTERAR SEM TESTE DE REGRESSÃO
+ * Página inicial de checkout (Home). Inicia o fluxo de pagamento.
+ */
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
