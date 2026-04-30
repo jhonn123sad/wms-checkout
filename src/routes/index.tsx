@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { createPix } from "@/server/payments.functions";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
@@ -20,27 +20,34 @@ function Index() {
 
     setLoading(true);
     try {
-      const result = await createPix({
-        data: {
+      const { data, error } = await supabase.functions.invoke("create-pix", {
+        body: {
           customer_name: formData.name,
-          customer_cpf: formData.cpf
-        }
+          customer_cpf: formData.cpf,
+        },
       });
-      navigate({ to: `/pagamento/$orderId`, params: { orderId: result.orderId } });
+
+      if (error) throw error;
+      if (!data || data.error) throw new Error(data?.error || "UNKNOWN_ERROR");
+
+      navigate({ to: `/pagamento/$orderId`, params: { orderId: data.orderId } });
      } catch (err: any) {
        console.error("Erro na integração real:", err);
-       
-       let errorMessage = "Não foi possível gerar o Pix real.";
-       if (err.message?.includes("CONFIG_MISSING_PUSHINPAY_API_TOKEN")) {
-         errorMessage = "Erro de configuração: Token da Pushin Pay ausente.";
-       } else if (err.message?.includes("CONFIG_MISSING_PUSHINPAY_BASE_URL")) {
-         errorMessage = "Erro de configuração: URL da Pushin Pay ausente.";
-       } else if (err.message?.includes("API_ERROR")) {
-         errorMessage = "A API de pagamentos retornou um erro.";
-       }
 
-       toast.error(errorMessage);
-       toast.info("Exibindo modo de demonstração como alternativa.");
+      const msg = String(err?.message || "");
+      let errorMessage = "Não foi possível gerar o Pix real.";
+      if (msg.includes("CONFIG_MISSING_PUSHINPAY_API_TOKEN")) {
+        errorMessage = "Erro de configuração: Token da Pushin Pay ausente.";
+      } else if (msg.includes("CONFIG_MISSING_PUSHINPAY_BASE_URL")) {
+        errorMessage = "Erro de configuração: URL da Pushin Pay ausente.";
+      } else if (msg.includes("CPF_INVALID")) {
+        errorMessage = "CPF inválido.";
+      } else if (msg.includes("API_ERROR")) {
+        errorMessage = "A API de pagamentos retornou um erro.";
+      }
+
+      toast.error(errorMessage);
+      toast.info("Exibindo modo de demonstração como alternativa.");
        navigate({ to: "/pagamento/demo-preview" });
      } finally {
       setLoading(false);

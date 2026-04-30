@@ -1,1 +1,13 @@
 project_id = "rqassaxkbntpcwhvevyi"
+
+[functions.create-pix]
+verify_jwt = false
+
+[functions.get-order-payment-data]
+verify_jwt = false
+
+[functions.get-order-status]
+verify_jwt = false
+
+[functions.pushinpay-webhook]
+verify_jwt = false

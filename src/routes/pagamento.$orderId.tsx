@@ -1,15 +1,22 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { getOrderData } from "@/server/payments.functions";
 import { toast } from "sonner";
 import { AlertCircle, RefreshCw } from "lucide-react";
 
 export const Route = createFileRoute("/pagamento/$orderId")({
   loader: async ({ params }) => {
-    try {
-      return await getOrderData({ data: { orderId: params.orderId } });
-    } catch (err) {
-      throw err;
-    }
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+    const url = `${supabaseUrl}/functions/v1/get-order-payment-data?orderId=${encodeURIComponent(params.orderId)}`;
+    const resp = await fetch(url, {
+      headers: {
+        apikey: supabaseKey,
+        Authorization: `Bearer ${supabaseKey}`,
+      },
+    });
+    if (!resp.ok) throw new Error(`HTTP_${resp.status}`);
+    const json = await resp.json();
+    if (json?.error) throw new Error(json.error);
+    return json;
   },
   component: PaymentReal,
   errorComponent: ({ error, reset }) => {
