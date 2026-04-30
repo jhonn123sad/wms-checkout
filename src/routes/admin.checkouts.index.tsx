@@ -3,7 +3,8 @@
  import { useState, useEffect } from "react";
  import { Button } from "@/components/ui/button";
  import { Card } from "@/components/ui/card";
- import { Plus, Edit, ExternalLink, Users } from "lucide-react";
+import { Plus, Edit, ExternalLink, Users, Copy, Trash2 } from "lucide-react";
+import { toast } from "sonner";
  import { Badge } from "@/components/ui/badge";
  
  export const Route = createFileRoute("/admin/checkouts/")({
@@ -18,17 +19,59 @@
      fetchCheckouts();
    }, []);
  
-   const fetchCheckouts = async () => {
-     const { data, error } = await supabase
-       .from("checkouts")
-       .select("*, checkout_leads(count)")
-       .order("created_at", { ascending: false });
- 
-     if (!error) {
-       setCheckouts(data);
-     }
-     setLoading(false);
-   };
+  const fetchCheckouts = async () => {
+    const { data, error } = await supabase
+      .from("checkouts")
+      .select("*, checkout_leads(count)")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      toast.error("Erro ao carregar checkouts");
+    } else {
+      setCheckouts(data);
+    }
+    setLoading(false);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Deseja realmente excluir este checkout?")) return;
+    const { error } = await supabase.from("checkouts").delete().eq("id", id);
+    if (error) {
+      toast.error("Erro ao excluir checkout");
+    } else {
+      toast.success("Checkout excluído");
+      fetchCheckouts();
+    }
+  };
+
+  const handleDuplicate = async (checkout: any) => {
+    const { id, created_at, updated_at, checkout_leads, ...checkoutData } = checkout;
+    const newCheckout = {
+      ...checkoutData,
+      title: `${checkout.title} (Cópia)`,
+      slug: `${checkout.slug}-copy-${Math.floor(Math.random() * 1000)}`,
+      status: "draft"
+    };
+
+    const { data, error } = await supabase.from("checkouts").insert(newCheckout).select().single();
+    
+    if (error) {
+      toast.error("Erro ao duplicar checkout: " + error.message);
+    } else {
+      // Duplicar campos também
+      const { data: fields } = await supabase.from("checkout_fields").select("*").eq("checkout_id", id);
+      if (fields && fields.length > 0) {
+        const newFields = fields.map(({ id: fId, checkout_id, ...fData }) => ({
+          ...fData,
+          checkout_id: data.id
+        }));
+        await supabase.from("checkout_fields").insert(newFields);
+      }
+      
+      toast.success("Checkout duplicado");
+      fetchCheckouts();
+    }
+  };
  
    return (
      <div className="p-8 max-w-7xl mx-auto space-y-8">
@@ -101,6 +144,9 @@
                       >
                         <ExternalLink className="w-4 h-4" />
                       </a>
+                      <Button variant="ghost" size="icon" onClick={() => handleDuplicate(checkout)}>
+                        <Copy className="w-4 h-4" />
+                      </Button>
                       <Link 
                         to="/admin/checkouts/$id" 
                         params={{ id: checkout.id }}
@@ -108,6 +154,9 @@
                       >
                         <Edit className="w-4 h-4" />
                       </Link>
+                      <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10" onClick={() => handleDelete(checkout.id)}>
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
                     </div>
                  </div>
                </div>
