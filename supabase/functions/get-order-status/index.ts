@@ -9,9 +9,18 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const url = new URL(req.url);
-    const orderId = url.searchParams.get("orderId") || "";
-    const token = url.searchParams.get("token") || "";
+    let orderId = "";
+    let token = "";
+
+    if (req.method === "POST") {
+      const body = await req.json();
+      orderId = body.orderId || "";
+      token = body.token || "";
+    } else {
+      const url = new URL(req.url);
+      orderId = url.searchParams.get("orderId") || "";
+      token = url.searchParams.get("token") || "";
+    }
 
     if (!orderId || !token) {
       return json({ error: "ORDER_ID_AND_TOKEN_REQUIRED" }, 400);
@@ -30,18 +39,12 @@ Deno.serve(async (req) => {
       
     if (error || !order) return json({ error: "ORDER_NOT_FOUND" }, 404);
 
-    if (order.public_access_token !== token) {
+    const dbToken = (order.public_access_token || "").trim();
+    const providedToken = (token || "").trim();
+
+    if (dbToken !== providedToken) {
       return json({ error: "INVALID_TOKEN" }, 403);
     }
-
-    const { data: order, error } = await supabase
-      .from("orders")
-      .select("id,status,paid_at,product_id,project_id,public_access_token")
-      .eq("id", orderId)
-      .eq("public_access_token", token)
-      .maybeSingle();
-      
-    if (error || !order) return json({ error: "ORDER_NOT_FOUND_OR_INVALID_TOKEN" }, 404);
 
     let thank_you_url: string | null = null;
     if (order.status === "paid") {
