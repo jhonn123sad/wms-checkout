@@ -25,7 +25,10 @@ export const Route = createFileRoute("/pagamento/$orderId")({
 
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
     const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-    const url = `${supabaseUrl}/functions/v1/get-order-payment-data?orderId=${encodeURIComponent(params.orderId)}&token=${encodeURIComponent(token || "")}`;
+    const orderId = params.orderId;
+    if (!orderId) throw new Error("ORDER_ID_MISSING");
+
+    const url = `${supabaseUrl}/functions/v1/get-order-payment-data?orderId=${encodeURIComponent(orderId)}&token=${encodeURIComponent(token || "")}`;
     const resp = await fetch(url, {
       headers: {
         apikey: supabaseKey,
@@ -39,8 +42,12 @@ export const Route = createFileRoute("/pagamento/$orderId")({
   },
   loaderDeps: ({ search: { token } }) => ({ token }),
   component: PaymentReal,
-  errorComponent: ({ error, reset }) => {
+  errorComponent: ({ error, reset, params, search }) => {
     const router = useRouter();
+    const token = (search as any)?.token;
+
+    console.error("[Payment Error]", { error, params, tokenPresent: !!token });
+
     return (
       <div className="min-h-screen bg-[#F5F5F7] flex flex-col items-center justify-center p-6 text-center font-sans">
         <div className="w-full max-w-[440px] bg-white rounded-[24px] shadow-sm border border-[#D2D2D7]/30 p-8 flex flex-col items-center">

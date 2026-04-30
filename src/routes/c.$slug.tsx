@@ -98,11 +98,11 @@ function DynamicCheckout() {
         throw new Error(data?.error || error?.message || "Erro ao gerar Pix");
       }
 
+      console.log("[Dynamic] Pix gerado com sucesso, orderId:", data.orderId, "hasToken:", !!data.accessToken);
       navigate({ 
-        to: `/pagamento/$orderId`, 
-        params: { orderId: data.orderId },
-        search: { token: data.accessToken }
-      });
+        to: `/pagamento/${data.orderId}`, 
+        search: { token: data.accessToken } 
+      } as any);
     } catch (err: any) {
       toast.error(err.message || "Erro ao processar pagamento");
     } finally {
