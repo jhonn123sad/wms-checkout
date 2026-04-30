@@ -26,11 +26,19 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json().catch(() => ({}));
-    const customer_name = String(body?.customer_name || "").trim();
-    const customer_cpf = String(body?.customer_cpf || "").replace(/\D/g, "");
-    const project_id = body?.project_id || null;
-    const offer_id = body?.offer_id || null;
-    const utm = body?.utm || {};
+    const project_slug = body?.project_slug || null;
+    const customer_name = body?.customer_name ? String(body.customer_name).trim() : null;
+    const customer_cpf = body?.customer_cpf ? String(body.customer_cpf).replace(/\D/g, "") : null;
+    const customer_phone = body?.customer_phone ? String(body.customer_phone).replace(/\D/g, "") : null;
+    const customer_email = body?.customer_email ? String(body.customer_email).trim() : null;
+    
+    const utm_source = body?.utm_source || body?.utm?.utm_source || null;
+    const utm_medium = body?.utm_medium || body?.utm?.utm_medium || null;
+    const utm_campaign = body?.utm_campaign || body?.utm?.utm_campaign || null;
+    const utm_content = body?.utm_content || body?.utm?.utm_content || null;
+    const utm_term = body?.utm_term || body?.utm?.utm_term || null;
+
+    log("Request received:", { project_slug, customer_name, hasCpf: !!customer_cpf, customer_email, customer_phone });
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -39,11 +47,58 @@ Deno.serve(async (req) => {
 
     let priceCents = 50;
     let productId = null;
-    let currentProjectId = project_id;
-    let currentOfferId = offer_id;
+    let currentProjectId = body?.project_id || null;
+    let currentOfferId = body?.offer_id || null;
 
-    if (currentProjectId && currentOfferId) {
-      // Multi-checkout flow
+    if (project_slug) {
+      log("Searching project by slug:", project_slug);
+      const { data: project, error: pError } = await supabase
+        .from("checkout_projects")
+        .select("*")
+        .eq("slug", project_slug)
+        .eq("active", true)
+        .maybeSingle();
+
+      if (pError || !project) {
+        log("Project not found or inactive:", pError);
+        return jsonError("PROJECT_NOT_FOUND", 404);
+      }
+
+      const { data: offer, error: oError } = await supabase
+        .from("checkout_offers")
+        .select("*")
+        .eq("project_id", project.id)
+        .eq("active", true)
+        .limit(1)
+        .maybeSingle();
+
+      if (oError || !offer) {
+        log("Active offer not found for project:", oError);
+        return jsonError("OFFER_NOT_FOUND", 404);
+      }
+
+      currentProjectId = project.id;
+      currentOfferId = offer.id;
+      priceCents = offer.price_cents;
+
+      // Dynamic Validations
+      if (project.collect_name && (!customer_name || customer_name.length < 3)) {
+        return jsonError("NAME_REQUIRED", 400);
+      }
+      if (project.collect_cpf && (!customer_cpf || customer_cpf.length !== 11)) {
+        return jsonError("CPF_INVALID", 400);
+      }
+      if (project.collect_email && (!customer_email || !customer_email.includes("@"))) {
+        return jsonError("EMAIL_INVALID", 400);
+      }
+      if (project.collect_phone && (!customer_phone || customer_phone.length < 10)) {
+        return jsonError("PHONE_INVALID", 400);
+      }
+      
+      log("Dynamic validation passed for project:", project.name);
+    } else if (currentProjectId && currentOfferId) {
+      // Direct ID flow (for backward compatibility if needed)
+      log("Using project_id and offer_id directly");
       const { data: offer } = await supabase
         .from("checkout_offers")
         .select("*, project:checkout_projects(*)")
@@ -55,6 +110,7 @@ Deno.serve(async (req) => {
       priceCents = offer.price_cents;
     } else {
       // Fallback to legacy flow
+      log("Fallback to legacy flow (products table)");
       const { data: product, error: productError } = await supabase
         .from("products")
         .select("*")
@@ -83,13 +139,16 @@ Deno.serve(async (req) => {
         offer_id: currentOfferId,
         customer_name,
         customer_cpf,
+        customer_phone,
+        customer_email,
         amount_cents: priceCents,
         status: "created",
-        utm_source: utm.utm_source ?? null,
-        utm_medium: utm.utm_medium ?? null,
-        utm_campaign: utm.utm_campaign ?? null,
-        utm_content: utm.utm_content ?? null,
-        utm_term: utm.utm_term ?? null,
+        utm_source,
+        utm_medium,
+        utm_campaign,
+        utm_content,
+        utm_term,
+        metadata: project_slug ? { project_slug, project_id: currentProjectId } : {},
         public_access_token: publicAccessToken,
       })
       .select()
