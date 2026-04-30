@@ -68,7 +68,12 @@ function PageEditor() {
     if (sectionsError) {
       toast.error("Erro ao carregar seções");
     } else {
-      setSections(sectionsData || []);
+      setSections((sectionsData as any[])?.map(s => ({
+        id: s.id,
+        type: s.type as SectionType,
+        content: s.content,
+        sort_order: s.sort_order
+      })) || []);
     }
     setIsLoading(false);
   };
