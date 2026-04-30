@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { ArrowLeft, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Save } from "lucide-react";
+import { MediaField } from "@/components/admin/MediaField";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 
@@ -26,8 +27,7 @@ function CheckoutEditPage() {
     slug: "",
     price: 0,
     cta_text: "Liberar acesso agora",
-    media_type: "image",
-    media_url: "",
+    media_asset: null,
     active: true,
   });
   const [fields, setFields] = useState<any[]>([]);
@@ -46,7 +46,7 @@ function CheckoutEditPage() {
   const fetchCheckout = async () => {
     const { data, error } = await supabase
       .from("checkouts")
-      .select("*, checkout_fields(*)")
+      .select("*, checkout_fields(*), media_assets(*)")
       .eq("id", id)
       .single();
 
@@ -56,7 +56,15 @@ function CheckoutEditPage() {
       return;
     }
 
-    setCheckout(data);
+    setCheckout({
+      ...data,
+      media_asset: data.media_assets ? {
+        url: data.media_assets.url,
+        type: data.media_assets.type,
+        provider: data.media_assets.provider,
+        id: data.media_assets.id
+      } : (data.media_url ? { url: data.media_url, type: data.media_type, provider: 'external' } : null)
+    });
     setFields(data.checkout_fields.sort((a: any, b: any) => a.sort_order - b.sort_order));
   };
 
@@ -65,11 +73,34 @@ function CheckoutEditPage() {
     try {
       let checkoutId = id;
       
-      const checkoutPayload = { ...checkout };
-      delete checkoutPayload.checkout_fields;
-      delete checkoutPayload.id;
-      delete checkoutPayload.created_at;
-      delete checkoutPayload.updated_at;
+      let mediaAssetId = checkout.media_asset_id;
+      
+      if (checkout.media_asset && !checkout.media_asset.id) {
+        const { data: mediaData, error: mediaError } = await supabase
+          .from("media_assets")
+          .insert({
+            url: checkout.media_asset.url,
+            type: checkout.media_asset.type,
+            provider: checkout.media_asset.provider
+          })
+          .select()
+          .single();
+        if (mediaError) throw mediaError;
+        mediaAssetId = mediaData.id;
+      }
+
+      const checkoutPayload = {
+        title: checkout.title,
+        subtitle: checkout.subtitle,
+        slug: checkout.slug,
+        price: checkout.price,
+        cta_text: checkout.cta_text,
+        active: checkout.active,
+        media_asset_id: mediaAssetId,
+        media_url: checkout.media_asset?.url,
+        media_type: checkout.media_asset?.type,
+        updated_at: new Date().toISOString()
+      };
 
       if (isNew) {
         const { data, error } = await supabase
@@ -197,32 +228,11 @@ function CheckoutEditPage() {
           </Card>
 
           <Card className="p-6 space-y-4">
-            <h2 className="text-xl font-semibold border-b pb-2">Mídia</h2>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label>Tipo de Mídia</Label>
-                <Select 
-                  value={checkout.media_type} 
-                  onValueChange={(val) => setCheckout({ ...checkout, media_type: val })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="image">Imagem</SelectItem>
-                    <SelectItem value="video">Vídeo</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label>URL da Mídia</Label>
-                <Input 
-                  value={checkout.media_url} 
-                  onChange={(e) => setCheckout({ ...checkout, media_url: e.target.value })}
-                  placeholder="https://..."
-                />
-              </div>
-            </div>
+            <h2 className="text-xl font-semibold border-b pb-2">Mídia do Checkout</h2>
+            <MediaField 
+              value={checkout.media_asset} 
+              onChange={(val) => setCheckout({ ...checkout, media_asset: val })} 
+            />
           </Card>
         </div>
 
