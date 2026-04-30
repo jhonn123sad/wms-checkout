@@ -70,7 +70,7 @@ function DynamicCheckout() {
     setUtms(capturedUtms);
   }, [searchParams]);
 
-  const theme = project.theme_json || {};
+   const theme: any = project.theme_json || {};
   const bgColor = theme.backgroundColor || "#F5F5F7";
   const primaryColor = theme.primaryColor || "#000000";
   const btnColor = theme.buttonColor || "#000000";
