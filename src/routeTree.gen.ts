@@ -18,8 +18,10 @@ import { Route as CheckoutSlugRouteImport } from './routes/checkout.$slug'
 import { Route as CSlugRouteImport } from './routes/c.$slug'
 import { Route as AdminProjectsRouteImport } from './routes/admin.projects'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as AdminPagesIndexRouteImport } from './routes/admin.pages.index'
 import { Route as AdminCheckoutsIndexRouteImport } from './routes/admin.checkouts.index'
 import { Route as AdminProjectsIdRouteImport } from './routes/admin.projects.$id'
+import { Route as AdminPagesIdRouteImport } from './routes/admin.pages.$id'
 import { Route as AdminCheckoutsIdRouteImport } from './routes/admin.checkouts.$id'
 
 const AdminRoute = AdminRouteImport.update({
@@ -67,6 +69,11 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminPagesIndexRoute = AdminPagesIndexRouteImport.update({
+  id: '/pages/',
+  path: '/pages/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminCheckoutsIndexRoute = AdminCheckoutsIndexRouteImport.update({
   id: '/checkouts/',
   path: '/checkouts/',
@@ -76,6 +83,11 @@ const AdminProjectsIdRoute = AdminProjectsIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => AdminProjectsRoute,
+} as any)
+const AdminPagesIdRoute = AdminPagesIdRouteImport.update({
+  id: '/pages/$id',
+  path: '/pages/$id',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminCheckoutsIdRoute = AdminCheckoutsIdRouteImport.update({
   id: '/checkouts/$id',
@@ -94,8 +106,10 @@ export interface FileRoutesByFullPath {
   '/pagamento/demo-preview': typeof PagamentoDemoPreviewRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/checkouts/$id': typeof AdminCheckoutsIdRoute
+  '/admin/pages/$id': typeof AdminPagesIdRoute
   '/admin/projects/$id': typeof AdminProjectsIdRoute
   '/admin/checkouts/': typeof AdminCheckoutsIndexRoute
+  '/admin/pages/': typeof AdminPagesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -107,8 +121,10 @@ export interface FileRoutesByTo {
   '/pagamento/demo-preview': typeof PagamentoDemoPreviewRoute
   '/admin': typeof AdminIndexRoute
   '/admin/checkouts/$id': typeof AdminCheckoutsIdRoute
+  '/admin/pages/$id': typeof AdminPagesIdRoute
   '/admin/projects/$id': typeof AdminProjectsIdRoute
   '/admin/checkouts': typeof AdminCheckoutsIndexRoute
+  '/admin/pages': typeof AdminPagesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -122,8 +138,10 @@ export interface FileRoutesById {
   '/pagamento/demo-preview': typeof PagamentoDemoPreviewRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/checkouts/$id': typeof AdminCheckoutsIdRoute
+  '/admin/pages/$id': typeof AdminPagesIdRoute
   '/admin/projects/$id': typeof AdminProjectsIdRoute
   '/admin/checkouts/': typeof AdminCheckoutsIndexRoute
+  '/admin/pages/': typeof AdminPagesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -138,8 +156,10 @@ export interface FileRouteTypes {
     | '/pagamento/demo-preview'
     | '/admin/'
     | '/admin/checkouts/$id'
+    | '/admin/pages/$id'
     | '/admin/projects/$id'
     | '/admin/checkouts/'
+    | '/admin/pages/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -151,8 +171,10 @@ export interface FileRouteTypes {
     | '/pagamento/demo-preview'
     | '/admin'
     | '/admin/checkouts/$id'
+    | '/admin/pages/$id'
     | '/admin/projects/$id'
     | '/admin/checkouts'
+    | '/admin/pages'
   id:
     | '__root__'
     | '/'
@@ -165,8 +187,10 @@ export interface FileRouteTypes {
     | '/pagamento/demo-preview'
     | '/admin/'
     | '/admin/checkouts/$id'
+    | '/admin/pages/$id'
     | '/admin/projects/$id'
     | '/admin/checkouts/'
+    | '/admin/pages/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -243,6 +267,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/pages/': {
+      id: '/admin/pages/'
+      path: '/pages'
+      fullPath: '/admin/pages/'
+      preLoaderRoute: typeof AdminPagesIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/checkouts/': {
       id: '/admin/checkouts/'
       path: '/checkouts'
@@ -256,6 +287,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/projects/$id'
       preLoaderRoute: typeof AdminProjectsIdRouteImport
       parentRoute: typeof AdminProjectsRoute
+    }
+    '/admin/pages/$id': {
+      id: '/admin/pages/$id'
+      path: '/pages/$id'
+      fullPath: '/admin/pages/$id'
+      preLoaderRoute: typeof AdminPagesIdRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/checkouts/$id': {
       id: '/admin/checkouts/$id'
@@ -284,7 +322,9 @@ interface AdminRouteChildren {
   AdminProjectsRoute: typeof AdminProjectsRouteWithChildren
   AdminIndexRoute: typeof AdminIndexRoute
   AdminCheckoutsIdRoute: typeof AdminCheckoutsIdRoute
+  AdminPagesIdRoute: typeof AdminPagesIdRoute
   AdminCheckoutsIndexRoute: typeof AdminCheckoutsIndexRoute
+  AdminPagesIndexRoute: typeof AdminPagesIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
@@ -292,7 +332,9 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminProjectsRoute: AdminProjectsRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
   AdminCheckoutsIdRoute: AdminCheckoutsIdRoute,
+  AdminPagesIdRoute: AdminPagesIdRoute,
   AdminCheckoutsIndexRoute: AdminCheckoutsIndexRoute,
+  AdminPagesIndexRoute: AdminPagesIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)

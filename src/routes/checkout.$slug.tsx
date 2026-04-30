@@ -1,10 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { MediaDisplay } from "@/components/public/MediaDisplay";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/checkout/$slug")({
@@ -101,24 +102,9 @@ function CheckoutPage() {
     <div className="min-h-screen bg-[#0a0a0a] text-white py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
         <div className="space-y-8">
-          <div className="rounded-2xl overflow-hidden shadow-2xl bg-[#1a1a1a] border border-[#333]">
-            {checkout.media_type === "video" ? (
-              <video 
-                src={checkout.media_url} 
-                controls 
-                autoPlay 
-                muted 
-                loop 
-                className="w-full aspect-video object-cover"
-              />
-            ) : (
-              <img 
-                src={checkout.media_url} 
-                alt={checkout.title} 
-                className="w-full aspect-video object-cover"
-              />
-            )}
-          </div>
+          <Card className="overflow-hidden border-[#333] bg-[#1a1a1a] shadow-2xl">
+            <MediaDisplay media={{ url: checkout.media_url, type: checkout.media_type as any, provider: 'external' }} />
+          </Card>
           
           <div>
             <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl mb-4 text-white">
