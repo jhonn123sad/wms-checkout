@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
+import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2, ShieldCheck } from "lucide-react";
@@ -51,8 +51,20 @@ export const Route = createFileRoute("/c/$slug")({
 function DynamicCheckout() {
   const { project, offer } = Route.useLoaderData();
   const navigate = useNavigate();
+  const searchParams = useSearch({ from: "/c/$slug" }) as any;
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<Record<string, string>>({});
+  const [utms, setUtms] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    // Capture UTMs from search params
+    const capturedUtms: Record<string, string> = {};
+    const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+    utmKeys.forEach(key => {
+      if (searchParams[key]) capturedUtms[key] = String(searchParams[key]);
+    });
+    setUtms(capturedUtms);
+  }, [searchParams]);
 
   const theme = project.theme_json || {};
   const bgColor = theme.backgroundColor || "#F5F5F7";
@@ -72,12 +84,13 @@ function DynamicCheckout() {
     try {
       const { data, error } = await supabase.functions.invoke("create-pix", {
         body: {
-          customer_name: formData.name || "Cliente",
-          customer_cpf: formData.cpf || "00000000000",
+          project_slug: project.slug,
+          customer_name: formData.name,
+          customer_cpf: formData.cpf,
           customer_email: formData.email,
           customer_phone: formData.phone,
-          project_id: project.id,
-          offer_id: offer.id
+          offer_id: offer.id,
+          ...utms
         },
       });
 
