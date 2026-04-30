@@ -77,9 +77,6 @@ export const Route = createFileRoute("/pagamento/$orderId")({
             <Link to="/" className="w-full h-12 rounded-xl font-semibold text-sm text-[#86868B] flex items-center justify-center hover:bg-[#F5F5F7] transition-all">
               Voltar ao checkout
             </Link>
-            <Link to="/pagamento/demo-preview" className="w-full h-12 rounded-xl font-semibold text-[11px] text-[#0071E3] flex items-center justify-center uppercase tracking-wider">
-              Abrir modo demonstração
-            </Link>
           </div>
         </div>
       </div>
@@ -178,17 +175,20 @@ function PaymentReal() {
     <div className="min-h-screen bg-[#F5F5F7] text-[#1D1D1F] font-sans flex flex-col items-center justify-center p-4 md:p-6 overflow-x-hidden">
       <div className="w-full max-w-[440px] bg-white rounded-[24px] shadow-sm border border-[#D2D2D7]/30 p-8 md:p-10 flex flex-col items-center">
         
-        {/* Status Badge */}
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#F5F5F7] rounded-full mb-6">
-          <div className={`h-2 w-2 rounded-full animate-pulse ${currentStatus === 'paid' ? 'bg-green-500' : 'bg-orange-400'}`}></div>
-          <span className="text-[11px] font-semibold text-[#86868B] uppercase tracking-wider">
-            {currentStatus === 'paid' ? 'Pagamento confirmado' : (currentStatus === 'waiting_payment' ? 'Aguardando pagamento' : String(currentStatus))}
-          </span>
-        </div>
-
-        {/* Header */}
-        <h1 className="text-2xl font-bold tracking-tight text-center mb-2">Pague com Pix</h1>
-        <div className="text-3xl font-bold text-center mb-8">{price}</div>
+         {/* Status Badge */}
+         <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#F5F5F7] rounded-full mb-6">
+           <div className={`h-2 w-2 rounded-full ${currentStatus === 'paid' ? 'bg-green-500' : 'bg-[#0071E3] animate-pulse'}`}></div>
+           <span className="text-[11px] font-bold text-[#86868B] uppercase tracking-wider">
+             {currentStatus === 'paid' ? 'Pagamento confirmado' : 'Aguardando pagamento...'}
+           </span>
+         </div>
+ 
+         {/* Header */}
+         <h1 className="text-2xl font-bold tracking-tight text-center mb-1">Pague com Pix</h1>
+         <p className="text-[11px] text-[#86868B] text-center mb-6 px-4">
+           Após pagar, a confirmação pode levar alguns segundos.
+         </p>
+         <div className="text-3xl font-bold text-center mb-8 text-[#1D1D1F]">{price}</div>
 
         {/* QR Code */}
         <div className="w-48 h-48 bg-white rounded-2xl flex items-center justify-center border border-[#D2D2D7]/50 shadow-sm mb-8 overflow-hidden">
