@@ -29,84 +29,86 @@
      radius: theme.borderRadius || "24px"
    };
  
-   return (
-     <div className="min-h-screen flex flex-col font-sans" style={{ background: styles.bg, color: styles.text }}>
-       <div className="flex-1 max-w-6xl mx-auto w-full px-4 py-8 md:py-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-         
-         {/* LEFT COLUMN: VISUAL HERO */}
-         <div className="flex flex-col items-center lg:items-start space-y-8 text-center lg:text-left">
-           <div className="space-y-4">
-             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl">
-               <Lock size={14} className="text-pink-500" />
-               <span className="text-[11px] font-bold uppercase tracking-widest text-pink-500">
-                 {content.badge || "Acesso reservado"}
-               </span>
-             </div>
-             <h1 className="text-4xl md:text-6xl font-black tracking-tighter leading-tight bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
-               {content.heroTitle || project.headline || "Acesso reservado liberado por Pix"}
-             </h1>
-             <p className="text-lg md:text-xl opacity-60 max-w-md">
-               {content.heroSubtitle || project.subheadline || "Finalize em poucos segundos e receba a próxima etapa após a confirmação."}
-             </p>
-           </div>
- 
-           {/* HERO IMAGE / PLACEHOLDER */}
-           <div className="w-full max-w-md relative group">
-             <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-[32px] blur opacity-25 group-hover:opacity-40 transition duration-1000"></div>
-             <div className="relative aspect-[4/5] rounded-[32px] overflow-hidden bg-black/40 border border-white/10 backdrop-blur-3xl flex items-center justify-center">
-               {theme.heroImageUrl ? (
-                 <img src={theme.heroImageUrl} alt="Acesso" className="w-full h-full object-cover" />
-               ) : (
-                 <div className="flex flex-col items-center gap-4 opacity-20">
-                   <User size={120} strokeWidth={1} />
-                   <span className="text-sm font-medium tracking-widest uppercase">Premium Member</span>
-                 </div>
-               )}
-               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
-               <div className="absolute bottom-6 left-6 right-6">
-                 <div className="flex items-center gap-3 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center font-bold">A</div>
-                   <div>
-                     <p className="text-xs font-bold uppercase tracking-wider opacity-60">Status</p>
-                     <p className="text-sm font-bold">Aguardando seu acesso</p>
-                   </div>
-                 </div>
-               </div>
-             </div>
-           </div>
- 
-           {/* QUICK BENEFITS */}
-           <div className="grid grid-cols-2 gap-4 w-full max-w-md">
-             <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
-               <p className="text-[10px] font-bold uppercase tracking-widest text-pink-500 mb-1">Privacidade</p>
-               <p className="text-xs font-medium opacity-70 leading-snug">Pagamento discreto e seguro</p>
-             </div>
-             <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
-               <p className="text-[10px] font-bold uppercase tracking-widest text-purple-500 mb-1">Instantâneo</p>
-               <p className="text-xs font-medium opacity-70 leading-snug">Acesso logo após confirmação</p>
-             </div>
-           </div>
-         </div>
- 
-         {/* RIGHT COLUMN: CHECKOUT CARD */}
-         <div className="flex justify-center">
-           <div className="w-full max-w-[440px] p-8 md:p-10 rounded-[32px] border border-white/10 relative overflow-hidden backdrop-blur-2xl shadow-2xl shadow-purple-500/10"
-                style={{ background: styles.card }}>
-             
-             {/* PRODUCT INFO */}
-             <div className="mb-8 flex justify-between items-end border-b border-white/10 pb-6">
-               <div className="space-y-1">
-                 <h3 className="text-sm font-bold uppercase tracking-widest opacity-40">Você está adquirindo:</h3>
-                 <h2 className="text-xl font-bold">{offer.name}</h2>
-               </div>
-               <div className="text-right">
-                 <p className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60">
-                   {formatPrice(offer.price_cents)}
-                 </p>
-               </div>
-             </div>
- 
-              {paymentData ? (
+  return (
+    <div className="min-h-screen flex flex-col font-sans overflow-x-hidden" style={{ background: styles.bg, color: styles.text }}>
+      <div className="flex-1 max-w-6xl mx-auto w-full px-4 py-6 md:py-12 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        
+        {/* LEFT COLUMN: VISUAL HERO */}
+        <div className="flex flex-col items-center lg:items-start space-y-6 text-center lg:text-left pt-4">
+          <div className="space-y-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl">
+              <Lock size={12} className="text-pink-500" />
+              <span className="text-[9px] font-black uppercase tracking-[0.2em] text-pink-500">
+                {content.badge || "Acesso reservado"}
+              </span>
+            </div>
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tighter leading-tight bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
+              {content.heroTitle || project.headline || "Acesso Premium"}
+            </h1>
+            <p className="text-sm md:text-base opacity-60 max-w-md mx-auto lg:mx-0">
+              {content.heroSubtitle || project.subheadline || "Finalize agora e receba acesso imediato."}
+            </p>
+          </div>
+
+          {/* HERO IMAGE / PLACEHOLDER */}
+          <div className="w-full max-w-[340px] relative group mx-auto lg:mx-0">
+            <div className="absolute -inset-1 bg-gradient-to-r from-purple-600/30 to-pink-600/30 rounded-[28px] blur opacity-40 group-hover:opacity-60 transition duration-1000"></div>
+            <div className="relative aspect-[4/3] md:aspect-[4/5] rounded-[28px] overflow-hidden bg-black/40 border border-white/10 backdrop-blur-3xl flex items-center justify-center">
+              {theme.heroImageUrl ? (
+                <img src={theme.heroImageUrl} alt="Acesso" className="w-full h-full object-cover" />
+              ) : (
+                <div className="flex flex-col items-center gap-3 opacity-20">
+                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                    <User size={40} className="text-white" />
+                  </div>
+                  <span className="text-[10px] font-black tracking-widest uppercase">Premium Member</span>
+                </div>
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+              <div className="absolute bottom-4 left-4 right-4">
+                <div className="flex items-center gap-2.5 p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center font-bold text-xs text-white">A</div>
+                  <div>
+                    <p className="text-[8px] font-black uppercase tracking-wider opacity-40">Status</p>
+                    <p className="text-[11px] font-bold">Checkout Seguro</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* QUICK BENEFITS */}
+          <div className="grid grid-cols-2 gap-3 w-full max-w-[340px] mx-auto lg:mx-0">
+            <div className="p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
+              <p className="text-[8px] font-black uppercase tracking-widest text-pink-500 mb-1">Privacidade</p>
+              <p className="text-[10px] font-medium opacity-60 leading-snug text-white">Discreto e seguro</p>
+            </div>
+            <div className="p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
+              <p className="text-[8px] font-black uppercase tracking-widest text-purple-500 mb-1">Instantâneo</p>
+              <p className="text-[10px] font-medium opacity-60 leading-snug text-white">Acesso imediato</p>
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT COLUMN: CHECKOUT CARD */}
+        <div className="flex justify-center items-start lg:sticky lg:top-8">
+          <div className="w-full max-w-[420px] p-6 md:p-8 rounded-[28px] border border-white/10 relative overflow-hidden backdrop-blur-2xl shadow-2xl shadow-purple-500/10"
+               style={{ background: styles.card }}>
+            
+            {/* PRODUCT INFO */}
+            <div className="mb-6 flex justify-between items-end border-b border-white/5 pb-5">
+              <div className="space-y-0.5">
+                <h3 className="text-[9px] font-black uppercase tracking-[0.2em] opacity-30">Adquirindo:</h3>
+                <h2 className="text-lg font-bold text-white line-clamp-1">{offer.name}</h2>
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 tracking-tighter">
+                  {formatPrice(offer.price_cents)}
+                </p>
+              </div>
+            </div>
+
+            {paymentData ? (
                 <InlinePixPanel 
                   paymentData={paymentData}
                   paymentStatus={paymentStatus || "waiting_payment"}

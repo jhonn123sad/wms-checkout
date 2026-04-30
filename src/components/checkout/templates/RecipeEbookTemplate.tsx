@@ -29,100 +29,90 @@
      radius: theme.borderRadius || "20px"
    };
  
-   return (
-     <div className="min-h-screen font-sans py-8 md:py-16 px-4" style={{ backgroundColor: styles.bg, color: styles.text }}>
-       <div className="max-w-5xl mx-auto">
-         {/* HEADER */}
-         <header className="text-center mb-12 space-y-4">
-           {theme.logoUrl ? (
-             <img src={theme.logoUrl} alt="Logo" className="h-12 mx-auto mb-6 object-contain" />
-           ) : (
-             <div className="flex justify-center mb-6">
-               <div className="p-3 rounded-full bg-orange-100 text-orange-600">
-                 <Utensils size={32} />
-               </div>
-             </div>
-           )}
-           <div className="inline-block px-4 py-1 rounded-full bg-orange-100 text-orange-700 text-[11px] font-bold uppercase tracking-wider mb-2">
-             {content.badge || "Ebook digital"}
-           </div>
-           <h1 className="text-3xl md:text-5xl font-black tracking-tight leading-tight max-w-2xl mx-auto">
-             {content.heroTitle || project.headline || "Receitas práticas para todos os dias"}
-           </h1>
-           <p className="text-lg opacity-80 max-w-xl mx-auto">
-             {content.heroSubtitle || project.subheadline || "Organize sua semana com receitas simples, gostosas e fáceis de preparar."}
-           </p>
-         </header>
- 
-         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-           {/* LEFT: CONTENT & PROMISE */}
-           <div className="lg:col-span-7 space-y-10">
-             {/* MOCKUP EBOOK */}
-             <div className="relative group">
-               <div className="absolute -inset-4 bg-orange-500/5 rounded-[40px] blur-2xl"></div>
-               <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-xl border-8 border-white bg-white">
-                 {theme.heroImageUrl ? (
-                   <img src={theme.heroImageUrl} alt="Ebook" className="w-full h-full object-cover" />
-                 ) : (
-                   <div className="w-full h-full bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center p-12">
-                     <div className="w-full h-full border-4 border-dashed border-orange-200 rounded-2xl flex flex-col items-center justify-center text-orange-300">
-                       <BookOpen size={80} strokeWidth={1} />
-                       <p className="mt-4 font-bold uppercase tracking-widest text-sm">Capa do Ebook</p>
-                     </div>
-                   </div>
-                 )}
-               </div>
-             </div>
- 
-             {/* BENEFITS GRID */}
-             <div className="grid grid-cols-2 gap-4">
-               {[
-                 { icon: <Heart size={20} />, title: "Ingredientes simples", desc: "Tudo o que você já tem em casa" },
-                 { icon: <Clock size={20} />, title: "Preparo fácil", desc: "Em até 30 minutos" },
-                 { icon: <Utensils size={20} />, title: "Ideal para rotina", desc: "Organize seu dia a dia" },
-                 { icon: <BookOpen size={20} />, title: "Acesso digital", desc: "No celular ou tablet" },
-               ].map((item, i) => (
-                 <div key={i} className="p-5 rounded-2xl bg-white border border-orange-100 shadow-sm flex flex-col gap-3">
-                   <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-500">
-                     {item.icon}
-                   </div>
-                   <div>
-                     <h4 className="font-bold text-sm">{item.title}</h4>
-                     <p className="text-xs opacity-60 leading-relaxed mt-1">{item.desc}</p>
-                   </div>
-                 </div>
-               ))}
-             </div>
- 
-             {/* TRUST SECTION */}
-             <div className="p-6 rounded-2xl bg-green-50 border border-green-100 flex items-start gap-4">
-               <div className="p-2 rounded-full bg-white text-green-600 shadow-sm">
-                 <CheckCircle2 size={24} />
-               </div>
-               <div>
-                 <h4 className="font-bold text-green-800">Receba imediatamente</h4>
-                 <p className="text-sm text-green-700/80 leading-relaxed">
-                   O envio é automático para o seu e-mail logo após a confirmação do Pix.
-                 </p>
-               </div>
-             </div>
-           </div>
- 
-           {/* RIGHT: CHECKOUT */}
-           <div className="lg:col-span-5">
-             <div className="sticky top-8 bg-white p-8 md:p-10 rounded-[32px] shadow-2xl shadow-orange-900/5 border border-orange-50">
-               {/* PRICE TAG */}
-               <div className="mb-8 p-6 rounded-2xl bg-orange-50 border border-orange-100 flex justify-between items-center">
-                 <div className="space-y-1">
-                   <h3 className="font-bold text-sm opacity-60">Investimento único</h3>
-                   <p className="font-medium text-xs leading-none">Acesso vitalício</p>
-                 </div>
-                 <div className="text-3xl font-black text-orange-600">
-                   {formatPrice(offer.price_cents)}
-                 </div>
-               </div>
- 
-                {paymentData ? (
+  return (
+    <div className="min-h-screen font-sans py-6 md:py-12 px-4 overflow-x-hidden" style={{ backgroundColor: styles.bg, color: styles.text }}>
+      <div className="max-w-5xl mx-auto flex flex-col items-center">
+        {/* HEADER */}
+        <header className="text-center mb-8 space-y-3 max-w-2xl">
+          {theme.logoUrl ? (
+            <img src={theme.logoUrl} alt="Logo" className="h-10 mx-auto mb-4 object-contain" />
+          ) : (
+            <div className="flex justify-center mb-4">
+              <div className="p-2.5 rounded-full bg-orange-100 text-orange-600">
+                <Utensils size={24} />
+              </div>
+            </div>
+          )}
+          <div className="inline-block px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-[10px] font-black uppercase tracking-widest mb-1">
+            {content.badge || "Ebook digital"}
+          </div>
+          <h1 className="text-2xl md:text-4xl font-black tracking-tight leading-tight">
+            {content.heroTitle || project.headline || "Receitas Práticas"}
+          </h1>
+          <p className="text-sm opacity-70 px-4">
+            {content.heroSubtitle || project.subheadline || "Organize sua rotina com sabor."}
+          </p>
+        </header>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start w-full">
+          {/* LEFT: CONTENT & PROMISE */}
+          <div className="space-y-6">
+            {/* MOCKUP EBOOK COMPACT */}
+            <div className="relative group max-w-sm mx-auto lg:mx-0">
+              <div className="absolute -inset-3 bg-orange-500/5 rounded-[30px] blur-xl"></div>
+              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl border-4 border-white bg-white">
+                {theme.heroImageUrl ? (
+                  <img src={theme.heroImageUrl} alt="Ebook" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center p-8">
+                    <div className="w-full h-full border-2 border-dashed border-orange-200 rounded-xl flex flex-col items-center justify-center text-orange-300">
+                      <BookOpen size={48} strokeWidth={1} />
+                      <p className="mt-2 font-black uppercase tracking-[0.2em] text-[10px]">Ebook Mockup</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* BENEFITS COMPACT */}
+            <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto lg:mx-0">
+              {[
+                { icon: <Heart size={16} />, title: "Ingredientes simples" },
+                { icon: <Clock size={16} />, title: "Preparo rápido" }
+              ].map((item, i) => (
+                <div key={i} className="p-3.5 rounded-xl bg-white border border-orange-50 shadow-sm flex items-center gap-3">
+                  <div className="shrink-0 w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center text-orange-500">
+                    {item.icon}
+                  </div>
+                  <h4 className="font-bold text-[11px] leading-tight">{item.title}</h4>
+                </div>
+              ))}
+            </div>
+
+            {/* TRUST SECTION COMPACT */}
+            <div className="p-4 rounded-xl bg-green-50/50 border border-green-100 flex items-start gap-3 max-w-sm mx-auto lg:mx-0">
+              <CheckCircle2 size={18} className="text-green-600 shrink-0 mt-0.5" />
+              <p className="text-[11px] text-green-700/80 font-medium leading-relaxed">
+                Acesso enviado automaticamente para o seu e-mail após o Pix.
+              </p>
+            </div>
+          </div>
+
+          {/* RIGHT: CHECKOUT */}
+          <div className="flex justify-center lg:sticky lg:top-8">
+            <div className="w-full max-w-[420px] bg-white p-6 md:p-8 rounded-[28px] shadow-2xl shadow-orange-900/5 border border-orange-50">
+              {/* PRICE TAG COMPACT */}
+              <div className="mb-6 p-4 rounded-xl bg-orange-50 border border-orange-100 flex justify-between items-center">
+                <div className="space-y-0.5">
+                  <h3 className="font-bold text-[10px] uppercase tracking-wider opacity-40">Investimento</h3>
+                  <p className="font-bold text-xs">Vitalício</p>
+                </div>
+                <div className="text-2xl font-black text-orange-600 tracking-tighter">
+                  {formatPrice(offer.price_cents)}
+                </div>
+              </div>
+
+              {paymentData ? (
                   <InlinePixPanel 
                     paymentData={paymentData}
                     paymentStatus={paymentStatus || "waiting_payment"}

@@ -29,91 +29,90 @@
      radius: theme.borderRadius || "12px"
    };
  
-   return (
-     <div className="min-h-screen bg-black text-white font-mono selection:bg-green-500/30">
-       {/* GRID OVERLAY */}
-       <div className="fixed inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
-       
-       <div className="relative z-10">
-         <main className="max-w-6xl mx-auto px-4 py-12 md:py-24">
-           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-             
-             {/* LEFT: TECH CONTENT */}
-             <div className="lg:col-span-7 space-y-12">
-               <div className="space-y-6">
-                 {theme.logoUrl ? (
-                   <img src={theme.logoUrl} alt="WMS" className="h-10 object-contain mb-8" />
-                 ) : (
-                   <div className="text-3xl font-black tracking-tighter text-green-500 mb-8 underline decoration-4 underline-offset-8 font-sans">WMS</div>
-                 )}
-                 
-                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-sm bg-green-500/10 border border-green-500/20 text-green-500">
-                   <Terminal size={14} />
-                   <span className="text-[10px] font-bold uppercase tracking-widest">{content.badge || "Comunidade WMS"}</span>
-                 </div>
-                 
-                 <h1 className="text-4xl md:text-7xl font-black tracking-tighter leading-none italic uppercase font-sans">
-                   {content.heroTitle || project.headline || "Crie ativos digitais com IA"}
-                 </h1>
-                 
-                 <p className="text-lg md:text-xl text-neutral-400 max-w-xl leading-relaxed font-sans">
-                   {content.heroSubtitle || project.subheadline || "Prompts, métodos, extensões e conteúdos para criar avatares, influenciadoras virtuais e transformar atenção em vendas."}
-                 </p>
-               </div>
- 
-               {/* TECH GRID / MODULES */}
-               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                 {[
-                   { icon: <Code size={20} />, title: "Prompts prontos", desc: "Copie e cole os melhores prompts de IA." },
-                   { icon: <Terminal size={20} />, title: "Métodos de criação", desc: "Aprenda a criar avatares realistas." },
-                   { icon: <Bot size={20} />, title: "IA Influencers", desc: "Domine o mercado que mais cresce." },
-                   { icon: <Users size={20} />, title: "Comunidade", desc: "Focada em resultados e vendas." },
-                 ].map((item, i) => (
-                   <div key={i} className="p-6 border border-neutral-800 bg-neutral-900/50 backdrop-blur-sm group hover:border-green-500/50 transition-colors">
-                     <div className="text-green-500 mb-4 group-hover:scale-110 transition-transform">{item.icon}</div>
-                     <h4 className="font-bold text-white mb-2 uppercase tracking-tight font-sans">{item.title}</h4>
-                     <p className="text-xs text-neutral-500 font-sans leading-relaxed">{item.desc}</p>
-                   </div>
-                 ))}
-               </div>
- 
-               {/* TERMINAL BLOCK VISUAL */}
-               <div className="p-6 rounded-lg bg-neutral-900 border border-neutral-800 font-mono text-[10px] sm:text-xs">
-                 <div className="flex gap-1.5 mb-4">
-                   <div className="w-2 h-2 rounded-full bg-red-500/50"></div>
-                   <div className="w-2 h-2 rounded-full bg-yellow-500/50"></div>
-                   <div className="w-2 h-2 rounded-full bg-green-500/50"></div>
-                 </div>
-                 <div className="space-y-1 opacity-50">
-                   <p className="text-green-500 tracking-tighter">$ wms-community --init-setup</p>
-                   <p className="text-neutral-500">Checking AI influence modules...</p>
-                   <p className="text-neutral-500">Loading prompt libraries [DONE]</p>
-                   <p className="text-neutral-500">Connecting to sales gateway...</p>
-                   <p className="text-green-500 tracking-tighter">$ Access authorized. Welcome back.</p>
-                 </div>
-               </div>
-             </div>
- 
-             {/* RIGHT: CHECKOUT */}
-             <div className="lg:col-span-5 relative">
-               {/* GLOW EFFECT */}
-               <div className="absolute -inset-0.5 bg-green-500/20 blur opacity-20"></div>
-               
-               <div className="relative p-8 md:p-12 border border-neutral-800 bg-black shadow-2xl">
-                 {/* PRICE */}
-                 <div className="mb-12 border-b border-neutral-800 pb-8 flex justify-between items-center">
-                   <div>
-                     <p className="text-[10px] font-bold text-green-500 uppercase tracking-widest mb-1">Acesso à Comunidade</p>
-                     <h2 className="text-2xl font-black italic uppercase tracking-tighter font-sans">{offer.name}</h2>
-                   </div>
-                   <div className="text-right">
-                     <p className="text-4xl font-black text-white italic tracking-tighter font-sans">
-                       {formatPrice(offer.price_cents)}
-                     </p>
-                   </div>
-                 </div>
- 
-                  {paymentData ? (
+  return (
+    <div className="min-h-screen bg-black text-white font-mono selection:bg-green-500/30 overflow-x-hidden">
+      {/* SCANLINE EFFECT */}
+      <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.03] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,118,0.06))] bg-[length:100%_2px,3px_100%]"></div>
+      
+      {/* GRID OVERLAY */}
+      <div className="fixed inset-0 bg-[linear-gradient(to_right,#22c55e08_1px,transparent_1px),linear-gradient(to_bottom,#22c55e08_1px,transparent_1px)] bg-[size:32px_32px]"></div>
+      
+      <div className="relative z-10">
+        <main className="max-w-6xl mx-auto px-4 py-8 md:py-16">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+            
+            {/* LEFT: TECH CONTENT */}
+            <div className="lg:col-span-7 space-y-8">
+              <div className="space-y-5">
+                {theme.logoUrl ? (
+                  <img src={theme.logoUrl} alt="WMS" className="h-8 object-contain mb-4" />
+                ) : (
+                  <div className="text-2xl font-black tracking-tighter text-green-500 mb-4 border-b-4 border-green-500 inline-block px-1">WMS</div>
+                )}
+                
+                <div className="inline-flex items-center gap-2 px-2 py-1 rounded-sm bg-green-500/10 border border-green-500/30 text-green-500">
+                  <Terminal size={12} />
+                  <span className="text-[9px] font-black uppercase tracking-widest">{content.badge || "WMS.PROTOCOL"}</span>
+                </div>
+                
+                <h1 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tighter leading-none italic uppercase font-sans text-white">
+                  {content.heroTitle || project.headline || "ATIVOS DIGITAIS IA"}
+                </h1>
+                
+                <p className="text-sm md:text-base text-neutral-400 max-w-lg leading-relaxed font-sans border-l-2 border-green-500/30 pl-4">
+                  {content.heroSubtitle || project.subheadline || "Domine avatares e vendas automatizadas."}
+                </p>
+              </div>
+
+              {/* TECH GRID COMPACT */}
+              <div className="grid grid-cols-2 gap-3 max-w-lg">
+                {[
+                  { icon: <Code size={16} />, title: "PROMPTS" },
+                  { icon: <Terminal size={16} />, title: "MÉTODOS" },
+                  { icon: <Bot size={16} />, title: "AVATARES" },
+                  { icon: <Users size={16} />, title: "VENDAS" },
+                ].map((item, i) => (
+                  <div key={i} className="p-4 border border-neutral-800 bg-neutral-900/40 backdrop-blur-md flex flex-col items-start gap-2 group hover:border-green-500/50 transition-all">
+                    <div className="text-green-500 group-hover:animate-pulse">{item.icon}</div>
+                    <h4 className="font-black text-[10px] text-neutral-300 tracking-widest font-sans">{item.title}</h4>
+                  </div>
+                ))}
+              </div>
+
+              {/* TERMINAL BLOCK COMPACT */}
+              <div className="p-5 border border-neutral-800 bg-neutral-950 font-mono text-[9px] sm:text-[10px] rounded-sm max-w-lg">
+                <div className="flex gap-1.5 mb-3">
+                  <div className="w-1.5 h-1.5 rounded-full bg-neutral-800"></div>
+                  <div className="w-1.5 h-1.5 rounded-full bg-neutral-800"></div>
+                  <div className="w-1.5 h-1.5 rounded-full bg-neutral-800"></div>
+                </div>
+                <div className="space-y-1 text-green-500/40">
+                  <p>$ wms-auth --verify-connection [OK]</p>
+                  <p>$ modules_loaded: influenciadora_virtual_ia</p>
+                  <p className="text-green-500">$ system_ready: true</p>
+                </div>
+              </div>
+            </div>
+
+            {/* RIGHT: CHECKOUT */}
+            <div className="lg:col-span-5 relative lg:sticky lg:top-8">
+              <div className="absolute -inset-1 bg-green-500/10 blur opacity-20"></div>
+              
+              <div className="relative p-6 md:p-10 border border-neutral-800 bg-black/90 backdrop-blur-xl shadow-2xl">
+                {/* PRICE COMPACT */}
+                <div className="mb-8 border-b border-neutral-800 pb-6 flex justify-between items-center">
+                  <div>
+                    <p className="text-[9px] font-black text-green-500 uppercase tracking-widest mb-1 opacity-70">CONTRATO DE ACESSO</p>
+                    <h2 className="text-lg font-black italic uppercase tracking-tighter font-sans text-white line-clamp-1">{offer.name}</h2>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-3xl font-black text-white italic tracking-tighter font-sans">
+                      {formatPrice(offer.price_cents)}
+                    </p>
+                  </div>
+                </div>
+
+                {paymentData ? (
                     <div className="relative z-10 py-4">
                       <InlinePixPanel 
                         paymentData={paymentData}
