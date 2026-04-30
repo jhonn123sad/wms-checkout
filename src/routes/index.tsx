@@ -1,4 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
+import { createPix } from "@/server/payments.functions";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -6,6 +9,32 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({ name: "", cpf: "" });
+
+  const handleGeneratePix = async () => {
+    if (!formData.name || !formData.cpf) {
+      toast.error("Preencha todos os campos");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const result = await createPix({
+        data: {
+          customer_name: formData.name,
+          customer_cpf: formData.cpf
+        }
+      });
+      navigate({ to: `/pagamento/$orderId`, params: { orderId: result.orderId } });
+    } catch (err) {
+      console.error("Erro na integração real:", err);
+      toast.info("Integração ainda não configurada. Exibindo modo de demonstração.");
+      navigate({ to: "/pagamento/demo-preview" });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#F5F5F7] text-[#1D1D1F] font-sans flex flex-col items-center justify-center p-4 md:p-6">
@@ -41,6 +70,8 @@ function Index() {
             <label className="text-xs font-semibold text-[#86868B] ml-1">Nome completo</label>
             <input 
               type="text" 
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder="Como no seu documento"
               className="w-full h-12 px-4 rounded-xl border border-[#D2D2D7] focus:outline-none focus:ring-2 focus:ring-[#0071E3] transition-all text-sm"
             />
@@ -49,6 +80,8 @@ function Index() {
             <label className="text-xs font-semibold text-[#86868B] ml-1">CPF</label>
             <input 
               type="text" 
+              value={formData.cpf}
+              onChange={(e) => setFormData({ ...formData, cpf: e.target.value })}
               placeholder="000.000.000-00"
               className="w-full h-12 px-4 rounded-xl border border-[#D2D2D7] focus:outline-none focus:ring-2 focus:ring-[#0071E3] transition-all text-sm"
             />
@@ -56,11 +89,12 @@ function Index() {
         </div>
 
         {/* Action Button */}
-        <button 
-          onClick={() => navigate({ to: "/pagamento/demo-preview" })}
-          className="w-full bg-black text-white h-14 rounded-xl font-semibold text-base transition-transform active:scale-[0.98] mb-6"
+        <button
+          disabled={loading}
+          onClick={handleGeneratePix}
+          className="w-full bg-black text-white h-14 rounded-xl font-semibold text-base transition-transform active:scale-[0.98] mb-6 disabled:opacity-50"
         >
-          Gerar Pix
+          {loading ? "Processando..." : "Gerar Pix"}
         </button>
 
         {/* Demo Box */}
