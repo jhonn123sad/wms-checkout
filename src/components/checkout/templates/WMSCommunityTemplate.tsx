@@ -114,100 +114,100 @@
                 </div>
 
                 {paymentData ? (
-                    <div className="relative z-10 py-4">
-                      <InlinePixPanel 
-                        paymentData={paymentData}
-                        paymentStatus={paymentStatus || "waiting_payment"}
-                        onReset={onResetPayment || (() => {})}
-                        formatPrice={formatPrice}
-                        theme={theme}
-                      />
+                  <div className="relative z-10 py-4">
+                    <InlinePixPanel 
+                      paymentData={paymentData}
+                      paymentStatus={paymentStatus || "waiting_payment"}
+                      onReset={onResetPayment || (() => {})}
+                      formatPrice={formatPrice}
+                      theme={theme}
+                    />
+                  </div>
+                ) : (
+                  <form onSubmit={onSubmit} className="space-y-6 font-sans">
+                    {requiredFields.collect_name && (
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest ml-1">Usuário / Nome</label>
+                        <input 
+                          type="text" required value={formData.name || ""}
+                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                          className="w-full h-14 px-5 border border-neutral-800 bg-neutral-900 outline-none text-sm focus:border-green-500 transition-all text-white font-mono"
+                        />
+                      </div>
+                    )}
+                    
+                    {requiredFields.collect_email && (
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest ml-1">E-mail</label>
+                        <input 
+                          type="email" required value={formData.email || ""}
+                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                          className="w-full h-14 px-5 border border-neutral-800 bg-neutral-900 outline-none text-sm focus:border-green-500 transition-all text-white font-mono"
+                        />
+                      </div>
+                    )}
+  
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {requiredFields.collect_cpf && (
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest ml-1">CPF</label>
+                          <input 
+                            type="text" required value={formData.cpf || ""}
+                            onChange={(e) => setFormData({ ...formData, cpf: e.target.value })}
+                            className="w-full h-14 px-5 border border-neutral-800 bg-neutral-900 outline-none text-sm focus:border-green-500 transition-all text-white font-mono"
+                          />
+                        </div>
+                      )}
+                      {requiredFields.collect_phone && (
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest ml-1">WhatsApp</label>
+                          <input 
+                            type="tel" required value={formData.phone || ""}
+                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                            className="w-full h-14 px-5 border border-neutral-800 bg-neutral-900 outline-none text-sm focus:border-green-500 transition-all text-white font-mono"
+                          />
+                        </div>
+                      )}
                     </div>
-                  ) : (
-                    <form onSubmit={onSubmit} className="space-y-6 font-sans">
-                      {requiredFields.collect_name && (
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest ml-1">Usuário / Nome</label>
-                          <input 
-                            type="text" required value={formData.name || ""}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            className="w-full h-14 px-5 border border-neutral-800 bg-neutral-900 outline-none text-sm focus:border-green-500 transition-all text-white font-mono"
-                          />
+  
+                    <button
+                      type="submit" disabled={isLoading}
+                      className="w-full h-18 py-5 font-black text-xl italic uppercase tracking-tighter transition-all active:scale-[0.98] mt-8 flex items-center justify-center gap-2 hover:brightness-110 group font-sans"
+                      style={{ backgroundColor: styles.button, color: styles.buttonText }}
+                    >
+                      {isLoading ? (
+                        <div className="flex items-center gap-3">
+                          <Loader2 className="h-6 w-6 animate-spin" />
+                          <span>Processing...</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <span>{content.ctaText || "Entrar na WMS"}</span>
+                          <ArrowRight size={24} className="group-hover:translate-x-1 transition-transform" />
                         </div>
                       )}
-                      
-                      {requiredFields.collect_email && (
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest ml-1">E-mail</label>
-                          <input 
-                            type="email" required value={formData.email || ""}
-                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            className="w-full h-14 px-5 border border-neutral-800 bg-neutral-900 outline-none text-sm focus:border-green-500 transition-all text-white font-mono"
-                          />
-                        </div>
+                    </button>
+  
+                    <div className="flex flex-col items-center gap-4 mt-10 font-mono">
+                      <div className="flex items-center gap-2 opacity-20 hover:opacity-40 transition-opacity">
+                        <ShieldCheck size={12} />
+                        <span className="text-[9px] font-bold uppercase tracking-widest">Secure Connection Active</span>
+                      </div>
+                      {project.legal_text && (
+                        <p className="text-[8px] text-center opacity-10 uppercase tracking-tighter leading-relaxed max-w-xs">{project.legal_text}</p>
                       )}
-    
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {requiredFields.collect_cpf && (
-                          <div className="space-y-2">
-                            <label className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest ml-1">CPF</label>
-                            <input 
-                              type="text" required value={formData.cpf || ""}
-                              onChange={(e) => setFormData({ ...formData, cpf: e.target.value })}
-                              className="w-full h-14 px-5 border border-neutral-800 bg-neutral-900 outline-none text-sm focus:border-green-500 transition-all text-white font-mono"
-                            />
-                          </div>
-                        )}
-                        {requiredFields.collect_phone && (
-                          <div className="space-y-2">
-                            <label className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest ml-1">WhatsApp</label>
-                            <input 
-                              type="tel" required value={formData.phone || ""}
-                              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                              className="w-full h-14 px-5 border border-neutral-800 bg-neutral-900 outline-none text-sm focus:border-green-500 transition-all text-white font-mono"
-                            />
-                          </div>
-                        )}
-                      </div>
-    
-                      <button
-                        type="submit" disabled={isLoading}
-                        className="w-full h-18 py-5 font-black text-xl italic uppercase tracking-tighter transition-all active:scale-[0.98] mt-8 flex items-center justify-center gap-2 hover:brightness-110 group font-sans"
-                        style={{ backgroundColor: styles.button, color: styles.buttonText }}
-                      >
-                        {isLoading ? (
-                          <div className="flex items-center gap-3">
-                            <Loader2 className="h-6 w-6 animate-spin" />
-                            <span>Processing...</span>
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-2">
-                            <span>{content.ctaText || "Entrar na WMS"}</span>
-                            <ArrowRight size={24} className="group-hover:translate-x-1 transition-transform" />
-                          </div>
-                        )}
-                      </button>
-    
-                      <div className="flex flex-col items-center gap-4 mt-10 font-mono">
-                        <div className="flex items-center gap-2 opacity-20 hover:opacity-40 transition-opacity">
-                          <ShieldCheck size={12} />
-                          <span className="text-[9px] font-bold uppercase tracking-widest">Secure Connection Active</span>
-                        </div>
-                        {project.legal_text && (
-                          <p className="text-[8px] text-center opacity-10 uppercase tracking-tighter leading-relaxed max-w-xs">{project.legal_text}</p>
-                        )}
-                      </div>
-                    </form>
-                  )}
-               </div>
-             </div>
-           </div>
-         </main>
- 
-         <footer className="py-12 border-t border-neutral-900 text-center opacity-10 grayscale font-mono">
-           <p className="text-[9px] font-bold uppercase tracking-[0.6em] text-white">Processado via Pushin Pay</p>
-         </footer>
-       </div>
-     </div>
-   );
- };
+                    </div>
+                  </form>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer className="w-full py-12 border-t border-neutral-900 text-center opacity-10 grayscale font-mono mt-auto">
+          <p className="text-[9px] font-bold uppercase tracking-[0.6em] text-white">Processado via Pushin Pay</p>
+        </footer>
+      </div>
+    </div>
+  );
+};
