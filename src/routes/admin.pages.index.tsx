@@ -80,7 +80,7 @@ function PagesIndex() {
           <h1 className="text-2xl font-bold">Gerenciar Páginas</h1>
           <p className="text-muted-foreground">Crie e edite o conteúdo dinâmico do seu site.</p>
         </div>
-        <Link to="/admin/pages/new" className="[&.active]:bg-transparent">
+        <Link to="/admin/pages/$id" params={{ id: "new" }} className="[&.active]:bg-transparent">
           <Button className="gap-2">
             <Plus className="w-4 h-4" /> Nova Página
           </Button>
@@ -95,7 +95,7 @@ function PagesIndex() {
             <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-medium">Nenhuma página encontrada</h3>
             <p className="text-muted-foreground mb-6">Comece criando sua primeira página personalizada.</p>
-            <Link to="/admin/pages/new">
+            <Link to="/admin/pages/$id" params={{ id: "new" }}>
               <Button variant="outline">Criar Página</Button>
             </Link>
           </div>
@@ -125,7 +125,7 @@ function PagesIndex() {
                 <Button variant="ghost" size="icon" onClick={() => handleDuplicate(page)} title="Duplicar">
                   <Copy className="w-4 h-4" />
                 </Button>
-                <Link to={`/admin/pages/${page.id}`}>
+                <Link to="/admin/pages/$id" params={{ id: page.id }}>
                   <Button variant="ghost" size="icon" title="Editar">
                     <Edit className="w-4 h-4" />
                   </Button>
