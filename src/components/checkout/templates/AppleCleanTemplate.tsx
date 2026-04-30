@@ -142,7 +142,7 @@
  
          {theme.showBenefits !== false && content.benefits && content.benefits.length > 0 && (
            <div className="w-full space-y-3 my-8 pt-8 border-t border-black/5">
-             {content.benefits.map((benefit, idx) => (
+             {content.benefits.map((benefit: string, idx: number) => (
                <div key={idx} className="flex gap-3">
                  <CheckCircle2 size={18} className="shrink-0 mt-0.5" style={{ color: styles.accent }} />
                  <span className="text-sm leading-snug opacity-80">{benefit}</span>
