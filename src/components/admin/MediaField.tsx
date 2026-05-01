@@ -13,10 +13,11 @@ export type { MediaValue };
 interface MediaFieldProps {
   value?: MediaValue;
   onChange: (value: MediaValue | undefined) => void;
+  onUploading?: (uploading: boolean) => void;
   label?: string;
 }
 
-export const MediaField = ({ value, onChange, label }: MediaFieldProps) => {
+export const MediaField = ({ value, onChange, label, onUploading }: MediaFieldProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const [externalUrl, setExternalUrl] = useState(value?.source !== "supabase" ? value?.url || "" : "");
 
@@ -25,6 +26,7 @@ export const MediaField = ({ value, onChange, label }: MediaFieldProps) => {
     if (!file) return;
 
     setIsUploading(true);
+    onUploading?.(true);
     try {
       const fileExt = file.name.split(".").pop()?.toLowerCase();
       const timestamp = Date.now();
@@ -57,9 +59,10 @@ export const MediaField = ({ value, onChange, label }: MediaFieldProps) => {
       onChange(mediaData);
       toast.success("Mídia enviada com sucesso.");
     } catch (error: any) {
-      toast.error("Erro no upload: " + error.message);
+      toast.error("Erro no upload: " + (error.message || "Tente novamente."));
     } finally {
       setIsUploading(false);
+      onUploading?.(false);
     }
   };
 
