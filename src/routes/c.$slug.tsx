@@ -54,14 +54,13 @@ function DynamicCheckout() {
   const { project, offer } = Route.useLoaderData();
   
   // Inject checkout media into theme/content for the visual components
+  const themeJson = (project.theme_json as any) || {};
   const projectWithMedia = {
     ...project,
-    headline: project.headline || project.title,
-    subheadline: project.subheadline || project.subtitle,
     theme_json: {
-      ...(project.theme_json || {}),
-      media_url: project.media_url,
-      media_type: project.media_type,
+      ...themeJson,
+      media_url: (project as any).media_url,
+      media_type: (project as any).media_type,
     }
   };
 

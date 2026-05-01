@@ -90,7 +90,7 @@ function CheckoutEditPage() {
     setFields(
       (data.checkout_fields || []).sort((a: any, b: any) => a.sort_order - b.sort_order)
     );
-  },
+  };
 
   const handleSave = async () => {
     setLoading(true);
