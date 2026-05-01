@@ -1,47 +1,54 @@
 /**
- * ROTA DE CHECKOUT DINÂMICO
- * Este arquivo apenas carrega os dados e renderiza o CheckoutCoreContainer.
+ * ROTA DE CHECKOUT DINÂMICO UNIFICADA
+ * Esta rota busca dados na tabela public.checkouts e renderiza o checkout real.
  */
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { CheckoutCoreContainer } from "@/components/checkout/CheckoutCoreContainer";
+import { CheckoutPageContent } from "@/components/public/CheckoutPageContent";
 
 export const Route = createFileRoute("/c/$slug")({
   loader: async ({ params }) => {
-    const { data: project, error: pError } = await supabase
-      .from("checkout_projects")
-      .select("*")
-      .eq("slug", params.slug)
-      .eq("active", true)
-      .maybeSingle();
-
-    if (pError || !project) {
-      throw new Error("Projeto não encontrado ou inativo.");
+    const slugOrId = params.slug;
+    
+    // Tenta buscar por slug ou por ID (caso seja UUID)
+    let query = supabase
+      .from("checkouts")
+      .select("*, checkout_fields(*)");
+    
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slugOrId);
+    
+    if (isUUID) {
+      query = query.or(`slug.eq.${slugOrId},id.eq.${slugOrId}`);
+    } else {
+      query = query.eq("slug", slugOrId);
     }
 
-    const { data: offer, error: oError } = await supabase
-      .from("checkout_offers")
-      .select("*")
-      .eq("project_id", project.id)
-      .eq("active", true)
-      .limit(1)
-      .maybeSingle();
+    const { data: checkout, error } = await query.maybeSingle();
 
-    if (oError || !offer) {
-      throw new Error("Oferta ativa não encontrada para este projeto.");
+    if (error) {
+      console.error("[route.c.$slug] erro ao buscar checkout:", error);
+      throw new Error("Erro ao carregar checkout.");
     }
 
-    return { project, offer };
+    if (!checkout) {
+      throw new Error("Checkout não encontrado.");
+    }
+
+    if (!checkout.active && checkout.status !== 'published') {
+      throw new Error("Este checkout não está mais ativo.");
+    }
+
+    return { checkout };
   },
   component: DynamicCheckout,
   errorComponent: ({ error }) => (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6 text-center">
-      <div className="max-w-md w-full bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
-        <h1 className="text-xl font-bold text-gray-900 mb-2">Ops! Algo deu errado</h1>
-        <p className="text-gray-500 mb-6">{error.message}</p>
+    <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a] text-white p-6 text-center">
+      <div className="max-w-md w-full bg-[#1a1a1a] p-8 rounded-2xl shadow-sm border border-[#333]">
+        <h1 className="text-xl font-bold text-white mb-2">Ops! Algo deu errado</h1>
+        <p className="text-gray-400 mb-6">{error.message}</p>
         <button 
           onClick={() => window.location.href = "/"}
-          className="text-blue-600 font-semibold hover:underline"
+          className="text-green-500 font-semibold hover:underline"
         >
           Voltar ao início
         </button>
@@ -51,18 +58,6 @@ export const Route = createFileRoute("/c/$slug")({
 });
 
 function DynamicCheckout() {
-  const { project, offer } = Route.useLoaderData();
-  
-  // Inject checkout media into theme/content for the visual components
-  const themeJson = (project.theme_json as any) || {};
-  const projectWithMedia = {
-    ...project,
-    theme_json: {
-      ...themeJson,
-      media_url: (project as any).media_url,
-      media_type: (project as any).media_type,
-    }
-  };
-
-  return <CheckoutCoreContainer project={projectWithMedia} offer={offer} />;
+  const { checkout } = Route.useLoaderData();
+  return <CheckoutPageContent checkout={checkout} />;
 }
