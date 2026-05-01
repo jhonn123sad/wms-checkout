@@ -31,8 +31,11 @@ function CheckoutEditPage() {
     active: true,
   });
   const [fields, setFields] = useState<any[]>([]);
+  const [projects, setProjects] = useState<any[]>([]);
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
 
   useEffect(() => {
+    fetchProjects();
     if (!isNew) {
       fetchCheckout();
     } else {
@@ -42,6 +45,15 @@ function CheckoutEditPage() {
       ]);
     }
   }, [id]);
+
+  const fetchProjects = async () => {
+    const { data, error } = await supabase
+      .from("checkout_projects")
+      .select("id, name, slug");
+    if (!error && data) {
+      setProjects(data);
+    }
+  };
 
   const fetchCheckout = async () => {
     const { data, error } = await supabase
