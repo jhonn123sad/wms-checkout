@@ -34,6 +34,13 @@ function PageEditor() {
   const [sections, setSections] = useState<Section[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [uploadingCount, setUploadingCount] = useState(0);
+
+  const handleUploading = (isUploading: boolean) => {
+    setUploadingCount(prev => isUploading ? prev + 1 : Math.max(0, prev - 1));
+  };
+
+  const isAnyUploading = uploadingCount > 0;
 
   useEffect(() => {
     if (!isNew) {
@@ -166,8 +173,9 @@ function PageEditor() {
           </Button>
           <h1 className="text-xl font-bold">{isNew ? "Nova Página" : "Editar Página"}</h1>
         </div>
-        <Button onClick={handleSave} disabled={isSaving} className="gap-2">
-          <Save className="w-4 h-4" /> {isSaving ? "Salvando..." : "Salvar Página"}
+        <Button onClick={handleSave} disabled={isSaving || isAnyUploading} className="gap-2">
+          <Save className="w-4 h-4" /> 
+          {isSaving ? "Salvando..." : isAnyUploading ? "Aguarde Upload..." : "Salvar Página"}
         </Button>
       </div>
 
@@ -261,6 +269,7 @@ function PageEditor() {
                         label="Mídia de Fundo/Destaque" 
                         value={section.content.media} 
                         onChange={(val) => handleUpdateSection(index, { ...section.content, media: val })} 
+                        onUploading={handleUploading}
                       />
                     </div>
                   )}
@@ -281,6 +290,7 @@ function PageEditor() {
                       <MediaField 
                         value={section.content.media} 
                         onChange={(val) => handleUpdateSection(index, { ...section.content, media: val })} 
+                        onUploading={handleUploading}
                       />
                       <div className="space-y-2">
                         <Label>Legenda (opcional)</Label>
