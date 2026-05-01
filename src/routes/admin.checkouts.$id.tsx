@@ -104,6 +104,7 @@ function CheckoutEditPage() {
         price: checkout.price,
         cta_text: checkout.cta_text,
         active: checkout.active,
+        status: checkout.active ? 'published' : 'draft',
         media_json: checkout.media_asset ?? null,
         media_url: checkout.media_asset?.url ?? null,
         media_type: checkout.media_asset?.type ?? null,
