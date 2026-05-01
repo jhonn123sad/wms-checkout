@@ -2,7 +2,7 @@
  import { CheckoutTemplateProps } from "../types";
  import { Loader2, ShieldCheck, Zap, ArrowRight, Bot, Code, Terminal, Users, Globe } from "lucide-react";
  import { InlinePixPanel } from "../InlinePixPanel";
- import { CheckoutVisualAsset } from "../visuals/CheckoutVisualAsset";
+ import { MediaDisplay } from "@/components/public/MediaDisplay";
  
  export const WMSCommunityTemplate: React.FC<CheckoutTemplateProps> = ({
    project,
