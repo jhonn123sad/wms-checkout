@@ -1,8 +1,18 @@
 import React from "react";
-import { MediaValue } from "@/components/admin/MediaField";
+import React from "react";
+
+export interface MediaValue {
+  url: string;
+  type: "image" | "video" | "gif";
+  provider: "upload" | "external" | "youtube" | "vimeo" | "gdrive";
+  id?: string;
+}
 
 export const MediaDisplay = ({ media }: { media: MediaValue | null | undefined }) => {
-  if (!media || !media.url) return null;
+  if (!media || !media.url) {
+    // Placeholder neutro caso a mídia esteja vazia para não quebrar a página
+    return <div className="w-full h-full bg-muted/20 flex items-center justify-center text-muted-foreground/40 text-xs italic p-4">Sem mídia configurada</div>;
+  }
 
   if (media.type === "image" || media.type === "gif") {
     return <img src={media.url} alt="" className="w-full h-full object-cover" />;
