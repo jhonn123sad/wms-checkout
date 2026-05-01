@@ -210,8 +210,8 @@ export type Database = {
           id: string
           media_asset_id: string | null
           media_json: Json | null
-          media_type: string
-          media_url: string
+          media_type: string | null
+          media_url: string | null
           price: number
           slug: string
           status: string | null
@@ -226,8 +226,8 @@ export type Database = {
           id?: string
           media_asset_id?: string | null
           media_json?: Json | null
-          media_type: string
-          media_url: string
+          media_type?: string | null
+          media_url?: string | null
           price: number
           slug: string
           status?: string | null
@@ -242,8 +242,8 @@ export type Database = {
           id?: string
           media_asset_id?: string | null
           media_json?: Json | null
-          media_type?: string
-          media_url?: string
+          media_type?: string | null
+          media_url?: string | null
           price?: number
           slug?: string
           status?: string | null
