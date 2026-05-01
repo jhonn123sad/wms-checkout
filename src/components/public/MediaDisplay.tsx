@@ -1,9 +1,12 @@
 import React from "react";
 
 export interface MediaValue {
-  url: string;
   type: "image" | "video" | "gif";
-  provider: "upload" | "external" | "youtube" | "vimeo" | "gdrive";
+  source: "supabase" | "external" | "youtube" | "vimeo" | "gdrive";
+  url: string;
+  file_path?: string;
+  title?: string;
+  alt_text?: string;
   id?: string;
 }
 
@@ -17,7 +20,7 @@ export const MediaDisplay = ({ media }: { media: MediaValue | null | undefined }
     return <img src={media.url} alt="" className="w-full h-full object-cover" />;
   }
 
-  if (media.provider === "youtube") {
+  if (media.source === "youtube") {
     let videoId = "";
     if (media.url.includes("v=")) {
       videoId = media.url.split("v=")[1].split("&")[0];
@@ -39,7 +42,7 @@ export const MediaDisplay = ({ media }: { media: MediaValue | null | undefined }
     );
   }
 
-  if (media.provider === "vimeo") {
+  if (media.source === "vimeo") {
     const videoId = media.url.split("/").pop();
     return (
       <div className="aspect-video w-full">

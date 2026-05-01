@@ -101,18 +101,31 @@ import { toast } from "sonner";
          ) : (
            checkouts.map((checkout) => (
              <Card key={checkout.id} className="overflow-hidden border-border flex flex-col">
-               <div className="h-32 bg-muted relative">
-                 {checkout.media_type === "image" ? (
-                   <img 
-                     src={checkout.media_url} 
-                     alt={checkout.title} 
-                     className="w-full h-full object-cover"
-                   />
-                 ) : (
-                   <div className="w-full h-full flex items-center justify-center bg-black">
-                     <span className="text-xs text-white">Video Preview</span>
-                   </div>
-                 )}
+                <div className="h-32 bg-muted relative overflow-hidden">
+                  {(() => {
+                    const media = checkout.media_json || (checkout.media_url ? { url: checkout.media_url, type: checkout.media_type, source: 'external' } : null);
+                    if (media?.type === "image" || media?.type === "gif") {
+                      return (
+                        <img 
+                          src={media.url} 
+                          alt={checkout.title} 
+                          className="w-full h-full object-cover"
+                        />
+                      );
+                    }
+                    if (media?.type === "video") {
+                      return (
+                        <div className="w-full h-full flex items-center justify-center bg-black">
+                          <span className="text-[10px] text-white uppercase font-bold tracking-widest">{media.source} Video</span>
+                        </div>
+                      );
+                    }
+                    return (
+                      <div className="w-full h-full flex items-center justify-center bg-muted">
+                        <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest italic">Sem Mídia</span>
+                      </div>
+                    );
+                  })()}
                  <div className="absolute top-2 right-2">
                    <Badge variant={checkout.active ? "default" : "secondary"}>
                      {checkout.active ? "Ativo" : "Inativo"}

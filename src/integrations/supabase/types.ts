@@ -209,6 +209,7 @@ export type Database = {
           cta_text: string
           id: string
           media_asset_id: string | null
+          media_json: Json | null
           media_type: string
           media_url: string
           price: number
@@ -224,6 +225,7 @@ export type Database = {
           cta_text?: string
           id?: string
           media_asset_id?: string | null
+          media_json?: Json | null
           media_type: string
           media_url: string
           price: number
@@ -239,6 +241,7 @@ export type Database = {
           cta_text?: string
           id?: string
           media_asset_id?: string | null
+          media_json?: Json | null
           media_type?: string
           media_url?: string
           price?: number
@@ -404,6 +407,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          media_json: Json | null
           seo_data: Json | null
           slug: string
           status: string
@@ -413,6 +417,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          media_json?: Json | null
           seo_data?: Json | null
           slug: string
           status?: string
@@ -422,6 +427,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          media_json?: Json | null
           seo_data?: Json | null
           slug?: string
           status?: string
