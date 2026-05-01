@@ -1,6 +1,7 @@
  import React from "react";
  import { CheckoutTemplateProps } from "../types";
- import { Loader2, CheckCircle2, ShieldCheck, BookOpen, Utensils, Heart, Clock, Star } from "lucide-react";
+import { Loader2, CheckCircle2, ShieldCheck, BookOpen, Utensils, Heart, Clock, Star } from "lucide-react";
+import { MediaDisplay } from "@/components/public/MediaDisplay";
  import { InlinePixPanel } from "../InlinePixPanel";
  import { CheckoutVisualAsset } from "../visuals/CheckoutVisualAsset";
  

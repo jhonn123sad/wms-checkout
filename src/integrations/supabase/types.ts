@@ -137,6 +137,9 @@ export type Database = {
           headline: string | null
           id: string
           legal_text: string | null
+          media_asset_id: string | null
+          media_type: string | null
+          media_url: string | null
           name: string
           pix_expiration_minutes: number | null
           slug: string
@@ -156,6 +159,9 @@ export type Database = {
           headline?: string | null
           id?: string
           legal_text?: string | null
+          media_asset_id?: string | null
+          media_type?: string | null
+          media_url?: string | null
           name: string
           pix_expiration_minutes?: number | null
           slug: string
@@ -175,6 +181,9 @@ export type Database = {
           headline?: string | null
           id?: string
           legal_text?: string | null
+          media_asset_id?: string | null
+          media_type?: string | null
+          media_url?: string | null
           name?: string
           pix_expiration_minutes?: number | null
           slug?: string
@@ -183,7 +192,15 @@ export type Database = {
           theme_json?: Json | null
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "checkout_projects_media_asset_id_fkey"
+            columns: ["media_asset_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       checkouts: {
         Row: {
