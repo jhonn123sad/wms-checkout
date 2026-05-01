@@ -1,6 +1,7 @@
  import React from "react";
  import { CheckoutTemplateProps } from "../types";
- import { Loader2, ShieldCheck, CheckCircle2, Shield, Zap, Lock, ArrowRight } from "lucide-react";
+import { Loader2, ShieldCheck, CheckCircle2, Shield, Zap, Lock, ArrowRight } from "lucide-react";
+import { MediaDisplay } from "@/components/public/MediaDisplay";
  
  export const ImageLeftTemplate: React.FC<CheckoutTemplateProps> = ({
    project,
