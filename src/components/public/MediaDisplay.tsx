@@ -2,7 +2,7 @@ import React from "react";
 
 export interface MediaValue {
   type: "image" | "video" | "gif" | "youtube" | "vimeo";
-  source: "supabase" | "external" | "external_url" | "youtube" | "vimeo" | "gdrive";
+  source?: "supabase" | "external" | "external_url" | "youtube" | "vimeo" | "gdrive";
   url: string;
   embed_url?: string;
   file_path?: string;
@@ -12,14 +12,25 @@ export interface MediaValue {
 }
 
 export const MediaDisplay = ({ media }: { media: MediaValue | null | undefined | any }) => {
-  if (!media || !media.url) {
-    return null;
-  }
+  if (!media) return null;
 
-  // Sanitização simples para garantir que temos o que precisamos
-  const type = media.type || media.media_type;
-  const url = media.url || media.media_url;
+  // Prioridade: extrair de campos diretos ou do objeto media_json
+  let type = media.type || media.media_type;
+  let url = media.url || media.media_url;
   const source = media.source;
+
+  // Se não tiver type mas tiver url, tenta deduzir
+  if (!type && url) {
+    if (url.includes("youtube.com") || url.includes("youtu.be")) {
+      type = "youtube";
+    } else if (url.includes("vimeo.com")) {
+      type = "vimeo";
+    } else if (url.match(/\.(jpeg|jpg|gif|png|webp|avif)$/i)) {
+      type = "image";
+    } else if (url.match(/\.(mp4|webm|ogg)$/i)) {
+      type = "video";
+    }
+  }
 
   if (!url) return null;
 
@@ -27,7 +38,7 @@ export const MediaDisplay = ({ media }: { media: MediaValue | null | undefined |
     return (
       <img 
         src={url} 
-        alt={media.alt_text || media.title || ""} 
+        alt={media.alt_text || media.title || "Checkout Media"} 
         className="w-full h-full object-cover" 
         onError={(e) => {
           console.error("[MediaDisplay] Erro ao carregar imagem:", url);
@@ -46,6 +57,7 @@ export const MediaDisplay = ({ media }: { media: MediaValue | null | undefined |
           className="w-full h-full border-0"
           allow="autoplay; encrypted-media"
           allowFullScreen
+          title="YouTube Video"
         />
       </div>
     );
@@ -60,6 +72,7 @@ export const MediaDisplay = ({ media }: { media: MediaValue | null | undefined |
           className="w-full h-full border-0"
           allow="autoplay; fullscreen"
           allowFullScreen
+          title="Vimeo Video"
         />
       </div>
     );
