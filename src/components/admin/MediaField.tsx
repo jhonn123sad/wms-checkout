@@ -74,17 +74,20 @@ export const MediaField = ({
           .toLowerCase()
           .slice(0, 60) || "file";
       const fileName = `${timestamp}-${baseName}.${fileExt}`;
+      
+      // O pathPrefix deve ser o slug se possível. 
+      // O componente pai passa pathPrefix="checkouts/{slug}" ou similar.
       const filePath = `${pathPrefix}/${fileName}`;
 
       console.log("[MediaField] Upload start", {
-        bucket: "site-media",
+        bucket: "checkout-assets",
         filePath,
         size: file.size,
         type: file.type,
       });
 
       const { error: uploadError } = await supabase.storage
-        .from("site-media")
+        .from("checkout-assets")
         .upload(filePath, file, {
           contentType: file.type,
           upsert: true,
@@ -98,13 +101,11 @@ export const MediaField = ({
 
       const {
         data: { publicUrl },
-      } = supabase.storage.from("site-media").getPublicUrl(filePath);
+      } = supabase.storage.from("checkout-assets").getPublicUrl(filePath);
 
-      const type: MediaValue["type"] = file.type.startsWith("video/")
-        ? "video"
-        : file.type === "image/gif"
-        ? "gif"
-        : "image";
+      let type: MediaValue["type"] = "image";
+      if (file.type.startsWith("video/")) type = "video";
+      else if (file.type === "image/gif") type = "gif";
 
       const mediaData: MediaValue = {
         url: publicUrl,
@@ -126,7 +127,6 @@ export const MediaField = ({
     } finally {
       setIsUploading(false);
       onUploading?.(false);
-      // permite reupload do mesmo arquivo
       e.target.value = "";
     }
   };
@@ -140,19 +140,20 @@ export const MediaField = ({
     let source: MediaValue["source"] = "external_url";
     let embed_url: string | undefined;
 
-    if (url.includes("youtube.com") || url.includes("youtu.be")) {
+    const lowerUrl = url.toLowerCase();
+    if (lowerUrl.includes("youtube.com") || lowerUrl.includes("youtu.be")) {
       type = "youtube";
       source = "youtube";
       embed_url = toYouTubeEmbed(url);
-    } else if (url.includes("vimeo.com")) {
+    } else if (lowerUrl.includes("vimeo.com")) {
       type = "vimeo";
       source = "vimeo";
-    } else if (url.includes("drive.google.com")) {
+    } else if (lowerUrl.includes("drive.google.com")) {
       type = "video";
       source = "gdrive";
-    } else if (url.toLowerCase().endsWith(".mp4") || url.toLowerCase().endsWith(".webm")) {
+    } else if (lowerUrl.endsWith(".mp4") || lowerUrl.endsWith(".webm") || lowerUrl.endsWith(".mov")) {
       type = "video";
-    } else if (url.toLowerCase().endsWith(".gif")) {
+    } else if (lowerUrl.endsWith(".gif")) {
       type = "gif";
     }
 
