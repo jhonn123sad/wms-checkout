@@ -1,7 +1,8 @@
  import React from "react";
  import { CheckoutTemplateProps } from "../types";
- import { Loader2, ShieldCheck, CheckCircle2, Shield, Zap, Lock, ArrowRight } from "lucide-react";
+import { Loader2, ShieldCheck, CheckCircle2, Shield, Zap, Lock, ArrowRight, Image as ImageIcon } from "lucide-react";
  import { InlinePixPanel } from "../InlinePixPanel";
+import { MediaDisplay } from "@/components/public/MediaDisplay";
  
  export const AppleCleanTemplate: React.FC<CheckoutTemplateProps> = ({
    project,
