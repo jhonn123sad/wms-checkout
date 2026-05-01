@@ -157,9 +157,10 @@ import { toast } from "sonner";
                         href={`/checkout/${checkout.slug}`} 
                         target="_blank" 
                         rel="noreferrer"
-                        className="inline-flex items-center justify-center rounded-md p-2 hover:bg-accent text-muted-foreground transition-colors"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border hover:bg-accent text-xs font-medium transition-colors"
                       >
-                        <ExternalLink className="w-4 h-4" />
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        Abrir Checkout Real
                       </a>
                       <Button variant="ghost" size="icon" onClick={() => handleDuplicate(checkout)}>
                         <Copy className="w-4 h-4" />

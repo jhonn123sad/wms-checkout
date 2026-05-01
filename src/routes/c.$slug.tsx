@@ -52,5 +52,18 @@ export const Route = createFileRoute("/c/$slug")({
 
 function DynamicCheckout() {
   const { project, offer } = Route.useLoaderData();
-  return <CheckoutCoreContainer project={project} offer={offer} />;
+  
+  // Inject checkout media into theme/content for the visual components
+  const projectWithMedia = {
+    ...project,
+    headline: project.headline || project.title,
+    subheadline: project.subheadline || project.subtitle,
+    theme_json: {
+      ...(project.theme_json || {}),
+      media_url: project.media_url,
+      media_type: project.media_type,
+    }
+  };
+
+  return <CheckoutCoreContainer project={projectWithMedia} offer={offer} />;
 }

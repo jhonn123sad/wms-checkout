@@ -105,14 +105,13 @@ function CheckoutPage() {
           <Card className="overflow-hidden border-[#333] bg-[#1a1a1a] shadow-2xl min-h-[200px]">
             <MediaDisplay
               media={
-                (checkout.media_json as unknown as MediaValue) ||
-                (checkout.media_url
+                checkout.media_url
                   ? {
                       url: checkout.media_url,
-                      type: (checkout.media_type as any) || "image",
+                      type: checkout.media_type as any || "image",
                       source: "external_url",
                     }
-                  : null)
+                  : (checkout.media_json as unknown as MediaValue)
               }
             />
           </Card>
