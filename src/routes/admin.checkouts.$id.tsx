@@ -59,60 +59,49 @@ function CheckoutEditPage() {
   const fetchCheckout = async () => {
     const { data, error } = await supabase
       .from("checkouts")
-      .select("*, checkout_fields(*), media_assets(*)")
+      .select("*, checkout_fields(*)")
       .eq("id", id)
       .single();
 
     if (error) {
-      toast.error("Erro ao carregar checkout");
+      console.error("[admin.checkouts.$id] fetch error", error);
+      toast.error("Erro ao carregar checkout: " + error.message);
       navigate({ to: "/admin/checkouts" });
       return;
     }
 
     setCheckout({
       ...data,
-      media_asset: data.media_json || (data.media_url ? { 
-        url: data.media_url, 
-        type: data.media_type, 
-        source: 'external' 
-      } : null)
+      media_asset:
+        (data.media_json as any) ||
+        (data.media_url
+          ? { url: data.media_url, type: data.media_type || "image", source: "external_url" }
+          : null),
     });
-    setFields(data.checkout_fields.sort((a: any, b: any) => a.sort_order - b.sort_order));
+    setFields(
+      (data.checkout_fields || []).sort((a: any, b: any) => a.sort_order - b.sort_order)
+    );
   };
 
   const handleSave = async () => {
     setLoading(true);
     try {
       let checkoutId = id;
-      
-      let mediaAssetId = checkout.media_asset_id;
-      
-      if (checkout.media_asset && !checkout.media_asset.id) {
-        const { data: mediaData, error: mediaError } = await supabase
-          .from("media_assets")
-          .insert({
-            url: checkout.media_asset.url,
-            type: checkout.media_asset.type,
-            provider: checkout.media_asset.provider
-          })
-          .select()
-          .single();
-        if (mediaError) throw mediaError;
-        mediaAssetId = mediaData.id;
-      }
 
-      const checkoutPayload = {
+      const checkoutPayload: any = {
         title: checkout.title,
         subtitle: checkout.subtitle,
         slug: checkout.slug,
         price: checkout.price,
         cta_text: checkout.cta_text,
         active: checkout.active,
-        media_json: checkout.media_asset,
-        media_url: checkout.media_asset?.url,
-        media_type: checkout.media_asset?.type,
-        updated_at: new Date().toISOString()
+        media_json: checkout.media_asset ?? null,
+        media_url: checkout.media_asset?.url ?? null,
+        media_type: checkout.media_asset?.type ?? null,
+        updated_at: new Date().toISOString(),
       };
+
+      console.log("[admin.checkouts.$id] saving", checkoutPayload);
 
       if (isNew) {
         const { data, error } = await supabase
@@ -133,23 +122,30 @@ function CheckoutEditPage() {
       if (!isNew) {
         await supabase.from("checkout_fields").delete().eq("checkout_id", checkoutId);
       }
-      
-      const fieldsToInsert = fields.map((f, index) => ({
-        field_name: f.field_name,
-        field_label: f.field_label,
-        field_type: f.field_type || "text",
-        required: f.required,
-        checkout_id: checkoutId,
-        sort_order: index + 1,
-      }));
 
-      const { error: fError } = await supabase.from("checkout_fields").insert(fieldsToInsert);
-      if (fError) throw fError;
+      const fieldsToInsert = fields
+        .filter((f) => f.field_name && f.field_label)
+        .map((f, index) => ({
+          field_name: f.field_name,
+          field_label: f.field_label,
+          field_type: f.field_type || "text",
+          required: !!f.required,
+          checkout_id: checkoutId,
+          sort_order: index + 1,
+        }));
+
+      if (fieldsToInsert.length > 0) {
+        const { error: fError } = await supabase
+          .from("checkout_fields")
+          .insert(fieldsToInsert);
+        if (fError) throw fError;
+      }
 
       toast.success("Checkout salvo com sucesso!");
       navigate({ to: "/admin/checkouts" });
     } catch (error: any) {
-      toast.error(error.message || "Erro ao salvar");
+      console.error("[admin.checkouts.$id] save error", error);
+      toast.error(error.message || "Erro ao salvar checkout");
     } finally {
       setLoading(false);
     }
@@ -245,6 +241,7 @@ function CheckoutEditPage() {
               value={checkout.media_asset} 
               onChange={(val) => setCheckout({ ...checkout, media_asset: val })}
               onUploading={setIsUploadingMedia}
+              pathPrefix={isNew ? "checkouts/new" : `checkouts/${id}`}
             />
           </Card>
         </div>
