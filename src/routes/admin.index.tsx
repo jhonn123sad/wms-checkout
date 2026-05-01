@@ -37,9 +37,9 @@ function AdminDashboard() {
   }, []);
 
   const cards = [
-    { title: "Páginas", value: stats.pages, icon: FileText, color: "text-blue-500", href: "/admin/pages" },
-    { title: "Checkouts", value: stats.checkouts, icon: ShoppingCart, color: "text-purple-500", href: "/admin/checkouts" },
-    { title: "Leads Totais", value: stats.leads, icon: Users, color: "text-green-500", href: "/admin/checkouts" },
+    { title: "Páginas", value: stats.pages, icon: FileText, color: "text-blue-500", href: "/admin/pages/" },
+    { title: "Checkouts", value: stats.checkouts, icon: ShoppingCart, color: "text-purple-500", href: "/admin/checkouts/" },
+    { title: "Leads Totais", value: stats.leads, icon: Users, color: "text-green-500", href: "/admin/checkouts/" },
   ];
 
   return (
