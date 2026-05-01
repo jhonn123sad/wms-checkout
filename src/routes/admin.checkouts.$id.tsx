@@ -70,12 +70,11 @@ function CheckoutEditPage() {
 
     setCheckout({
       ...data,
-      media_asset: data.media_assets ? {
-        url: data.media_assets.url,
-        type: data.media_assets.type,
-        provider: data.media_assets.provider,
-        id: data.media_assets.id
-      } : (data.media_url ? { url: data.media_url, type: data.media_type, provider: 'external' } : null)
+      media_asset: data.media_json || (data.media_url ? { 
+        url: data.media_url, 
+        type: data.media_type, 
+        source: 'external' 
+      } : null)
     });
     setFields(data.checkout_fields.sort((a: any, b: any) => a.sort_order - b.sort_order));
   };
@@ -108,7 +107,7 @@ function CheckoutEditPage() {
         price: checkout.price,
         cta_text: checkout.cta_text,
         active: checkout.active,
-        media_asset_id: mediaAssetId,
+        media_json: checkout.media_asset,
         media_url: checkout.media_asset?.url,
         media_type: checkout.media_asset?.type,
         updated_at: new Date().toISOString()
