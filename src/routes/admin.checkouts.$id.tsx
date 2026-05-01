@@ -21,6 +21,7 @@ function CheckoutEditPage() {
   const isNew = id === "new";
   
   const [loading, setLoading] = useState(false);
+  const [isUploadingMedia, setIsUploadingMedia] = useState(false);
   const [checkout, setCheckout] = useState<any>({
     title: "",
     subtitle: "",
@@ -242,7 +243,8 @@ function CheckoutEditPage() {
             <h2 className="text-xl font-semibold border-b pb-2">Mídia do Checkout</h2>
             <MediaField 
               value={checkout.media_asset} 
-              onChange={(val) => setCheckout({ ...checkout, media_asset: val })} 
+              onChange={(val) => setCheckout({ ...checkout, media_asset: val })}
+              onUploading={setIsUploadingMedia}
             />
           </Card>
         </div>
@@ -303,8 +305,8 @@ function CheckoutEditPage() {
 
           <div className="flex justify-end gap-4">
             <Button variant="outline" onClick={() => navigate({ to: "/admin/checkouts" })}>Cancelar</Button>
-            <Button onClick={handleSave} disabled={loading}>
-              {loading ? "Salvando..." : "Salvar Checkout"}
+            <Button onClick={handleSave} disabled={loading || isUploadingMedia}>
+              {loading ? "Salvando..." : isUploadingMedia ? "Aguarde Upload..." : "Salvar Checkout"}
             </Button>
           </div>
         </div>
