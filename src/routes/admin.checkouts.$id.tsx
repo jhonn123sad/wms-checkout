@@ -241,7 +241,7 @@ function CheckoutEditPage() {
               value={checkout.media_asset} 
               onChange={(val) => setCheckout({ ...checkout, media_asset: val })}
               onUploading={setIsUploadingMedia}
-              pathPrefix={isNew ? "checkouts/new" : `checkouts/${id}`}
+              pathPrefix={checkout.slug || "temp"}
             />
           </Card>
         </div>

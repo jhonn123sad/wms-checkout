@@ -11,22 +11,39 @@ export interface MediaValue {
   id?: string;
 }
 
-export const MediaDisplay = ({ media }: { media: MediaValue | null | undefined }) => {
+export const MediaDisplay = ({ media }: { media: MediaValue | null | undefined | any }) => {
   if (!media || !media.url) {
-    return <div className="w-full h-full bg-muted/20 flex items-center justify-center text-muted-foreground/40 text-xs italic p-4">Sem mídia configurada</div>;
+    return null;
   }
 
-  if (media.type === "image" || media.type === "gif") {
-    return <img src={media.url} alt={media.alt_text || media.title || ""} className="w-full h-full object-cover" />;
-  }
+  // Sanitização simples para garantir que temos o que precisamos
+  const type = media.type || media.media_type;
+  const url = media.url || media.media_url;
+  const source = media.source;
 
-  if (media.type === "youtube" || media.source === "youtube") {
-    const embed = media.embed_url || toYouTubeEmbed(media.url);
+  if (!url) return null;
+
+  if (type === "image" || type === "gif") {
     return (
-      <div className="aspect-video w-full">
+      <img 
+        src={url} 
+        alt={media.alt_text || media.title || ""} 
+        className="w-full h-full object-cover" 
+        onError={(e) => {
+          console.error("[MediaDisplay] Erro ao carregar imagem:", url);
+          (e.target as any).style.display = 'none';
+        }}
+      />
+    );
+  }
+
+  if (type === "youtube" || source === "youtube" || url.includes("youtube.com") || url.includes("youtu.be")) {
+    const embed = media.embed_url || toYouTubeEmbed(url);
+    return (
+      <div className="aspect-video w-full bg-black">
         <iframe 
           src={embed}
-          className="w-full h-full"
+          className="w-full h-full border-0"
           allow="autoplay; encrypted-media"
           allowFullScreen
         />
@@ -34,13 +51,13 @@ export const MediaDisplay = ({ media }: { media: MediaValue | null | undefined }
     );
   }
 
-  if (media.type === "vimeo" || media.source === "vimeo") {
-    const videoId = media.url.split("/").pop();
+  if (type === "vimeo" || source === "vimeo" || url.includes("vimeo.com")) {
+    const videoId = url.split("/").pop();
     return (
-      <div className="aspect-video w-full">
+      <div className="aspect-video w-full bg-black">
         <iframe 
           src={`https://player.vimeo.com/video/${videoId}?autoplay=1&muted=1&loop=1`}
-          className="w-full h-full"
+          className="w-full h-full border-0"
           allow="autoplay; fullscreen"
           allowFullScreen
         />
@@ -48,10 +65,10 @@ export const MediaDisplay = ({ media }: { media: MediaValue | null | undefined }
     );
   }
 
-  if (media.type === "video") {
+  if (type === "video") {
     return (
       <video 
-        src={media.url} 
+        src={url} 
         className="w-full h-full object-cover" 
         autoPlay 
         loop 
@@ -62,7 +79,7 @@ export const MediaDisplay = ({ media }: { media: MediaValue | null | undefined }
     );
   }
 
-  return <div className="p-4 bg-muted text-center text-xs">Formato de mídia não suportado</div>;
+  return null;
 };
 
 function toYouTubeEmbed(url: string): string {

@@ -104,19 +104,23 @@ import { toast } from "sonner";
                 <div className="h-32 bg-muted relative overflow-hidden">
                   {(() => {
                     const media = checkout.media_json || (checkout.media_url ? { url: checkout.media_url, type: checkout.media_type, source: 'external' } : null);
-                    if (media?.type === "image" || media?.type === "gif") {
+                    const type = checkout.media_type || media?.type;
+                    const url = checkout.media_url || media?.url;
+
+                    if (type === "image" || type === "gif") {
                       return (
                         <img 
-                          src={media.url} 
+                          src={url} 
                           alt={checkout.title} 
                           className="w-full h-full object-cover"
                         />
                       );
                     }
-                    if (media?.type === "video") {
+                    if (type === "video" || type === "youtube") {
                       return (
-                        <div className="w-full h-full flex items-center justify-center bg-black">
-                          <span className="text-[10px] text-white uppercase font-bold tracking-widest">{media.source} Video</span>
+                        <div className="w-full h-full flex flex-col items-center justify-center bg-black gap-1">
+                          <span className="text-[10px] text-white uppercase font-bold tracking-widest">{type}</span>
+                          <span className="text-[8px] text-white/50 truncate max-w-[90%] px-2">{url}</span>
                         </div>
                       );
                     }
