@@ -2,7 +2,7 @@
  import { CheckoutTemplateProps } from "../types";
  import { Loader2, ShieldCheck, Zap, ArrowRight, Bot, Code, Terminal, Users, Globe } from "lucide-react";
  import { InlinePixPanel } from "../InlinePixPanel";
- import { CheckoutVisualAsset } from "../visuals/CheckoutVisualAsset";
+ import { MediaDisplay } from "@/components/public/MediaDisplay";
  
  export const WMSCommunityTemplate: React.FC<CheckoutTemplateProps> = ({
    project,
@@ -69,11 +69,16 @@
              <div className="w-full max-w-[340px] relative group">
                 <div className="absolute -inset-1 bg-green-500/20 rounded-xl blur opacity-20 group-hover:opacity-40 transition-opacity"></div>
                 <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-neutral-800 bg-black shadow-2xl">
-                  <CheckoutVisualAsset 
-                    slug={project.slug} 
-                    theme={theme} 
-                    content={content} 
-                    className="w-full h-full" 
+                  <MediaDisplay
+                    media={
+                      theme.media_url 
+                        ? { 
+                            url: theme.media_url, 
+                            type: theme.media_type || "image",
+                            source: "external" 
+                          } 
+                        : null
+                    }
                   />
                   <div className="absolute bottom-2 left-2 px-1.5 py-0.5 bg-black/80 backdrop-blur-sm border border-green-500/30 rounded text-[7px] font-mono text-green-500 uppercase tracking-widest">
                     SECURE_NODE_0x1

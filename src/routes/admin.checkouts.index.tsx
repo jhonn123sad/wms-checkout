@@ -141,7 +141,7 @@ import { toast } from "sonner";
                    <h3 className="font-bold text-lg leading-tight mb-1 truncate">
                      {checkout.title}
                    </h3>
-                   <p className="text-xs text-muted-foreground mb-2">/{checkout.slug}</p>
+                   <p className="text-xs text-muted-foreground mb-2">/c/{checkout.slug}</p>
                    <div className="flex items-center text-sm font-medium text-green-600">
                      R$ {checkout.price.toFixed(2)}
                    </div>
@@ -154,12 +154,13 @@ import { toast } from "sonner";
                    </div>
                     <div className="flex gap-2 items-center">
                       <a 
-                        href={`/checkout/${checkout.slug}`} 
+                        href={`/c/${checkout.slug}`} 
                         target="_blank" 
                         rel="noreferrer"
-                        className="inline-flex items-center justify-center rounded-md p-2 hover:bg-accent text-muted-foreground transition-colors"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border hover:bg-accent text-xs font-medium transition-colors"
                       >
-                        <ExternalLink className="w-4 h-4" />
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        Abrir Checkout Real
                       </a>
                       <Button variant="ghost" size="icon" onClick={() => handleDuplicate(checkout)}>
                         <Copy className="w-4 h-4" />

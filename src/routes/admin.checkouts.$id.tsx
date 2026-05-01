@@ -40,6 +40,15 @@ function CheckoutEditPage() {
     if (!isNew) {
       fetchCheckout();
     } else {
+      setCheckout({
+        title: "",
+        subtitle: "",
+        slug: "",
+        price: 0,
+        cta_text: "Liberar acesso agora",
+        media_asset: null,
+        active: true,
+      });
       setFields([
         { field_name: "nome", field_label: "Nome Completo", field_type: "text", required: true, sort_order: 1 },
         { field_name: "email", field_label: "E-mail", field_type: "email", required: true, sort_order: 2 },
