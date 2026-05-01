@@ -7,12 +7,8 @@ import { Upload, Link as LinkIcon, X, Check, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-export interface MediaValue {
-  url: string;
-  type: "image" | "video" | "gif";
-  provider: "upload" | "external" | "youtube" | "vimeo" | "gdrive";
-  id?: string;
-}
+import { MediaValue } from "@/components/public/MediaDisplay";
+export type { MediaValue };
 
 interface MediaFieldProps {
   value?: MediaValue;
@@ -22,7 +18,7 @@ interface MediaFieldProps {
 
 export const MediaField = ({ value, onChange, label }: MediaFieldProps) => {
   const [isUploading, setIsUploading] = useState(false);
-  const [externalUrl, setExternalUrl] = useState(value?.provider !== "upload" ? value?.url || "" : "");
+  const [externalUrl, setExternalUrl] = useState(value?.source !== "supabase" ? value?.url || "" : "");
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -30,26 +26,32 @@ export const MediaField = ({ value, onChange, label }: MediaFieldProps) => {
 
     setIsUploading(true);
     try {
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const filePath = `uploads/${fileName}`;
+      const fileExt = file.name.split(".").pop()?.toLowerCase();
+      const timestamp = Date.now();
+      const safeFileName = file.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      const fileName = `${timestamp}-${safeFileName}.${fileExt}`;
+      const filePath = `checkouts/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
-        .from("media")
-        .upload(filePath, file);
+        .from("site-media")
+        .upload(filePath, file, {
+          contentType: file.type,
+          upsert: true
+        });
 
       if (uploadError) throw uploadError;
 
       const { data: { publicUrl } } = supabase.storage
-        .from("media")
+        .from("site-media")
         .getPublicUrl(filePath);
 
       const type = file.type.startsWith("video/") ? "video" : (file.type === "image/gif" ? "gif" : "image");
 
       const mediaData: MediaValue = {
         url: publicUrl,
+        file_path: filePath,
         type,
-        provider: "upload",
+        source: "supabase",
       };
 
       onChange(mediaData);
@@ -65,16 +67,16 @@ export const MediaField = ({ value, onChange, label }: MediaFieldProps) => {
     if (!externalUrl) return;
     
     let type: "image" | "video" | "gif" = "image";
-    let provider: MediaValue["provider"] = "external";
+    let source: MediaValue["source"] = "external";
 
     if (externalUrl.includes("youtube.com") || externalUrl.includes("youtu.be")) {
       type = "video";
-      provider = "youtube";
+      source = "youtube";
     } else if (externalUrl.includes("vimeo.com")) {
       type = "video";
-      provider = "vimeo";
+      source = "vimeo";
     } else if (externalUrl.includes("drive.google.com")) {
-      provider = "gdrive";
+      source = "gdrive";
       type = "video";
     } else if (externalUrl.toLowerCase().endsWith(".mp4") || externalUrl.toLowerCase().endsWith(".webm")) {
       type = "video";
@@ -82,7 +84,7 @@ export const MediaField = ({ value, onChange, label }: MediaFieldProps) => {
       type = "gif";
     }
 
-    onChange({ url: externalUrl, type, provider });
+    onChange({ url: externalUrl, type, source });
     toast.success("URL externa configurada.");
   };
 
@@ -100,9 +102,14 @@ export const MediaField = ({ value, onChange, label }: MediaFieldProps) => {
           {value.type === "image" || value.type === "gif" ? (
             <img src={value.url} alt="Preview" className="max-h-full object-contain w-full h-full" />
           ) : (
-            <div className="text-center p-4">
-              <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider">{value.provider}</p>
-              <p className="text-sm truncate max-w-[200px]">{value.url}</p>
+            <div className="text-center p-4 w-full h-full flex flex-col items-center justify-center">
+              <p className="text-[10px] text-muted-foreground mb-1 uppercase tracking-wider">{value.source}</p>
+              <p className="text-[10px] truncate max-w-[200px] text-muted-foreground/60">{value.url}</p>
+              {value.type === "video" && (
+                <div className="mt-2 text-primary">
+                   <Loader2 className="w-4 h-4 animate-pulse" />
+                </div>
+              )}
             </div>
           )}
           <button 
