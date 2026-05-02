@@ -16,7 +16,12 @@
    theme?: any;
  }
  
- export const InlinePixPanel: React.FC<InlinePixPanelProps> = ({
+/**
+ * INLINE PIX PANEL (VALIDADO)
+ * Exibe QR Code e código copia-e-cola.
+ * NÃO ALTERAR A LÓGICA DE EXIBIÇÃO DO PIX.
+ */
+export const InlinePixPanel: React.FC<InlinePixPanelProps> = ({
    paymentData,
    paymentStatus,
    onReset,

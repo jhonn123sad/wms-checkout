@@ -11,6 +11,11 @@ export interface MediaValue {
   id?: string;
 }
 
+/**
+ * MEDIA DISPLAY (VALIDADO)
+ * Renderiza imagens e vídeos do bucket checkout-assets ou links externos.
+ * NÃO ALTERAR A LÓGICA DE RESOLUÇÃO DE MÍDIA.
+ */
 export const MediaDisplay = ({ media }: { media: MediaValue | null | undefined | any }) => {
   if (!media) return null;
 

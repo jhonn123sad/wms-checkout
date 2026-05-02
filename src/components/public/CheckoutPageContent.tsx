@@ -1,3 +1,8 @@
+/**
+ * CHECKOUT PAGE CONTENT (VALIDADO)
+ * NÃO ALTERAR O FLUXO DE PAGAMENTO OU PERSISTÊNCIA AO MODIFICAR O DESIGN.
+ * Rota: /c/:slug | Tabela: public.checkouts | Pix não depende de campos.
+ */
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -55,6 +60,11 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
     return () => clearInterval(interval);
   }, [isPolling, paymentData, paymentStatus]);
 
+  /**
+   * SUBMIT PIX (VALIDADO)
+   * Envia o payload mínimo necessário para create-pix.
+   * NÃO ALTERAR ESTE FLUXO AO MODIFICAR O DESIGN.
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("[Checkout Pix] submit iniciado");
@@ -219,6 +229,11 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-4 max-h-[45vh] overflow-y-auto pr-2 custom-scrollbar min-w-0">
+                  {/**
+                    * FORM CAMPOS (VALIDADO)
+                    * Renderiza apenas campos onde active=true.
+                    * Required é validado apenas se active=true.
+                    */}
                   {(() => {
                     const fields = (checkout.checkout_fields || [])
                       .filter((f: any) => f.active !== false && !f.field_type?.startsWith("hidden:"))
