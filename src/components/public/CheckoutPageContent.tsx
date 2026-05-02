@@ -74,11 +74,8 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
     setLoading(true);
 
     console.log("[Checkout] Iniciando pagamento para:", { 
-      project_slug: projectSlug,
-      customer_name: name,
-      customer_email: email,
-      customer_phone: phone,
-      customer_cpf: cpf.length > 5 ? `${cpf.substring(0, 3)}.***.***-${cpf.slice(-2)}` : "invalid"
+      project_slug: checkout.slug,
+      fields_count: activeFields.length
     });
 
     try {
@@ -91,11 +88,12 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
       // 2. Invoke real payment function with the exact payload expected by create-pix
       const { data, error: invokeError } = await supabase.functions.invoke("create-pix", {
         body: {
-          project_slug: projectSlug,
-          customer_name: name,
-          customer_email: email,
-          customer_phone: phone,
-          customer_cpf: cpf.replace(/\D/g, ""), // Clean non-digits for API
+          project_slug: checkout.slug,
+          customer_name: name || null,
+          customer_email: email || null,
+          customer_phone: phone || null,
+          customer_cpf: cpf ? cpf.replace(/\D/g, "") : null,
+          form_data: formData, // Send everything for metadata
         },
       });
 
@@ -220,37 +218,14 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-4 max-h-[45vh] overflow-y-auto pr-2 custom-scrollbar min-w-0">
                   {(() => {
-                    const fields = [...(checkout.checkout_fields || [])].sort((a: any, b: any) => a.sort_order - b.sort_order);
+                    const fields = (checkout.checkout_fields || [])
+                      .filter((f: any) => f.active !== false)
+                      .sort((a: any, b: any) => a.sort_order - b.sort_order);
                     
-                    // Safety check: Ensure Pix required fields are present in the UI even if missing from DB
-                    const requiredKeys = ["customer_name", "customer_email", "customer_phone", "customer_cpf"];
-                    const labels: Record<string, string> = {
-                      "customer_name": "Nome Completo",
-                      "customer_email": "E-mail",
-                      "customer_phone": "WhatsApp / Telefone",
-                      "customer_cpf": "CPF"
-                    };
-                    const types: Record<string, string> = {
-                      "customer_name": "text",
-                      "customer_email": "email",
-                      "customer_phone": "tel",
-                      "customer_cpf": "text"
-                    };
-
-                    requiredKeys.forEach(key => {
-                      if (!fields.find(f => f.field_name === key)) {
-                        fields.push({
-                          id: `virtual-${key}`,
-                          field_name: key,
-                          field_label: labels[key],
-                          field_type: types[key],
-                          required: true
-                        });
-                      }
-                    });
+                    if (fields.length === 0) return null;
 
                     return fields.map((field: any) => (
-                      <div key={field.id} className="space-y-2">
+                      <div key={field.id || field.field_name} className="space-y-2">
                         <Label htmlFor={field.field_name} className="text-xs font-bold text-gray-500 uppercase tracking-wide ml-1">
                           {field.field_label}
                           {field.required && <span className="text-green-500 ml-1">*</span>}
