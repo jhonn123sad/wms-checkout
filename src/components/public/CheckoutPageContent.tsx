@@ -59,10 +59,18 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
     e.preventDefault();
     setLoading(true);
 
+    const projectSlug = checkout.slug;
+    const name = formData.name || formData.nome || "";
+    const email = formData.email || formData.email_address || "";
+    const phone = formData.phone || formData.whatsapp || "";
+    const cpf = formData.cpf || "";
+
     console.log("[Checkout] Iniciando pagamento para:", { 
-      slug: checkout.slug, 
-      price: checkout.price,
-      fields: Object.keys(formData)
+      project_slug: projectSlug,
+      customer_name: name,
+      customer_email: email,
+      customer_phone: phone,
+      customer_cpf: cpf ? "***" : "missing"
     });
 
     try {
@@ -72,21 +80,37 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
         data: formData,
       });
 
-      // 2. Invoke real payment function
+      // 2. Invoke real payment function with the exact payload expected by create-pix
       const { data, error: invokeError } = await supabase.functions.invoke("create-pix", {
         body: {
-          project_slug: checkout.slug,
-          customer_name: formData.name || formData.nome,
-          customer_cpf: formData.cpf,
-          customer_email: formData.email || formData.email_address,
-          customer_phone: formData.phone || formData.whatsapp,
-          // If the checkout has a specific offer_id, we should use it. 
-          // For now, create-pix handles lookup by slug if project exists.
+          project_slug: projectSlug,
+          customer_name: name,
+          customer_email: email,
+          customer_phone: phone,
+          customer_cpf: cpf,
         },
       });
 
-      if (invokeError || !data || data.error) {
-        throw new Error(data?.error || invokeError?.message || "Erro ao gerar pagamento");
+      if (invokeError) {
+        // Try to parse error from Edge Function response
+        let errorMessage = invokeError.message;
+        try {
+          // FunctionsHttpError might have more context
+          const errorContext = (invokeError as any).context;
+          if (errorContext) {
+            const body = await errorContext.json();
+            if (body && body.error) {
+              errorMessage = `Erro: ${body.error}${body.details ? ` (${JSON.stringify(body.details)})` : ""}`;
+            }
+          }
+        } catch (e) {
+          console.error("[Checkout] Erro ao processar resposta de erro:", e);
+        }
+        throw new Error(errorMessage);
+      }
+
+      if (!data || data.error) {
+        throw new Error(data?.error || "Erro ao gerar pagamento");
       }
 
       console.log("[Checkout] Pagamento gerado:", { orderId: data.orderId });
