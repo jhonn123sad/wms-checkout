@@ -45,27 +45,28 @@ function CheckoutEditPage() {
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
 
   const normalizeFields = useCallback((existingFields: any[]) => {
-    // Start with a clone of existing fields
-    const normalized = [...existingFields];
+    console.log("[Admin Fields] campos carregados do banco", existingFields);
     
-    // Ensure all existing fields have the active property
-    normalized.forEach(f => {
-      if (f.active === undefined) f.active = true;
+    // Start with a clone of existing fields
+    const normalized = existingFields.map(f => {
+      const isActive = !f.field_type?.startsWith("hidden:");
+      return {
+        ...f,
+        active: isActive,
+        field_type: f.field_type?.replace("hidden:", "") || "text",
+        system_field: PIX_REQUIRED_FIELDS.some(req => 
+          f.field_name === req.key || req.equivalents.includes(f.field_name)
+        )
+      };
     });
-
+    
     // Check which base fields are missing
     PIX_REQUIRED_FIELDS.forEach(req => {
       const foundIndex = normalized.findIndex(f => 
-        f.field_name === req.key || req.equivalents.includes(f.field_name)
+        f.field_name === req.key
       );
 
-      if (foundIndex !== -1) {
-        // Fix field_name if it was an equivalent but not the standard key
-        if (normalized[foundIndex].field_name !== req.key) {
-          normalized[foundIndex].field_name = req.key;
-        }
-        normalized[foundIndex].system_field = true;
-      } else {
+      if (foundIndex === -1) {
         // Field doesn't exist yet, add it as inactive base field
         normalized.push({
           field_name: req.key,
@@ -182,19 +183,27 @@ function CheckoutEditPage() {
         .map((f, index) => ({
           field_name: f.field_name || `field_${index}`,
           field_label: f.field_label,
-          field_type: f.field_type || "text",
+          field_type: f.active ? (f.field_type || "text") : `hidden:${f.field_type || "text"}`,
           required: !!f.required,
           checkout_id: checkoutId,
           sort_order: index + 1,
-          active: f.active === true // Explicit check for true to preserve false
+          // Removed 'active' column as it doesn't exist in DB
         } as any));
 
+      console.log("[Admin Fields] campos enviados", fieldsToInsert);
+
       if (fieldsToInsert.length > 0) {
-        console.log("[admin.checkouts.$id] inserting fields", fieldsToInsert);
-        const { error: fError } = await supabase
+        const { data: result, error: fError } = await supabase
           .from("checkout_fields")
-          .insert(fieldsToInsert);
-        if (fError) throw fError;
+          .insert(fieldsToInsert)
+          .select();
+        
+        console.log("[Admin Fields] resultado salvar", result);
+        
+        if (fError) {
+          console.error("[Admin Fields] erro salvar", fError);
+          throw fError;
+        }
       }
 
 
