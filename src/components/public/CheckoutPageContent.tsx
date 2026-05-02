@@ -95,7 +95,7 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
           customer_name: name,
           customer_email: email,
           customer_phone: phone,
-          customer_cpf: cpf,
+          customer_cpf: cpf.replace(/\D/g, ""), // Clean non-digits for API
         },
       });
 
