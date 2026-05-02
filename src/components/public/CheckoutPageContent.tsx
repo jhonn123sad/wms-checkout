@@ -252,9 +252,9 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
                     className="w-full h-14 md:h-16 text-lg md:text-xl font-black bg-green-500 hover:bg-green-600 text-black transition-all transform hover:scale-[1.01] active:scale-[0.99] rounded-xl shadow-[0_10px_30px_rgba(34,197,94,0.2)]"
                   >
                     {loading ? (
-                      <div className="flex items-center gap-2">
-                        <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-                        <span>Processando...</span>
+                      <div className="flex items-center justify-center gap-3">
+                        <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                        <span className="animate-pulse">Gerando Pix...</span>
                       </div>
                     ) : (
                       checkout.cta_text || "GARANTIR MEU ACESSO"
