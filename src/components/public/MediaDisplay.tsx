@@ -80,13 +80,15 @@ export const MediaDisplay = ({ media }: { media: MediaValue | null | undefined |
 
   if (type === "video") {
     return (
-      <video 
-        src={url} 
-        className="w-full h-full object-cover" 
-        controls
-        playsInline 
-        muted={false}
-      />
+      <div className="w-full h-full bg-black flex items-center justify-center">
+        <video 
+          src={url} 
+          className="w-full h-full max-h-full object-contain" 
+          controls
+          playsInline 
+          preload="metadata"
+        />
+      </div>
     );
   }
 
