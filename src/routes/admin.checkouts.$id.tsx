@@ -16,6 +16,8 @@ const PIX_REQUIRED_FIELDS = [
   { key: "customer_email", label: "E-mail", type: "email", equivalents: ["email", "e-mail", "email_address", "customer_email"] },
   { key: "customer_phone", label: "WhatsApp / Telefone", type: "tel", equivalents: ["phone", "telefone", "whatsapp", "customer_phone"] },
   { key: "customer_cpf", label: "CPF", type: "text", equivalents: ["cpf", "document", "documento", "customer_cpf"] },
+  { key: "instagram", label: "Instagram", type: "text", equivalents: ["instagram", "ig", "insta"] },
+  { key: "observacao", label: "Observação", type: "text", equivalents: ["observacao", "notes", "obs"] },
 ];
 
 export const Route = createFileRoute("/admin/checkouts/$id")({
