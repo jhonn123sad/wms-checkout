@@ -181,11 +181,22 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
         {/* Coluna Direita: Formulário */}
         <div className="w-full lg:w-[420px] shrink-0 min-w-0">
           <Card className="p-6 md:p-8 bg-[#141414] border-[#222] shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-3xl border-t-green-500/20">
-            <div className="mb-6">
-              <h2 className="text-lg font-bold text-white mb-2 uppercase tracking-tight">
-                {paymentData ? "Pagamento via Pix" : "Finalize sua inscrição"}
-              </h2>
-              <div className="h-1 w-10 bg-green-500 rounded-full" />
+            <div className="mb-6 flex flex-col gap-4">
+              <div className="flex flex-col gap-1">
+                <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Valor do investimento</span>
+                <div className="text-3xl font-black text-green-500 tracking-tighter">
+                  {new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(checkout.price)}
+                </div>
+              </div>
+              <div className="space-y-2">
+                <h2 className="text-sm font-bold text-white uppercase tracking-tight">
+                  {paymentData ? "Pagamento via Pix" : "Finalize sua inscrição"}
+                </h2>
+                <div className="h-1 w-10 bg-green-500 rounded-full" />
+              </div>
             </div>
 
             {paymentData ? (
