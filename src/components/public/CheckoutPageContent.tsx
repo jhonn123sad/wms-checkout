@@ -159,144 +159,221 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
   } : null);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white flex flex-col lg:min-h-screen lg:h-auto font-sans overflow-x-hidden">
-      <main className="flex-1 flex flex-col lg:flex-row w-full max-w-[1180px] mx-auto p-4 md:p-6 lg:p-10 gap-8 lg:gap-16 items-center lg:items-start lg:justify-center">
-        {/* Coluna Esquerda: Mídia */}
-        <div className="w-full lg:flex-1 flex flex-col space-y-6 lg:space-y-8 min-w-0">
-          <div className="space-y-4 lg:space-y-5">
-            <h1 className="text-3xl md:text-4xl lg:text-4xl font-black tracking-tight leading-tight text-white break-words">
-              {checkout.title}
-            </h1>
-            <p className="text-base md:text-lg text-gray-400 max-w-2xl leading-relaxed break-words">
-              {checkout.subtitle}
-            </p>
-          </div>
+    <div className="min-h-screen bg-[#0a0a0a] text-white font-sans selection:bg-green-500/30 overflow-x-hidden">
+      {/* Background patterns */}
+      <div className="fixed inset-0 pointer-events-none opacity-[0.03] z-0">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#22c55e_0%,transparent_50%)]"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+      </div>
 
-          <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-[#222] bg-[#141414] shadow-2xl">
-            {mediaData ? (
-              <MediaDisplay media={mediaData} />
-            ) : (
-              <div className="absolute inset-0 flex items-center justify-center bg-[#1a1a1a]">
-                <p className="text-gray-600 font-medium text-sm uppercase tracking-wider">Sem prévia disponível</p>
-              </div>
-            )}
-          </div>
+      <main className="relative z-10 w-full max-w-[1200px] mx-auto px-4 py-8 md:py-12 lg:py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-12 lg:gap-20 items-start">
           
-          <div className="hidden lg:flex items-center gap-6 opacity-40 grayscale pointer-events-none pt-4">
-            <img src="https://logodownload.org/wp-content/uploads/2014/07/visa-logo-1.png" alt="Visa" className="h-4 object-contain" />
-            <img src="https://logodownload.org/wp-content/uploads/2014/10/mastercard-logo-4.png" alt="Mastercard" className="h-6 object-contain" />
-            <img src="https://logodownload.org/wp-content/uploads/2015/03/pix-logo.png" alt="PIX" className="h-5 object-contain" />
-          </div>
-        </div>
-
-        {/* Coluna Direita: Formulário */}
-        <div className="w-full lg:w-[420px] shrink-0 min-w-0">
-          <Card className="p-6 md:p-8 bg-[#141414] border-[#222] shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-3xl border-t-green-500/20">
-            <div className="mb-6 flex flex-col gap-4">
-              <div className="flex flex-col gap-1">
-                <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Valor do investimento</span>
-                <div className="text-3xl font-black text-green-500 tracking-tighter">
-                  {new Intl.NumberFormat("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  }).format(checkout.price)}
-                </div>
+          {/* Coluna Esquerda: Produto e Mídia */}
+          <div className="flex flex-col space-y-8 animate-in fade-in slide-in-from-left-4 duration-700">
+            <div className="space-y-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-500">
+                <Zap size={14} className="fill-current" />
+                <span className="text-[10px] font-bold uppercase tracking-widest">Acesso Imediato</span>
               </div>
-              <div className="space-y-2">
-                <h2 className="text-sm font-bold text-white uppercase tracking-tight">
-                  {paymentData ? "Pagamento via Pix" : "Finalize sua inscrição"}
-                </h2>
-                <div className="h-1 w-10 bg-green-500 rounded-full" />
+              
+              <div className="space-y-4">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-white">
+                  {checkout.title}
+                </h1>
+                <p className="text-lg md:text-xl text-gray-400 max-w-2xl leading-relaxed">
+                  {checkout.subtitle}
+                </p>
               </div>
             </div>
 
-            {paymentData ? (
-              <InlinePixPanel 
-                paymentData={paymentData}
-                paymentStatus={paymentStatus}
-                onReset={handleResetPayment}
-                formatPrice={(cents) => new Intl.NumberFormat("pt-BR", {
-                  style: "currency",
-                  currency: "BRL",
-                }).format(cents / 100)}
-                theme={{
-                  button: "#22c55e",
-                  buttonText: "#000000",
-                  accent: "#22c55e",
-                  card: "transparent"
-                }}
-              />
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="space-y-4 max-h-[45vh] overflow-y-auto pr-2 custom-scrollbar min-w-0">
-                  {/**
-                    * FORM CAMPOS (VALIDADO)
-                    * Renderiza apenas campos onde active=true.
-                    * Required é validado apenas se active=true.
-                    */}
-                  {(() => {
-                    const fields = (checkout.checkout_fields || [])
-                      .filter((f: any) => f.active !== false && !f.field_type?.startsWith("hidden:"))
-                      .sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0));
-                    
-                    console.log("[Public Fields] campos recebidos", checkout.checkout_fields);
-                    console.log("[Public Fields] campos ativos", fields);
+            {/* Media Display Container */}
+            <div className="relative group">
+              <div className="absolute -inset-1 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+              <div className="relative aspect-video rounded-3xl overflow-hidden border border-white/5 bg-[#141414] shadow-2xl">
+                {mediaData ? (
+                  <MediaDisplay media={mediaData} />
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center bg-[#111]">
+                    <div className="flex flex-col items-center gap-3">
+                      <CreditCard className="w-12 h-12 text-white/10" />
+                      <p className="text-gray-600 font-medium text-sm uppercase tracking-wider">Checkout Seguro</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
 
-                    if (fields.length === 0) return null;
-
-                    return fields.map((field: any) => (
-                      <div key={field.id || field.field_name} className="space-y-2">
-                        <Label htmlFor={field.field_name} className="text-xs font-bold text-gray-500 uppercase tracking-wide ml-1">
-                          {field.field_label}
-                          {field.required && <span className="text-green-500 ml-1">*</span>}
-                        </Label>
-                        <Input
-                          id={field.field_name}
-                          type={field.field_type?.replace("hidden:", "") || "text"}
-                          placeholder={`Digite seu ${field.field_label.toLowerCase()}`}
-                          required={field.required}
-                          className="h-12 bg-[#0a0a0a] border-[#222] text-white focus:ring-1 focus:ring-green-500/50 focus:border-green-500 transition-all rounded-xl placeholder:text-gray-700 text-sm"
-                          value={formData[field.field_name] || ""}
-                          onChange={(e) => handleInputChange(field.field_name, e.target.value)}
-                        />
-                      </div>
-                    ));
-                  })()}
-                </div>
-
-                <div className="pt-2 space-y-4">
-                  <Button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full h-14 md:h-16 text-lg md:text-xl font-black bg-green-500 hover:bg-green-600 text-black transition-all transform hover:scale-[1.01] active:scale-[0.99] rounded-xl shadow-[0_10px_30px_rgba(34,197,94,0.2)]"
-                  >
-                    {loading ? (
-                      <div className="flex items-center justify-center gap-3">
-                        <span className="animate-pulse">Gerando Pix...</span>
-                      </div>
-                    ) : (
-                      checkout.cta_text || "GARANTIR MEU ACESSO"
-                    )}
-                  </Button>
-                  
-                  <div className="flex items-center justify-center gap-2 text-[10px] text-gray-500 uppercase tracking-widest font-black opacity-80">
-                    <ShieldCheck className="w-4 h-4 text-green-500" />
-                    <span>Ambiente 100% Seguro</span>
+            {/* Trust Bullets */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4">
+              {[
+                { icon: <ShieldCheck className="text-green-500" size={20} />, title: "Pagamento Seguro", desc: "Criptografia de ponta" },
+                { icon: <Zap className="text-green-500" size={20} />, title: "Entrega Rápida", desc: "Acesso via e-mail" },
+                { icon: <Star className="text-green-500" size={20} />, title: "Produto Premium", desc: "Qualidade garantida" }
+              ].map((item, i) => (
+                <div key={i} className="flex items-start gap-3 p-4 rounded-2xl bg-white/[0.02] border border-white/5">
+                  <div className="mt-1">{item.icon}</div>
+                  <div>
+                    <h4 className="text-xs font-bold text-white uppercase tracking-wider">{item.title}</h4>
+                    <p className="text-[10px] text-gray-500 mt-0.5">{item.desc}</p>
                   </div>
                 </div>
-              </form>
-            )}
-          </Card>
-          
-          <div className="mt-8 flex lg:hidden justify-center gap-6 opacity-30 grayscale pointer-events-none px-4">
-            <img src="https://logodownload.org/wp-content/uploads/2014/07/visa-logo-1.png" alt="Visa" className="h-3 object-contain" />
-            <img src="https://logodownload.org/wp-content/uploads/2014/10/mastercard-logo-4.png" alt="Mastercard" className="h-5 object-contain" />
-            <img src="https://logodownload.org/wp-content/uploads/2015/03/pix-logo.png" alt="PIX" className="h-4 object-contain" />
+              ))}
+            </div>
+
+            {/* Footer Logos Desktop Only */}
+            <div className="hidden lg:flex items-center gap-8 opacity-20 grayscale pt-8">
+              <img src="https://logodownload.org/wp-content/uploads/2014/07/visa-logo-1.png" alt="Visa" className="h-4 object-contain" />
+              <img src="https://logodownload.org/wp-content/uploads/2014/10/mastercard-logo-4.png" alt="Mastercard" className="h-6 object-contain" />
+              <img src="https://logodownload.org/wp-content/uploads/2015/03/pix-logo.png" alt="PIX" className="h-5 object-contain" />
+            </div>
           </div>
+
+          {/* Coluna Direita: Card de Compra */}
+          <div className="w-full lg:sticky lg:top-12 animate-in fade-in slide-in-from-right-4 duration-700 delay-200">
+            <Card className="overflow-hidden bg-[#111111]/80 backdrop-blur-2xl border-white/5 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)] rounded-[2.5rem] relative">
+              {/* Card Glow Effect */}
+              <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-64 h-64 bg-green-500/10 blur-[100px] pointer-events-none"></div>
+              
+              <div className="p-8 md:p-10 relative z-10">
+                {/* Header do Card / Preço */}
+                <div className="mb-8 flex flex-col gap-6">
+                  <div className="flex flex-col gap-2">
+                    <span className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em]">Investimento Único</span>
+                    <div className="flex items-baseline gap-2">
+                      <div className="text-5xl font-black text-white tracking-tighter">
+                        {new Intl.NumberFormat("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        }).format(checkout.price)}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="h-px w-full bg-gradient-to-r from-white/10 via-white/5 to-transparent"></div>
+                  
+                  <div className="space-y-1.5">
+                    <h2 className="text-xs font-bold text-white uppercase tracking-widest flex items-center gap-2">
+                      {paymentData ? "Escaneie o QR Code" : "Dados de Acesso"}
+                      <div className="h-1 w-1 bg-green-500 rounded-full animate-pulse"></div>
+                    </h2>
+                    <p className="text-[10px] text-gray-500">
+                      {paymentData 
+                        ? "O seu acesso será liberado imediatamente após o pagamento." 
+                        : "Preencha seus dados corretamente para receber o acesso."}
+                    </p>
+                  </div>
+                </div>
+
+                {paymentData ? (
+                  <div className="animate-in zoom-in-95 duration-500">
+                    <InlinePixPanel 
+                      paymentData={paymentData}
+                      paymentStatus={paymentStatus}
+                      onReset={handleResetPayment}
+                      formatPrice={(cents) => new Intl.NumberFormat("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(cents / 100)}
+                      theme={{
+                        button: "#22c55e",
+                        buttonText: "#000000",
+                        accent: "#22c55e",
+                        card: "transparent"
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="space-y-4">
+                      {/**
+                        * FORM CAMPOS (VALIDADO)
+                        * Renderiza apenas campos onde active=true.
+                        */}
+                      {(() => {
+                        const fields = (checkout.checkout_fields || [])
+                          .filter((f: any) => f.active !== false && !f.field_type?.startsWith("hidden:"))
+                          .sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0));
+                        
+                        if (fields.length === 0) return null;
+
+                        return fields.map((field: any) => (
+                          <div key={field.id || field.field_name} className="group space-y-2">
+                            <Label 
+                              htmlFor={field.field_name} 
+                              className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1 group-focus-within:text-green-500 transition-colors"
+                            >
+                              {field.field_label}
+                              {field.required && <span className="text-green-500 ml-1 opacity-50">*</span>}
+                            </Label>
+                            <Input
+                              id={field.field_name}
+                              type={field.field_type?.replace("hidden:", "") || "text"}
+                              placeholder={`Digite seu ${field.field_label.toLowerCase()}`}
+                              required={field.required}
+                              className="h-14 bg-white/[0.03] border-white/5 text-white focus:bg-white/[0.05] focus:ring-1 focus:ring-green-500/30 focus:border-green-500/50 transition-all rounded-2xl placeholder:text-gray-700 text-sm px-6"
+                              value={formData[field.field_name] || ""}
+                              onChange={(e) => handleInputChange(field.field_name, e.target.value)}
+                            />
+                          </div>
+                        ));
+                      })()}
+                    </div>
+
+                    <div className="pt-4 space-y-6">
+                      <Button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full h-16 md:h-20 text-lg font-black bg-green-500 hover:bg-green-400 text-black transition-all hover:scale-[1.02] active:scale-[0.98] rounded-2xl shadow-[0_20px_40px_-12px_rgba(34,197,94,0.4)] relative group overflow-hidden"
+                      >
+                        <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+                        <div className="relative flex items-center justify-center gap-3">
+                          {loading ? (
+                            <span className="animate-pulse tracking-tight">Gerando Pix...</span>
+                          ) : (
+                            <>
+                              <span className="tracking-tight italic">{checkout.cta_text || "GARANTIR ACESSO AGORA"}</span>
+                              <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                            </>
+                          )}
+                        </div>
+                      </Button>
+                      
+                      <div className="flex flex-col items-center gap-4">
+                        <div className="flex items-center gap-2 text-[10px] text-gray-500 uppercase tracking-[0.2em] font-bold">
+                          <Lock className="w-3 h-3 text-green-500" />
+                          <span>Pagamento 100% Seguro</span>
+                        </div>
+                        
+                        {/* Footer Logos Mobile */}
+                        <div className="flex lg:hidden items-center gap-6 opacity-20 grayscale">
+                          <img src="https://logodownload.org/wp-content/uploads/2014/07/visa-logo-1.png" alt="Visa" className="h-2.5 object-contain" />
+                          <img src="https://logodownload.org/wp-content/uploads/2014/10/mastercard-logo-4.png" alt="Mastercard" className="h-4 object-contain" />
+                          <img src="https://logodownload.org/wp-content/uploads/2015/03/pix-logo.png" alt="PIX" className="h-3.5 object-contain" />
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                )}
+              </div>
+            </Card>
+          </div>
+
         </div>
       </main>
 
+      <footer className="w-full py-12 text-center relative z-10">
+        <p className="text-[10px] font-bold text-white/10 uppercase tracking-[0.4em]">Checkout Protegido via Pushin Pay</p>
+      </footer>
+
       <style dangerouslySetInnerHTML={{ __html: `
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        
+        body {
+          font-family: 'Inter', sans-serif;
+          background-color: #0a0a0a;
+        }
+
         .custom-scrollbar::-webkit-scrollbar {
           width: 4px;
         }
@@ -304,11 +381,11 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
           background: transparent;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #222;
+          background: rgba(255, 255, 255, 0.05);
           border-radius: 10px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #333;
+          background: rgba(255, 255, 255, 0.1);
         }
       `}} />
     </div>
