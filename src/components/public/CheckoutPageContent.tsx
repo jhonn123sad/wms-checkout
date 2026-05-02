@@ -11,7 +11,8 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { MediaDisplay, MediaValue } from "@/components/public/MediaDisplay";
 import { toast } from "sonner";
-import { ShieldCheck, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, CheckCircle2, Zap, Lock, CreditCard, ChevronRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface CheckoutPageContentProps {
   checkout: any;
