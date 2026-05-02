@@ -83,7 +83,7 @@ Deno.serve(async (req) => {
       priceCents = offer.price_cents;
       expirationMinutes = project.pix_expiration_minutes || 30;
 
-      // Dynamic Validations
+      // Dynamic Validations (only if collect flags are true in project)
       if (project.collect_name && (!customer_name || customer_name.length < 3)) {
         return jsonError("NAME_REQUIRED", 400);
       }
@@ -155,7 +155,11 @@ Deno.serve(async (req) => {
         utm_campaign,
         utm_content,
         utm_term,
-        metadata: project_slug ? { project_slug, project_id: currentProjectId } : {},
+        metadata: { 
+          project_slug, 
+          project_id: currentProjectId,
+          form_data: body?.form_data || {}
+        },
         public_access_token: publicAccessToken,
       })
       .select()

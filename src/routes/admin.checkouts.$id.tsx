@@ -44,29 +44,32 @@ function CheckoutEditPage() {
 
   const normalizeFields = useCallback((existingFields: any[]) => {
     const normalized = [...existingFields];
+    
+    // Ensure active property exists
+    normalized.forEach(f => {
+      if (f.active === undefined) f.active = true;
+    });
+
     const presentKeys = new Set(normalized.map(f => f.field_name));
 
     PIX_REQUIRED_FIELDS.forEach(req => {
-      // Check if key or any equivalent is present
       const foundIndex = normalized.findIndex(f => 
         f.field_name === req.key || req.equivalents.includes(f.field_name)
       );
 
       if (foundIndex !== -1) {
-        // Normalize the key if it's an equivalent
         if (normalized[foundIndex].field_name !== req.key) {
           normalized[foundIndex].field_name = req.key;
         }
-        normalized[foundIndex].system_required = true;
-        normalized[foundIndex].required = true;
+        normalized[foundIndex].system_field = true;
       } else {
-        // Add missing required field
         normalized.push({
           field_name: req.key,
           field_label: req.label,
           field_type: req.type,
-          required: true,
-          system_required: true,
+          required: false,
+          active: true,
+          system_field: true,
           sort_order: normalized.length + 1
         });
       }
@@ -177,9 +180,12 @@ function CheckoutEditPage() {
           field_label: f.field_label,
           field_type: f.field_type || "text",
           required: !!f.required,
+          // 'active' field is stored in DB but might not be in the generated types yet
+          // We cast to any for the insert to allow the property
           checkout_id: checkoutId,
           sort_order: index + 1,
-        }));
+          active: f.active !== false
+        } as any));
 
       if (fieldsToInsert.length > 0) {
         const { error: fError } = await supabase
@@ -199,13 +205,13 @@ function CheckoutEditPage() {
   };
 
   const addField = () => {
-    setFields([...fields, { field_name: "", field_label: "", field_type: "text", required: false, sort_order: fields.length + 1 }]);
+    setFields([...fields, { field_name: "", field_label: "", field_type: "text", required: false, active: true, sort_order: fields.length + 1 }]);
   };
 
   const removeField = (index: number) => {
     const field = fields[index];
-    if (field.system_required) {
-      toast.error("Este campo é obrigatório para gerar Pix e não pode ser removido.");
+    if (field.system_field) {
+      toast.error("Campos base do sistema não podem ser excluídos, apenas desativados.");
       return;
     }
     setFields(fields.filter((_, i) => i !== index));
@@ -215,7 +221,7 @@ function CheckoutEditPage() {
     const newFields = [...fields];
     
     // Protect internal key for system fields
-    if (key === "field_name" && newFields[index].system_required) {
+    if (key === "field_name" && newFields[index].system_field) {
       return;
     }
     
@@ -316,17 +322,17 @@ function CheckoutEditPage() {
             <div className="space-y-4">
               <TooltipProvider>
                 {fields.map((field, index) => (
-                  <div key={index} className={`p-4 border rounded-lg space-y-3 relative group ${field.system_required ? 'bg-green-500/5 border-green-500/20' : 'bg-muted/30'}`}>
+                  <div key={index} className={`p-4 border rounded-lg space-y-3 relative group ${!field.active ? 'opacity-50 grayscale' : field.system_field ? 'bg-blue-500/5 border-blue-500/20' : 'bg-muted/30'}`}>
                     <div className="flex gap-2">
                       <div className="flex-1 space-y-1">
                         <Label className="text-[10px] uppercase font-bold text-muted-foreground flex items-center gap-1">
                           Label 
-                          {field.system_required && (
+                          {field.system_field && (
                             <Tooltip>
                               <TooltipTrigger>
-                                <ShieldCheck className="w-3 h-3 text-green-500" />
+                                <Info className="w-3 h-3 text-blue-500" />
                               </TooltipTrigger>
-                              <TooltipContent>Campo obrigatório para Pix</TooltipContent>
+                              <TooltipContent>Campo base do sistema</TooltipContent>
                             </Tooltip>
                           )}
                         </Label>
@@ -339,7 +345,7 @@ function CheckoutEditPage() {
                       <div className="flex-1 space-y-1">
                         <Label className="text-[10px] uppercase font-bold text-muted-foreground flex items-center gap-1">
                           Name (DB)
-                          {field.system_required && (
+                          {field.system_field && (
                             <Tooltip>
                               <TooltipTrigger>
                                 <Info className="w-3 h-3 text-blue-500" />
@@ -351,24 +357,33 @@ function CheckoutEditPage() {
                         <Input 
                           placeholder="Ex: nome" 
                           value={field.field_name}
-                          disabled={field.system_required}
+                          disabled={field.system_field}
                           onChange={(e) => updateField(index, "field_name", e.target.value)}
-                          className={field.system_required ? "bg-muted cursor-not-allowed" : ""}
+                          className={field.system_field ? "bg-muted cursor-not-allowed" : ""}
                         />
                       </div>
                     </div>
-                    
                     <div className="flex items-center justify-between gap-4">
-                      <div className="flex items-center gap-2">
-                        <Switch 
-                          checked={field.required}
-                          disabled={field.system_required}
-                          onCheckedChange={(val) => updateField(index, "required", val)}
-                        />
-                        <span className="text-xs">{field.system_required ? "Sempre Obrigatório" : "Obrigatório"}</span>
+                      <div className="flex flex-col gap-3">
+                        <div className="flex items-center gap-2">
+                          <Switch 
+                            checked={field.active !== false}
+                            onCheckedChange={(val) => updateField(index, "active", val)}
+                          />
+                          <span className="text-xs">{field.active !== false ? "Ativo" : "Inativo"}</span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <Switch 
+                            checked={field.required}
+                            disabled={field.active === false}
+                            onCheckedChange={(val) => updateField(index, "required", val)}
+                          />
+                          <span className="text-xs">Obrigatório</span>
+                        </div>
                       </div>
                       
-                      {!field.system_required && (
+                      {!field.system_field && (
                         <Button 
                           variant="ghost" 
                           size="icon" 
@@ -379,10 +394,10 @@ function CheckoutEditPage() {
                         </Button>
                       )}
                       
-                      {field.system_required && (
-                        <div className="flex items-center gap-1 text-[10px] font-bold text-green-600 uppercase bg-green-500/10 px-2 py-1 rounded">
-                          <ShieldCheck className="w-3 h-3" />
-                          Pix
+                      {field.system_field && (
+                        <div className="flex items-center gap-1 text-[10px] font-bold text-blue-600 uppercase bg-blue-500/10 px-2 py-1 rounded">
+                          <Info className="w-3 h-3" />
+                          Base
                         </div>
                       )}
                     </div>
