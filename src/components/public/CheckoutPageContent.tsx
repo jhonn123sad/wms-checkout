@@ -73,6 +73,9 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
 
     setLoading(true);
 
+    const fields = checkout.checkout_fields || [];
+    const activeFields = fields.filter((f: any) => f.active !== false);
+
     console.log("[Checkout] Iniciando pagamento para:", { 
       project_slug: checkout.slug,
       fields_count: activeFields.length
