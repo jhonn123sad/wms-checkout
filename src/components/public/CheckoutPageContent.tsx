@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,27 +12,90 @@ interface CheckoutPageContentProps {
   checkout: any;
 }
 
+import { InlinePixPanel } from "../checkout/InlinePixPanel";
+
 export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [paymentData, setPaymentData] = useState<any>(null);
+  const [paymentStatus, setPaymentStatus] = useState("waiting_payment");
+  const [isPolling, setIsPolling] = useState(false);
+
+  // Polling logic for payment status
+  useEffect(() => {
+    if (!isPolling || !paymentData?.orderId || !paymentData?.accessToken || paymentStatus === 'paid') return;
+
+    const checkStatus = async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke("get-order-status", {
+          body: { 
+            orderId: paymentData.orderId, 
+            token: paymentData.accessToken 
+          },
+          method: 'POST'
+        });
+
+        if (!error && data?.status === 'paid') {
+          setPaymentStatus('paid');
+          setIsPolling(false);
+          toast.success("Pagamento confirmado!");
+          
+          if (data.thank_you_url) {
+            setTimeout(() => {
+              window.location.href = data.thank_you_url;
+            }, 1500);
+          }
+        }
+      } catch (err) {
+        console.error("[Checkout Polling] Erro:", err);
+      }
+    };
+
+    const interval = setInterval(checkStatus, 7000);
+    return () => clearInterval(interval);
+  }, [isPolling, paymentData, paymentStatus]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
+    console.log("[Checkout] Iniciando pagamento para:", { 
+      slug: checkout.slug, 
+      price: checkout.price,
+      fields: Object.keys(formData)
+    });
+
     try {
-      const { error } = await supabase.from("checkout_leads").insert({
+      // 1. Save lead (optional but good for tracking)
+      await supabase.from("checkout_leads").insert({
         checkout_id: checkout.id,
         data: formData,
       });
 
-      if (error) throw error;
+      // 2. Invoke real payment function
+      const { data, error: invokeError } = await supabase.functions.invoke("create-pix", {
+        body: {
+          project_slug: checkout.slug,
+          customer_name: formData.name || formData.nome,
+          customer_cpf: formData.cpf,
+          customer_email: formData.email || formData.email_address,
+          customer_phone: formData.phone || formData.whatsapp,
+          // If the checkout has a specific offer_id, we should use it. 
+          // For now, create-pix handles lookup by slug if project exists.
+        },
+      });
 
-      toast.success("Dados enviados com sucesso!");
-      setSubmitted(true);
+      if (invokeError || !data || data.error) {
+        throw new Error(data?.error || invokeError?.message || "Erro ao gerar pagamento");
+      }
+
+      console.log("[Checkout] Pagamento gerado:", { orderId: data.orderId });
+      setPaymentData(data);
+      setIsPolling(true);
+      toast.success("Pix gerado com sucesso!");
     } catch (error: any) {
-      toast.error(error.message || "Erro ao enviar formulário");
+      console.error("[Checkout] Erro no submit:", error);
+      toast.error(error.message || "Erro ao processar pagamento");
     } finally {
       setLoading(false);
     }
@@ -42,25 +105,11 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  if (submitted) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a] text-white p-6">
-        <Card className="max-w-md w-full p-8 bg-[#141414] border-[#222] text-center shadow-2xl">
-          <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-500/20">
-            <CheckCircle2 className="w-10 h-10 text-green-500" />
-          </div>
-          <h2 className="text-3xl font-bold mb-3 text-white">Sucesso!</h2>
-          <p className="text-gray-400 mb-8 text-lg">Seus dados foram processados. Em breve você receberá as instruções de acesso.</p>
-          <Button 
-            className="w-full py-6 bg-green-500 hover:bg-green-600 text-black font-bold text-lg"
-            onClick={() => setSubmitted(false)}
-          >
-            Voltar
-          </Button>
-        </Card>
-      </div>
-    );
-  }
+  const handleResetPayment = () => {
+    setPaymentData(null);
+    setPaymentStatus("waiting_payment");
+    setIsPolling(false);
+  };
 
   const mediaData = checkout.media_json ? (checkout.media_json as unknown as MediaValue) : (checkout.media_url ? {
     url: checkout.media_url,
@@ -113,55 +162,75 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
         <div className="w-full lg:w-[420px] shrink-0 min-w-0">
           <Card className="p-6 md:p-8 bg-[#141414] border-[#222] shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-3xl border-t-green-500/20">
             <div className="mb-6">
-              <h2 className="text-lg font-bold text-white mb-2 uppercase tracking-tight">Finalize sua inscrição</h2>
+              <h2 className="text-lg font-bold text-white mb-2 uppercase tracking-tight">
+                {paymentData ? "Pagamento via Pix" : "Finalize sua inscrição"}
+              </h2>
               <div className="h-1 w-10 bg-green-500 rounded-full" />
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-4 max-h-[45vh] overflow-y-auto pr-2 custom-scrollbar min-w-0">
-                {checkout.checkout_fields
-                  ?.sort((a: any, b: any) => a.sort_order - b.sort_order)
-                  .map((field: any) => (
-                    <div key={field.id} className="space-y-2">
-                      <Label htmlFor={field.field_name} className="text-xs font-bold text-gray-500 uppercase tracking-wide ml-1">
-                        {field.field_label}
-                        {field.required && <span className="text-green-500 ml-1">*</span>}
-                      </Label>
-                      <Input
-                        id={field.field_name}
-                        type={field.field_type}
-                        placeholder={`Digite seu ${field.field_label.toLowerCase()}`}
-                        required={field.required}
-                        className="h-12 bg-[#0a0a0a] border-[#222] text-white focus:ring-1 focus:ring-green-500/50 focus:border-green-500 transition-all rounded-xl placeholder:text-gray-700 text-sm"
-                        value={formData[field.field_name] || ""}
-                        onChange={(e) => handleInputChange(field.field_name, e.target.value)}
-                      />
-                    </div>
-                  ))}
-              </div>
-
-              <div className="pt-2 space-y-4">
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full h-14 md:h-16 text-lg md:text-xl font-black bg-green-500 hover:bg-green-600 text-black transition-all transform hover:scale-[1.01] active:scale-[0.99] rounded-xl shadow-[0_10px_30px_rgba(34,197,94,0.2)]"
-                >
-                  {loading ? (
-                    <div className="flex items-center gap-2">
-                      <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-                      <span>Processando...</span>
-                    </div>
-                  ) : (
-                    checkout.cta_text || "GARANTIR MEU ACESSO"
-                  )}
-                </Button>
-                
-                <div className="flex items-center justify-center gap-2 text-[10px] text-gray-500 uppercase tracking-widest font-black opacity-80">
-                  <ShieldCheck className="w-4 h-4 text-green-500" />
-                  <span>Ambiente 100% Seguro</span>
+            {paymentData ? (
+              <InlinePixPanel 
+                paymentData={paymentData}
+                paymentStatus={paymentStatus}
+                onReset={handleResetPayment}
+                formatPrice={(cents) => new Intl.NumberFormat("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                }).format(cents / 100)}
+                theme={{
+                  button: "#22c55e",
+                  buttonText: "#000000",
+                  accent: "#22c55e",
+                  card: "transparent"
+                }}
+              />
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-4 max-h-[45vh] overflow-y-auto pr-2 custom-scrollbar min-w-0">
+                  {checkout.checkout_fields
+                    ?.sort((a: any, b: any) => a.sort_order - b.sort_order)
+                    .map((field: any) => (
+                      <div key={field.id} className="space-y-2">
+                        <Label htmlFor={field.field_name} className="text-xs font-bold text-gray-500 uppercase tracking-wide ml-1">
+                          {field.field_label}
+                          {field.required && <span className="text-green-500 ml-1">*</span>}
+                        </Label>
+                        <Input
+                          id={field.field_name}
+                          type={field.field_type}
+                          placeholder={`Digite seu ${field.field_label.toLowerCase()}`}
+                          required={field.required}
+                          className="h-12 bg-[#0a0a0a] border-[#222] text-white focus:ring-1 focus:ring-green-500/50 focus:border-green-500 transition-all rounded-xl placeholder:text-gray-700 text-sm"
+                          value={formData[field.field_name] || ""}
+                          onChange={(e) => handleInputChange(field.field_name, e.target.value)}
+                        />
+                      </div>
+                    ))}
                 </div>
-              </div>
-            </form>
+
+                <div className="pt-2 space-y-4">
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full h-14 md:h-16 text-lg md:text-xl font-black bg-green-500 hover:bg-green-600 text-black transition-all transform hover:scale-[1.01] active:scale-[0.99] rounded-xl shadow-[0_10px_30px_rgba(34,197,94,0.2)]"
+                  >
+                    {loading ? (
+                      <div className="flex items-center gap-2">
+                        <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                        <span>Processando...</span>
+                      </div>
+                    ) : (
+                      checkout.cta_text || "GARANTIR MEU ACESSO"
+                    )}
+                  </Button>
+                  
+                  <div className="flex items-center justify-center gap-2 text-[10px] text-gray-500 uppercase tracking-widest font-black opacity-80">
+                    <ShieldCheck className="w-4 h-4 text-green-500" />
+                    <span>Ambiente 100% Seguro</span>
+                  </div>
+                </div>
+              </form>
+            )}
           </Card>
           
           <div className="mt-8 flex lg:hidden justify-center gap-6 opacity-30 grayscale pointer-events-none px-4">
