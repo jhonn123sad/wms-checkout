@@ -83,11 +83,9 @@ export const MediaDisplay = ({ media }: { media: MediaValue | null | undefined |
       <video 
         src={url} 
         className="w-full h-full object-cover" 
-        autoPlay 
-        loop 
-        muted 
-        playsInline 
         controls
+        playsInline 
+        muted={false}
       />
     );
   }
