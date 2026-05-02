@@ -17,11 +17,12 @@
    offer: any;
  }
  
- /**
-  * CHECKOUT CORE CONTAINER
-  * Responsável pela lógica, estado e integração com API.
-  * NÃO ALTERAR LÓGICA DE PAGAMENTO AQUI SEM TESTE DE REGRESSÃO.
-  */
+/**
+ * CHECKOUT CORE CONTAINER (VALIDADO)
+ * Responsável pela lógica, estado e integração com API.
+ * NÃO ALTERAR ESTE FLUXO AO MODIFICAR APENAS O DESIGN.
+ * Valida campos active/required conforme config do admin.
+ */
  export const CheckoutCoreContainer: React.FC<CheckoutCoreContainerProps> = ({ project, offer }) => {
    const navigate = useNavigate();
    const searchParams = useSearch({ strict: false }) as Record<string, any>;
