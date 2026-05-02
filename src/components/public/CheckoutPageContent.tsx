@@ -57,54 +57,51 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Explicit validation for required Pix fields
-    const projectSlug = checkout.slug;
-    const name = (formData.customer_name || formData.name || formData.nome || "").trim();
-    const email = (formData.customer_email || formData.email || formData.email_address || "").trim();
-    const phone = (formData.customer_phone || formData.phone || formData.whatsapp || "").trim();
-    const cpf = (formData.customer_cpf || formData.cpf || "").trim();
+    console.log("[Checkout Pix] submit iniciado");
+    console.log("[Checkout Pix] checkout", checkout);
 
-    if (!name) return toast.error("Por favor, preencha seu nome completo.");
-    if (!email) return toast.error("Por favor, preencha seu e-mail.");
-    if (!email.includes("@")) return toast.error("Por favor, informe um e-mail válido.");
-    if (!phone) return toast.error("Por favor, preencha seu telefone/WhatsApp.");
-    if (!cpf) return toast.error("Por favor, preencha seu CPF.");
+    const fields = (checkout.checkout_fields || [])
+      .filter((f: any) => f.active !== false);
+    
+    console.log("[Checkout Pix] activeFields", fields);
+
+    // Dynamic validation for active & required fields
+    for (const field of fields) {
+      if (field.required && !formData[field.field_name]?.trim()) {
+        return toast.error(`Por favor, preencha o campo ${field.field_label}`);
+      }
+    }
 
     setLoading(true);
 
-    const fields = checkout.checkout_fields || [];
-    const activeFields = fields.filter((f: any) => f.active !== false);
+    const payload = {
+      checkout_slug: checkout.slug,
+      customer_name: (formData.customer_name || "").trim() || null,
+      customer_email: (formData.customer_email || "").trim() || null,
+      customer_phone: (formData.customer_phone || "").trim() || null,
+      customer_cpf: (formData.customer_cpf || "").trim() ? (formData.customer_cpf || "").replace(/\D/g, "") : null,
+      form_data: formData, // Send everything for metadata
+    };
 
-    console.log("[Checkout] Iniciando pagamento para:", { 
-      project_slug: checkout.slug,
-      fields_count: activeFields.length
-    });
+    console.log("[Checkout Pix] payload enviado:", payload);
 
     try {
-      // 1. Save lead (optional but good for tracking)
+      // 1. Save lead (optional)
       await supabase.from("checkout_leads").insert({
         checkout_id: checkout.id,
         data: formData,
       });
 
-      // 2. Invoke real payment function with the exact payload expected by create-pix
+      // 2. Invoke real payment function
       const { data, error: invokeError } = await supabase.functions.invoke("create-pix", {
-        body: {
-          project_slug: checkout.slug,
-          customer_name: name || null,
-          customer_email: email || null,
-          customer_phone: phone || null,
-          customer_cpf: cpf ? cpf.replace(/\D/g, "") : null,
-          form_data: formData, // Send everything for metadata
-        },
+        body: payload,
       });
 
+      console.log("[Checkout Pix] resposta create-pix", { data, invokeError });
+
       if (invokeError) {
-        // Try to parse error from Edge Function response
         let errorMessage = invokeError.message;
         try {
-          // FunctionsHttpError might have more context
           const errorContext = (invokeError as any).context;
           if (errorContext) {
             const body = await errorContext.json();
@@ -113,7 +110,7 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
             }
           }
         } catch (e) {
-          console.error("[Checkout] Erro ao processar resposta de erro:", e);
+          console.error("[Checkout Pix] Erro ao processar resposta de erro:", e);
         }
         throw new Error(errorMessage);
       }
@@ -122,17 +119,17 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
         throw new Error(data?.error || "Erro ao gerar pagamento");
       }
 
-      console.log("[Checkout] Pagamento gerado:", { orderId: data.orderId });
       setPaymentData(data);
       setIsPolling(true);
       toast.success("Pix gerado com sucesso!");
     } catch (error: any) {
-      console.error("[Checkout] Erro no submit:", error);
+      console.error("[Checkout Pix] erro create-pix:", error);
       toast.error(error.message || "Erro ao processar pagamento");
     } finally {
       setLoading(false);
     }
   };
+
 
   const handleInputChange = (name: string, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));

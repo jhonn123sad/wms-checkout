@@ -26,7 +26,7 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json().catch(() => ({}));
-    const project_slug = body?.project_slug || null;
+    const checkout_slug = body?.checkout_slug || body?.project_slug || null;
     const customer_name = body?.customer_name ? String(body.customer_name).trim() : null;
     const customer_cpf = body?.customer_cpf ? String(body.customer_cpf).replace(/\D/g, "") : null;
     const customer_phone = body?.customer_phone ? String(body.customer_phone).replace(/\D/g, "") : null;
@@ -38,97 +38,52 @@ Deno.serve(async (req) => {
     const utm_content = body?.utm_content || body?.utm?.utm_content || null;
     const utm_term = body?.utm_term || body?.utm?.utm_term || null;
 
-    log("Request received:", { project_slug, customer_name, hasCpf: !!customer_cpf, customer_email, customer_phone });
+    log("Request received:", { checkout_slug, customer_name, hasCpf: !!customer_cpf, customer_email, customer_phone });
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    let priceCents = 50;
-    let productId = null;
-    let currentProjectId = body?.project_id || null;
-    let currentOfferId = body?.offer_id || null;
-    let expirationMinutes = 30; // Default
+    let priceCents = 0;
+    let checkoutId = null;
+    let expirationMinutes = 30;
 
-    if (project_slug) {
-      log("Searching project by slug:", project_slug);
-      const { data: project, error: pError } = await supabase
-        .from("checkout_projects")
-        .select("*")
-        .eq("slug", project_slug)
-        .eq("active", true)
-        .maybeSingle();
-
-      if (pError || !project) {
-        log("Project not found or inactive:", pError);
-        return jsonError("PROJECT_NOT_FOUND", 404);
-      }
-
-      const { data: offer, error: oError } = await supabase
-        .from("checkout_offers")
-        .select("*")
-        .eq("project_id", project.id)
-        .eq("active", true)
-        .limit(1)
-        .maybeSingle();
-
-      if (oError || !offer) {
-        log("Active offer not found for project:", oError);
-        return jsonError("OFFER_NOT_FOUND", 404);
-      }
-
-      currentProjectId = project.id;
-      currentOfferId = offer.id;
-      priceCents = offer.price_cents;
-      expirationMinutes = project.pix_expiration_minutes || 30;
-
-      // Dynamic Validations (only if collect flags are true in project)
-      if (project.collect_name && (!customer_name || customer_name.length < 3)) {
-        return jsonError("NAME_REQUIRED", 400);
-      }
-      if (project.collect_cpf && (!customer_cpf || customer_cpf.length !== 11)) {
-        return jsonError("CPF_INVALID", 400);
-      }
-      if (project.collect_email && (!customer_email || !customer_email.includes("@"))) {
-        return jsonError("EMAIL_INVALID", 400);
-      }
-      if (project.collect_phone && (!customer_phone || customer_phone.length < 10)) {
-        return jsonError("PHONE_INVALID", 400);
-      }
-      
-      log("Dynamic validation passed for project:", project.name);
-    } else if (currentProjectId && currentOfferId) {
-      // Direct ID flow (for backward compatibility if needed)
-      log("Using project_id and offer_id directly");
-      const { data: offer } = await supabase
-        .from("checkout_offers")
-        .select("*, project:checkout_projects(*)")
-        .eq("id", currentOfferId)
-        .eq("project_id", currentProjectId)
-        .maybeSingle();
-
-      if (!offer) return jsonError("OFFER_NOT_FOUND", 404);
-      priceCents = offer.price_cents;
-    } else {
-      // Fallback to legacy flow
-      log("Fallback to legacy flow (products table)");
-      const { data: product, error: productError } = await supabase
-        .from("products")
-        .select("*")
-        .eq("active", true)
-        .order("created_at", { ascending: true })
-        .limit(1)
-        .maybeSingle();
-
-      if (productError) {
-        log("Product fetch error:", productError);
-        return jsonError("DB_ERROR_PRODUCT", 500);
-      }
-
-      priceCents = product?.price_cents ?? 50;
-      productId = product?.id ?? null;
+    if (!checkout_slug) {
+      return jsonError("CHECKOUT_SLUG_REQUIRED", 400);
     }
+
+    log("Searching checkout by slug:", checkout_slug);
+    const { data: checkout, error: cError } = await supabase
+      .from("checkouts")
+      .select("*")
+      .eq("slug", checkout_slug)
+      .maybeSingle();
+
+    if (cError || !checkout) {
+      log("Checkout not found:", cError);
+      return jsonError("CHECKOUT_NOT_FOUND", 404);
+    }
+
+    // Validação de status: active=true ou status='published'
+    const isPublished = checkout.active === true || checkout.status === 'published';
+    if (!isPublished) {
+      log("Checkout is not active/published");
+      return jsonError("CHECKOUT_INACTIVE", 403);
+    }
+
+    if (!checkout.price || checkout.price <= 0) {
+      log("Invalid checkout price:", checkout.price);
+      return jsonError("INVALID_PRICE", 400);
+    }
+
+    checkoutId = checkout.id;
+    // Converter preço (ex: 29.9) para centavos (2990)
+    priceCents = Math.round(checkout.price * 100);
+    expirationMinutes = checkout.pix_expiration_minutes || 30;
+
+    log("Checkout valid:", { name: checkout.title, priceCents });
+
 
     // Create order (status=created) with a secure random access token
     const publicAccessToken = crypto.randomUUID();
@@ -140,9 +95,7 @@ Deno.serve(async (req) => {
     const { data: order, error: orderError } = await supabase
       .from("orders")
       .insert({
-        product_id: productId,
-        project_id: currentProjectId,
-        offer_id: currentOfferId,
+        checkout_id: checkoutId,
         customer_name,
         customer_cpf,
         customer_phone,
@@ -156,14 +109,15 @@ Deno.serve(async (req) => {
         utm_content,
         utm_term,
         metadata: { 
-          project_slug, 
-          project_id: currentProjectId,
+          checkout_slug, 
+          checkout_id: checkoutId,
           form_data: body?.form_data || {}
         },
         public_access_token: publicAccessToken,
       })
       .select()
       .single();
+
 
     if (orderError || !order) {
       log("Order insert error:", orderError);
