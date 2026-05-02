@@ -1,5 +1,5 @@
 /**
- * CHECKOUT PAGE CONTENT (VALIDADO)
+ * CHECKOUT PAGE CONTENT - DESIGN BASE 01 (PREMIUM DARK)
  * NÃO ALTERAR O FLUXO DE PAGAMENTO OU PERSISTÊNCIA AO MODIFICAR O DESIGN.
  * Rota: /c/:slug | Tabela: public.checkouts | Pix não depende de campos.
  */
