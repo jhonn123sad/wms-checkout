@@ -62,13 +62,11 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
     );
   }
 
-  const mediaData = checkout.media_url
-    ? {
-        url: checkout.media_url,
-        type: (checkout.media_type as any) || "image",
-        source: "external_url",
-      }
-    : (checkout.media_json as unknown as MediaValue);
+  const mediaData = checkout.media_json ? (checkout.media_json as unknown as MediaValue) : (checkout.media_url ? {
+    url: checkout.media_url,
+    type: (checkout.media_type as any) || "image",
+    source: "external_url",
+  } : null);
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white flex flex-col lg:min-h-screen lg:h-auto font-sans overflow-x-hidden">
