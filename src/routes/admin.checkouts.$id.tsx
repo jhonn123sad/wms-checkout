@@ -314,47 +314,81 @@ function CheckoutEditPage() {
             </div>
 
             <div className="space-y-4">
-              {fields.map((field, index) => (
-                <div key={index} className="p-4 border rounded-lg bg-muted/30 space-y-3 relative group">
-                  <div className="flex gap-2">
-                    <div className="flex-1 space-y-1">
-                      <Label className="text-[10px] uppercase font-bold text-muted-foreground">Label</Label>
-                      <Input 
-                        placeholder="Ex: Nome Completo" 
-                        value={field.field_label}
-                        onChange={(e) => updateField(index, "field_label", e.target.value)}
-                      />
-                    </div>
-                    <div className="flex-1 space-y-1">
-                      <Label className="text-[10px] uppercase font-bold text-muted-foreground">Name (DB)</Label>
-                      <Input 
-                        placeholder="Ex: nome" 
-                        value={field.field_name}
-                        onChange={(e) => updateField(index, "field_name", e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-2">
-                      <Switch 
-                        checked={field.required}
-                        onCheckedChange={(val) => updateField(index, "required", val)}
-                      />
-                      <span className="text-xs">Obrigatório</span>
+              <TooltipProvider>
+                {fields.map((field, index) => (
+                  <div key={index} className={`p-4 border rounded-lg space-y-3 relative group ${field.system_required ? 'bg-green-500/5 border-green-500/20' : 'bg-muted/30'}`}>
+                    <div className="flex gap-2">
+                      <div className="flex-1 space-y-1">
+                        <Label className="text-[10px] uppercase font-bold text-muted-foreground flex items-center gap-1">
+                          Label 
+                          {field.system_required && (
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <ShieldCheck className="w-3 h-3 text-green-500" />
+                              </TooltipTrigger>
+                              <TooltipContent>Campo obrigatório para Pix</TooltipContent>
+                            </Tooltip>
+                          )}
+                        </Label>
+                        <Input 
+                          placeholder="Ex: Nome Completo" 
+                          value={field.field_label}
+                          onChange={(e) => updateField(index, "field_label", e.target.value)}
+                        />
+                      </div>
+                      <div className="flex-1 space-y-1">
+                        <Label className="text-[10px] uppercase font-bold text-muted-foreground flex items-center gap-1">
+                          Name (DB)
+                          {field.system_required && (
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Info className="w-3 h-3 text-blue-500" />
+                              </TooltipTrigger>
+                              <TooltipContent>A chave interna do sistema não pode ser alterada</TooltipContent>
+                            </Tooltip>
+                          )}
+                        </Label>
+                        <Input 
+                          placeholder="Ex: nome" 
+                          value={field.field_name}
+                          disabled={field.system_required}
+                          onChange={(e) => updateField(index, "field_name", e.target.value)}
+                          className={field.system_required ? "bg-muted cursor-not-allowed" : ""}
+                        />
+                      </div>
                     </div>
                     
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      className="text-destructive h-8 w-8"
-                      onClick={() => removeField(index)}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-2">
+                        <Switch 
+                          checked={field.required}
+                          disabled={field.system_required}
+                          onCheckedChange={(val) => updateField(index, "required", val)}
+                        />
+                        <span className="text-xs">{field.system_required ? "Sempre Obrigatório" : "Obrigatório"}</span>
+                      </div>
+                      
+                      {!field.system_required && (
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="text-destructive h-8 w-8"
+                          onClick={() => removeField(index)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      )}
+                      
+                      {field.system_required && (
+                        <div className="flex items-center gap-1 text-[10px] font-bold text-green-600 uppercase bg-green-500/10 px-2 py-1 rounded">
+                          <ShieldCheck className="w-3 h-3" />
+                          Pix
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </TooltipProvider>
             </div>
           </Card>
 
