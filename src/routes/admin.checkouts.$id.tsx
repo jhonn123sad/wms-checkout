@@ -16,6 +16,8 @@ const PIX_REQUIRED_FIELDS = [
   { key: "customer_email", label: "E-mail", type: "email", equivalents: ["email", "e-mail", "email_address", "customer_email"] },
   { key: "customer_phone", label: "WhatsApp / Telefone", type: "tel", equivalents: ["phone", "telefone", "whatsapp", "customer_phone"] },
   { key: "customer_cpf", label: "CPF", type: "text", equivalents: ["cpf", "document", "documento", "customer_cpf"] },
+  { key: "instagram", label: "Instagram", type: "text", equivalents: ["instagram", "ig", "insta"] },
+  { key: "observacao", label: "Observação", type: "text", equivalents: ["observacao", "notes", "obs"] },
 ];
 
 export const Route = createFileRoute("/admin/checkouts/$id")({
@@ -43,32 +45,34 @@ function CheckoutEditPage() {
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
 
   const normalizeFields = useCallback((existingFields: any[]) => {
+    // Start with a clone of existing fields
     const normalized = [...existingFields];
     
-    // Ensure active property exists
+    // Ensure all existing fields have the active property
     normalized.forEach(f => {
       if (f.active === undefined) f.active = true;
     });
 
-    const presentKeys = new Set(normalized.map(f => f.field_name));
-
+    // Check which base fields are missing
     PIX_REQUIRED_FIELDS.forEach(req => {
       const foundIndex = normalized.findIndex(f => 
         f.field_name === req.key || req.equivalents.includes(f.field_name)
       );
 
       if (foundIndex !== -1) {
+        // Fix field_name if it was an equivalent but not the standard key
         if (normalized[foundIndex].field_name !== req.key) {
           normalized[foundIndex].field_name = req.key;
         }
         normalized[foundIndex].system_field = true;
       } else {
+        // Field doesn't exist yet, add it as inactive base field
         normalized.push({
           field_name: req.key,
           field_label: req.label,
           field_type: req.type,
           required: false,
-          active: true,
+          active: false, // Default to false for new base fields
           system_field: true,
           sort_order: normalized.length + 1
         });
@@ -182,7 +186,7 @@ function CheckoutEditPage() {
           required: !!f.required,
           checkout_id: checkoutId,
           sort_order: index + 1,
-          active: f.active !== false
+          active: f.active === true // Explicit check for true to preserve false
         } as any));
 
       if (fieldsToInsert.length > 0) {

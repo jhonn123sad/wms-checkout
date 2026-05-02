@@ -150,7 +150,7 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white flex flex-col lg:min-h-screen lg:h-auto font-sans overflow-x-hidden">
       <main className="flex-1 flex flex-col lg:flex-row w-full max-w-[1180px] mx-auto p-4 md:p-6 lg:p-10 gap-8 lg:gap-16 items-center lg:items-start lg:justify-center">
-        {/* Coluna Esquerda: Mídia e Info */}
+        {/* Coluna Esquerda: Mídia */}
         <div className="w-full lg:flex-1 flex flex-col space-y-6 lg:space-y-8 min-w-0">
           <div className="space-y-4 lg:space-y-5">
             <h1 className="text-3xl md:text-4xl lg:text-4xl font-black tracking-tight leading-tight text-white break-words">
@@ -170,16 +170,6 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
               </div>
             )}
           </div>
-
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 bg-[#141414]/50 p-4 rounded-2xl border border-[#222]/50">
-            <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Acesso Vitalício por apenas</span>
-            <div className="text-3xl md:text-4xl font-black text-green-500 tracking-tighter">
-              {new Intl.NumberFormat("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              }).format(checkout.price)}
-            </div>
-          </div>
           
           <div className="hidden lg:flex items-center gap-6 opacity-40 grayscale pointer-events-none pt-4">
             <img src="https://logodownload.org/wp-content/uploads/2014/07/visa-logo-1.png" alt="Visa" className="h-4 object-contain" />
@@ -191,11 +181,22 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
         {/* Coluna Direita: Formulário */}
         <div className="w-full lg:w-[420px] shrink-0 min-w-0">
           <Card className="p-6 md:p-8 bg-[#141414] border-[#222] shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-3xl border-t-green-500/20">
-            <div className="mb-6">
-              <h2 className="text-lg font-bold text-white mb-2 uppercase tracking-tight">
-                {paymentData ? "Pagamento via Pix" : "Finalize sua inscrição"}
-              </h2>
-              <div className="h-1 w-10 bg-green-500 rounded-full" />
+            <div className="mb-6 flex flex-col gap-4">
+              <div className="flex flex-col gap-1">
+                <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Valor do investimento</span>
+                <div className="text-3xl font-black text-green-500 tracking-tighter">
+                  {new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(checkout.price)}
+                </div>
+              </div>
+              <div className="space-y-2">
+                <h2 className="text-sm font-bold text-white uppercase tracking-tight">
+                  {paymentData ? "Pagamento via Pix" : "Finalize sua inscrição"}
+                </h2>
+                <div className="h-1 w-10 bg-green-500 rounded-full" />
+              </div>
             </div>
 
             {paymentData ? (
@@ -251,9 +252,9 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
                     className="w-full h-14 md:h-16 text-lg md:text-xl font-black bg-green-500 hover:bg-green-600 text-black transition-all transform hover:scale-[1.01] active:scale-[0.99] rounded-xl shadow-[0_10px_30px_rgba(34,197,94,0.2)]"
                   >
                     {loading ? (
-                      <div className="flex items-center gap-2">
-                        <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-                        <span>Processando...</span>
+                      <div className="flex items-center justify-center gap-3">
+                        <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                        <span className="animate-pulse">Gerando Pix...</span>
                       </div>
                     ) : (
                       checkout.cta_text || "GARANTIR MEU ACESSO"
