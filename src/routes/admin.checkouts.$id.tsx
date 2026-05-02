@@ -199,15 +199,26 @@ function CheckoutEditPage() {
   };
 
   const addField = () => {
-    setFields([...fields, { field_name: "", field_label: "", field_type: "text", required: false }]);
+    setFields([...fields, { field_name: "", field_label: "", field_type: "text", required: false, sort_order: fields.length + 1 }]);
   };
 
   const removeField = (index: number) => {
+    const field = fields[index];
+    if (field.system_required) {
+      toast.error("Este campo é obrigatório para gerar Pix e não pode ser removido.");
+      return;
+    }
     setFields(fields.filter((_, i) => i !== index));
   };
 
   const updateField = (index: number, key: string, value: any) => {
     const newFields = [...fields];
+    
+    // Protect internal key for system fields
+    if (key === "field_name" && newFields[index].system_required) {
+      return;
+    }
+    
     newFields[index][key] = value;
     setFields(newFields);
   };
