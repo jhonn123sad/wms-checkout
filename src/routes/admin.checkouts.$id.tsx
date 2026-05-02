@@ -1,15 +1,22 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { ArrowLeft, Plus, Trash2, Save } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, ShieldCheck, Info } from "lucide-react";
 import { MediaField } from "@/components/admin/MediaField";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+
+const PIX_REQUIRED_FIELDS = [
+  { key: "customer_name", label: "Nome Completo", type: "text", equivalents: ["name", "nome", "full_name", "customer_name"] },
+  { key: "customer_email", label: "E-mail", type: "email", equivalents: ["email", "e-mail", "email_address", "customer_email"] },
+  { key: "customer_phone", label: "WhatsApp / Telefone", type: "tel", equivalents: ["phone", "telefone", "whatsapp", "customer_phone"] },
+  { key: "customer_cpf", label: "CPF", type: "text", equivalents: ["cpf", "document", "documento", "customer_cpf"] },
+];
 
 export const Route = createFileRoute("/admin/checkouts/$id")({
   component: CheckoutEditPage,
@@ -35,6 +42,39 @@ function CheckoutEditPage() {
   const [projects, setProjects] = useState<any[]>([]);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
 
+  const normalizeFields = useCallback((existingFields: any[]) => {
+    const normalized = [...existingFields];
+    const presentKeys = new Set(normalized.map(f => f.field_name));
+
+    PIX_REQUIRED_FIELDS.forEach(req => {
+      // Check if key or any equivalent is present
+      const foundIndex = normalized.findIndex(f => 
+        f.field_name === req.key || req.equivalents.includes(f.field_name)
+      );
+
+      if (foundIndex !== -1) {
+        // Normalize the key if it's an equivalent
+        if (normalized[foundIndex].field_name !== req.key) {
+          normalized[foundIndex].field_name = req.key;
+        }
+        normalized[foundIndex].system_required = true;
+        normalized[foundIndex].required = true;
+      } else {
+        // Add missing required field
+        normalized.push({
+          field_name: req.key,
+          field_label: req.label,
+          field_type: req.type,
+          required: true,
+          system_required: true,
+          sort_order: normalized.length + 1
+        });
+      }
+    });
+
+    return normalized.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+  }, []);
+
   useEffect(() => {
     fetchProjects();
     if (!isNew) {
@@ -49,12 +89,9 @@ function CheckoutEditPage() {
         media_asset: null,
         active: true,
       });
-      setFields([
-        { field_name: "nome", field_label: "Nome Completo", field_type: "text", required: true, sort_order: 1 },
-        { field_name: "email", field_label: "E-mail", field_type: "email", required: true, sort_order: 2 },
-      ]);
+      setFields(normalizeFields([]));
     }
-  }, [id]);
+  }, [id, normalizeFields]);
 
   const fetchProjects = async () => {
     const { data, error } = await supabase
@@ -87,9 +124,9 @@ function CheckoutEditPage() {
           ? { url: data.media_url, type: data.media_type || "image", source: "external_url" }
           : null),
     });
-    setFields(
-      (data.checkout_fields || []).sort((a: any, b: any) => a.sort_order - b.sort_order)
-    );
+    
+    const existingFields = data.checkout_fields || [];
+    setFields(normalizeFields(existingFields));
   };
 
   const handleSave = async () => {
@@ -162,15 +199,26 @@ function CheckoutEditPage() {
   };
 
   const addField = () => {
-    setFields([...fields, { field_name: "", field_label: "", field_type: "text", required: false }]);
+    setFields([...fields, { field_name: "", field_label: "", field_type: "text", required: false, sort_order: fields.length + 1 }]);
   };
 
   const removeField = (index: number) => {
+    const field = fields[index];
+    if (field.system_required) {
+      toast.error("Este campo é obrigatório para gerar Pix e não pode ser removido.");
+      return;
+    }
     setFields(fields.filter((_, i) => i !== index));
   };
 
   const updateField = (index: number, key: string, value: any) => {
     const newFields = [...fields];
+    
+    // Protect internal key for system fields
+    if (key === "field_name" && newFields[index].system_required) {
+      return;
+    }
+    
     newFields[index][key] = value;
     setFields(newFields);
   };
@@ -266,47 +314,81 @@ function CheckoutEditPage() {
             </div>
 
             <div className="space-y-4">
-              {fields.map((field, index) => (
-                <div key={index} className="p-4 border rounded-lg bg-muted/30 space-y-3 relative group">
-                  <div className="flex gap-2">
-                    <div className="flex-1 space-y-1">
-                      <Label className="text-[10px] uppercase font-bold text-muted-foreground">Label</Label>
-                      <Input 
-                        placeholder="Ex: Nome Completo" 
-                        value={field.field_label}
-                        onChange={(e) => updateField(index, "field_label", e.target.value)}
-                      />
-                    </div>
-                    <div className="flex-1 space-y-1">
-                      <Label className="text-[10px] uppercase font-bold text-muted-foreground">Name (DB)</Label>
-                      <Input 
-                        placeholder="Ex: nome" 
-                        value={field.field_name}
-                        onChange={(e) => updateField(index, "field_name", e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-2">
-                      <Switch 
-                        checked={field.required}
-                        onCheckedChange={(val) => updateField(index, "required", val)}
-                      />
-                      <span className="text-xs">Obrigatório</span>
+              <TooltipProvider>
+                {fields.map((field, index) => (
+                  <div key={index} className={`p-4 border rounded-lg space-y-3 relative group ${field.system_required ? 'bg-green-500/5 border-green-500/20' : 'bg-muted/30'}`}>
+                    <div className="flex gap-2">
+                      <div className="flex-1 space-y-1">
+                        <Label className="text-[10px] uppercase font-bold text-muted-foreground flex items-center gap-1">
+                          Label 
+                          {field.system_required && (
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <ShieldCheck className="w-3 h-3 text-green-500" />
+                              </TooltipTrigger>
+                              <TooltipContent>Campo obrigatório para Pix</TooltipContent>
+                            </Tooltip>
+                          )}
+                        </Label>
+                        <Input 
+                          placeholder="Ex: Nome Completo" 
+                          value={field.field_label}
+                          onChange={(e) => updateField(index, "field_label", e.target.value)}
+                        />
+                      </div>
+                      <div className="flex-1 space-y-1">
+                        <Label className="text-[10px] uppercase font-bold text-muted-foreground flex items-center gap-1">
+                          Name (DB)
+                          {field.system_required && (
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Info className="w-3 h-3 text-blue-500" />
+                              </TooltipTrigger>
+                              <TooltipContent>A chave interna do sistema não pode ser alterada</TooltipContent>
+                            </Tooltip>
+                          )}
+                        </Label>
+                        <Input 
+                          placeholder="Ex: nome" 
+                          value={field.field_name}
+                          disabled={field.system_required}
+                          onChange={(e) => updateField(index, "field_name", e.target.value)}
+                          className={field.system_required ? "bg-muted cursor-not-allowed" : ""}
+                        />
+                      </div>
                     </div>
                     
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      className="text-destructive h-8 w-8"
-                      onClick={() => removeField(index)}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-2">
+                        <Switch 
+                          checked={field.required}
+                          disabled={field.system_required}
+                          onCheckedChange={(val) => updateField(index, "required", val)}
+                        />
+                        <span className="text-xs">{field.system_required ? "Sempre Obrigatório" : "Obrigatório"}</span>
+                      </div>
+                      
+                      {!field.system_required && (
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="text-destructive h-8 w-8"
+                          onClick={() => removeField(index)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      )}
+                      
+                      {field.system_required && (
+                        <div className="flex items-center gap-1 text-[10px] font-bold text-green-600 uppercase bg-green-500/10 px-2 py-1 rounded">
+                          <ShieldCheck className="w-3 h-3" />
+                          Pix
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </TooltipProvider>
             </div>
           </Card>
 

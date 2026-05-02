@@ -57,20 +57,28 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-
+    
+    // Explicit validation for required Pix fields
     const projectSlug = checkout.slug;
-    const name = formData.name || formData.nome || "";
-    const email = formData.email || formData.email_address || "";
-    const phone = formData.phone || formData.whatsapp || "";
-    const cpf = formData.cpf || "";
+    const name = (formData.customer_name || formData.name || formData.nome || "").trim();
+    const email = (formData.customer_email || formData.email || formData.email_address || "").trim();
+    const phone = (formData.customer_phone || formData.phone || formData.whatsapp || "").trim();
+    const cpf = (formData.customer_cpf || formData.cpf || "").trim();
+
+    if (!name) return toast.error("Por favor, preencha seu nome completo.");
+    if (!email) return toast.error("Por favor, preencha seu e-mail.");
+    if (!email.includes("@")) return toast.error("Por favor, informe um e-mail válido.");
+    if (!phone) return toast.error("Por favor, preencha seu telefone/WhatsApp.");
+    if (!cpf) return toast.error("Por favor, preencha seu CPF.");
+
+    setLoading(true);
 
     console.log("[Checkout] Iniciando pagamento para:", { 
       project_slug: projectSlug,
       customer_name: name,
       customer_email: email,
       customer_phone: phone,
-      customer_cpf: cpf ? "***" : "missing"
+      customer_cpf: cpf.length > 5 ? `${cpf.substring(0, 3)}.***.***-${cpf.slice(-2)}` : "invalid"
     });
 
     try {
@@ -87,7 +95,7 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
           customer_name: name,
           customer_email: email,
           customer_phone: phone,
-          customer_cpf: cpf,
+          customer_cpf: cpf.replace(/\D/g, ""), // Clean non-digits for API
         },
       });
 
@@ -211,9 +219,37 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-4 max-h-[45vh] overflow-y-auto pr-2 custom-scrollbar min-w-0">
-                  {checkout.checkout_fields
-                    ?.sort((a: any, b: any) => a.sort_order - b.sort_order)
-                    .map((field: any) => (
+                  {(() => {
+                    const fields = [...(checkout.checkout_fields || [])].sort((a: any, b: any) => a.sort_order - b.sort_order);
+                    
+                    // Safety check: Ensure Pix required fields are present in the UI even if missing from DB
+                    const requiredKeys = ["customer_name", "customer_email", "customer_phone", "customer_cpf"];
+                    const labels: Record<string, string> = {
+                      "customer_name": "Nome Completo",
+                      "customer_email": "E-mail",
+                      "customer_phone": "WhatsApp / Telefone",
+                      "customer_cpf": "CPF"
+                    };
+                    const types: Record<string, string> = {
+                      "customer_name": "text",
+                      "customer_email": "email",
+                      "customer_phone": "tel",
+                      "customer_cpf": "text"
+                    };
+
+                    requiredKeys.forEach(key => {
+                      if (!fields.find(f => f.field_name === key)) {
+                        fields.push({
+                          id: `virtual-${key}`,
+                          field_name: key,
+                          field_label: labels[key],
+                          field_type: types[key],
+                          required: true
+                        });
+                      }
+                    });
+
+                    return fields.map((field: any) => (
                       <div key={field.id} className="space-y-2">
                         <Label htmlFor={field.field_name} className="text-xs font-bold text-gray-500 uppercase tracking-wide ml-1">
                           {field.field_label}
@@ -229,7 +265,8 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
                           onChange={(e) => handleInputChange(field.field_name, e.target.value)}
                         />
                       </div>
-                    ))}
+                    ));
+                  })()}
                 </div>
 
                 <div className="pt-2 space-y-4">
