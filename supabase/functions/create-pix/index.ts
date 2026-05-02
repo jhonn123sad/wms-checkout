@@ -95,9 +95,7 @@ Deno.serve(async (req) => {
     const { data: order, error: orderError } = await supabase
       .from("orders")
       .insert({
-        product_id: productId,
-        project_id: currentProjectId,
-        offer_id: currentOfferId,
+        checkout_id: checkoutId,
         customer_name,
         customer_cpf,
         customer_phone,
@@ -111,14 +109,15 @@ Deno.serve(async (req) => {
         utm_content,
         utm_term,
         metadata: { 
-          project_slug, 
-          project_id: currentProjectId,
+          checkout_slug, 
+          checkout_id: checkoutId,
           form_data: body?.form_data || {}
         },
         public_access_token: publicAccessToken,
       })
       .select()
       .single();
+
 
     if (orderError || !order) {
       log("Order insert error:", orderError);
