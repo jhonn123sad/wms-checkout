@@ -174,7 +174,7 @@ function CheckoutEditPage() {
       }
 
       const fieldsToInsert = fields
-        .filter((f) => f.field_label) // Allow empty field_name for system fields if needed, but label is key
+        .filter((f) => f.field_label)
         .map((f, index) => ({
           field_name: f.field_name || `field_${index}`,
           field_label: f.field_label,
@@ -183,7 +183,7 @@ function CheckoutEditPage() {
           checkout_id: checkoutId,
           sort_order: index + 1,
           active: f.active !== false
-        }));
+        } as any));
 
       if (fieldsToInsert.length > 0) {
         console.log("[admin.checkouts.$id] inserting fields", fieldsToInsert);
@@ -192,6 +192,7 @@ function CheckoutEditPage() {
           .insert(fieldsToInsert);
         if (fError) throw fError;
       }
+
 
 
       toast.success("Checkout salvo com sucesso!");
