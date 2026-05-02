@@ -219,9 +219,37 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-4 max-h-[45vh] overflow-y-auto pr-2 custom-scrollbar min-w-0">
-                  {checkout.checkout_fields
-                    ?.sort((a: any, b: any) => a.sort_order - b.sort_order)
-                    .map((field: any) => (
+                  {(() => {
+                    const fields = [...(checkout.checkout_fields || [])].sort((a: any, b: any) => a.sort_order - b.sort_order);
+                    
+                    // Safety check: Ensure Pix required fields are present in the UI even if missing from DB
+                    const requiredKeys = ["customer_name", "customer_email", "customer_phone", "customer_cpf"];
+                    const labels: Record<string, string> = {
+                      "customer_name": "Nome Completo",
+                      "customer_email": "E-mail",
+                      "customer_phone": "WhatsApp / Telefone",
+                      "customer_cpf": "CPF"
+                    };
+                    const types: Record<string, string> = {
+                      "customer_name": "text",
+                      "customer_email": "email",
+                      "customer_phone": "tel",
+                      "customer_cpf": "text"
+                    };
+
+                    requiredKeys.forEach(key => {
+                      if (!fields.find(f => f.field_name === key)) {
+                        fields.push({
+                          id: `virtual-${key}`,
+                          field_name: key,
+                          field_label: labels[key],
+                          field_type: types[key],
+                          required: true
+                        });
+                      }
+                    });
+
+                    return fields.map((field: any) => (
                       <div key={field.id} className="space-y-2">
                         <Label htmlFor={field.field_name} className="text-xs font-bold text-gray-500 uppercase tracking-wide ml-1">
                           {field.field_label}
@@ -237,7 +265,8 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
                           onChange={(e) => handleInputChange(field.field_name, e.target.value)}
                         />
                       </div>
-                    ))}
+                    ));
+                  })()}
                 </div>
 
                 <div className="pt-2 space-y-4">
