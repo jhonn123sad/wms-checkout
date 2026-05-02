@@ -42,6 +42,39 @@ function CheckoutEditPage() {
   const [projects, setProjects] = useState<any[]>([]);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
 
+  const normalizeFields = useCallback((existingFields: any[]) => {
+    const normalized = [...existingFields];
+    const presentKeys = new Set(normalized.map(f => f.field_name));
+
+    PIX_REQUIRED_FIELDS.forEach(req => {
+      // Check if key or any equivalent is present
+      const foundIndex = normalized.findIndex(f => 
+        f.field_name === req.key || req.equivalents.includes(f.field_name)
+      );
+
+      if (foundIndex !== -1) {
+        // Normalize the key if it's an equivalent
+        if (normalized[foundIndex].field_name !== req.key) {
+          normalized[foundIndex].field_name = req.key;
+        }
+        normalized[foundIndex].system_required = true;
+        normalized[foundIndex].required = true;
+      } else {
+        // Add missing required field
+        normalized.push({
+          field_name: req.key,
+          field_label: req.label,
+          field_type: req.type,
+          required: true,
+          system_required: true,
+          sort_order: normalized.length + 1
+        });
+      }
+    });
+
+    return normalized.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+  }, []);
+
   useEffect(() => {
     fetchProjects();
     if (!isNew) {
@@ -56,12 +89,9 @@ function CheckoutEditPage() {
         media_asset: null,
         active: true,
       });
-      setFields([
-        { field_name: "nome", field_label: "Nome Completo", field_type: "text", required: true, sort_order: 1 },
-        { field_name: "email", field_label: "E-mail", field_type: "email", required: true, sort_order: 2 },
-      ]);
+      setFields(normalizeFields([]));
     }
-  }, [id]);
+  }, [id, normalizeFields]);
 
   const fetchProjects = async () => {
     const { data, error } = await supabase
@@ -94,9 +124,9 @@ function CheckoutEditPage() {
           ? { url: data.media_url, type: data.media_type || "image", source: "external_url" }
           : null),
     });
-    setFields(
-      (data.checkout_fields || []).sort((a: any, b: any) => a.sort_order - b.sort_order)
-    );
+    
+    const existingFields = data.checkout_fields || [];
+    setFields(normalizeFields(existingFields));
   };
 
   const handleSave = async () => {
