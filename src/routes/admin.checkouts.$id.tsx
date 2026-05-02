@@ -186,7 +186,7 @@ function CheckoutEditPage() {
           required: !!f.required,
           checkout_id: checkoutId,
           sort_order: index + 1,
-          active: f.active !== false
+          active: f.active === true // Explicit check for true to preserve false
         } as any));
 
       if (fieldsToInsert.length > 0) {
