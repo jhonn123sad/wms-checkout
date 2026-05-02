@@ -57,20 +57,28 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-
+    
+    // Explicit validation for required Pix fields
     const projectSlug = checkout.slug;
-    const name = formData.name || formData.nome || "";
-    const email = formData.email || formData.email_address || "";
-    const phone = formData.phone || formData.whatsapp || "";
-    const cpf = formData.cpf || "";
+    const name = (formData.customer_name || formData.name || formData.nome || "").trim();
+    const email = (formData.customer_email || formData.email || formData.email_address || "").trim();
+    const phone = (formData.customer_phone || formData.phone || formData.whatsapp || "").trim();
+    const cpf = (formData.customer_cpf || formData.cpf || "").trim();
+
+    if (!name) return toast.error("Por favor, preencha seu nome completo.");
+    if (!email) return toast.error("Por favor, preencha seu e-mail.");
+    if (!email.includes("@")) return toast.error("Por favor, informe um e-mail válido.");
+    if (!phone) return toast.error("Por favor, preencha seu telefone/WhatsApp.");
+    if (!cpf) return toast.error("Por favor, preencha seu CPF.");
+
+    setLoading(true);
 
     console.log("[Checkout] Iniciando pagamento para:", { 
       project_slug: projectSlug,
       customer_name: name,
       customer_email: email,
       customer_phone: phone,
-      customer_cpf: cpf ? "***" : "missing"
+      customer_cpf: cpf.length > 5 ? `${cpf.substring(0, 3)}.***.***-${cpf.slice(-2)}` : "invalid"
     });
 
     try {
