@@ -26,8 +26,10 @@ const ACCEPTED_TYPES = [
   "image/gif",
   "video/mp4",
   "video/webm",
+  "video/quicktime",
+  "video/x-matroska",
 ];
-const MAX_BYTES = 50 * 1024 * 1024; // 50MB
+const MAX_BYTES = 100 * 1024 * 1024; // 100MB
 
 export const MediaField = ({
   value,
@@ -231,7 +233,7 @@ export const MediaField = ({
                 type="file"
                 onChange={handleUpload}
                 className="absolute inset-0 opacity-0 cursor-pointer"
-                accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm"
+                accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime"
                 disabled={isUploading}
               />
               {isUploading ? (
@@ -243,7 +245,7 @@ export const MediaField = ({
                 <>
                   <Upload className="w-6 h-6 text-muted-foreground mb-1" />
                   <p className="text-[10px] text-muted-foreground text-center">
-                    Clique para enviar JPG, PNG, WEBP, GIF, MP4 ou WEBM (máx. 50 MB)
+                    Clique para enviar JPG, PNG, WEBP, GIF, MP4, WEBM ou MOV (máx. 100 MB)
                   </p>
                 </>
               )}
