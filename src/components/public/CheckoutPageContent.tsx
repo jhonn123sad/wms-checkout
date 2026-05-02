@@ -61,7 +61,8 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
     console.log("[Checkout Pix] checkout", checkout);
 
     const fields = (checkout.checkout_fields || [])
-      .filter((f: any) => f.active !== false);
+      .filter((f: any) => f.active !== false && !f.field_type?.startsWith("hidden:"))
+      .sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0));
     
     console.log("[Checkout Pix] activeFields", fields);
 
@@ -220,9 +221,12 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
                 <div className="space-y-4 max-h-[45vh] overflow-y-auto pr-2 custom-scrollbar min-w-0">
                   {(() => {
                     const fields = (checkout.checkout_fields || [])
-                      .filter((f: any) => f.active !== false)
-                      .sort((a: any, b: any) => a.sort_order - b.sort_order);
+                      .filter((f: any) => f.active !== false && !f.field_type?.startsWith("hidden:"))
+                      .sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0));
                     
+                    console.log("[Public Fields] campos recebidos", checkout.checkout_fields);
+                    console.log("[Public Fields] campos ativos", fields);
+
                     if (fields.length === 0) return null;
 
                     return fields.map((field: any) => (
@@ -233,7 +237,7 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
                         </Label>
                         <Input
                           id={field.field_name}
-                          type={field.field_type}
+                          type={field.field_type?.replace("hidden:", "") || "text"}
                           placeholder={`Digite seu ${field.field_label.toLowerCase()}`}
                           required={field.required}
                           className="h-12 bg-[#0a0a0a] border-[#222] text-white focus:ring-1 focus:ring-green-500/50 focus:border-green-500 transition-all rounded-xl placeholder:text-gray-700 text-sm"
@@ -253,7 +257,6 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
                   >
                     {loading ? (
                       <div className="flex items-center justify-center gap-3">
-                        <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
                         <span className="animate-pulse">Gerando Pix...</span>
                       </div>
                     ) : (
