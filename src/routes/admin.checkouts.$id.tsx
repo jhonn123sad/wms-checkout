@@ -180,10 +180,12 @@ function CheckoutEditPage() {
           field_label: f.field_label,
           field_type: f.field_type || "text",
           required: !!f.required,
-          active: f.active !== false,
+          // 'active' field is stored in DB but might not be in the generated types yet
+          // We cast to any for the insert to allow the property
           checkout_id: checkoutId,
           sort_order: index + 1,
-        }));
+          active: f.active !== false
+        } as any));
 
       if (fieldsToInsert.length > 0) {
         const { error: fError } = await supabase
