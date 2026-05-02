@@ -150,7 +150,7 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white flex flex-col lg:min-h-screen lg:h-auto font-sans overflow-x-hidden">
       <main className="flex-1 flex flex-col lg:flex-row w-full max-w-[1180px] mx-auto p-4 md:p-6 lg:p-10 gap-8 lg:gap-16 items-center lg:items-start lg:justify-center">
-        {/* Coluna Esquerda: Mídia e Info */}
+        {/* Coluna Esquerda: Mídia */}
         <div className="w-full lg:flex-1 flex flex-col space-y-6 lg:space-y-8 min-w-0">
           <div className="space-y-4 lg:space-y-5">
             <h1 className="text-3xl md:text-4xl lg:text-4xl font-black tracking-tight leading-tight text-white break-words">
@@ -169,16 +169,6 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
                 <p className="text-gray-600 font-medium text-sm uppercase tracking-wider">Sem prévia disponível</p>
               </div>
             )}
-          </div>
-
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 bg-[#141414]/50 p-4 rounded-2xl border border-[#222]/50">
-            <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Acesso Vitalício por apenas</span>
-            <div className="text-3xl md:text-4xl font-black text-green-500 tracking-tighter">
-              {new Intl.NumberFormat("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              }).format(checkout.price)}
-            </div>
           </div>
           
           <div className="hidden lg:flex items-center gap-6 opacity-40 grayscale pointer-events-none pt-4">
