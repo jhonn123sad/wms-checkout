@@ -50,30 +50,32 @@ function CheckoutEditPage() {
     // Start with a clone of existing fields
     const normalized = existingFields.map(f => {
       const isActive = !f.field_type?.startsWith("hidden:");
+      // Identify if it's a system field based on equivalents
+      const baseInfo = PIX_REQUIRED_FIELDS.find(req => 
+        f.field_name === req.key || req.equivalents.includes(f.field_name)
+      );
+
       return {
         ...f,
+        field_name: baseInfo ? baseInfo.key : f.field_name, // Normalize key
         active: isActive,
         field_type: f.field_type?.replace("hidden:", "") || "text",
-        system_field: PIX_REQUIRED_FIELDS.some(req => 
-          f.field_name === req.key || req.equivalents.includes(f.field_name)
-        )
+        system_field: !!baseInfo
       };
     });
     
-    // Check which base fields are missing
+    // Check which base fields are missing after normalization
     PIX_REQUIRED_FIELDS.forEach(req => {
-      const foundIndex = normalized.findIndex(f => 
-        f.field_name === req.key
-      );
+      const exists = normalized.some(f => f.field_name === req.key);
 
-      if (foundIndex === -1) {
+      if (!exists) {
         // Field doesn't exist yet, add it as inactive base field
         normalized.push({
           field_name: req.key,
           field_label: req.label,
           field_type: req.type,
           required: false,
-          active: false, // Default to false for new base fields
+          active: false, 
           system_field: true,
           sort_order: normalized.length + 1
         });
