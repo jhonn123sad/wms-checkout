@@ -18,6 +18,7 @@ interface CheckoutPageContentProps {
 }
 
 import { InlinePixPanel } from "../checkout/InlinePixPanel";
+import { ReceitasPraticasCheckout } from "./designs/ReceitasPraticasCheckout";
 
 export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
   const [formData, setFormData] = useState<Record<string, string>>({});
@@ -157,6 +158,23 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
     type: (checkout.media_type as any) || "image",
     source: "external_url",
   } : null);
+
+  if (checkout.slug === "receitas-praticas") {
+    return (
+      <ReceitasPraticasCheckout 
+        checkout={checkout}
+        formData={formData}
+        loading={loading}
+        paymentData={paymentData}
+        paymentStatus={paymentStatus}
+        mediaData={mediaData}
+        handleSubmit={handleSubmit}
+        handleInputChange={handleInputChange}
+        handleResetPayment={handleResetPayment}
+        InlinePixPanel={InlinePixPanel}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white font-sans selection:bg-green-500/30 overflow-x-hidden">
