@@ -17,7 +17,7 @@ interface ReceitasPraticasCheckoutProps {
   paymentData: any;
   paymentStatus: string;
   mediaData: any;
-  handleSubmit: (e: React.FormEvent) => Promise<void>;
+  handleSubmit: (e: React.FormEvent) => Promise<any>;
   handleInputChange: (name: string, value: string) => void;
   handleResetPayment: () => void;
   InlinePixPanel: any;
@@ -146,7 +146,7 @@ export function ReceitasPraticasCheckout({
                       paymentData={paymentData}
                       paymentStatus={paymentStatus}
                       onReset={handleResetPayment}
-                      formatPrice={(cents) => new Intl.NumberFormat("pt-BR", {
+                      formatPrice={(cents: number) => new Intl.NumberFormat("pt-BR", {
                         style: "currency",
                         currency: "BRL",
                       }).format(cents / 100)}
