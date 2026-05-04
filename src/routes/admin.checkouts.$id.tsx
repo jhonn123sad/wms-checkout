@@ -99,6 +99,7 @@ function CheckoutEditPage() {
         cta_text: "Liberar acesso agora",
         media_asset: null,
         active: true,
+        layout_config: {},
       });
       setFields(normalizeFields([]));
     }
