@@ -72,14 +72,11 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
    */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("[Checkout Pix] submit iniciado");
-    console.log("[Checkout Pix] checkout", checkout);
 
     const fields = (checkout.checkout_fields || [])
       .filter((f: any) => f.active !== false && !f.field_type?.startsWith("hidden:"))
       .sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0));
-    
-    console.log("[Checkout Pix] activeFields", fields);
+
 
     // Dynamic validation for active & required fields
     for (const field of fields) {
@@ -99,8 +96,6 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
       form_data: formData, // Send everything for metadata
     };
 
-    console.log("[Checkout Pix] payload enviado:", payload);
-
     try {
       // 1. Save lead (optional)
       await supabase.from("checkout_leads").insert({
@@ -112,8 +107,6 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
       const { data, error: invokeError } = await supabase.functions.invoke("create-pix", {
         body: payload,
       });
-
-      console.log("[Checkout Pix] resposta create-pix", { data, invokeError });
 
       if (invokeError) {
         let errorMessage = invokeError.message;
@@ -139,7 +132,6 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
       setIsPolling(true);
       toast.success("Pix gerado com sucesso!");
     } catch (error: any) {
-      console.error("[Checkout Pix] erro create-pix:", error);
       toast.error(error.message || "Erro ao processar pagamento");
     } finally {
       setLoading(false);
