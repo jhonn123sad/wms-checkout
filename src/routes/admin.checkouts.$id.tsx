@@ -147,7 +147,7 @@ function CheckoutEditPage() {
         title: checkout.title,
         subtitle: checkout.subtitle,
         slug: checkout.slug,
-        price: typeof checkout.price === 'string' ? parseFloat(checkout.price) : checkout.price,
+        price: isNaN(parseFloat(checkout.price)) ? 0 : parseFloat(checkout.price),
         cta_text: checkout.cta_text,
         active: checkout.active,
         status: checkout.active ? 'published' : 'draft',
