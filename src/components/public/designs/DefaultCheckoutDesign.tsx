@@ -66,7 +66,9 @@ export function DefaultCheckoutDesign({
               />
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="text-3xl font-black mb-6">R$ {checkout.price.toFixed(2)}</div>
+                <div className="text-3xl font-black mb-6">
+                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(checkout.price)}
+                </div>
                 {activeFields.map((field: any) => (
                   <div key={field.id} className="space-y-2">
                     <Label>{field.field_label}</Label>
