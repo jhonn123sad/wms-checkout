@@ -105,7 +105,9 @@ export function ReservadoCheckoutDesign({
                 <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
                   <div className="text-center">
                     <div className="flex items-baseline justify-center gap-1">
-                      <span className="text-6xl font-black tracking-tighter text-white">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(checkout.price)}</span>
+                      <span className="text-6xl font-black tracking-tighter text-white">
+                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(checkout.price)}
+                      </span>
                     </div>
                   </div>
 

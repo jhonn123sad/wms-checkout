@@ -91,7 +91,11 @@ export function ComunidadeCheckoutDesign({
                   paymentStatus={paymentStatus}
                   onReset={handleResetPayment}
                   formatPrice={(cents: number) => `R$ ${(cents / 100).toFixed(2)}`}
-                  theme={{ button: "#a855f7", accent: "#a855f7" }}
+                  theme={{ 
+                    button: "#a855f7", 
+                    accent: "#a855f7",
+                    card: "transparent"
+                  }}
                 />
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">

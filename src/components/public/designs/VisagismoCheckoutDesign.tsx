@@ -106,7 +106,9 @@ export function VisagismoCheckoutDesign({
                     <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest block mb-2">Transformação Completa</span>
                     <div className="flex items-baseline justify-center gap-1">
                       <span className="text-lg font-bold text-indigo-600">R$</span>
-                      <span className="text-5xl font-black tracking-tighter text-zinc-900">{checkout.price.toFixed(2)}</span>
+                      <span className="text-5xl font-black tracking-tighter text-zinc-900">
+                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(checkout.price)}
+                      </span>
                     </div>
                   </div>
 
