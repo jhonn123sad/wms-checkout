@@ -39,6 +39,7 @@ function CheckoutEditPage() {
     cta_text: "Liberar acesso agora",
     media_asset: null,
     active: true,
+    template_key: "base",
     layout_config: {},
   });
   const [fields, setFields] = useState<any[]>([]);
@@ -91,6 +92,7 @@ function CheckoutEditPage() {
         cta_text: "Liberar acesso agora",
         media_asset: null,
         active: true,
+        template_key: "base",
         layout_config: {},
       });
       setFields(normalizeFields([]));
@@ -149,6 +151,7 @@ function CheckoutEditPage() {
         media_url: checkout.media_asset?.url ?? null,
         media_type: checkout.media_asset?.type ?? null,
         layout_config: checkout.layout_config ?? {},
+        template_key: checkout.template_key ?? "base",
         updated_at: new Date().toISOString(),
       };
 
@@ -304,13 +307,17 @@ function CheckoutEditPage() {
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label>Template</Label>
-                <Input 
-                  value={checkout.layout_config?.template_key || "premium_editorial_v1"} 
+                <select 
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  value={checkout.template_key || "base"} 
                   onChange={(e) => setCheckout({ 
                     ...checkout, 
-                    layout_config: { ...checkout.layout_config, template_key: e.target.value } 
+                    template_key: e.target.value 
                   })}
-                />
+                >
+                  <option value="base">Padrão Dark</option>
+                  <option value="premium_editorial_v1">Premium Editorial</option>
+                </select>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
