@@ -376,7 +376,11 @@ function CheckoutEditPage() {
                       value={checkout.layout_config?.benefits?.[i]?.title || ""} 
                       onChange={(e) => {
                         const newBenefits = [...(checkout.layout_config?.benefits || [{}, {}, {}])];
-                        newBenefits[i] = { ...newBenefits[i], title: e.target.value };
+                        newBenefits[i] = { 
+                          ...newBenefits[i], 
+                          title: e.target.value,
+                          icon_type: i === 0 ? 'utensils' : i === 1 ? 'clock' : 'book'
+                        };
                         setCheckout({ ...checkout, layout_config: { ...checkout.layout_config, benefits: newBenefits } });
                       }}
                     />
