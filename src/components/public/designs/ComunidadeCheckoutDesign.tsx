@@ -10,12 +10,18 @@ import {
   Sparkles,
   Loader2,
   CheckCircle2,
-  Layout
+  Layout,
+  Copy,
+  Check,
+  RefreshCw,
+  Award,
+  CircleDashed
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MediaDisplay } from "@/components/public/MediaDisplay";
+import { toast } from "sonner";
 
 interface DesignProps {
   checkout: any;
@@ -40,33 +46,47 @@ export function ComunidadeCheckoutDesign({
   handleSubmit,
   handleInputChange,
   handleResetPayment,
-  InlinePixPanel
 }: DesignProps) {
   const activeFields = (checkout.checkout_fields || [])
     .filter((f: any) => f.active !== false && !f.field_type?.startsWith("hidden:"))
     .sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0));
 
+  const colors = {
+    background: "#09090B",
+    surface: "#111114",
+    primary: "#38BDF8", // sky-400
+    accent: "#818CF8",  // indigo-400
+    text: "#FAFAFA",
+    muted: "#A1A1AA"
+  };
+
+  const benefits = [
+    { icon: <Video size={16} />, title: "Aulas Exclusivas", desc: "Conteúdo de alto nível" },
+    { icon: <Users size={16} />, title: "Comunidade VIP", desc: "Networking qualificado" },
+    { icon: <Award size={16} />, title: "Certificado", desc: "Reconhecimento oficial" }
+  ];
+
   return (
-    <div className="min-h-screen bg-[#020203] text-white font-sans overflow-x-hidden selection:bg-cyan-500/30">
-      {/* Background sofisticado com gradientes suaves */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-cyan-600/10 blur-[150px] rounded-full"></div>
-        <div className="absolute bottom-[-10%] left-[-5%] w-[600px] h-[600px] bg-purple-600/10 blur-[150px] rounded-full"></div>
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/asfalt-dark.png')] opacity-[0.03]"></div>
+    <div className="min-h-screen bg-[#09090B] text-white font-sans selection:bg-sky-500/30 overflow-x-hidden">
+      {/* Background Decor */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-sky-500/5 blur-[120px] rounded-full"></div>
+        <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-indigo-500/5 blur-[120px] rounded-full"></div>
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')] opacity-[0.05]"></div>
       </div>
 
-      <main className="relative z-10 w-full max-w-[1240px] mx-auto px-4 py-8 md:py-16 lg:py-24">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_440px] gap-12 lg:gap-20 items-start">
+      <main className="relative z-10 w-full max-w-[1280px] mx-auto px-4 py-8 md:py-12 lg:py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-12 lg:gap-16 items-start">
           
-          {/* LADO ESQUERDO: Conteúdo e Mídia */}
-          <div className="space-y-10 animate-in fade-in slide-in-from-left-6 duration-1000">
+          {/* LADO ESQUERDO: Valor e Proposta */}
+          <div className="space-y-10 animate-in fade-in slide-in-from-left-4 duration-1000">
             <div className="space-y-6">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-bold uppercase tracking-[0.2em]">
-                <Sparkles size={14} className="animate-pulse" /> Comunidade Premium
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-[10px] font-bold uppercase tracking-[0.2em]">
+                <Sparkles size={12} className="animate-pulse" /> Acesso Exclusivo
               </div>
               
               <div className="space-y-4">
-                <h1 className="text-4xl md:text-5xl lg:text-7xl font-black tracking-tighter leading-[1] bg-gradient-to-br from-white via-white to-white/40 bg-clip-text text-transparent">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-[1.05] text-white">
                   {checkout.title}
                 </h1>
                 <p className="text-lg md:text-xl text-zinc-400 max-w-2xl leading-relaxed">
@@ -75,34 +95,29 @@ export function ComunidadeCheckoutDesign({
               </div>
             </div>
 
-            {/* Mídia proporcional e elegante */}
-            <div className="relative group max-w-[800px]">
-              <div className="absolute -inset-2 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-[2.5rem] blur-2xl opacity-20 group-hover:opacity-40 transition duration-1000"></div>
-              <div className="relative aspect-video rounded-[2rem] overflow-hidden border border-white/5 bg-zinc-900/50 shadow-2xl backdrop-blur-sm">
+            {/* Mídia Principal */}
+            <div className="relative group w-full max-w-[860px]">
+              <div className="absolute -inset-1 bg-gradient-to-r from-sky-500/20 to-indigo-500/20 rounded-[2rem] blur-xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+              <div className="relative aspect-video rounded-[1.5rem] md:rounded-[2rem] overflow-hidden border border-white/5 bg-zinc-900/40 shadow-2xl backdrop-blur-sm">
                 <MediaDisplay media={mediaData} />
                 
-                {/* Badge flutuante na mídia */}
-                <div className="absolute top-6 right-6 px-4 py-2 rounded-2xl bg-black/60 backdrop-blur-md border border-white/10 flex items-center gap-2 shadow-xl">
-                  <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse"></div>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-white">Acesso Imediato</span>
+                <div className="absolute bottom-6 left-6 px-4 py-2 rounded-xl bg-black/60 backdrop-blur-md border border-white/10 flex items-center gap-2 shadow-xl">
+                  <div className="w-2 h-2 rounded-full bg-sky-500 animate-pulse"></div>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-white">Ao Vivo e Gravado</span>
                 </div>
               </div>
             </div>
 
-            {/* Benefícios em Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-[800px]">
-              {[
-                { icon: <Video className="text-cyan-400" size={18} />, title: "Conteúdo Exclusivo", desc: "Aulas e materiais" },
-                { icon: <Users className="text-cyan-400" size={18} />, title: "Networking", desc: "Comunidade ativa" },
-                { icon: <Layout className="text-cyan-400" size={18} />, title: "Plataforma Moderna", desc: "Experiência premium" }
-              ].map((item, i) => (
-                <div key={i} className="flex flex-col gap-3 p-6 rounded-3xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.05] transition-colors group">
-                  <div className="w-10 h-10 rounded-2xl bg-cyan-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+            {/* Benefícios */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-[860px]">
+              {benefits.map((item, i) => (
+                <div key={i} className="flex items-start gap-4 p-5 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all group">
+                  <div className="w-10 h-10 rounded-xl bg-sky-500/10 flex items-center justify-center text-sky-400 shrink-0 group-hover:scale-110 transition-transform">
                     {item.icon}
                   </div>
-                  <div>
-                    <h4 className="text-xs font-black uppercase tracking-wider text-white">{item.title}</h4>
-                    <p className="text-[10px] text-zinc-500 mt-1 uppercase tracking-tight font-bold">{item.desc}</p>
+                  <div className="space-y-1">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-white">{item.title}</h4>
+                    <p className="text-[10px] text-zinc-500 font-medium leading-relaxed">{item.desc}</p>
                   </div>
                 </div>
               ))}
@@ -110,110 +125,91 @@ export function ComunidadeCheckoutDesign({
           </div>
 
           {/* LADO DIREITO: Checkout Card */}
-          <div className="w-full lg:sticky lg:top-12 animate-in fade-in slide-in-from-right-6 duration-1000 delay-200">
-            <div className="bg-zinc-900/40 backdrop-blur-3xl p-8 md:p-10 rounded-[3rem] border border-white/10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.7)] relative overflow-hidden group">
-              {/* Card Glow */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 blur-[60px] pointer-events-none"></div>
-              <div className="absolute bottom-0 left-0 w-32 h-32 bg-purple-500/10 blur-[60px] pointer-events-none"></div>
+          <div className="w-full lg:sticky lg:top-12 animate-in fade-in slide-in-from-right-4 duration-1000 delay-200">
+            <div className="bg-zinc-900/50 backdrop-blur-2xl p-8 md:p-10 rounded-[2.5rem] border border-white/10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)] relative overflow-hidden">
+              {/* Decorative accent */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-sky-500/10 blur-[60px] pointer-events-none"></div>
 
               {paymentData ? (
-                <div className="relative z-10">
-                  <InlinePixPanel 
-                    paymentData={paymentData}
-                    paymentStatus={paymentStatus}
-                    onReset={handleResetPayment}
-                    formatPrice={(cents: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(cents / 100)}
-                    theme={{ 
-                      button: "#06b6d4", 
-                      accent: "#06b6d4",
-                      card: "transparent"
-                    }}
-                  />
-                </div>
+                <PixGeneratedView 
+                  paymentData={paymentData}
+                  paymentStatus={paymentStatus}
+                  onReset={handleResetPayment}
+                  colors={colors}
+                />
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
-                  {/* Preço de destaque */}
-                  <div className="space-y-2 text-center lg:text-left">
-                    <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-[0.3em] block ml-1">Valor do Investimento</span>
+                <div className="space-y-8">
+                  {/* Preço */}
+                  <div className="text-center lg:text-left space-y-1">
+                    <span className="text-[10px] font-bold text-sky-400 uppercase tracking-[0.2em] block">Investimento Único</span>
                     <div className="flex items-baseline justify-center lg:justify-start gap-2">
-                      <span className="text-5xl md:text-6xl font-black tracking-tighter text-white">
+                      <span className="text-4xl md:text-5xl font-black tracking-tighter text-white">
                         {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(checkout.price)}
                       </span>
                     </div>
-                    <div className="flex items-center justify-center lg:justify-start gap-2 mt-4 text-zinc-500 font-bold text-[9px] uppercase tracking-widest">
-                      <Zap size={12} className="text-cyan-500" /> Pagamento Único • Acesso Vitalício
+                    <div className="flex items-center justify-center lg:justify-start gap-2 pt-2 text-zinc-500 font-bold text-[9px] uppercase tracking-widest">
+                      <Zap size={12} className="text-sky-500" /> Acesso Imediato • Seguro
                     </div>
                   </div>
 
-                  <div className="h-px w-full bg-gradient-to-r from-white/10 via-white/5 to-transparent"></div>
+                  <div className="h-px w-full bg-white/5"></div>
 
-                  {/* Campos do formulário */}
-                  <div className="space-y-5">
+                  <form onSubmit={handleSubmit} className="space-y-6">
                     {activeFields.length > 0 && (
                       <div className="space-y-4">
-                        <div className="flex items-center gap-2 mb-2">
-                          <CheckCircle2 size={12} className="text-cyan-500" />
-                          <span className="text-[9px] font-black uppercase tracking-[0.15em] text-zinc-400">Informações de Acesso</span>
-                        </div>
                         {activeFields.map((field: any) => (
-                          <div key={field.id} className="space-y-2 group">
-                            <Label className="text-[10px] uppercase tracking-[0.15em] text-zinc-500 font-bold ml-1 group-focus-within:text-cyan-400 transition-colors">
+                          <div key={field.id} className="space-y-2">
+                            <Label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold ml-1">
                               {field.field_label}
-                              {field.required && <span className="text-cyan-500 ml-1">*</span>}
+                              {field.required && <span className="text-sky-500 ml-1">*</span>}
                             </Label>
                             <Input
-                              className="h-14 bg-white/[0.03] border-white/5 rounded-2xl focus:ring-1 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all text-white placeholder:text-zinc-700 text-sm px-6"
+                              className="h-14 bg-white/[0.03] border-white/10 rounded-xl focus:ring-1 focus:ring-sky-500/50 focus:border-sky-500/50 transition-all text-white placeholder:text-zinc-700 text-sm px-5"
                               value={formData[field.field_name] || ""}
                               onChange={(e) => handleInputChange(field.field_name, e.target.value)}
                               required={field.required}
-                              placeholder={`Seu ${field.field_label.toLowerCase()}`}
+                              placeholder={`Digite seu ${field.field_label.toLowerCase()}`}
                             />
                           </div>
                         ))}
                       </div>
                     )}
-                  </div>
 
-                  {/* Botão de ação */}
-                  <div className="space-y-4 pt-2">
                     <Button 
                       type="submit" 
                       disabled={loading} 
-                      className="w-full h-18 md:h-20 bg-cyan-600 hover:bg-cyan-500 text-white font-black text-lg rounded-[1.5rem] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_20px_40px_-10px_rgba(6,182,212,0.3)] flex items-center justify-center gap-3 group relative overflow-hidden"
+                      className="w-full h-18 bg-sky-500 hover:bg-sky-400 text-black font-black text-lg rounded-2xl transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg flex items-center justify-center gap-3 group relative overflow-hidden"
                     >
-                      <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
-                      <div className="relative flex items-center justify-center gap-3">
-                        {loading ? (
-                          <>
-                            <Loader2 className="w-5 h-5 animate-spin" />
-                            <span className="uppercase tracking-widest italic">Processando...</span>
-                          </>
-                        ) : (
-                          <>
-                            <span className="uppercase tracking-tight italic drop-shadow-sm">{checkout.cta_text || "QUERO ENTRAR AGORA"}</span>
-                            <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-                          </>
-                        )}
-                      </div>
+                      {loading ? (
+                        <div className="flex items-center gap-3">
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                          <span className="uppercase tracking-widest italic">Processando...</span>
+                        </div>
+                      ) : (
+                        <>
+                          <span className="uppercase tracking-tight italic">{checkout.cta_text || "GARANTIR MEU ACESSO"}</span>
+                          <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                        </>
+                      )}
                     </Button>
-                    
-                    <div className="flex items-center justify-center gap-4 pt-2">
-                      <div className="flex items-center gap-1.5 text-[9px] text-zinc-500 font-bold uppercase tracking-widest">
-                        <Lock size={12} className="text-cyan-500/50" /> Checkout Seguro
+                  </form>
+
+                  <div className="flex flex-col items-center gap-4 pt-4 border-t border-white/5">
+                    <div className="flex items-center gap-6">
+                      <div className="flex items-center gap-2 text-[9px] text-zinc-500 font-bold uppercase tracking-widest">
+                        <Lock size={12} className="text-sky-500/50" /> Seguro
                       </div>
-                      <div className="w-1 h-1 rounded-full bg-zinc-800"></div>
-                      <div className="flex items-center gap-1.5 text-[9px] text-zinc-500 font-bold uppercase tracking-widest">
-                        <ShieldCheck size={12} className="text-cyan-500/50" /> Garantia Total
+                      <div className="flex items-center gap-2 text-[9px] text-zinc-500 font-bold uppercase tracking-widest">
+                        <ShieldCheck size={12} className="text-sky-500/50" /> Oficial
                       </div>
                     </div>
                   </div>
-                </form>
+                </div>
               )}
             </div>
             
-            {/* Footer discreto do card */}
-            <p className="mt-8 text-center text-[9px] font-bold text-zinc-600 uppercase tracking-[0.3em] opacity-50">
-              Ambiente de Pagamento Criptografado
+            <p className="mt-8 text-center text-[9px] font-black text-zinc-700 uppercase tracking-[0.4em]">
+              Tecnologia de Pagamento Criptografada
             </p>
           </div>
         </div>
@@ -227,3 +223,94 @@ export function ComunidadeCheckoutDesign({
   );
 }
 
+function PixGeneratedView({ paymentData, paymentStatus, onReset, colors }: any) {
+  const [copied, setCopied] = React.useState(false);
+
+  const handleCopy = () => {
+    if (!paymentData?.qr_code) return;
+    navigator.clipboard.writeText(paymentData.qr_code);
+    setCopied(true);
+    toast.success("Código Pix copiado!");
+    setTimeout(() => setCopied(false), 3000);
+  };
+
+  const isPaid = paymentStatus === "paid";
+
+  return (
+    <div className="animate-in fade-in zoom-in-95 duration-700 flex flex-col items-center py-2">
+      <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-8 border transition-all duration-500 ${isPaid ? 'bg-green-500/10 border-green-500/20 text-green-500' : 'bg-sky-500/10 border-sky-500/20 text-sky-400'}`}>
+        <div className={`h-1.5 w-1.5 rounded-full ${isPaid ? 'bg-green-500' : 'bg-sky-500 animate-pulse'}`}></div>
+        <span className="text-[10px] font-black uppercase tracking-[0.2em]">
+          {isPaid ? 'Pagamento Confirmado' : 'Pix gerado'}
+        </span>
+      </div>
+
+      <div className="text-center mb-8">
+        <h3 className="text-2xl font-black mb-2 tracking-tight uppercase italic text-white">Pix gerado</h3>
+        <p className="text-[10px] text-zinc-500 uppercase tracking-widest leading-relaxed max-w-[260px] mx-auto">
+          Finalize seu pagamento para liberar o acesso imediato.
+        </p>
+      </div>
+
+      <div className="relative group mb-8">
+        <div className="absolute -inset-6 bg-sky-500/10 rounded-full blur-[40px] opacity-50 group-hover:opacity-100 transition duration-700"></div>
+        <div className="relative w-[220px] h-[220px] bg-white p-4 rounded-[2rem] shadow-2xl flex items-center justify-center overflow-hidden transition-all duration-500 hover:scale-[1.02]">
+          {paymentData.qr_code_base64 ? (
+            <img 
+              src={paymentData.qr_code_base64} 
+              alt="QR Code Pix" 
+              className="w-full h-full object-contain"
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center text-center">
+              <CircleDashed className="h-8 w-8 animate-spin text-sky-500 mb-3" />
+              <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Gerando QR...</p>
+            </div>
+          )}
+          
+          {isPaid && (
+            <div className="absolute inset-0 bg-green-500/95 flex flex-col items-center justify-center animate-in fade-in zoom-in duration-500 z-10">
+              <div className="bg-white p-3 rounded-full mb-3 shadow-lg transform scale-110">
+                <Check className="text-green-600 w-6 h-6" strokeWidth={4} />
+              </div>
+              <span className="text-white font-black text-xs uppercase tracking-[0.2em]">Sucesso!</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="w-full space-y-4 mb-8">
+        <div className="bg-white/[0.03] rounded-2xl p-4 border border-white/10 flex flex-col items-center gap-3 group relative overflow-hidden">
+          <p className="text-[10px] font-mono break-all text-zinc-500 text-center leading-relaxed select-all">
+            {paymentData.qr_code}
+          </p>
+        </div>
+
+        <Button 
+          onClick={handleCopy}
+          className="w-full h-16 bg-white text-black hover:bg-zinc-200 font-black text-sm rounded-2xl transition-all flex items-center justify-center gap-2 shadow-xl uppercase tracking-widest italic"
+        >
+          {copied ? (
+            <>
+              <Check className="w-5 h-5 text-green-600" />
+              Copiado!
+            </>
+          ) : (
+            <>
+              <Copy className="w-5 h-5" />
+              Copiar Código Pix
+            </>
+          )}
+        </Button>
+      </div>
+
+      <button 
+        onClick={onReset}
+        className="group flex items-center gap-2 text-[10px] font-bold text-zinc-600 hover:text-sky-400 transition-colors uppercase tracking-[0.2em]"
+      >
+        <RefreshCw size={14} className="group-hover:rotate-180 transition-transform duration-500" />
+        Editar informações
+      </button>
+    </div>
+  );
+}
