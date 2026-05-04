@@ -159,7 +159,10 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
     source: "external_url",
   } : null);
 
-  if (checkout.slug === "receitas-praticas") {
+  const layoutConfig = checkout.layout_config || {};
+  const templateKey = layoutConfig.template_key || (checkout.slug === "receitas-praticas" ? "premium_editorial_v1" : "base");
+
+  if (templateKey === "premium_editorial_v1" || checkout.slug === "receitas-praticas") {
     return (
       <ReceitasPraticasCheckout 
         checkout={checkout}
