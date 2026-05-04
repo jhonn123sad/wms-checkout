@@ -326,7 +326,7 @@ function CheckoutEditPage() {
                   <Input 
                     type="color"
                     className="h-10 p-1"
-                    value={checkout.layout_config?.theme?.background || "#F8F1E7"} 
+                    value={checkout.layout_config?.theme?.background || "#FCF9F3"} 
                     onChange={(e) => setCheckout({ 
                       ...checkout, 
                       layout_config: { 
@@ -341,12 +341,78 @@ function CheckoutEditPage() {
                   <Input 
                     type="color"
                     className="h-10 p-1"
-                    value={checkout.layout_config?.theme?.primary || "#E86F2E"} 
+                    value={checkout.layout_config?.theme?.primary || "#f97316"} 
                     onChange={(e) => setCheckout({ 
                       ...checkout, 
                       layout_config: { 
                         ...checkout.layout_config, 
                         theme: { ...(checkout.layout_config?.theme || {}), primary: e.target.value } 
+                      } 
+                    })}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Cor Botão</Label>
+                  <Input 
+                    type="color"
+                    className="h-10 p-1"
+                    value={checkout.layout_config?.theme?.button || "#f97316"} 
+                    onChange={(e) => setCheckout({ 
+                      ...checkout, 
+                      layout_config: { 
+                        ...checkout.layout_config, 
+                        theme: { ...(checkout.layout_config?.theme || {}), button: e.target.value } 
+                      } 
+                    })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Texto Botão</Label>
+                  <Input 
+                    type="color"
+                    className="h-10 p-1"
+                    value={checkout.layout_config?.theme?.button_text || "#FFFFFF"} 
+                    onChange={(e) => setCheckout({ 
+                      ...checkout, 
+                      layout_config: { 
+                        ...checkout.layout_config, 
+                        theme: { ...(checkout.layout_config?.theme || {}), button_text: e.target.value } 
+                      } 
+                    })}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Cor Texto</Label>
+                  <Input 
+                    type="color"
+                    className="h-10 p-1"
+                    value={checkout.layout_config?.theme?.text || "#3D2B1F"} 
+                    onChange={(e) => setCheckout({ 
+                      ...checkout, 
+                      layout_config: { 
+                        ...checkout.layout_config, 
+                        theme: { ...(checkout.layout_config?.theme || {}), text: e.target.value } 
+                      } 
+                    })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Cor Muted</Label>
+                  <Input 
+                    type="color"
+                    className="h-10 p-1"
+                    value={checkout.layout_config?.theme?.muted || "#6B5A4E"} 
+                    onChange={(e) => setCheckout({ 
+                      ...checkout, 
+                      layout_config: { 
+                        ...checkout.layout_config, 
+                        theme: { ...(checkout.layout_config?.theme || {}), muted: e.target.value } 
                       } 
                     })}
                   />
