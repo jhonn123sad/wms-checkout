@@ -39,8 +39,7 @@ function CheckoutEditPage() {
     cta_text: "Liberar acesso agora",
     media_asset: null,
     active: true,
-    template_key: "base",
-    layout_config: {},
+    design_key: "default_v1",
   });
   const [fields, setFields] = useState<any[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
@@ -92,8 +91,7 @@ function CheckoutEditPage() {
         cta_text: "Liberar acesso agora",
         media_asset: null,
         active: true,
-        template_key: "base",
-        layout_config: {},
+        design_key: "default_v1",
       });
       setFields(normalizeFields([]));
     }
@@ -150,8 +148,7 @@ function CheckoutEditPage() {
         media_json: checkout.media_asset ?? null,
         media_url: checkout.media_asset?.url ?? null,
         media_type: checkout.media_asset?.type ?? null,
-        layout_config: checkout.layout_config ?? {},
-        template_key: checkout.template_key ?? "base",
+        design_key: checkout.design_key ?? "default_v1",
         updated_at: new Date().toISOString(),
       };
 
@@ -303,181 +300,31 @@ function CheckoutEditPage() {
           </Card>
 
           <Card className="p-6 space-y-4 mb-6">
-            <h2 className="text-xl font-semibold border-b pb-2">Personalização do Template</h2>
+            <h2 className="text-xl font-semibold border-b pb-2">Design do Checkout</h2>
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label>Template</Label>
+                <Label>Escolha o Design</Label>
                 <select 
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  value={checkout.template_key || "base"} 
+                  value={checkout.design_key || "default_v1"} 
                   onChange={(e) => setCheckout({ 
                     ...checkout, 
-                    template_key: e.target.value 
+                    design_key: e.target.value 
                   })}
                 >
-                  <option value="base">Padrão Dark</option>
-                  <option value="premium_editorial_v1">Premium Editorial</option>
+                  <option value="default_v1">Padrão Dark (Premium)</option>
+                  <option value="receitas_v1">Receitas Práticas (Editorial)</option>
+                  <option value="comunidade_v1">Comunidade Premium</option>
+                  <option value="visagismo_v1">Visagismo & IA</option>
+                  <option value="reservado_v1">Acesso Reservado</option>
                 </select>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Cor Fundo</Label>
-                  <Input 
-                    type="color"
-                    className="h-10 p-1"
-                    value={checkout.layout_config?.theme?.background || "#FCF9F3"} 
-                    onChange={(e) => setCheckout({ 
-                      ...checkout, 
-                      layout_config: { 
-                        ...checkout.layout_config, 
-                        theme: { ...(checkout.layout_config?.theme || {}), background: e.target.value } 
-                      } 
-                    })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Cor Principal</Label>
-                  <Input 
-                    type="color"
-                    className="h-10 p-1"
-                    value={checkout.layout_config?.theme?.primary || "#f97316"} 
-                    onChange={(e) => setCheckout({ 
-                      ...checkout, 
-                      layout_config: { 
-                        ...checkout.layout_config, 
-                        theme: { ...(checkout.layout_config?.theme || {}), primary: e.target.value } 
-                      } 
-                    })}
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Cor Botão</Label>
-                  <Input 
-                    type="color"
-                    className="h-10 p-1"
-                    value={checkout.layout_config?.theme?.button || "#f97316"} 
-                    onChange={(e) => setCheckout({ 
-                      ...checkout, 
-                      layout_config: { 
-                        ...checkout.layout_config, 
-                        theme: { ...(checkout.layout_config?.theme || {}), button: e.target.value } 
-                      } 
-                    })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Texto Botão</Label>
-                  <Input 
-                    type="color"
-                    className="h-10 p-1"
-                    value={checkout.layout_config?.theme?.button_text || "#FFFFFF"} 
-                    onChange={(e) => setCheckout({ 
-                      ...checkout, 
-                      layout_config: { 
-                        ...checkout.layout_config, 
-                        theme: { ...(checkout.layout_config?.theme || {}), button_text: e.target.value } 
-                      } 
-                    })}
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Cor Texto</Label>
-                  <Input 
-                    type="color"
-                    className="h-10 p-1"
-                    value={checkout.layout_config?.theme?.text || "#3D2B1F"} 
-                    onChange={(e) => setCheckout({ 
-                      ...checkout, 
-                      layout_config: { 
-                        ...checkout.layout_config, 
-                        theme: { ...(checkout.layout_config?.theme || {}), text: e.target.value } 
-                      } 
-                    })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Cor Muted</Label>
-                  <Input 
-                    type="color"
-                    className="h-10 p-1"
-                    value={checkout.layout_config?.theme?.muted || "#6B5A4E"} 
-                    onChange={(e) => setCheckout({ 
-                      ...checkout, 
-                      layout_config: { 
-                        ...checkout.layout_config, 
-                        theme: { ...(checkout.layout_config?.theme || {}), muted: e.target.value } 
-                      } 
-                    })}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Selo (Badge)</Label>
-                <Input 
-                  value={checkout.layout_config?.copy?.badge || ""} 
-                  onChange={(e) => setCheckout({ 
-                    ...checkout, 
-                    layout_config: { 
-                      ...checkout.layout_config, 
-                      copy: { ...(checkout.layout_config?.copy || {}), badge: e.target.value } 
-                    } 
-                  })}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Instrução Pix</Label>
-                <Input 
-                  value={checkout.layout_config?.copy?.pix_instruction || ""} 
-                  onChange={(e) => setCheckout({ 
-                    ...checkout, 
-                    layout_config: { 
-                      ...checkout.layout_config, 
-                      copy: { ...(checkout.layout_config?.copy || {}), pix_instruction: e.target.value } 
-                    } 
-                  })}
-                />
-              </div>
-
-              <div className="space-y-4 pt-4 border-t">
-                <Label className="text-xs font-bold uppercase">Benefícios</Label>
-                {[0, 1, 2].map((i) => (
-                  <div key={i} className="grid grid-cols-2 gap-2 p-2 bg-muted/30 rounded-lg">
-                    <Input 
-                      placeholder="Título"
-                      value={checkout.layout_config?.benefits?.[i]?.title || ""} 
-                      onChange={(e) => {
-                        const newBenefits = [...(checkout.layout_config?.benefits || [{}, {}, {}])];
-                        newBenefits[i] = { 
-                          ...newBenefits[i], 
-                          title: e.target.value,
-                          icon_type: i === 0 ? 'utensils' : i === 1 ? 'clock' : 'book'
-                        };
-                        setCheckout({ ...checkout, layout_config: { ...checkout.layout_config, benefits: newBenefits } });
-                      }}
-                    />
-                    <Input 
-                      placeholder="Texto"
-                      value={checkout.layout_config?.benefits?.[i]?.text || ""} 
-                      onChange={(e) => {
-                        const newBenefits = [...(checkout.layout_config?.benefits || [{}, {}, {}])];
-                        newBenefits[i] = { ...newBenefits[i], text: e.target.value };
-                        setCheckout({ ...checkout, layout_config: { ...checkout.layout_config, benefits: newBenefits } });
-                      }}
-                    />
-                  </div>
-                ))}
+                <p className="text-[10px] text-muted-foreground italic">
+                  O design selecionado define a identidade visual do checkout público.
+                </p>
               </div>
             </div>
           </Card>
+
 
           <Card className="p-6 space-y-4">
             <div className="flex justify-between items-center border-b pb-2">
