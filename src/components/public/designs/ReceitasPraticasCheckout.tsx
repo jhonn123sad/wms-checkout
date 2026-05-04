@@ -136,10 +136,15 @@ export function ReceitasPraticasCheckout({
 
             {/* Benefícios Compactos - Agora em flex-wrap para mobile */}
             <div className="flex flex-wrap lg:grid lg:grid-cols-3 gap-2">
-              {benefits.map((benefit, i) => (
+              {benefits.map((benefit: any, i: number) => (
                 <div key={i} className="flex items-center gap-2 p-2 lg:p-2.5 rounded-xl bg-[#FDFBF7] border border-[#F2EDE4] transition-all hover:border-orange-200 shrink-0 lg:shrink">
-                  <div className="bg-white p-1 rounded-lg shadow-sm shrink-0">{benefit.icon}</div>
-                  <span className="text-[8px] lg:text-[9px] font-bold text-[#6B5A4E] uppercase tracking-wide leading-tight">{benefit.text}</span>
+                  <div className="bg-white p-1 rounded-lg shadow-sm shrink-0">
+                    {benefit.icon || <Utensils size={14} style={{ color: colors.primary }} />}
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[8px] font-black uppercase tracking-wide leading-tight" style={{ color: colors.text }}>{benefit.title}</span>
+                    <span className="text-[7px] font-bold uppercase tracking-tight opacity-50" style={{ color: colors.muted }}>{benefit.text}</span>
+                  </div>
                 </div>
               ))}
             </div>
