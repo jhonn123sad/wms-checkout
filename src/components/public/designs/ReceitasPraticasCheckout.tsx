@@ -49,36 +49,26 @@ export function ReceitasPraticasCheckout({
   handleResetPayment,
 }: ReceitasPraticasCheckoutProps) {
   
-  const layout = checkout.layout_config || {};
-  const theme = layout.theme || {};
-  const copy = layout.copy || {};
-  
+  // Removendo dependência de layout_config e simplificando para design fixo restaurado
+  const colors = {
+    background: "#FCF9F3",
+    surface: "#FFFFFF",
+    primary: "#f97316", // orange-500
+    text: "#3D2B1F",
+    muted: "#6B5A4E",
+    button: "#f97316",
+    buttonText: "#FFFFFF"
+  };
+
   const activeFields = (checkout.checkout_fields || [])
     .filter((f: any) => f.active !== false && !f.field_type?.startsWith("hidden:"))
     .sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0));
 
-  const benefitsFromConfig = layout.benefits || [];
-  const benefits = benefitsFromConfig.length > 0 ? benefitsFromConfig.map((b: any, i: number) => ({
-    icon: b.icon_type === 'clock' ? <Clock size={14} style={{ color: colors.primary }} /> : 
-          b.icon_type === 'book' ? <BookOpen size={14} style={{ color: colors.primary }} /> :
-          <Utensils size={14} style={{ color: colors.primary }} />,
-    title: b.title,
-    text: b.text
-  })) : [
+  const benefits = [
     { icon: <Utensils size={14} className="text-orange-600" />, title: "Receitas rápidas", text: "Prontas para o dia a dia" },
     { icon: <Clock size={14} className="text-orange-600" />, title: "Preparo prático", text: "Passo a passo direto" },
     { icon: <BookOpen size={14} className="text-orange-600" />, title: "Ingredientes simples", text: "Sem complicação" }
   ];
-
-  const colors = {
-    background: theme.background || "#FCF9F3",
-    surface: theme.surface || "#FFFFFF",
-    primary: theme.primary || "#f97316", // orange-500
-    text: theme.text || "#3D2B1F",
-    muted: theme.muted || "#6B5A4E",
-    button: theme.button || "#f97316",
-    buttonText: theme.button_text || "#FFFFFF"
-  };
 
   return (
     <div className="min-h-screen font-sans selection:bg-orange-100 overflow-x-hidden flex items-center justify-center p-0 md:p-4" style={{ backgroundColor: colors.background }}>
@@ -103,7 +93,7 @@ export function ReceitasPraticasCheckout({
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-orange-100 text-[10px] font-bold uppercase tracking-[0.15em]" style={{ backgroundColor: `${colors.primary}10`, color: colors.primary }}>
                 <Sparkles size={12} />
-                {copy.badge || "Receitas Práticas"}
+                Receitas Práticas
               </div>
               <div className="hidden sm:flex items-center gap-2 opacity-40" style={{ color: colors.muted }}>
                 <ShieldCheck size={14} />
@@ -158,7 +148,7 @@ export function ReceitasPraticasCheckout({
             
             {/* Texto informativo discreto */}
             <div className="hidden lg:block mt-6 opacity-30 italic text-[9px] text-center" style={{ color: colors.muted }}>
-              * {copy.delivery_text || "Você receberá o link de acesso imediatamente após a confirmação do Pix."}
+              * Você receberá o link de acesso imediatamente após a confirmação do Pix.
             </div>
           </div>
 
@@ -173,7 +163,6 @@ export function ReceitasPraticasCheckout({
                   onReset={handleResetPayment}
                   hasFields={activeFields.length > 0}
                   colors={colors}
-                  copy={copy}
                 />
               ) : (
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -254,7 +243,7 @@ export function ReceitasPraticasCheckout({
                       </div>
                       <div className="flex items-center gap-1.5 opacity-60">
                         <ShieldCheck size={10} style={{ color: colors.primary }} />
-                        <span className="text-[8px] font-bold uppercase tracking-wider" style={{ color: colors.muted }}>{copy.security_text || "Checkout Seguro"}</span>
+                        <span className="text-[8px] font-bold uppercase tracking-wider" style={{ color: colors.muted }}>Checkout Seguro</span>
                       </div>
                     </div>
                   </form>
@@ -266,7 +255,7 @@ export function ReceitasPraticasCheckout({
 
         {/* Footer Minimalista */}
         <footer className="w-full py-6 text-center opacity-25">
-          <p className="text-[8px] font-black uppercase tracking-[0.4em]" style={{ color: colors.muted }}>{copy.badge || "Plataforma"} • Pagamento via Pix</p>
+          <p className="text-[8px] font-black uppercase tracking-[0.4em]" style={{ color: colors.muted }}>Plataforma • Pagamento via Pix</p>
         </footer>
       </main>
 
@@ -281,7 +270,7 @@ export function ReceitasPraticasCheckout({
 /**
  * PIX VIEW REFINADA
  */
-function PixGeneratedView({ paymentData, paymentStatus, onReset, hasFields, colors, copy }: any) {
+function PixGeneratedView({ paymentData, paymentStatus, onReset, hasFields, colors }: any) {
   const [copied, setCopied] = React.useState(false);
 
   const handleCopy = () => {
@@ -306,9 +295,9 @@ function PixGeneratedView({ paymentData, paymentStatus, onReset, hasFields, colo
       </div>
 
       <div className="text-center mb-6">
-        <h3 className="text-xl font-black mb-1.5 tracking-tight uppercase italic" style={{ color: colors.text }}>{copy.pix_title || "Pix gerado"}</h3>
+        <h3 className="text-xl font-black mb-1.5 tracking-tight uppercase italic" style={{ color: colors.text }}>Pix gerado</h3>
         <p className="text-[9px] uppercase tracking-[0.12em] leading-relaxed max-w-[240px] mx-auto opacity-70" style={{ color: colors.muted }}>
-          {copy.pix_instruction || "Escaneie o QR Code ou copie o código Pix para concluir."}
+          Escaneie o QR Code ou copie o código Pix para concluir.
         </p>
       </div>
 
@@ -372,7 +361,7 @@ function PixGeneratedView({ paymentData, paymentStatus, onReset, hasFields, colo
           style={{ color: colors.muted }}
         >
           <RefreshCw size={11} className="group-hover:rotate-180 transition-transform duration-500" />
-          {hasFields ? (copy.edit_info_button || "Editar informações") : "Voltar ao checkout"}
+          {hasFields ? "Editar informações" : "Voltar ao checkout"}
         </button>
       )}
     </div>
