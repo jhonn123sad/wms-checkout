@@ -101,7 +101,9 @@ export function ComunidadeCheckoutDesign({
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-1 text-center lg:text-left">
                     <span className="text-[10px] font-bold text-purple-400 uppercase tracking-widest">Acesso Vitalício</span>
-                    <div className="text-5xl font-black">R$ {checkout.price.toFixed(2)}</div>
+                    <div className="text-5xl font-black">
+                      {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(checkout.price)}
+                    </div>
                   </div>
 
                   <div className="space-y-4">
