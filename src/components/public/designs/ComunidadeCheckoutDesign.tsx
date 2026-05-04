@@ -192,17 +192,17 @@ export function ComunidadeCheckoutDesign({
                             <div key={field.id || fieldId} className="space-y-1.5">
                               <Label 
                                 htmlFor={fieldId} 
-                                className="text-[10px] font-black uppercase tracking-[0.1em] ml-1 opacity-70 text-zinc-500"
+                                className="text-[10px] font-black uppercase tracking-[0.1em] ml-1 opacity-80 text-[#8A9A91]"
                               >
                                 {labelText}
-                                {field.required && <span className="ml-1 text-violet-500">*</span>}
+                                {field.required && <span className="ml-1 text-[#39FF88]">*</span>}
                               </Label>
                               <Input
                                 id={fieldId}
                                 type={field.field_type?.replace("hidden:", "") || "text"}
                                 placeholder={`Digite seu ${String(labelText).toLowerCase()}`}
                                 required={field.required}
-                                className="h-12 md:h-14 bg-white/[0.03] border-white/10 focus:ring-violet-500/50 transition-all rounded-xl text-sm px-4 text-white placeholder:text-zinc-700"
+                                className="h-12 md:h-14 bg-black/40 border-[#39FF88]/10 focus:border-[#39FF88]/40 focus:ring-0 transition-all rounded-xl text-sm px-4 text-[#F5FFF8] placeholder:text-[#8A9A91]/30"
                                 value={formData[fieldId] || ""}
                                 onChange={(e) => handleInputChange(fieldId, e.target.value)}
                               />
