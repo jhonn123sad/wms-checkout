@@ -160,6 +160,7 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
     checkout.slug === 'comunidade-wms' ? 'comunidade_v1' : 
     checkout.slug === 'acesso-reservado' ? 'reservado_v1' : 
     checkout.slug === 'visagismo-ia' ? 'visagismo_v1' : 
+    checkout.slug === 'wms-novo-teste' ? 'apple_v1' :
     'default_v1'
   );
 
