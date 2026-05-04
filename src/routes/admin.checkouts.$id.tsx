@@ -453,72 +453,19 @@ function CheckoutEditPage() {
           </Card>
         </div>
 
-        <div className="space-y-6">
-          <Card className="p-6 space-y-4">
-            <div className="flex justify-between items-center border-b pb-2">
-              <h2 className="text-xl font-semibold">Campos do Formulário</h2>
-              <Button size="sm" variant="outline" onClick={addField}>
-                <Plus className="w-4 h-4 mr-1" /> Add
-              </Button>
-            </div>
-
-            <div className="space-y-4">
-              <TooltipProvider>
-                {fields.map((field, index) => (
-                  <div key={index} className={`p-4 border rounded-lg space-y-3 relative group ${!field.active ? 'opacity-50 grayscale' : field.system_field ? 'bg-blue-500/5 border-blue-500/20' : 'bg-muted/30'}`}>
-                    <div className="flex gap-2">
-                      <div className="flex-1 space-y-1">
-                        <Label className="text-[10px] uppercase font-bold text-muted-foreground">Label</Label>
-                        <Input 
-                          value={field.field_label}
-                          onChange={(e) => updateField(index, "field_label", e.target.value)}
-                        />
-                      </div>
-                      <div className="flex-1 space-y-1">
-                        <Label className="text-[10px] uppercase font-bold text-muted-foreground">Name (DB)</Label>
-                        <Input 
-                          value={field.field_name}
-                          disabled={field.system_field}
-                          onChange={(e) => updateField(index, "field_name", e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between gap-4">
-                      <div className="flex gap-4">
-                        <div className="flex items-center gap-2">
-                          <Switch 
-                            checked={field.active !== false}
-                            onCheckedChange={(val) => updateField(index, "active", val)}
-                          />
-                          <span className="text-xs">Ativo</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Switch 
-                            checked={field.required}
-                            disabled={field.active === false}
-                            onCheckedChange={(val) => updateField(index, "required", val)}
-                          />
-                          <span className="text-xs">Obrigatório</span>
-                        </div>
-                      </div>
-                      {!field.system_field && (
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          className="text-destructive h-8 w-8"
-                          onClick={() => removeField(index)}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </TooltipProvider>
-            </div>
-          </Card>
-
           <div className="flex justify-end gap-4">
+            <Button variant="outline" onClick={() => navigate({ to: "/admin/checkouts" })}>Cancelar</Button>
+            <Button onClick={handleSave} disabled={loading || isUploadingMedia}>
+              {loading ? "Salvando..." : "Salvar Checkout"}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ... remove duplicate code below
             <Button variant="outline" onClick={() => navigate({ to: "/admin/checkouts" })}>Cancelar</Button>
             <Button onClick={handleSave} disabled={loading || isUploadingMedia}>
               {loading ? "Salvando..." : "Salvar Checkout"}
