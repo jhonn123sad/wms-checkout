@@ -19,6 +19,10 @@ interface CheckoutPageContentProps {
 
 import { InlinePixPanel } from "../checkout/InlinePixPanel";
 import { ReceitasPraticasCheckout } from "./designs/ReceitasPraticasCheckout";
+import { ComunidadeCheckoutDesign } from "./designs/ComunidadeCheckoutDesign";
+import { VisagismoCheckoutDesign } from "./designs/VisagismoCheckoutDesign";
+import { ReservadoCheckoutDesign } from "./designs/ReservadoCheckoutDesign";
+import { DefaultCheckoutDesign } from "./designs/DefaultCheckoutDesign";
 
 export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
   const [formData, setFormData] = useState<Record<string, string>>({});
@@ -159,24 +163,45 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
     source: "external_url",
   } : null);
 
-  const layoutConfig = checkout.layout_config || {};
-  const templateKey = checkout.template_key || "base";
+  const mediaData = checkout.media_json ? (checkout.media_json as unknown as MediaValue) : (checkout.media_url ? {
+    url: checkout.media_url,
+    type: (checkout.media_type as any) || "image",
+    source: "external_url",
+  } : null);
 
-  if (templateKey === "premium_editorial_v1") {
-    return (
-      <ReceitasPraticasCheckout 
-        checkout={checkout}
-        formData={formData}
-        loading={loading}
-        paymentData={paymentData}
-        paymentStatus={paymentStatus}
-        mediaData={mediaData}
-        handleSubmit={handleSubmit}
-        handleInputChange={handleInputChange}
-        handleResetPayment={handleResetPayment}
-        InlinePixPanel={InlinePixPanel}
-      />
-    );
+  const designKey = checkout.design_key || checkout.template_key || "default_v1";
+
+  const designProps = {
+    checkout,
+    formData,
+    loading,
+    paymentData,
+    paymentStatus,
+    mediaData,
+    handleSubmit,
+    handleInputChange,
+    handleResetPayment,
+    InlinePixPanel
+  };
+
+  if (designKey === "receitas_v1" || designKey === "premium_editorial_v1") {
+    return <ReceitasPraticasCheckout {...designProps} />;
+  }
+
+  if (designKey === "comunidade_v1") {
+    return <ComunidadeCheckoutDesign {...designProps} />;
+  }
+
+  if (designKey === "visagismo_v1") {
+    return <VisagismoCheckoutDesign {...designProps} />;
+  }
+
+  if (designKey === "reservado_v1") {
+    return <ReservadoCheckoutDesign {...designProps} />;
+  }
+
+  if (designKey === "default_v1") {
+    return <DefaultCheckoutDesign {...designProps} />;
   }
 
   return (
