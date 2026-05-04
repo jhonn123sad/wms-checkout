@@ -144,13 +144,13 @@ export function ComunidadeCheckoutDesign({
                           <div className="w-16 h-16 rounded-full bg-purple-500/10 flex items-center justify-center mx-auto ring-1 ring-purple-500/20">
                             <Zap className="w-8 h-8 text-purple-400 animate-pulse" />
                           </div>
-                          <h2 className="text-2xl font-black tracking-tight text-white">Quase lá!</h2>
-                          <p className="text-sm text-zinc-400 leading-relaxed">Escaneie o QR Code abaixo para confirmar seu acesso exclusivo à comunidade.</p>
+                          <h2 className="text-2xl font-black tracking-tight text-white uppercase italic">Pix Gerado</h2>
+                          <p className="text-sm text-zinc-400 leading-relaxed max-w-[280px] mx-auto">Escaneie o QR Code abaixo para confirmar seu acesso exclusivo à comunidade.</p>
                         </div>
 
-                        <div className="bg-white/5 rounded-3xl p-6 border border-white/5">
+                        <div className="bg-white/5 rounded-3xl p-6 border border-white/5 flex flex-col items-center">
                           {InlinePixPanel && (
-                            <div className="w-full flex justify-center">
+                            <div className="w-full">
                               <InlinePixPanel 
                                 paymentData={paymentData} 
                                 paymentStatus={paymentStatus}
