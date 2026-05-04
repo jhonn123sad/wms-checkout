@@ -171,6 +171,8 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
     'default_v1'
   );
 
+  console.log("[CheckoutPageContent] slug:", checkout.slug, "designKey:", designKey);
+
   const designProps = {
     checkout,
     formData,
