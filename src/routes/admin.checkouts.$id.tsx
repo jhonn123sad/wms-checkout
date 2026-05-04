@@ -451,14 +451,11 @@ function CheckoutEditPage() {
               </TooltipProvider>
             </div>
           </Card>
-        </div>
-
-          <div className="flex justify-end gap-4 pb-10">
-            <Button variant="outline" onClick={() => navigate({ to: "/admin/checkouts" })}>Cancelar</Button>
-            <Button onClick={handleSave} disabled={loading || isUploadingMedia}>
-              {loading ? "Salvando..." : "Salvar Checkout"}
-            </Button>
-          </div>
+        <div className="flex justify-end gap-4 pb-10">
+          <Button variant="outline" onClick={() => navigate({ to: "/admin/checkouts" })}>Cancelar</Button>
+          <Button onClick={handleSave} disabled={loading || isUploadingMedia}>
+            {loading ? "Salvando..." : "Salvar Checkout"}
+          </Button>
         </div>
       </div>
     </div>
