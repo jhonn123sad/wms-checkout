@@ -274,7 +274,7 @@ export function ReceitasPraticasCheckout({
 /**
  * PIX VIEW REFINADA
  */
-function PixGeneratedView({ paymentData, paymentStatus, onReset, hasFields }: any) {
+function PixGeneratedView({ paymentData, paymentStatus, onReset, hasFields, colors, copy }: any) {
   const [copied, setCopied] = React.useState(false);
 
   const handleCopy = () => {
@@ -291,23 +291,23 @@ function PixGeneratedView({ paymentData, paymentStatus, onReset, hasFields }: an
     <div className="animate-in zoom-in-95 fade-in duration-700 flex flex-col items-center">
       
       {/* Status Badge */}
-      <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-5 border transition-all duration-500 ${isPaid ? 'bg-green-50 border-green-100 text-green-700' : 'bg-orange-50 border-orange-100 text-orange-700'}`}>
-        <div className={`h-1.5 w-1.5 rounded-full ${isPaid ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]' : 'bg-orange-500 animate-pulse shadow-[0_0_8px_rgba(249,115,22,0.3)]'}`}></div>
+      <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-5 border transition-all duration-500 ${isPaid ? 'bg-green-50 border-green-100 text-green-700' : 'bg-orange-50 border-orange-100 text-orange-700'}`} style={!isPaid ? { backgroundColor: `${colors.primary}10`, borderColor: `${colors.primary}20`, color: colors.primary } : {}}>
+        <div className={`h-1.5 w-1.5 rounded-full ${isPaid ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]' : 'animate-pulse shadow-[0_0_8px_rgba(249,115,22,0.3)]'}`} style={!isPaid ? { backgroundColor: colors.primary } : {}}></div>
         <span className="text-[9px] font-black uppercase tracking-[0.2em]">
           {isPaid ? 'Pagamento Confirmado' : 'Aguardando Pagamento'}
         </span>
       </div>
 
       <div className="text-center mb-6">
-        <h3 className="text-xl font-black mb-1.5 tracking-tight text-[#2D241E] uppercase italic">Pix gerado</h3>
-        <p className="text-[9px] text-[#6B5A4E] uppercase tracking-[0.12em] leading-relaxed max-w-[240px] mx-auto opacity-70">
-          Escaneie o QR Code ou copie o código Pix para concluir.
+        <h3 className="text-xl font-black mb-1.5 tracking-tight uppercase italic" style={{ color: colors.text }}>{copy.pix_title || "Pix gerado"}</h3>
+        <p className="text-[9px] uppercase tracking-[0.12em] leading-relaxed max-w-[240px] mx-auto opacity-70" style={{ color: colors.muted }}>
+          {copy.pix_instruction || "Escaneie o QR Code ou copie o código Pix para concluir."}
         </p>
       </div>
 
       {/* QR Code Container - Mais compacto */}
       <div className="relative group mb-6">
-        <div className="absolute -inset-4 bg-orange-100/40 rounded-full blur-2xl opacity-50 group-hover:opacity-100 transition duration-700"></div>
+        <div className="absolute -inset-4 rounded-full blur-2xl opacity-50 group-hover:opacity-100 transition duration-700" style={{ backgroundColor: `${colors.primary}20` }}></div>
         <div className="relative w-[190px] h-[190px] md:w-[210px] md:h-[210px] bg-white p-4 rounded-[1.5rem] shadow-[0_15px_30px_-10px_rgba(61,43,31,0.1)] border border-[#F2EDE4] flex items-center justify-center overflow-hidden transition-all duration-500 hover:scale-[1.02]">
           {paymentData.qr_code_base64 ? (
             <img 
@@ -317,8 +317,8 @@ function PixGeneratedView({ paymentData, paymentStatus, onReset, hasFields }: an
             />
           ) : (
             <div className="flex flex-col items-center justify-center text-center">
-              <Loader2 className="h-6 w-6 animate-spin text-orange-500 mb-3" />
-              <p className="text-[9px] text-[#2D241E] font-black uppercase tracking-widest opacity-30">Gerando QR Code...</p>
+              <Loader2 className="h-6 w-6 animate-spin mb-3" style={{ color: colors.primary }} />
+              <p className="text-[9px] font-black uppercase tracking-widest opacity-30" style={{ color: colors.text }}>Gerando QR Code...</p>
             </div>
           )}
           
@@ -340,13 +340,13 @@ function PixGeneratedView({ paymentData, paymentStatus, onReset, hasFields }: an
           onClick={handleCopy}
           className="w-full bg-white rounded-xl p-3 border border-[#F2EDE4] cursor-pointer hover:border-orange-300 transition-all flex items-center gap-3 overflow-hidden group shadow-sm"
         >
-          <div className="p-2 rounded-lg bg-orange-50 text-orange-600 group-hover:bg-orange-500 group-hover:text-white transition-colors">
+          <div className="p-2 rounded-lg transition-colors" style={copied ? { backgroundColor: '#22c55e', color: 'white' } : { backgroundColor: `${colors.primary}10`, color: colors.primary }}>
             {copied ? <Check size={14} /> : <Copy size={14} />}
           </div>
-          <p className="text-[10px] font-mono truncate text-[#6B5A4E]/60 flex-1 select-all tracking-tight">
+          <p className="text-[10px] font-mono truncate flex-1 select-all tracking-tight opacity-60" style={{ color: colors.muted }}>
             {paymentData.qr_code}
           </p>
-          <span className="text-[9px] font-black text-orange-600 uppercase tracking-widest pr-2">
+          <span className="text-[9px] font-black uppercase tracking-widest pr-2" style={{ color: colors.primary }}>
             {copied ? "COPIADO" : "COPIAR"}
           </span>
         </div>
@@ -361,10 +361,11 @@ function PixGeneratedView({ paymentData, paymentStatus, onReset, hasFields }: an
       {!isPaid && (
         <button 
           onClick={onReset}
-          className="text-[10px] font-black text-[#6B5A4E]/50 uppercase tracking-[0.2em] hover:text-orange-600 transition-colors flex items-center gap-2 group py-2"
+          className="text-[10px] font-black uppercase tracking-[0.2em] transition-colors flex items-center gap-2 group py-2 opacity-50 hover:opacity-100"
+          style={{ color: colors.muted }}
         >
           <RefreshCw size={11} className="group-hover:rotate-180 transition-transform duration-500" />
-          {hasFields ? "Editar informações" : "Voltar ao checkout"}
+          {hasFields ? (copy.edit_info_button || "Editar informações") : "Voltar ao checkout"}
         </button>
       )}
     </div>
