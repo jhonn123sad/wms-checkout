@@ -150,13 +150,13 @@ export function ReceitasPraticasCheckout({
             </div>
             
             {/* Texto informativo discreto */}
-            <div className="hidden lg:block mt-6 opacity-30 italic text-[9px] text-center">
-              * Você receberá o link de acesso imediatamente após a confirmação do Pix.
+            <div className="hidden lg:block mt-6 opacity-30 italic text-[9px] text-center" style={{ color: colors.muted }}>
+              * {copy.delivery_text || "Você receberá o link de acesso imediatamente após a confirmação do Pix."}
             </div>
           </div>
 
           {/* LADO DIREITO: Checkout / Compra - Com distinção visual mais forte */}
-          <div className="w-full lg:w-[400px] bg-[#FEFCF9] p-6 lg:p-10 flex flex-col border-l border-[#F2EDE4]/30 shadow-[-10px_0_30px_-15px_rgba(61,43,31,0.03)]">
+          <div className="w-full lg:w-[400px] p-6 lg:p-10 flex flex-col border-l border-[#F2EDE4]/30 shadow-[-10px_0_30px_-15px_rgba(61,43,31,0.03)]" style={{ backgroundColor: `${colors.surface}cc` }}>
             <div className="flex-1 flex flex-col justify-center">
               
               {paymentData ? (
@@ -165,23 +165,25 @@ export function ReceitasPraticasCheckout({
                   paymentStatus={paymentStatus}
                   onReset={handleResetPayment}
                   hasFields={activeFields.length > 0}
+                  colors={colors}
+                  copy={copy}
                 />
               ) : (
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
                   {/* Bloco de Preço Elegante e Compacto */}
                   <div className="mb-8 text-center lg:text-left">
-                    <span className="text-[10px] font-bold text-orange-600/60 uppercase tracking-[0.2em] mb-2 block">Valor do Investimento</span>
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] mb-2 block" style={{ color: colors.primary }}>Valor do Investimento</span>
                     <div className="flex items-baseline justify-center lg:justify-start gap-1">
-                      <span className="text-xl font-bold text-orange-600">R$</span>
-                      <span className="text-4xl lg:text-5xl font-black tracking-tighter text-[#2D241E]">
+                      <span className="text-xl font-bold" style={{ color: colors.primary }}>R$</span>
+                      <span className="text-4xl lg:text-5xl font-black tracking-tighter" style={{ color: colors.text }}>
                         {new Intl.NumberFormat("pt-BR", {
                           minimumFractionDigits: 2,
                         }).format(checkout.price)}
                       </span>
                     </div>
-                    <div className="mt-3 flex items-center justify-center lg:justify-start gap-2 text-[#6B5A4E]/60">
-                      <Zap size={12} className="text-orange-400" />
-                      <span className="text-[9px] font-bold uppercase tracking-widest">Pagamento Único • Acesso Vitalício</span>
+                    <div className="mt-3 flex items-center justify-center lg:justify-start gap-2 opacity-60">
+                      <Zap size={12} style={{ color: colors.primary }} />
+                      <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: colors.muted }}>Pagamento Único • Acesso Vitalício</span>
                     </div>
                   </div>
 
@@ -193,17 +195,19 @@ export function ReceitasPraticasCheckout({
                           <div key={field.id || field.field_name} className="space-y-1.5">
                             <Label 
                               htmlFor={field.field_name} 
-                              className="text-[10px] font-black text-[#6B5A4E] uppercase tracking-[0.1em] ml-1 opacity-70"
+                              className="text-[10px] font-black uppercase tracking-[0.1em] ml-1 opacity-70"
+                              style={{ color: colors.muted }}
                             >
                               {field.field_label}
-                              {field.required && <span className="text-orange-500 ml-1">*</span>}
+                              {field.required && <span className="ml-1" style={{ color: colors.primary }}>*</span>}
                             </Label>
                             <Input
                               id={field.field_name}
                               type={field.field_type?.replace("hidden:", "") || "text"}
                               placeholder={`Digite seu ${field.field_label.toLowerCase()}`}
                               required={field.required}
-                              className="h-12 md:h-14 bg-white border-[#F2EDE4] text-[#3D2B1F] focus:ring-orange-200/50 focus:border-orange-400 transition-all rounded-xl placeholder:text-[#3D2B1F]/20 text-sm px-4"
+                              className="h-12 md:h-14 bg-white border-[#F2EDE4] focus:ring-orange-200/50 transition-all rounded-xl text-sm px-4"
+                              style={{ color: colors.text }}
                               value={formData[field.field_name] || ""}
                               onChange={(e) => handleInputChange(field.field_name, e.target.value)}
                             />
@@ -217,7 +221,8 @@ export function ReceitasPraticasCheckout({
                       <Button
                         type="submit"
                         disabled={loading}
-                        className="w-full h-16 lg:h-18 text-lg font-black bg-orange-500 hover:bg-orange-600 text-white transition-all hover:scale-[1.01] active:scale-[0.98] rounded-2xl shadow-[0_12px_25px_-10px_rgba(249,115,22,0.3)] flex items-center justify-center gap-3 group overflow-hidden relative"
+                        className="w-full h-16 lg:h-18 text-lg font-black text-white transition-all hover:scale-[1.01] active:scale-[0.98] rounded-2xl shadow-lg flex items-center justify-center gap-3 group overflow-hidden relative"
+                        style={{ backgroundColor: colors.button, color: colors.buttonText }}
                       >
                         {loading ? (
                           <div className="flex items-center gap-3">
@@ -237,12 +242,12 @@ export function ReceitasPraticasCheckout({
                     {/* Microgarantias */}
                     <div className="flex items-center justify-between pt-5 border-t border-[#F2EDE4]">
                       <div className="flex items-center gap-1.5 opacity-60">
-                        <Lock size={10} className="text-orange-500" />
-                        <span className="text-[8px] font-bold uppercase tracking-wider">Criptografado</span>
+                        <Lock size={10} style={{ color: colors.primary }} />
+                        <span className="text-[8px] font-bold uppercase tracking-wider" style={{ color: colors.muted }}>Criptografado</span>
                       </div>
                       <div className="flex items-center gap-1.5 opacity-60">
-                        <ShieldCheck size={10} className="text-orange-500" />
-                        <span className="text-[8px] font-bold uppercase tracking-wider">Checkout Seguro</span>
+                        <ShieldCheck size={10} style={{ color: colors.primary }} />
+                        <span className="text-[8px] font-bold uppercase tracking-wider" style={{ color: colors.muted }}>{copy.security_text || "Checkout Seguro"}</span>
                       </div>
                     </div>
                   </form>
@@ -254,7 +259,7 @@ export function ReceitasPraticasCheckout({
 
         {/* Footer Minimalista */}
         <footer className="w-full py-6 text-center opacity-25">
-          <p className="text-[8px] font-black text-[#6B5A4E] uppercase tracking-[0.4em]">Plataforma de Receitas • Pagamento via Pix</p>
+          <p className="text-[8px] font-black uppercase tracking-[0.4em]" style={{ color: colors.muted }}>{copy.badge || "Plataforma"} • Pagamento via Pix</p>
         </footer>
       </main>
 
