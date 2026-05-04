@@ -96,8 +96,6 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
       form_data: formData, // Send everything for metadata
     };
 
-    console.log("[Checkout Pix] payload enviado:", payload);
-
     try {
       // 1. Save lead (optional)
       await supabase.from("checkout_leads").insert({
@@ -109,8 +107,6 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
       const { data, error: invokeError } = await supabase.functions.invoke("create-pix", {
         body: payload,
       });
-
-      console.log("[Checkout Pix] resposta create-pix", { data, invokeError });
 
       if (invokeError) {
         let errorMessage = invokeError.message;
