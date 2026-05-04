@@ -150,8 +150,8 @@ export function ComunidadeCheckoutDesign({
           </div>
 
           {/* LADO DIREITO: Checkout / Compra */}
-          <div className="w-full lg:w-[400px] p-6 lg:p-10 flex flex-col border-l border-white/5 shadow-[-10px_0_30px_-15px_rgba(0,0,0,0.3)] bg-black/20">
-            <div className="flex-1 flex flex-col justify-center">
+          <div className="w-full lg:w-[400px] p-6 lg:p-10 flex flex-col border-l border-[#39FF88]/5 shadow-[-10px_0_30px_-15px_rgba(0,0,0,0.5)] bg-black/40 relative">
+            <div className="flex-1 flex flex-col justify-center relative z-10">
               
               {paymentData ? (
                 <PixGeneratedView 
@@ -165,18 +165,18 @@ export function ComunidadeCheckoutDesign({
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
                   {/* Bloco de Preço Elegante e Compacto */}
                   <div className="mb-8 text-center lg:text-left">
-                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] mb-2 block text-cyan-400">Investimento Único</span>
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] mb-2 block text-[#00D9FF]">Acesso Fechado</span>
                     <div className="flex items-baseline justify-center lg:justify-start gap-1">
-                      <span className="text-xl font-bold text-violet-400">R$</span>
-                      <span className="text-4xl lg:text-5xl font-black tracking-tighter text-white">
+                      <span className="text-xl font-bold text-[#39FF88]">R$</span>
+                      <span className="text-4xl lg:text-5xl font-black tracking-tighter text-[#F5FFF8]">
                         {new Intl.NumberFormat("pt-BR", {
                           minimumFractionDigits: 2,
                         }).format(checkout.price)}
                       </span>
                     </div>
                     <div className="mt-3 flex items-center justify-center lg:justify-start gap-2 opacity-60">
-                      <Award size={12} className="text-cyan-400" />
-                      <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-500">Garantia • Ambiente Seguro</span>
+                      <Award size={12} className="text-[#39FF88]" />
+                      <span className="text-[9px] font-bold uppercase tracking-widest text-[#8A9A91]">Membros Ativos • Atualizações</span>
                     </div>
                   </div>
 
