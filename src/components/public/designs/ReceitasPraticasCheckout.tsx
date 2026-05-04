@@ -49,15 +49,29 @@ export function ReceitasPraticasCheckout({
   handleResetPayment,
 }: ReceitasPraticasCheckoutProps) {
   
+  const layout = checkout.layout_config || {};
+  const theme = layout.theme || {};
+  const copy = layout.copy || {};
+  
   const activeFields = (checkout.checkout_fields || [])
     .filter((f: any) => f.active !== false && !f.field_type?.startsWith("hidden:"))
     .sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0));
 
-  const benefits = [
-    { icon: <Utensils size={14} className="text-orange-600" />, text: "Receitas rápidas" },
-    { icon: <Clock size={14} className="text-orange-600" />, text: "Preparo prático" },
-    { icon: <BookOpen size={14} className="text-orange-600" />, text: "Ingredientes simples" }
+  const benefits = layout.benefits || [
+    { icon: <Utensils size={14} className="text-orange-600" />, title: "Receitas rápidas", text: "Prontas para o dia a dia" },
+    { icon: <Clock size={14} className="text-orange-600" />, title: "Preparo prático", text: "Passo a passo direto" },
+    { icon: <BookOpen size={14} className="text-orange-600" />, title: "Ingredientes simples", text: "Sem complicação" }
   ];
+
+  const colors = {
+    background: theme.background || "#FCF9F3",
+    surface: theme.surface || "#FFFFFF",
+    primary: theme.primary || "#f97316", // orange-500
+    text: theme.text || "#3D2B1F",
+    muted: theme.muted || "#6B5A4E",
+    button: theme.button || "#f97316",
+    buttonText: theme.button_text || "#FFFFFF"
+  };
 
   return (
     <div className="min-h-screen bg-[#FCF9F3] text-[#3D2B1F] font-sans selection:bg-orange-100 overflow-x-hidden flex items-center justify-center p-0 md:p-4">
