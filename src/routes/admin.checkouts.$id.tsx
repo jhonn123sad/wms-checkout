@@ -327,22 +327,6 @@ function CheckoutEditPage() {
             </div>
           </Card>
 
-                      }}
-                    />
-                    <Input 
-                      placeholder="Texto"
-                      value={checkout.layout_config?.benefits?.[i]?.text || ""} 
-                      onChange={(e) => {
-                        const newBenefits = [...(checkout.layout_config?.benefits || [{}, {}, {}])];
-                        newBenefits[i] = { ...newBenefits[i], text: e.target.value };
-                        setCheckout({ ...checkout, layout_config: { ...checkout.layout_config, benefits: newBenefits } });
-                      }}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </Card>
 
           <Card className="p-6 space-y-4">
             <div className="flex justify-between items-center border-b pb-2">
