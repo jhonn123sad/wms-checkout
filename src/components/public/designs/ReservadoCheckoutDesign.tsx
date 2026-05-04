@@ -126,8 +126,19 @@ export function ReservadoCheckoutDesign({
                     ))}
                   </div>
 
-                  <Button type="submit" disabled={loading} className="w-full h-20 bg-amber-600 hover:bg-amber-500 text-white font-black text-xl rounded-2xl shadow-2xl shadow-amber-950/50 transition-all hover:brightness-110">
-                    {loading ? "GERANDO..." : checkout.cta_text.toUpperCase()}
+                  <Button 
+                    type="submit" 
+                    disabled={loading} 
+                    className="w-full h-20 bg-amber-600 hover:bg-amber-500 text-white font-black text-xl rounded-2xl shadow-2xl shadow-amber-950/50 transition-all hover:brightness-110 flex items-center justify-center gap-2"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="w-6 h-6 animate-spin" />
+                        <span>GERANDO...</span>
+                      </>
+                    ) : (
+                      checkout.cta_text.toUpperCase()
+                    )}
                   </Button>
                   
                   <div className="flex items-center justify-center gap-3 text-[10px] text-zinc-600 font-bold uppercase tracking-[0.2em]">

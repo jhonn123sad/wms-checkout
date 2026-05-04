@@ -80,8 +80,19 @@ export function DefaultCheckoutDesign({
                     />
                   </div>
                 ))}
-                <Button type="submit" className="w-full h-16 bg-green-500 hover:bg-green-400 text-black font-black">
-                  {loading ? "Gerando..." : checkout.cta_text}
+                <Button 
+                  type="submit" 
+                  disabled={loading} 
+                  className="w-full h-16 bg-green-500 hover:bg-green-400 text-black font-black flex items-center justify-center gap-2"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span>Gerando...</span>
+                    </>
+                  ) : (
+                    checkout.cta_text
+                  )}
                 </Button>
               </form>
             )}

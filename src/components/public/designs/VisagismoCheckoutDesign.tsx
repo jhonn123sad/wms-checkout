@@ -127,8 +127,19 @@ export function VisagismoCheckoutDesign({
                     ))}
                   </div>
 
-                  <Button type="submit" disabled={loading} className="w-full h-18 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-lg rounded-2xl shadow-lg shadow-indigo-600/20 transition-all hover:translate-y-[-2px]">
-                    {loading ? "GERANDO ACESSO..." : checkout.cta_text.toUpperCase()}
+                  <Button 
+                    type="submit" 
+                    disabled={loading} 
+                    className="w-full h-18 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-lg rounded-2xl shadow-lg shadow-indigo-600/20 transition-all hover:translate-y-[-2px] flex items-center justify-center gap-2"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <span>GERANDO ACESSO...</span>
+                      </>
+                    ) : (
+                      checkout.cta_text.toUpperCase()
+                    )}
                   </Button>
                   
                   <div className="flex items-center justify-center gap-2 text-[10px] text-zinc-400 font-bold uppercase tracking-widest">
