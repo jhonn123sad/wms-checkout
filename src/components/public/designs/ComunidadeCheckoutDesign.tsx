@@ -34,22 +34,26 @@ interface DesignProps {
 }
 
 export function ComunidadeCheckoutDesign({
-  checkout,
-  formData,
-  loading,
-  paymentData,
-  paymentStatus,
-  mediaData,
+  checkout = {},
+  formData = {},
+  loading = false,
+  paymentData = null,
+  paymentStatus = "waiting_payment",
+  mediaData = null,
   handleSubmit,
   handleInputChange,
   handleResetPayment,
   InlinePixPanel,
 }: DesignProps) {
-  const activeFields = (checkout.checkout_fields || [])
+  const activeFields = (checkout?.checkout_fields || [])
     .filter((f: any) => f.active !== false && !f.field_type?.startsWith("hidden:"))
     .sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0));
 
   const isPaid = paymentStatus === "paid";
+  const displayTitle = checkout?.title || "Comunidade WMS";
+  const displaySubtitle = checkout?.subtitle || "Tenha acesso imediato a todo o conteúdo exclusivo da nossa comunidade.";
+  const displayPrice = checkout?.price || 0;
+  const displayCTA = checkout?.cta_text || "Quero Acesso Imediato";
 
   return (
     <div className="min-h-screen bg-[#09090b] text-[#FAFAFA] font-sans selection:bg-indigo-500/30 overflow-x-hidden relative">
@@ -83,13 +87,13 @@ export function ComunidadeCheckoutDesign({
           <div className="flex flex-col gap-8 animate-in fade-in slide-in-from-left-6 duration-1000">
             <div className="space-y-6">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.05] text-white">
-                {checkout.title}
+                {displayTitle}
                 <span className="block text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400 mt-2 italic">
                   Exclusivo
                 </span>
               </h1>
               <p className="text-lg text-zinc-400 max-w-xl leading-relaxed">
-                {checkout.subtitle}
+                {displaySubtitle}
               </p>
             </div>
 
@@ -141,11 +145,13 @@ export function ComunidadeCheckoutDesign({
                     </div>
 
                     <div className="flex flex-col items-center justify-center p-2">
-                      <InlinePixPanel 
-                        paymentData={paymentData} 
-                        paymentStatus={paymentStatus}
-                        onReset={handleResetPayment}
-                      />
+                      {InlinePixPanel && (
+                        <InlinePixPanel 
+                          paymentData={paymentData} 
+                          paymentStatus={paymentStatus}
+                          onReset={handleResetPayment}
+                        />
+                      )}
                     </div>
                   </div>
                 ) : (
@@ -154,35 +160,38 @@ export function ComunidadeCheckoutDesign({
                       <p className="text-xs font-bold uppercase tracking-[0.2em] text-indigo-400">Oferta Exclusiva</p>
                       <div className="flex items-baseline gap-2">
                         <span className="text-4xl lg:text-5xl font-black tracking-tighter text-white">
-                          {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(checkout.price)}
+                          {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(displayPrice)}
                         </span>
                         <span className="text-sm text-zinc-500 line-through decoration-indigo-500/50">
-                          {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(checkout.price * 2)}
+                          {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(displayPrice * 2)}
                         </span>
                       </div>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                       <div className="space-y-4">
-                        {activeFields.map((field: any) => (
-                          <div key={field.id} className="space-y-2">
-                            <Label 
-                              htmlFor={field.field_name}
-                              className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 ml-1"
-                            >
-                              {field.label}
-                            </Label>
-                            <Input
-                              id={field.field_name}
-                              name={field.field_name}
-                              placeholder={field.placeholder || `Digite seu ${field.label.toLowerCase()}`}
-                              required={field.required}
-                              value={formData[field.field_name] || ""}
-                              onChange={(e) => handleInputChange(field.field_name, e.target.value)}
-                              className="h-14 bg-white/[0.03] border-white/10 text-white rounded-2xl focus:ring-indigo-500/50 focus:border-indigo-500 transition-all placeholder:text-zinc-700"
-                            />
-                          </div>
-                        ))}
+                        {activeFields.map((field: any) => {
+                          const labelText = field.field_label || field.label || "Campo";
+                          return (
+                            <div key={field.id} className="space-y-2">
+                              <Label 
+                                htmlFor={field.field_name}
+                                className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 ml-1"
+                              >
+                                {labelText}
+                              </Label>
+                              <Input
+                                id={field.field_name}
+                                name={field.field_name}
+                                placeholder={field.placeholder || `Digite seu ${String(labelText).toLowerCase()}`}
+                                required={field.required}
+                                value={formData[field.field_name] || ""}
+                                onChange={(e) => handleInputChange(field.field_name, e.target.value)}
+                                className="h-14 bg-white/[0.03] border-white/10 text-white rounded-2xl focus:ring-indigo-500/50 focus:border-indigo-500 transition-all placeholder:text-zinc-700"
+                              />
+                            </div>
+                          );
+                        })}
                       </div>
 
                       <Button 
@@ -194,7 +203,7 @@ export function ComunidadeCheckoutDesign({
                           <Loader2 className="w-5 h-5 animate-spin" />
                         ) : (
                           <span className="flex items-center gap-2">
-                            {checkout.cta_text || "Quero Acesso Imediato"}
+                            {displayCTA}
                             <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                           </span>
                         )}
@@ -231,4 +240,5 @@ export function ComunidadeCheckoutDesign({
     </div>
   );
 }
+
 
