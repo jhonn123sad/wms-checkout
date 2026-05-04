@@ -43,34 +43,26 @@ function CheckoutEditPage() {
   });
   const [fields, setFields] = useState<any[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
-  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
 
   const normalizeFields = useCallback((existingFields: any[]) => {
-    console.log("[Admin Fields] campos carregados do banco", existingFields);
-    
-    // Start with a clone of existing fields
     const normalized = existingFields.map(f => {
       const isActive = !f.field_type?.startsWith("hidden:");
-      // Identify if it's a system field based on equivalents
       const baseInfo = PIX_REQUIRED_FIELDS.find(req => 
         f.field_name === req.key || req.equivalents.includes(f.field_name)
       );
 
       return {
         ...f,
-        field_name: baseInfo ? baseInfo.key : f.field_name, // Normalize key
+        field_name: baseInfo ? baseInfo.key : f.field_name,
         active: isActive,
         field_type: f.field_type?.replace("hidden:", "") || "text",
         system_field: !!baseInfo
       };
     });
     
-    // Check which base fields are missing after normalization
     PIX_REQUIRED_FIELDS.forEach(req => {
       const exists = normalized.some(f => f.field_name === req.key);
-
       if (!exists) {
-        // Field doesn't exist yet, add it as inactive base field
         normalized.push({
           field_name: req.key,
           field_label: req.label,
@@ -122,7 +114,6 @@ function CheckoutEditPage() {
       .single();
 
     if (error) {
-      console.error("[admin.checkouts.$id] fetch error", error);
       toast.error("Erro ao carregar checkout: " + error.message);
       navigate({ to: "/admin/checkouts" });
       return;
@@ -161,8 +152,6 @@ function CheckoutEditPage() {
         updated_at: new Date().toISOString(),
       };
 
-      console.log("[admin.checkouts.$id] saving", checkoutPayload);
-
       if (isNew) {
         const { data, error } = await supabase
           .from("checkouts")
@@ -192,31 +181,18 @@ function CheckoutEditPage() {
           required: !!f.required,
           checkout_id: checkoutId,
           sort_order: index + 1,
-          // Removed 'active' column as it doesn't exist in DB
         } as any));
 
-      console.log("[Admin Fields] campos enviados", fieldsToInsert);
-
       if (fieldsToInsert.length > 0) {
-        const { data: result, error: fError } = await supabase
+        const { error: fError } = await supabase
           .from("checkout_fields")
-          .insert(fieldsToInsert)
-          .select();
-        
-        console.log("[Admin Fields] resultado salvar", result);
-        
-        if (fError) {
-          console.error("[Admin Fields] erro salvar", fError);
-          throw fError;
-        }
+          .insert(fieldsToInsert);
+        if (fError) throw fError;
       }
-
-
 
       toast.success("Checkout salvo com sucesso!");
       navigate({ to: "/admin/checkouts" });
     } catch (error: any) {
-      console.error("[admin.checkouts.$id] save error", error);
       toast.error(error.message || "Erro ao salvar checkout");
     } finally {
       setLoading(false);
@@ -238,18 +214,13 @@ function CheckoutEditPage() {
 
   const updateField = (index: number, key: string, value: any) => {
     const newFields = [...fields];
-    
-    // Protect internal key for system fields
-    if (key === "field_name" && newFields[index].system_field) {
-      return;
-    }
-    
+    if (key === "field_name" && newFields[index].system_field) return;
     newFields[index][key] = value;
     setFields(newFields);
   };
 
   return (
-    <div className="p-8 max-w-4xl mx-auto space-y-8">
+    <div className="p-8 max-w-6xl mx-auto space-y-8 pb-32">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" onClick={() => navigate({ to: "/admin/checkouts" })}>
           <ArrowLeft className="w-4 h-4" />
@@ -257,7 +228,7 @@ function CheckoutEditPage() {
         <h1 className="text-3xl font-bold">{isNew ? "Novo Checkout" : "Editar Checkout"}</h1>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="space-y-6">
           <Card className="p-6 space-y-4">
             <h2 className="text-xl font-semibold border-b pb-2">Informações Básicas</h2>
@@ -327,7 +298,6 @@ function CheckoutEditPage() {
               pathPrefix={checkout.slug || "temp"}
             />
           </Card>
-        </div>
 
           <Card className="p-6 space-y-4">
             <h2 className="text-xl font-semibold border-b pb-2">Personalização do Template</h2>
@@ -340,7 +310,6 @@ function CheckoutEditPage() {
                     ...checkout, 
                     layout_config: { ...checkout.layout_config, template_key: e.target.value } 
                   })}
-                  placeholder="Ex: premium_editorial_v1"
                 />
               </div>
 
@@ -349,6 +318,7 @@ function CheckoutEditPage() {
                   <Label>Cor Fundo</Label>
                   <Input 
                     type="color"
+                    className="h-10 p-1"
                     value={checkout.layout_config?.theme?.background || "#F8F1E7"} 
                     onChange={(e) => setCheckout({ 
                       ...checkout, 
@@ -360,26 +330,10 @@ function CheckoutEditPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Cor Card Principal</Label>
-                  <Input 
-                    type="color"
-                    value={checkout.layout_config?.theme?.surface || "#FFFFFF"} 
-                    onChange={(e) => setCheckout({ 
-                      ...checkout, 
-                      layout_config: { 
-                        ...checkout.layout_config, 
-                        theme: { ...(checkout.layout_config?.theme || {}), surface: e.target.value } 
-                      } 
-                    })}
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
                   <Label>Cor Principal</Label>
                   <Input 
                     type="color"
+                    className="h-10 p-1"
                     value={checkout.layout_config?.theme?.primary || "#E86F2E"} 
                     onChange={(e) => setCheckout({ 
                       ...checkout, 
@@ -390,24 +344,10 @@ function CheckoutEditPage() {
                     })}
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label>Cor Botão</Label>
-                  <Input 
-                    type="color"
-                    value={checkout.layout_config?.theme?.button || "#E86F2E"} 
-                    onChange={(e) => setCheckout({ 
-                      ...checkout, 
-                      layout_config: { 
-                        ...checkout.layout_config, 
-                        theme: { ...(checkout.layout_config?.theme || {}), button: e.target.value } 
-                      } 
-                    })}
-                  />
-                </div>
               </div>
 
               <div className="space-y-2">
-                <Label>Texto do Selo (Badge)</Label>
+                <Label>Selo (Badge)</Label>
                 <Input 
                   value={checkout.layout_config?.copy?.badge || ""} 
                   onChange={(e) => setCheckout({ 
@@ -417,27 +357,21 @@ function CheckoutEditPage() {
                       copy: { ...(checkout.layout_config?.copy || {}), badge: e.target.value } 
                     } 
                   })}
-                  placeholder="Ex: Receitas práticas"
                 />
               </div>
 
-              <div className="space-y-4 pt-2 border-t">
-                <Label className="text-sm font-bold uppercase tracking-widest opacity-50">Benefícios</Label>
+              <div className="space-y-4 pt-4 border-t">
+                <Label className="text-xs font-bold uppercase">Benefícios</Label>
                 {[0, 1, 2].map((i) => (
-                  <div key={i} className="space-y-2 p-3 bg-muted/20 rounded-lg">
-                    <Label className="text-xs">Benefício {i + 1}</Label>
+                  <div key={i} className="grid grid-cols-2 gap-2 p-2 bg-muted/30 rounded-lg">
                     <Input 
                       placeholder="Título"
                       value={checkout.layout_config?.benefits?.[i]?.title || ""} 
                       onChange={(e) => {
                         const newBenefits = [...(checkout.layout_config?.benefits || [{}, {}, {}])];
                         newBenefits[i] = { ...newBenefits[i], title: e.target.value };
-                        setCheckout({ 
-                          ...checkout, 
-                          layout_config: { ...checkout.layout_config, benefits: newBenefits } 
-                        });
+                        setCheckout({ ...checkout, layout_config: { ...checkout.layout_config, benefits: newBenefits } });
                       }}
-                      className="mb-2"
                     />
                     <Input 
                       placeholder="Texto"
@@ -445,10 +379,7 @@ function CheckoutEditPage() {
                       onChange={(e) => {
                         const newBenefits = [...(checkout.layout_config?.benefits || [{}, {}, {}])];
                         newBenefits[i] = { ...newBenefits[i], text: e.target.value };
-                        setCheckout({ 
-                          ...checkout, 
-                          layout_config: { ...checkout.layout_config, benefits: newBenefits } 
-                        });
+                        setCheckout({ ...checkout, layout_config: { ...checkout.layout_config, benefits: newBenefits } });
                       }}
                     />
                   </div>
@@ -466,14 +397,67 @@ function CheckoutEditPage() {
                 <Plus className="w-4 h-4 mr-1" /> Add
               </Button>
             </div>
-...
+
+            <div className="space-y-4">
+              <TooltipProvider>
+                {fields.map((field, index) => (
+                  <div key={index} className={`p-4 border rounded-lg space-y-3 relative group ${!field.active ? 'opacity-50 grayscale' : field.system_field ? 'bg-blue-500/5 border-blue-500/20' : 'bg-muted/30'}`}>
+                    <div className="flex gap-2">
+                      <div className="flex-1 space-y-1">
+                        <Label className="text-[10px] uppercase font-bold text-muted-foreground">Label</Label>
+                        <Input 
+                          value={field.field_label}
+                          onChange={(e) => updateField(index, "field_label", e.target.value)}
+                        />
+                      </div>
+                      <div className="flex-1 space-y-1">
+                        <Label className="text-[10px] uppercase font-bold text-muted-foreground">Name (DB)</Label>
+                        <Input 
+                          value={field.field_name}
+                          disabled={field.system_field}
+                          onChange={(e) => updateField(index, "field_name", e.target.value)}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex gap-4">
+                        <div className="flex items-center gap-2">
+                          <Switch 
+                            checked={field.active !== false}
+                            onCheckedChange={(val) => updateField(index, "active", val)}
+                          />
+                          <span className="text-xs">Ativo</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Switch 
+                            checked={field.required}
+                            disabled={field.active === false}
+                            onCheckedChange={(val) => updateField(index, "required", val)}
+                          />
+                          <span className="text-xs">Obrigatório</span>
+                        </div>
+                      </div>
+                      {!field.system_field && (
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="text-destructive h-8 w-8"
+                          onClick={() => removeField(index)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </TooltipProvider>
             </div>
           </Card>
 
-          <div className="flex justify-end gap-4 pb-20">
+          <div className="flex justify-end gap-4">
             <Button variant="outline" onClick={() => navigate({ to: "/admin/checkouts" })}>Cancelar</Button>
             <Button onClick={handleSave} disabled={loading || isUploadingMedia}>
-              {loading ? "Salvando..." : isUploadingMedia ? "Aguarde Upload..." : "Salvar Checkout"}
+              {loading ? "Salvando..." : "Salvar Checkout"}
             </Button>
           </div>
         </div>
