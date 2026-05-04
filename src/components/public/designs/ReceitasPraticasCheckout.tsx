@@ -163,7 +163,6 @@ export function ReceitasPraticasCheckout({
                   onReset={handleResetPayment}
                   hasFields={activeFields.length > 0}
                   colors={colors}
-                  copy={copy}
                 />
               ) : (
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -271,7 +270,7 @@ export function ReceitasPraticasCheckout({
 /**
  * PIX VIEW REFINADA
  */
-function PixGeneratedView({ paymentData, paymentStatus, onReset, hasFields, colors, copy }: any) {
+function PixGeneratedView({ paymentData, paymentStatus, onReset, hasFields, colors }: any) {
   const [copied, setCopied] = React.useState(false);
 
   const handleCopy = () => {
