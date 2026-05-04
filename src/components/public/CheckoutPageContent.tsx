@@ -23,6 +23,7 @@ import { ComunidadeCheckoutDesign } from "./designs/ComunidadeCheckoutDesign";
 import { VisagismoCheckoutDesign } from "./designs/VisagismoCheckoutDesign";
 import { ReservadoCheckoutDesign } from "./designs/ReservadoCheckoutDesign";
 import { DefaultCheckoutDesign } from "./designs/DefaultCheckoutDesign";
+import { WmsNovoTesteCheckoutDesign } from "./designs/WmsNovoTesteCheckoutDesign";
 
 export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
   const [formData, setFormData] = useState<Record<string, string>>({});
