@@ -39,6 +39,7 @@ function CheckoutEditPage() {
     cta_text: "Liberar acesso agora",
     media_asset: null,
     active: true,
+    layout_config: {},
   });
   const [fields, setFields] = useState<any[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
