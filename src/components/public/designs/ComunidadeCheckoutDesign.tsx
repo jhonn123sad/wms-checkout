@@ -46,16 +46,16 @@ export function ComunidadeCheckoutDesign({
   handleResetPayment,
 }: DesignProps) {
   
-  // Premium Community Theme Colors
+  // Premium Community Theme Colors (Dark + Neon Green)
   const colors = {
-    background: "#050505",
-    surface: "#111111",
-    primary: "#8b5cf6", // violet-500
-    secondary: "#06b6d4", // cyan-500
-    text: "#FAFAFA",
-    muted: "#71717A",
-    button: "linear-gradient(to right, #8b5cf6, #6366f1)",
-    buttonText: "#FFFFFF"
+    background: "#030604",
+    surface: "#0B0F0D",
+    primary: "#39FF88", // neon-green
+    secondary: "#00D9FF", // neon-cyan
+    text: "#F5FFF8",
+    muted: "#8A9A91",
+    button: "linear-gradient(135deg, #39FF88 0%, #00D9FF 100%)",
+    buttonText: "#030604"
   };
 
   const activeFields = (checkout.checkout_fields || [])
@@ -63,17 +63,17 @@ export function ComunidadeCheckoutDesign({
     .sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0));
 
   const benefits = [
-    { icon: <Users size={14} className="text-violet-400" />, title: "Membros Ativos", text: "Comunidade vibrante" },
-    { icon: <Target size={14} className="text-cyan-400" />, title: "Conteúdo Prático", text: "Foco em resultados" },
-    { icon: <Rocket size={14} className="text-emerald-400" />, title: "Acesso Imediato", text: "Comece agora" }
+    { icon: <Users size={14} className="text-[#39FF88]" />, title: "Membros Ativos", text: "Comunidade vibrante" },
+    { icon: <Zap size={14} className="text-[#00D9FF]" />, title: "Conteúdo Prático", text: "Foco em resultados" },
+    { icon: <Rocket size={14} className="text-[#39FF88]" />, title: "Liberação Imediata", text: "Comece agora" }
   ];
 
   return (
-    <div className="min-h-screen font-sans selection:bg-violet-500/30 overflow-x-hidden flex items-center justify-center p-0 md:p-4" style={{ backgroundColor: colors.background }}>
-      {/* Mesh Gradient Background */}
+    <div className="min-h-screen font-sans selection:bg-[#39FF88]/30 overflow-x-hidden flex items-center justify-center p-0 md:p-4" style={{ backgroundColor: colors.background }}>
+      {/* Radial Gradient Glows */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] bg-violet-600/10 rounded-full blur-[120px] animate-pulse"></div>
-        <div className="absolute bottom-[-5%] left-[-5%] w-[50%] h-[50%] bg-cyan-600/10 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] bg-[#39FF88]/5 rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-[-5%] left-[-5%] w-[50%] h-[50%] bg-[#00D9FF]/5 rounded-full blur-[100px]"></div>
       </div>
 
       <main className="relative z-10 w-full max-w-[1160px] flex flex-col items-center justify-center py-4 lg:py-6 px-4 md:px-6">
