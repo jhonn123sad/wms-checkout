@@ -107,6 +107,7 @@ function CheckoutEditPage() {
   };
 
   const fetchCheckout = async () => {
+    console.log("[Admin Save] fetchCheckout iniciado para ID:", id);
     const { data, error } = await supabase
       .from("checkouts")
       .select("*, checkout_fields(*)")
@@ -114,10 +115,13 @@ function CheckoutEditPage() {
       .single();
 
     if (error) {
+      console.error("[Admin Save] erro ao buscar checkout:", error);
       toast.error("Erro ao carregar checkout: " + error.message);
       navigate({ to: "/admin/checkouts" });
       return;
     }
+
+    console.log("[Admin Save] checkout carregado do banco:", data);
 
     setCheckout({
       ...data,
@@ -130,9 +134,11 @@ function CheckoutEditPage() {
     
     const existingFields = data.checkout_fields || [];
     setFields(normalizeFields(existingFields));
+    console.log("[Admin Save] campos normalizados e definidos no estado");
   };
 
   const handleSave = async () => {
+    console.log("[Admin Save] clique no botão salvar");
     setLoading(true);
     try {
       let checkoutId = id;
@@ -141,16 +147,20 @@ function CheckoutEditPage() {
         title: checkout.title,
         subtitle: checkout.subtitle,
         slug: checkout.slug,
-        price: checkout.price,
+        price: isNaN(parseFloat(checkout.price)) ? 0 : parseFloat(checkout.price),
         cta_text: checkout.cta_text,
         active: checkout.active,
         status: checkout.active ? 'published' : 'draft',
         media_json: checkout.media_asset ?? null,
         media_url: checkout.media_asset?.url ?? null,
         media_type: checkout.media_asset?.type ?? null,
-        design_key: checkout.design_key ?? "default_v1",
         updated_at: new Date().toISOString(),
       };
+
+      // design_key removido do payload pois não existe na tabela checkouts (usamos slug-based fallback no público)
+      console.log("[Admin Save] checkout id", checkoutId);
+      console.log("[Admin Save] payload checkouts", checkoutPayload);
+      console.log("[Admin Save] payload fields", fields);
 
       if (isNew) {
         const { data, error } = await supabase
@@ -158,26 +168,38 @@ function CheckoutEditPage() {
           .insert([checkoutPayload])
           .select()
           .single();
-        if (error) throw error;
+        
+        console.log("[Admin Save] resposta checkouts", data);
+        if (error) {
+          console.error("[Admin Save] erro insert checkouts", error);
+          throw error;
+        }
         checkoutId = data.id;
       } else {
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from("checkouts")
           .update(checkoutPayload)
-          .eq("id", id);
-        if (error) throw error;
+          .eq("id", id)
+          .select()
+          .single();
+        
+        console.log("[Admin Save] resposta checkouts", data);
+        if (error) {
+          console.error("[Admin Save] erro update checkouts", error);
+          throw error;
+        }
       }
 
       // Re-sincronizar campos
-      // Primeiro deletamos os campos que NÃO estão no PIX_REQUIRED_FIELDS e NÃO estão no estado local (campos customizados deletados)
-      // Mas a abordagem mais segura é deletar e reinserir todos, garantindo que o estado 'active' e 'required' seja preservado como configurado no admin
-      
       if (!isNew) {
         const { error: delError } = await supabase
           .from("checkout_fields")
           .delete()
           .eq("checkout_id", checkoutId);
-        if (delError) throw delError;
+        if (delError) {
+          console.error("[Admin Save] erro delete fields", delError);
+          throw delError;
+        }
       }
 
       const fieldsToInsert = fields
@@ -191,22 +213,32 @@ function CheckoutEditPage() {
           sort_order: index + 1,
         }));
 
+      console.log("[Admin Save] campos para inserir", fieldsToInsert);
+
+      let fieldsResult = null;
       if (fieldsToInsert.length > 0) {
-        const { error: fError } = await supabase
+        const { data: fData, error: fError } = await supabase
           .from("checkout_fields")
-          .insert(fieldsToInsert);
-        if (fError) throw fError;
+          .insert(fieldsToInsert)
+          .select();
+        
+        console.log("[Admin Save] resposta fields", fData);
+        if (fError) {
+          console.error("[Admin Save] erro insert fields", fError);
+          throw fError;
+        }
+        fieldsResult = fData;
       }
 
       toast.success("Checkout salvo com sucesso!");
-      // Forçar recarregamento dos dados para garantir que a UI está síncrona com o banco
+      
       if (isNew) {
         navigate({ to: "/admin/checkouts" });
       } else {
         await fetchCheckout();
       }
     } catch (error: any) {
-      console.error("[Admin Save Error]", error);
+      console.error("[Admin Save] erro", error);
       toast.error(error.message || "Erro ao salvar checkout");
     } finally {
       setLoading(false);
