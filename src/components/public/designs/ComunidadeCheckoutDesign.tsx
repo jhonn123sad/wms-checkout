@@ -79,35 +79,37 @@ export function ComunidadeCheckoutDesign({
       <main className="relative z-10 w-full max-w-[1160px] flex flex-col items-center justify-center py-4 lg:py-6 px-4 md:px-6">
         
         {/* Container Principal Editorial (Mesma estrutura de receitas) */}
-        <div className="w-full rounded-[2rem] lg:rounded-[2.5rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden border border-white/5 flex flex-col lg:flex-row items-stretch animate-in fade-in zoom-in-95 duration-1000" style={{ backgroundColor: colors.surface }}>
+        <div className="w-full rounded-[2rem] lg:rounded-[2.5rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.8)] overflow-hidden border border-[#39FF88]/10 flex flex-col lg:flex-row items-stretch animate-in fade-in zoom-in-95 duration-1000" style={{ backgroundColor: colors.surface }}>
           
           {/* LADO ESQUERDO: Conteúdo Editorial */}
-          <div className="w-full lg:flex-1 p-6 lg:p-10 flex flex-col border-b lg:border-b-0 lg:border-r border-white/5">
+          <div className="w-full lg:flex-1 p-6 lg:p-10 flex flex-col border-b lg:border-b-0 lg:border-r border-white/5 relative overflow-hidden">
+            {/* Subtle glow behind content */}
+            <div className="absolute top-0 left-0 w-full h-full bg-[#39FF88]/[0.02] pointer-events-none"></div>
             
             {/* Header / Selo */}
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-violet-500/20 text-[10px] font-bold uppercase tracking-[0.15em]" style={{ backgroundColor: `${colors.primary}15`, color: colors.primary }}>
+            <div className="flex items-center justify-between mb-6 relative z-10">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#39FF88]/20 text-[10px] font-bold uppercase tracking-[0.15em]" style={{ backgroundColor: `${colors.primary}10`, color: colors.primary }}>
                 <Sparkles size={12} />
-                Acesso Premium
+                Conteúdo Exclusivo
               </div>
-              <div className="hidden sm:flex items-center gap-2 opacity-40 text-zinc-500">
-                <ShieldCheck size={14} />
-                <span className="text-[10px] font-bold uppercase tracking-widest">Pagamento 100% Seguro</span>
+              <div className="hidden sm:flex items-center gap-2 opacity-50 text-[#8A9A91]">
+                <ShieldCheck size={14} className="text-[#39FF88]" />
+                <span className="text-[10px] font-bold uppercase tracking-widest">Ambiente Seguro</span>
               </div>
             </div>
 
             {/* Títulos Dinâmicos */}
-            <div className="space-y-3 mb-6">
-              <h1 className="text-2xl md:text-3xl lg:text-4xl font-black tracking-tight leading-[1.1] text-white">
+            <div className="space-y-3 mb-6 relative z-10">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-black tracking-tight leading-[1.1] text-[#F5FFF8]">
                 {checkout.title}
               </h1>
-              <p className="text-sm md:text-base leading-relaxed font-medium max-w-xl text-zinc-400">
+              <p className="text-sm md:text-base leading-relaxed font-medium max-w-xl text-[#8A9A91]">
                 {checkout.subtitle}
               </p>
             </div>
 
             {/* Mídia Principal - Proporcional como em receitas */}
-            <div className="relative w-full aspect-video max-h-[220px] md:max-h-[320px] rounded-2xl lg:rounded-[1.5rem] overflow-hidden shadow-2xl border border-white/5 mb-6 group bg-zinc-900/50">
+            <div className="relative w-full aspect-video max-h-[220px] md:max-h-[320px] rounded-2xl lg:rounded-[1.5rem] overflow-hidden shadow-[0_0_30px_rgba(57,255,136,0.1)] border border-[#39FF88]/20 mb-6 group bg-black">
               {mediaData ? (
                 <MediaDisplay media={mediaData} />
               ) : (
