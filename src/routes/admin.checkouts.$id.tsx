@@ -39,8 +39,7 @@ function CheckoutEditPage() {
     cta_text: "Liberar acesso agora",
     media_asset: null,
     active: true,
-    template_key: "base",
-    layout_config: {},
+    design_key: "default_v1",
   });
   const [fields, setFields] = useState<any[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
@@ -92,8 +91,7 @@ function CheckoutEditPage() {
         cta_text: "Liberar acesso agora",
         media_asset: null,
         active: true,
-        template_key: "base",
-        layout_config: {},
+        design_key: "default_v1",
       });
       setFields(normalizeFields([]));
     }
