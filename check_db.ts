@@ -1,27 +1,24 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.SUPABASE_URL
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL;
+const SUPABASE_KEY = process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
-if (!supabaseUrl || !supabaseKey) {
-  console.error('Missing env vars')
-  process.exit(1)
-}
-
-const supabase = createClient(supabaseUrl, supabaseKey)
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 async function check() {
   const { data, error } = await supabase
     .from('checkouts')
-    .select('slug, design_key')
+    .select('*, checkout_fields(*)')
     .eq('slug', 'comunidade-wms')
-    .single()
-  
+    .single();
+
   if (error) {
-    console.error('Error:', error)
-  } else {
-    console.log('Result:', data)
+    console.error('Error:', error);
+    return;
   }
+
+  console.log('Checkout:', data.title);
+  console.log('Fields:', data.checkout_fields.map(f => ({ name: f.field_name, label: f.field_label })));
 }
 
-check()
+check();
