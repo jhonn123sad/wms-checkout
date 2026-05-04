@@ -163,12 +163,6 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
     source: "external_url",
   } : null);
 
-  const mediaData = checkout.media_json ? (checkout.media_json as unknown as MediaValue) : (checkout.media_url ? {
-    url: checkout.media_url,
-    type: (checkout.media_type as any) || "image",
-    source: "external_url",
-  } : null);
-
   const designKey = checkout.design_key || checkout.template_key || "default_v1";
 
   const designProps = {
