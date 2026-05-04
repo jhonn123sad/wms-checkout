@@ -122,30 +122,30 @@ export function ComunidadeCheckoutDesign({
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none"></div>
               
               {/* Badge na Mídia */}
-              <div className="absolute top-4 right-4 px-2 py-1 rounded-lg bg-black/60 backdrop-blur-md border border-white/10 shadow-sm flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse"></div>
-                <span className="text-[8px] font-black uppercase tracking-wider text-white">Acesso vitalício</span>
+              <div className="absolute top-4 right-4 px-2 py-1 rounded-lg bg-black/80 backdrop-blur-md border border-[#39FF88]/20 shadow-sm flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#39FF88] animate-pulse"></div>
+                <span className="text-[8px] font-black uppercase tracking-wider text-white">Liberação imediata</span>
               </div>
             </div>
 
             {/* Benefícios Compactos */}
-            <div className="flex flex-wrap lg:grid lg:grid-cols-3 gap-2">
+            <div className="flex flex-wrap lg:grid lg:grid-cols-3 gap-2 relative z-10">
               {benefits.map((benefit: any, i: number) => (
-                <div key={i} className="flex items-center gap-2 p-2 lg:p-2.5 rounded-xl bg-white/[0.02] border border-white/5 transition-all hover:border-violet-500/30 shrink-0 lg:shrink">
-                  <div className="bg-zinc-900 p-1 rounded-lg shadow-sm shrink-0 border border-white/5">
+                <div key={i} className="flex items-center gap-2 p-2 lg:p-2.5 rounded-xl bg-black/40 border border-[#39FF88]/5 transition-all hover:border-[#39FF88]/20 shrink-0 lg:shrink">
+                  <div className="bg-[#030604] p-1 rounded-lg shadow-sm shrink-0 border border-white/5">
                     {benefit.icon}
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[8px] font-black uppercase tracking-wide leading-tight text-white">{benefit.title}</span>
-                    <span className="text-[7px] font-bold uppercase tracking-tight text-zinc-500">{benefit.text}</span>
+                    <span className="text-[8px] font-black uppercase tracking-wide leading-tight text-[#F5FFF8]">{benefit.title}</span>
+                    <span className="text-[7px] font-bold uppercase tracking-tight text-[#8A9A91]">{benefit.text}</span>
                   </div>
                 </div>
               ))}
             </div>
             
             {/* Texto informativo discreto */}
-            <div className="hidden lg:block mt-6 opacity-30 italic text-[9px] text-center text-zinc-500">
-              * Você receberá o acesso imediatamente após a confirmação do Pix.
+            <div className="hidden lg:block mt-6 opacity-40 italic text-[9px] text-center text-[#8A9A91]">
+              * Pagamento via Pix com liberação instantânea.
             </div>
           </div>
 
