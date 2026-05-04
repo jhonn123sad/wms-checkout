@@ -357,7 +357,7 @@ function PixGeneratedView({ paymentData, paymentStatus, onReset, hasFields, colo
       {!isPaid && (
         <button 
           onClick={onReset}
-          className="text-[10px] font-black uppercase tracking-[0.2em] transition-colors flex items-center gap-2 group py-2 opacity-50 hover:opacity-100 text-zinc-500"
+          className="text-[10px] font-black uppercase tracking-[0.2em] transition-colors flex items-center gap-2 group py-2 opacity-50 hover:opacity-100 text-[#8A9A91] hover:text-[#39FF88]"
         >
           <RefreshCw size={11} className="group-hover:rotate-180 transition-transform duration-500" />
           {hasFields ? "Editar informações" : "Voltar ao checkout"}
