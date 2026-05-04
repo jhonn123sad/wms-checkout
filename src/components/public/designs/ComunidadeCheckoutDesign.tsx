@@ -254,8 +254,8 @@ export function ComunidadeCheckoutDesign({
         </div>
 
         {/* Footer Minimalista */}
-        <footer className="w-full py-6 text-center opacity-25">
-          <p className="text-[8px] font-black uppercase tracking-[0.4em] text-zinc-500">© 2026 Comunidade WMS • Pagamento via Pix</p>
+        <footer className="w-full py-6 text-center opacity-30">
+          <p className="text-[8px] font-black uppercase tracking-[0.4em] text-[#8A9A91]">© 2026 Comunidade WMS • Ambiente Seguro • Pagamento via Pix</p>
         </footer>
       </main>
 
