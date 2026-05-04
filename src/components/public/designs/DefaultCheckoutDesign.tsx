@@ -66,7 +66,9 @@ export function DefaultCheckoutDesign({
               />
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="text-3xl font-black mb-6">R$ {checkout.price.toFixed(2)}</div>
+                <div className="text-3xl font-black mb-6">
+                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(checkout.price)}
+                </div>
                 {activeFields.map((field: any) => (
                   <div key={field.id} className="space-y-2">
                     <Label>{field.field_label}</Label>
@@ -78,8 +80,19 @@ export function DefaultCheckoutDesign({
                     />
                   </div>
                 ))}
-                <Button type="submit" className="w-full h-16 bg-green-500 hover:bg-green-400 text-black font-black">
-                  {loading ? "Gerando..." : checkout.cta_text}
+                <Button 
+                  type="submit" 
+                  disabled={loading} 
+                  className="w-full h-16 bg-green-500 hover:bg-green-400 text-black font-black flex items-center justify-center gap-2"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span>Gerando...</span>
+                    </>
+                  ) : (
+                    checkout.cta_text
+                  )}
                 </Button>
               </form>
             )}

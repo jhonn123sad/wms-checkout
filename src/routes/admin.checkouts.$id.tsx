@@ -168,20 +168,28 @@ function CheckoutEditPage() {
         if (error) throw error;
       }
 
+      // Re-sincronizar campos
+      // Primeiro deletamos os campos que NÃO estão no PIX_REQUIRED_FIELDS e NÃO estão no estado local (campos customizados deletados)
+      // Mas a abordagem mais segura é deletar e reinserir todos, garantindo que o estado 'active' e 'required' seja preservado como configurado no admin
+      
       if (!isNew) {
-        await supabase.from("checkout_fields").delete().eq("checkout_id", checkoutId);
+        const { error: delError } = await supabase
+          .from("checkout_fields")
+          .delete()
+          .eq("checkout_id", checkoutId);
+        if (delError) throw delError;
       }
 
       const fieldsToInsert = fields
         .filter((f) => f.field_label)
         .map((f, index) => ({
-          field_name: f.field_name || `field_${index}`,
+          checkout_id: checkoutId,
+          field_name: f.field_name,
           field_label: f.field_label,
           field_type: f.active ? (f.field_type || "text") : `hidden:${f.field_type || "text"}`,
           required: !!f.required,
-          checkout_id: checkoutId,
           sort_order: index + 1,
-        } as any));
+        }));
 
       if (fieldsToInsert.length > 0) {
         const { error: fError } = await supabase
@@ -191,8 +199,14 @@ function CheckoutEditPage() {
       }
 
       toast.success("Checkout salvo com sucesso!");
-      navigate({ to: "/admin/checkouts" });
+      // Forçar recarregamento dos dados para garantir que a UI está síncrona com o banco
+      if (isNew) {
+        navigate({ to: "/admin/checkouts" });
+      } else {
+        await fetchCheckout();
+      }
     } catch (error: any) {
+      console.error("[Admin Save Error]", error);
       toast.error(error.message || "Erro ao salvar checkout");
     } finally {
       setLoading(false);

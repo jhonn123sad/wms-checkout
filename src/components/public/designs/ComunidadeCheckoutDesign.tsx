@@ -91,13 +91,19 @@ export function ComunidadeCheckoutDesign({
                   paymentStatus={paymentStatus}
                   onReset={handleResetPayment}
                   formatPrice={(cents: number) => `R$ ${(cents / 100).toFixed(2)}`}
-                  theme={{ button: "#a855f7", accent: "#a855f7" }}
+                  theme={{ 
+                    button: "#a855f7", 
+                    accent: "#a855f7",
+                    card: "transparent"
+                  }}
                 />
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-1 text-center lg:text-left">
                     <span className="text-[10px] font-bold text-purple-400 uppercase tracking-widest">Acesso Vitalício</span>
-                    <div className="text-5xl font-black">R$ {checkout.price.toFixed(2)}</div>
+                    <div className="text-5xl font-black">
+                      {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(checkout.price)}
+                    </div>
                   </div>
 
                   <div className="space-y-4">
@@ -115,8 +121,19 @@ export function ComunidadeCheckoutDesign({
                     ))}
                   </div>
 
-                  <Button type="submit" disabled={loading} className="w-full h-18 bg-purple-600 hover:bg-purple-500 text-white font-black text-lg rounded-2xl transition-all hover:scale-[1.02]">
-                    {loading ? "GERANDO PIX..." : checkout.cta_text.toUpperCase()}
+                  <Button 
+                    type="submit" 
+                    disabled={loading} 
+                    className="w-full h-18 bg-purple-600 hover:bg-purple-500 text-white font-black text-lg rounded-2xl transition-all hover:scale-[1.02] flex items-center justify-center gap-2"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <span>GERANDO PIX...</span>
+                      </>
+                    ) : (
+                      checkout.cta_text.toUpperCase()
+                    )}
                   </Button>
                   
                   <div className="flex items-center justify-center gap-2 text-[10px] text-zinc-500 font-bold uppercase tracking-widest">
