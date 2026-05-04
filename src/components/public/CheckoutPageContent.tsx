@@ -23,6 +23,7 @@ import { ComunidadeCheckoutDesign } from "./designs/ComunidadeCheckoutDesign";
 import { VisagismoCheckoutDesign } from "./designs/VisagismoCheckoutDesign";
 import { ReservadoCheckoutDesign } from "./designs/ReservadoCheckoutDesign";
 import { DefaultCheckoutDesign } from "./designs/DefaultCheckoutDesign";
+import { WmsNovoTesteCheckoutDesign } from "./designs/WmsNovoTesteCheckoutDesign";
 
 export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
   const [formData, setFormData] = useState<Record<string, string>>({});
@@ -160,6 +161,7 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
     checkout.slug === 'comunidade-wms' ? 'comunidade_v1' : 
     checkout.slug === 'acesso-reservado' ? 'reservado_v1' : 
     checkout.slug === 'visagismo-ia' ? 'visagismo_v1' : 
+    checkout.slug === 'wms-novo-teste' ? 'apple_v1' :
     'default_v1'
   );
 
@@ -194,6 +196,10 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
 
   if (designKey === "default_v1") {
     return <DefaultCheckoutDesign {...designProps} />;
+  }
+
+  if (designKey === "apple_v1") {
+    return <WmsNovoTesteCheckoutDesign {...designProps} />;
   }
 
   return (
