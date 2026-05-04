@@ -217,13 +217,13 @@ export function ComunidadeCheckoutDesign({
                       <Button
                         type="submit"
                         disabled={loading}
-                        className="w-full h-16 lg:h-18 text-lg font-black text-white transition-all hover:scale-[1.01] active:scale-[0.98] rounded-2xl shadow-xl shadow-violet-500/10 flex items-center justify-center gap-3 group overflow-hidden relative"
-                        style={{ background: colors.button }}
+                        className="w-full h-16 lg:h-18 text-lg font-black transition-all hover:scale-[1.01] active:scale-[0.98] rounded-2xl shadow-xl shadow-[#39FF88]/10 flex items-center justify-center gap-3 group overflow-hidden relative"
+                        style={{ background: colors.button, color: colors.buttonText }}
                       >
                         {loading ? (
                           <div className="flex items-center gap-3">
                             <Loader2 className="w-5 h-5 animate-spin" />
-                            <span className="tracking-tight uppercase italic">Gerando Pix...</span>
+                            <span className="tracking-tight uppercase italic">Validando...</span>
                           </div>
                         ) : (
                           <>
@@ -231,19 +231,19 @@ export function ComunidadeCheckoutDesign({
                             <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                           </>
                         )}
-                        <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 pointer-events-none"></div>
+                        <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 pointer-events-none"></div>
                       </Button>
                     </div>
 
                     {/* Microgarantias */}
-                    <div className="flex items-center justify-between pt-5 border-t border-white/5">
+                    <div className="flex items-center justify-between pt-5 border-t border-[#39FF88]/5">
                       <div className="flex items-center gap-1.5 opacity-60">
-                        <Lock size={10} className="text-cyan-400" />
-                        <span className="text-[8px] font-bold uppercase tracking-wider text-zinc-500">Criptografado</span>
+                        <Lock size={10} className="text-[#00D9FF]" />
+                        <span className="text-[8px] font-bold uppercase tracking-wider text-[#8A9A91]">Pagamento Seguro</span>
                       </div>
                       <div className="flex items-center gap-1.5 opacity-60">
-                        <ShieldCheck size={10} className="text-violet-400" />
-                        <span className="text-[8px] font-bold uppercase tracking-wider text-zinc-500">Checkout Seguro</span>
+                        <ShieldCheck size={10} className="text-[#39FF88]" />
+                        <span className="text-[8px] font-bold uppercase tracking-wider text-[#8A9A91]">Liberação Imediata</span>
                       </div>
                     </div>
                   </form>
