@@ -72,14 +72,11 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
    */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("[Checkout Pix] submit iniciado");
-    console.log("[Checkout Pix] checkout", checkout);
 
     const fields = (checkout.checkout_fields || [])
       .filter((f: any) => f.active !== false && !f.field_type?.startsWith("hidden:"))
       .sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0));
-    
-    console.log("[Checkout Pix] activeFields", fields);
+
 
     // Dynamic validation for active & required fields
     for (const field of fields) {
