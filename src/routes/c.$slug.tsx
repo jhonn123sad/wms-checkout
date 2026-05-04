@@ -59,13 +59,5 @@ export const Route = createFileRoute("/c/$slug")({
 
 function DynamicCheckout() {
   const { checkout } = Route.useLoaderData();
-  console.log("[Route c.$slug] Renderizando checkout:", checkout.slug);
-  return (
-    <>
-      <div style={{ background: 'red', color: 'white', padding: '20px', textAlign: 'center', position: 'fixed', top: 0, left: 0, width: '100%', zIndex: 99999 }}>
-        TESTE ROTA C.$SLUG ATIVA
-      </div>
-      <CheckoutPageContent checkout={checkout} />
-    </>
-  );
+  return <CheckoutPageContent checkout={checkout} />;
 }
