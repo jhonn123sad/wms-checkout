@@ -142,17 +142,17 @@ function CheckoutEditPage() {
         title: checkout.title,
         subtitle: checkout.subtitle,
         slug: checkout.slug,
-        price: checkout.price,
+        price: typeof checkout.price === 'string' ? parseFloat(checkout.price) : checkout.price,
         cta_text: checkout.cta_text,
         active: checkout.active,
         status: checkout.active ? 'published' : 'draft',
         media_json: checkout.media_asset ?? null,
         media_url: checkout.media_asset?.url ?? null,
         media_type: checkout.media_asset?.type ?? null,
-        design_key: checkout.design_key ?? "default_v1",
         updated_at: new Date().toISOString(),
       };
 
+      // design_key removido do payload pois não existe na tabela checkouts (usamos slug-based fallback no público)
       console.log("[Admin Save] checkout id", checkoutId);
       console.log("[Admin Save] payload checkouts", checkoutPayload);
       console.log("[Admin Save] payload fields", fields);
@@ -164,8 +164,11 @@ function CheckoutEditPage() {
           .select()
           .single();
         
-        console.log("[Admin Save] resposta checkouts insert", data, error);
-        if (error) throw error;
+        console.log("[Admin Save] resposta checkouts", data);
+        if (error) {
+          console.error("[Admin Save] erro insert checkouts", error);
+          throw error;
+        }
         checkoutId = data.id;
       } else {
         const { data, error } = await supabase
@@ -175,8 +178,11 @@ function CheckoutEditPage() {
           .select()
           .single();
         
-        console.log("[Admin Save] resposta checkouts update", data, error);
-        if (error) throw error;
+        console.log("[Admin Save] resposta checkouts", data);
+        if (error) {
+          console.error("[Admin Save] erro update checkouts", error);
+          throw error;
+        }
       }
 
       // Re-sincronizar campos
@@ -185,7 +191,10 @@ function CheckoutEditPage() {
           .from("checkout_fields")
           .delete()
           .eq("checkout_id", checkoutId);
-        if (delError) throw delError;
+        if (delError) {
+          console.error("[Admin Save] erro delete fields", delError);
+          throw delError;
+        }
       }
 
       const fieldsToInsert = fields
@@ -208,8 +217,11 @@ function CheckoutEditPage() {
           .insert(fieldsToInsert)
           .select();
         
-        console.log("[Admin Save] resposta fields", fData, fError);
-        if (fError) throw fError;
+        console.log("[Admin Save] resposta fields", fData);
+        if (fError) {
+          console.error("[Admin Save] erro insert fields", fError);
+          throw fError;
+        }
         fieldsResult = fData;
       }
 
