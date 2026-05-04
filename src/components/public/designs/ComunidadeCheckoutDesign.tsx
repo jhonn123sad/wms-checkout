@@ -105,12 +105,12 @@ export function ComunidadeCheckoutDesign({
             {/* Feature List - Horizontal & Compact */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {[
-                { icon: <Zap className="text-indigo-400" />, text: "Acesso Imediato" },
-                { icon: <Award className="text-indigo-400" />, text: "Certificado Oficial" },
-                { icon: <Globe className="text-indigo-400" />, text: "Networking VIP" },
+                { icon: <Zap size={14} className="text-indigo-400" />, text: "Acesso Imediato" },
+                { icon: <Award size={14} className="text-indigo-400" />, text: "Certificado Oficial" },
+                { icon: <Globe size={14} className="text-indigo-400" />, text: "Networking VIP" },
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/5">
-                  <div className="shrink-0">{React.cloneElement(item.icon as React.ReactElement, { size: 14 })}</div>
+                  <div className="shrink-0">{item.icon}</div>
                   <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-300">{item.text}</span>
                 </div>
               ))}
