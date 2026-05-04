@@ -299,6 +299,95 @@ function CheckoutEditPage() {
             />
           </Card>
 
+          <Card className="p-6 space-y-4 mb-6">
+            <h2 className="text-xl font-semibold border-b pb-2">Personalização do Template</h2>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>Template</Label>
+                <Input 
+                  value={checkout.layout_config?.template_key || "premium_editorial_v1"} 
+                  onChange={(e) => setCheckout({ 
+                    ...checkout, 
+                    layout_config: { ...checkout.layout_config, template_key: e.target.value } 
+                  })}
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Cor Fundo</Label>
+                  <Input 
+                    type="color"
+                    className="h-10 p-1"
+                    value={checkout.layout_config?.theme?.background || "#F8F1E7"} 
+                    onChange={(e) => setCheckout({ 
+                      ...checkout, 
+                      layout_config: { 
+                        ...checkout.layout_config, 
+                        theme: { ...(checkout.layout_config?.theme || {}), background: e.target.value } 
+                      } 
+                    })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Cor Principal</Label>
+                  <Input 
+                    type="color"
+                    className="h-10 p-1"
+                    value={checkout.layout_config?.theme?.primary || "#E86F2E"} 
+                    onChange={(e) => setCheckout({ 
+                      ...checkout, 
+                      layout_config: { 
+                        ...checkout.layout_config, 
+                        theme: { ...(checkout.layout_config?.theme || {}), primary: e.target.value } 
+                      } 
+                    })}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Selo (Badge)</Label>
+                <Input 
+                  value={checkout.layout_config?.copy?.badge || ""} 
+                  onChange={(e) => setCheckout({ 
+                    ...checkout, 
+                    layout_config: { 
+                      ...checkout.layout_config, 
+                      copy: { ...(checkout.layout_config?.copy || {}), badge: e.target.value } 
+                    } 
+                  })}
+                />
+              </div>
+
+              <div className="space-y-4 pt-4 border-t">
+                <Label className="text-xs font-bold uppercase">Benefícios</Label>
+                {[0, 1, 2].map((i) => (
+                  <div key={i} className="grid grid-cols-2 gap-2 p-2 bg-muted/30 rounded-lg">
+                    <Input 
+                      placeholder="Título"
+                      value={checkout.layout_config?.benefits?.[i]?.title || ""} 
+                      onChange={(e) => {
+                        const newBenefits = [...(checkout.layout_config?.benefits || [{}, {}, {}])];
+                        newBenefits[i] = { ...newBenefits[i], title: e.target.value };
+                        setCheckout({ ...checkout, layout_config: { ...checkout.layout_config, benefits: newBenefits } });
+                      }}
+                    />
+                    <Input 
+                      placeholder="Texto"
+                      value={checkout.layout_config?.benefits?.[i]?.text || ""} 
+                      onChange={(e) => {
+                        const newBenefits = [...(checkout.layout_config?.benefits || [{}, {}, {}])];
+                        newBenefits[i] = { ...newBenefits[i], text: e.target.value };
+                        setCheckout({ ...checkout, layout_config: { ...checkout.layout_config, benefits: newBenefits } });
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Card>
+
           <Card className="p-6 space-y-4">
             <h2 className="text-xl font-semibold border-b pb-2">Personalização do Template</h2>
             <div className="space-y-4">
