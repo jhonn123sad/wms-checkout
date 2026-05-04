@@ -74,7 +74,7 @@ export function ReceitasPraticasCheckout({
   };
 
   return (
-    <div className="min-h-screen bg-[#FCF9F3] text-[#3D2B1F] font-sans selection:bg-orange-100 overflow-x-hidden flex items-center justify-center p-0 md:p-4">
+    <div className="min-h-screen font-sans selection:bg-orange-100 overflow-x-hidden flex items-center justify-center p-0 md:p-4" style={{ backgroundColor: colors.background }}>
       {/* Papel sutil de fundo */}
       <div className="fixed inset-0 pointer-events-none opacity-[0.04] z-0 bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"></div>
       
@@ -87,18 +87,18 @@ export function ReceitasPraticasCheckout({
       <main className="relative z-10 w-full max-w-[1160px] flex flex-col items-center justify-center py-4 lg:py-6 px-4 md:px-6">
         
         {/* Container Editorial Principal */}
-        <div className="w-full bg-white rounded-[2rem] lg:rounded-[2.5rem] shadow-[0_20px_50px_-12px_rgba(61,43,31,0.08)] overflow-hidden border border-[#F2EDE4] flex flex-col lg:flex-row items-stretch animate-in fade-in zoom-in-95 duration-1000">
+        <div className="w-full rounded-[2rem] lg:rounded-[2.5rem] shadow-[0_20px_50px_-12px_rgba(61,43,31,0.08)] overflow-hidden border border-[#F2EDE4] flex flex-col lg:flex-row items-stretch animate-in fade-in zoom-in-95 duration-1000" style={{ backgroundColor: colors.surface }}>
           
           {/* LADO ESQUERDO: Conteúdo Editorial */}
           <div className="w-full lg:flex-1 p-6 lg:p-10 flex flex-col border-b lg:border-b-0 lg:border-r border-[#F2EDE4]">
             
             {/* Header / Selo */}
             <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-50 border border-orange-100 text-[10px] font-bold uppercase tracking-[0.15em] text-orange-700">
-                <Sparkles size={12} className="text-orange-500" />
-                Receitas Práticas
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-orange-100 text-[10px] font-bold uppercase tracking-[0.15em]" style={{ backgroundColor: `${colors.primary}10`, color: colors.primary }}>
+                <Sparkles size={12} />
+                {copy.badge || "Receitas Práticas"}
               </div>
-              <div className="hidden sm:flex items-center gap-2 opacity-40">
+              <div className="hidden sm:flex items-center gap-2 opacity-40" style={{ color: colors.muted }}>
                 <ShieldCheck size={14} />
                 <span className="text-[10px] font-bold uppercase tracking-widest">Pagamento 100% Seguro</span>
               </div>
@@ -106,10 +106,10 @@ export function ReceitasPraticasCheckout({
 
             {/* Títulos Dinâmicos */}
             <div className="space-y-3 mb-6">
-              <h1 className="text-2xl md:text-3xl lg:text-4xl font-black tracking-tight leading-[1.1] text-[#2D241E]">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-black tracking-tight leading-[1.1]" style={{ color: colors.text }}>
                 {checkout.title}
               </h1>
-              <p className="text-sm md:text-base text-[#6B5A4E] leading-relaxed font-medium max-w-xl">
+              <p className="text-sm md:text-base leading-relaxed font-medium max-w-xl" style={{ color: colors.muted }}>
                 {checkout.subtitle}
               </p>
             </div>
