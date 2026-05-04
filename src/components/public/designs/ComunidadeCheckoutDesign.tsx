@@ -287,23 +287,23 @@ function PixGeneratedView({ paymentData, paymentStatus, onReset, hasFields, colo
     <div className="animate-in zoom-in-95 fade-in duration-700 flex flex-col items-center">
       
       {/* Status Badge */}
-      <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-5 border transition-all duration-500 ${isPaid ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-violet-500/10 border-violet-500/20 text-violet-400'}`}>
-        <div className={`h-1.5 w-1.5 rounded-full ${isPaid ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]' : 'animate-pulse shadow-[0_0_8px_rgba(139,92,246,0.3)]'}`} style={!isPaid ? { backgroundColor: colors.primary } : {}}></div>
+      <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-5 border transition-all duration-500 ${isPaid ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-[#39FF88]/10 border-[#39FF88]/20 text-[#39FF88]'}`}>
+        <div className={`h-1.5 w-1.5 rounded-full ${isPaid ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]' : 'animate-pulse shadow-[0_0_8px_rgba(57,255,136,0.3)]'}`} style={!isPaid ? { backgroundColor: colors.primary } : {}}></div>
         <span className="text-[9px] font-black uppercase tracking-[0.2em]">
           {isPaid ? 'Pagamento Confirmado' : 'Aguardando Pagamento'}
         </span>
       </div>
 
       <div className="text-center mb-6">
-        <h3 className="text-xl font-black mb-1.5 tracking-tight uppercase italic text-white">Pix gerado</h3>
-        <p className="text-[9px] uppercase tracking-[0.12em] leading-relaxed max-w-[240px] mx-auto opacity-70 text-zinc-400">
+        <h3 className="text-xl font-black mb-1.5 tracking-tight uppercase italic text-[#F5FFF8]">Pix gerado</h3>
+        <p className="text-[9px] uppercase tracking-[0.12em] leading-relaxed max-w-[240px] mx-auto opacity-70 text-[#8A9A91]">
           Escaneie o QR Code ou copie o código Pix para concluir seu acesso.
         </p>
       </div>
 
       {/* QR Code Container - Compacto e elegante em fundo claro para leitura do scanner */}
       <div className="relative group mb-6">
-        <div className="absolute -inset-4 rounded-full blur-2xl opacity-20 group-hover:opacity-40 transition duration-700" style={{ backgroundColor: `${colors.primary}` }}></div>
+        <div className="absolute -inset-4 rounded-full blur-2xl opacity-10 group-hover:opacity-20 transition duration-700" style={{ backgroundColor: `${colors.primary}` }}></div>
         <div className="relative w-[190px] h-[190px] md:w-[210px] md:h-[210px] bg-white p-4 rounded-[1.5rem] shadow-2xl flex items-center justify-center overflow-hidden transition-all duration-500 hover:scale-[1.02]">
           {paymentData.qr_code_base64 ? (
             <img 
