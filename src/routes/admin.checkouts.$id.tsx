@@ -464,15 +464,3 @@ function CheckoutEditPage() {
     </div>
   );
 }
-
-// ... remove duplicate code below
-            <Button variant="outline" onClick={() => navigate({ to: "/admin/checkouts" })}>Cancelar</Button>
-            <Button onClick={handleSave} disabled={loading || isUploadingMedia}>
-              {loading ? "Salvando..." : "Salvar Checkout"}
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
