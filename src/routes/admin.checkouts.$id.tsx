@@ -433,6 +433,20 @@ function CheckoutEditPage() {
                 />
               </div>
 
+              <div className="space-y-2">
+                <Label>Instrução Pix</Label>
+                <Input 
+                  value={checkout.layout_config?.copy?.pix_instruction || ""} 
+                  onChange={(e) => setCheckout({ 
+                    ...checkout, 
+                    layout_config: { 
+                      ...checkout.layout_config, 
+                      copy: { ...(checkout.layout_config?.copy || {}), pix_instruction: e.target.value } 
+                    } 
+                  })}
+                />
+              </div>
+
               <div className="space-y-4 pt-4 border-t">
                 <Label className="text-xs font-bold uppercase">Benefícios</Label>
                 {[0, 1, 2].map((i) => (
