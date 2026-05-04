@@ -157,6 +157,7 @@ function CheckoutEditPage() {
         media_json: checkout.media_asset ?? null,
         media_url: checkout.media_asset?.url ?? null,
         media_type: checkout.media_asset?.type ?? null,
+        layout_config: checkout.layout_config ?? {},
         updated_at: new Date().toISOString(),
       };
 
