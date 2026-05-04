@@ -163,7 +163,13 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
     source: "external_url",
   } : null);
 
-  const designKey = checkout.design_key || (checkout.slug === 'receitas-praticas' ? 'receitas_v1' : checkout.slug === 'comunidade-wms' ? 'comunidade_v1' : checkout.slug === 'acesso-reservado' ? 'reservado_v1' : checkout.slug === 'visagismo-ia' ? 'visagismo_v1' : 'default_v1');
+  const designKey = checkout.design_key || (
+    checkout.slug === 'receitas-praticas' ? 'receitas_v1' : 
+    checkout.slug === 'comunidade-wms' ? 'comunidade_v1' : 
+    checkout.slug === 'acesso-reservado' ? 'reservado_v1' : 
+    checkout.slug === 'visagismo-ia' ? 'visagismo_v1' : 
+    'default_v1'
+  );
 
   const designProps = {
     checkout,
