@@ -334,12 +334,12 @@ function PixGeneratedView({ paymentData, paymentStatus, onReset, hasFields, colo
       <div className="w-full space-y-3 mb-6">
         <div 
           onClick={handleCopy}
-          className="w-full bg-white/[0.03] rounded-xl p-3 border border-white/10 cursor-pointer hover:border-violet-500/30 transition-all flex items-center gap-3 overflow-hidden group shadow-sm"
+          className="w-full bg-black/40 rounded-xl p-3 border border-white/5 cursor-pointer hover:border-[#39FF88]/20 transition-all flex items-center gap-3 overflow-hidden group shadow-sm"
         >
-          <div className="p-2 rounded-lg transition-colors" style={copied ? { backgroundColor: '#10b981', color: 'white' } : { backgroundColor: `${colors.primary}20`, color: colors.primary }}>
+          <div className="p-2 rounded-lg transition-colors" style={copied ? { backgroundColor: '#10b981', color: 'white' } : { backgroundColor: `${colors.primary}10`, color: colors.primary }}>
             {copied ? <Check size={14} /> : <Copy size={14} />}
           </div>
-          <p className="text-[10px] font-mono truncate flex-1 select-all tracking-tight opacity-40 text-zinc-400">
+          <p className="text-[10px] font-mono truncate flex-1 select-all tracking-tight opacity-40 text-[#8A9A91]">
             {paymentData.qr_code}
           </p>
           <span className="text-[9px] font-black uppercase tracking-widest pr-2" style={{ color: colors.primary }}>
@@ -348,7 +348,7 @@ function PixGeneratedView({ paymentData, paymentStatus, onReset, hasFields, colo
         </div>
         
         {/* Microtexto de segurança */}
-        <p className="text-center text-[8px] font-bold text-cyan-500/60 uppercase tracking-wider">
+        <p className="text-center text-[8px] font-bold text-[#00D9FF]/60 uppercase tracking-wider">
           O acesso será enviado para seu e-mail instantaneamente.
         </p>
       </div>
