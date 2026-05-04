@@ -57,7 +57,14 @@ export function ReceitasPraticasCheckout({
     .filter((f: any) => f.active !== false && !f.field_type?.startsWith("hidden:"))
     .sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0));
 
-  const benefits = layout.benefits || [
+  const benefitsFromConfig = layout.benefits || [];
+  const benefits = benefitsFromConfig.length > 0 ? benefitsFromConfig.map((b: any, i: number) => ({
+    icon: b.icon_type === 'clock' ? <Clock size={14} style={{ color: colors.primary }} /> : 
+          b.icon_type === 'book' ? <BookOpen size={14} style={{ color: colors.primary }} /> :
+          <Utensils size={14} style={{ color: colors.primary }} />,
+    title: b.title,
+    text: b.text
+  })) : [
     { icon: <Utensils size={14} className="text-orange-600" />, title: "Receitas rápidas", text: "Prontas para o dia a dia" },
     { icon: <Clock size={14} className="text-orange-600" />, title: "Preparo prático", text: "Passo a passo direto" },
     { icon: <BookOpen size={14} className="text-orange-600" />, title: "Ingredientes simples", text: "Sem complicação" }
