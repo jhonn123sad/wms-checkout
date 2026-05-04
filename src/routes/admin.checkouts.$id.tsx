@@ -107,6 +107,7 @@ function CheckoutEditPage() {
   };
 
   const fetchCheckout = async () => {
+    console.log("[Admin Save] fetchCheckout iniciado para ID:", id);
     const { data, error } = await supabase
       .from("checkouts")
       .select("*, checkout_fields(*)")
@@ -114,10 +115,13 @@ function CheckoutEditPage() {
       .single();
 
     if (error) {
+      console.error("[Admin Save] erro ao buscar checkout:", error);
       toast.error("Erro ao carregar checkout: " + error.message);
       navigate({ to: "/admin/checkouts" });
       return;
     }
+
+    console.log("[Admin Save] checkout carregado do banco:", data);
 
     setCheckout({
       ...data,
@@ -130,6 +134,7 @@ function CheckoutEditPage() {
     
     const existingFields = data.checkout_fields || [];
     setFields(normalizeFields(existingFields));
+    console.log("[Admin Save] campos normalizados e definidos no estado");
   };
 
   const handleSave = async () => {
