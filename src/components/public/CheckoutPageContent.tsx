@@ -132,7 +132,6 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
       setIsPolling(true);
       toast.success("Pix gerado com sucesso!");
     } catch (error: any) {
-      console.error("[Checkout Pix] erro create-pix:", error);
       toast.error(error.message || "Erro ao processar pagamento");
     } finally {
       setLoading(false);
