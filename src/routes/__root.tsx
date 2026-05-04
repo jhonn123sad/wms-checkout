@@ -38,8 +38,8 @@ export const Route = createRootRoute({
       { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "Checkout - wms" },
       { name: "twitter:description", content: "Checkout wms" },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b9c75ec5-f991-494c-98cf-b988bd579a34/id-preview-c0f483a8--a93ff747-7dc7-4b62-ac69-edba92b61da7.lovable.app-1777529856088.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b9c75ec5-f991-494c-98cf-b988bd579a34/id-preview-c0f483a8--a93ff747-7dc7-4b62-ac69-edba92b61da7.lovable.app-1777529856088.png" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/QGqeQuoj1gOnMSYRHL5KmsHcKYH2/social-images/social-1777931706882-Use_the_attached_202604130247.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/QGqeQuoj1gOnMSYRHL5KmsHcKYH2/social-images/social-1777931706882-Use_the_attached_202604130247.webp" },
     ],
     links: [
       {
