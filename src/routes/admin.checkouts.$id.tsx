@@ -133,6 +133,7 @@ function CheckoutEditPage() {
   };
 
   const handleSave = async () => {
+    console.log("[Admin Save] clique no botão salvar");
     setLoading(true);
     try {
       let checkoutId = id;
@@ -152,26 +153,33 @@ function CheckoutEditPage() {
         updated_at: new Date().toISOString(),
       };
 
+      console.log("[Admin Save] checkout id", checkoutId);
+      console.log("[Admin Save] payload checkouts", checkoutPayload);
+      console.log("[Admin Save] payload fields", fields);
+
       if (isNew) {
         const { data, error } = await supabase
           .from("checkouts")
           .insert([checkoutPayload])
           .select()
           .single();
+        
+        console.log("[Admin Save] resposta checkouts insert", data, error);
         if (error) throw error;
         checkoutId = data.id;
       } else {
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from("checkouts")
           .update(checkoutPayload)
-          .eq("id", id);
+          .eq("id", id)
+          .select()
+          .single();
+        
+        console.log("[Admin Save] resposta checkouts update", data, error);
         if (error) throw error;
       }
 
       // Re-sincronizar campos
-      // Primeiro deletamos os campos que NÃO estão no PIX_REQUIRED_FIELDS e NÃO estão no estado local (campos customizados deletados)
-      // Mas a abordagem mais segura é deletar e reinserir todos, garantindo que o estado 'active' e 'required' seja preservado como configurado no admin
-      
       if (!isNew) {
         const { error: delError } = await supabase
           .from("checkout_fields")
@@ -191,22 +199,29 @@ function CheckoutEditPage() {
           sort_order: index + 1,
         }));
 
+      console.log("[Admin Save] campos para inserir", fieldsToInsert);
+
+      let fieldsResult = null;
       if (fieldsToInsert.length > 0) {
-        const { error: fError } = await supabase
+        const { data: fData, error: fError } = await supabase
           .from("checkout_fields")
-          .insert(fieldsToInsert);
+          .insert(fieldsToInsert)
+          .select();
+        
+        console.log("[Admin Save] resposta fields", fData, fError);
         if (fError) throw fError;
+        fieldsResult = fData;
       }
 
       toast.success("Checkout salvo com sucesso!");
-      // Forçar recarregamento dos dados para garantir que a UI está síncrona com o banco
+      
       if (isNew) {
         navigate({ to: "/admin/checkouts" });
       } else {
         await fetchCheckout();
       }
     } catch (error: any) {
-      console.error("[Admin Save Error]", error);
+      console.error("[Admin Save] erro", error);
       toast.error(error.message || "Erro ao salvar checkout");
     } finally {
       setLoading(false);
