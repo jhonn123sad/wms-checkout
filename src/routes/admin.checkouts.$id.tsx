@@ -317,13 +317,17 @@ function CheckoutEditPage() {
     }
   };
 
-  // Alias for verifyLastOrderRedirect to use the new RPC flow
   const verifyLastOrderRedirect = () => {
     fetchValidatorData();
   };
 
   const updateOrderStatus = async (orderId: string, status: string) => {
     try {
+      if (!orderId) {
+        toast.error("Nenhuma order encontrada para atualizar.");
+        return;
+      }
+      
       const payload: any = {
         status,
         updated_at: new Date().toISOString()
@@ -812,15 +816,15 @@ function CheckoutEditPage() {
                       <tr>
                         <th className="p-2">ID / Criado em</th>
                         <th className="p-2">Status</th>
-                        <th className="p-2">Checkout ID</th>
+                        <th className="p-2">Preço (cents)</th>
                         <th className="p-2">Ações</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border">
-                      {(validatorData.last_5_orders || []).map((order: any) => (
-                        <tr key={order.id} className="hover:bg-muted/30">
+                      {(validatorData.orders || []).map((order: any) => (
+                        <tr key={order.order_id} className="hover:bg-muted/30">
                           <td className="p-2">
-                            <div className="font-mono text-[9px]">{order.id}</div>
+                            <div className="font-mono text-[9px]">{order.order_id}</div>
                             <div className="opacity-60">{format(new Date(order.created_at), 'dd/MM/yy HH:mm', { locale: ptBR })}</div>
                           </td>
                           <td className="p-2">
@@ -829,16 +833,15 @@ function CheckoutEditPage() {
                             </Badge>
                           </td>
                           <td className="p-2">
-                            <Badge variant={order.checkout_id ? "outline" : "destructive"} className="h-4 text-[9px]">
-                              {order.checkout_id ? "OK" : "NULL"}
-                            </Badge>
+                            <div className="font-mono">{order.amount_cents}</div>
+                            {order.checkout_id ? <Badge variant="outline" className="h-3 text-[7px] text-green-500">ID OK</Badge> : <Badge variant="outline" className="h-3 text-[7px] text-red-500">SEM ID</Badge>}
                           </td>
                           <td className="p-2">
                             <div className="flex gap-1">
-                              <Button size="icon" variant="ghost" className="h-6 w-6" title="Copiar teste console" onClick={() => copyTestConsole(order.id, order.public_access_token)}>
+                              <Button size="icon" variant="ghost" className="h-6 w-6" title="Copiar teste console" onClick={() => copyTestConsole(order.order_id, order.public_access_token)}>
                                 <Copy className="w-3 h-3" />
                               </Button>
-                              <Button size="icon" variant="ghost" className="h-6 w-6 text-blue-500" title="Testar get-order-status" onClick={() => testGetOrderStatus(order.id, order.public_access_token)}>
+                              <Button size="icon" variant="ghost" className="h-6 w-6 text-blue-500" title="Testar get-order-status" onClick={() => testGetOrderStatus(order.order_id, order.public_access_token)}>
                                 <Eye className="w-3 h-3" />
                               </Button>
                             </div>
