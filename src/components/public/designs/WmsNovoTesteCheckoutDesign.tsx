@@ -32,7 +32,7 @@ interface DesignProps {
   InlinePixPanel: any; 
 }
 
-export function WmsNovoTesteCheckoutDesign({
+export function WmsNovoTesteCheckoutDesignV2({
   checkout,
   formData,
   loading,
