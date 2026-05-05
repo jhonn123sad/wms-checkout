@@ -938,7 +938,7 @@ function CheckoutEditPage() {
             <Button variant="ghost" onClick={() => setIsConfirmingPaid(false)}>Cancelar</Button>
             <Button 
               className="bg-green-500 hover:bg-green-600"
-              onClick={() => updateOrderStatus(validatorData.last_order.id, 'paid')}
+              onClick={() => updateOrderStatus(validatorData?.latest_order?.order_id, 'paid')}
             >
               Confirmar e Marcar Pago
             </Button>
@@ -959,7 +959,7 @@ function CheckoutEditPage() {
             <Button variant="ghost" onClick={() => setIsConfirmingWaiting(false)}>Cancelar</Button>
             <Button 
               className="bg-yellow-500 hover:bg-yellow-600"
-              onClick={() => updateOrderStatus(validatorData.last_order.id, 'waiting_payment')}
+              onClick={() => updateOrderStatus(validatorData?.latest_order?.order_id, 'waiting_payment')}
             >
               Reverter Status
             </Button>
