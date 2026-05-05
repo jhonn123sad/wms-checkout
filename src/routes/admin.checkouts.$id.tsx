@@ -283,36 +283,6 @@ function CheckoutEditPage() {
   };
 
   const [verificationResult, setVerificationResult] = useState<any>(null);
-
-  const verifyLastOrderRedirect = async () => {
-    setVerifyingStatus(true);
-    setVerificationResult(null);
-    try {
-      const { data, error } = await supabase.functions.invoke("verify-checkout-delivery", {
-        body: { checkout_id: id }
-      });
-
-      if (error) throw error;
-      
-      setVerificationResult(data);
-
-      if (data.ok) {
-        toast.success(data.message);
-      } else {
-        if (data.code === "ORDER_NOT_FOUND") {
-          toast.info(data.message);
-        } else {
-          toast.error(data.message);
-        }
-      }
-    } catch (err: any) {
-      console.error("Erro na verificação:", err);
-      toast.error("Erro na verificação: " + (err.message || "Erro inesperado"));
-    } finally {
-      setVerifyingStatus(false);
-    }
-  };
-
   const [isValidatorOpen, setIsValidatorOpen] = useState(false);
   const [validatorData, setValidatorData] = useState<any>(null);
   const [validatorLoading, setValidatorLoading] = useState(false);
@@ -321,42 +291,35 @@ function CheckoutEditPage() {
   const [debugResponse, setDebugResponse] = useState<any>(null);
 
   const fetchValidatorData = async () => {
-    if (isNew) return;
+    if (isNew || !checkout.slug) {
+      toast.error("Salve o checkout antes de validar.");
+      return;
+    }
+    
     setValidatorLoading(true);
+    setDebugResponse(null);
     try {
-      // 1. Checkout data
-      const { data: checkoutData } = await supabase
-        .from("checkouts")
-        .select("*")
-        .eq("id", id)
-        .single();
-
-      // 2. Product mapping
-      const { data: projects } = await supabase
-        .from("checkout_projects")
-        .select("id, thank_you_url");
-      
-      const productData = projects && projects.length > 0 ? projects[0] : null;
-
-      // 3. Last orders
-      const { data: lastOrders } = await supabase
-        .from("orders")
-        .select("*")
-        .filter("checkout_id", "eq", id)
-        .order("created_at", { ascending: false })
-        .limit(5);
-
-      setValidatorData({
-        checkout: checkoutData,
-        product: productData,
-        orders: lastOrders || []
+      console.log("[Validator] Calling RPC validate_checkout_delivery_report for slug:", checkout.slug);
+      const { data, error } = await supabase.rpc("validate_checkout_delivery_report", {
+        p_slug: checkout.slug
       });
-    } catch (err) {
+
+      if (error) throw error;
+      
+      console.log("[Validator] RPC Result:", data);
+      setValidatorData(data);
+      setIsValidatorOpen(true);
+    } catch (err: any) {
       console.error("Error fetching validator data:", err);
-      toast.error("Erro ao carregar dados de validação");
+      toast.error("Erro ao carregar dados de validação: " + err.message);
     } finally {
       setValidatorLoading(false);
     }
+  };
+
+  // Alias for verifyLastOrderRedirect to use the new RPC flow
+  const verifyLastOrderRedirect = () => {
+    fetchValidatorData();
   };
 
   const updateOrderStatus = async (orderId: string, status: string) => {
