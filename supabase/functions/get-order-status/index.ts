@@ -1,7 +1,7 @@
- /**
-  * CORE DE PAGAMENTO — NÃO ALTERAR SEM TESTE DE REGRESSÃO
-  * Usado pelo frontend para verificar se o Pix foi pago e obter URL de redirecionamento.
-  */
+/**
+ * CORE DE PAGAMENTO — NÃO ALTERAR SEM TESTE DE REGRESSÃO
+ * Usado pelo frontend para verificar se o Pix foi pago e obter URL de redirecionamento.
+ */
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { corsHeaders } from "../_shared/cors.ts";
 
@@ -11,10 +11,10 @@ Deno.serve(async (req) => {
   try {
     let orderId = "";
     let token = "";
+    let simulatePaid = false;
 
     if (req.method === "POST") {
-      const bodyText = await req.text();
-      const body = bodyText ? JSON.parse(bodyText) : {};
+      const body = await req.json().catch(() => ({}));
       orderId = body.orderId || "";
       token = body.token || "";
       simulatePaid = body.simulate_paid === true;
