@@ -244,24 +244,24 @@ function PixGeneratedView({ paymentData, paymentStatus, onReset, colors }: any) 
   const isPaid = paymentStatus === "paid";
 
   return (
-    <div className="animate-in zoom-in-95 fade-in duration-500 flex flex-col items-center">
+    <div className="animate-in zoom-in-95 fade-in duration-500 flex flex-col items-center w-full">
       
-      <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full mb-6 border ${isPaid ? 'bg-emerald-50 border-emerald-100 text-emerald-600' : 'bg-blue-50 border-blue-100 text-blue-600'}`}>
-        <div className={`h-1.5 w-1.5 rounded-full ${isPaid ? 'bg-emerald-500' : 'bg-blue-500 animate-pulse'}`}></div>
-        <span className="text-[10px] font-bold uppercase tracking-wider">
-          {isPaid ? 'Pago' : 'Aguardando'}
+      <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-8 border ${isPaid ? 'bg-emerald-50 border-emerald-100 text-emerald-600' : 'bg-blue-50 border-blue-100 text-[#0071E3]'}`}>
+        <div className={`h-2 w-2 rounded-full ${isPaid ? 'bg-emerald-500' : 'bg-[#0071E3] animate-pulse'}`}></div>
+        <span className="text-[11px] font-bold uppercase tracking-widest">
+          {isPaid ? 'Pagamento Confirmado' : 'Aguardando Pagamento'}
         </span>
       </div>
 
-      <div className="text-center mb-8">
-        <h3 className="text-xl font-bold mb-2 tracking-tight text-[#1D1D1F]">Quase lá!</h3>
-        <p className="text-[14px] text-[#86868B] leading-snug max-w-[240px] mx-auto">
-          Finalize o pagamento via Pix para liberar seu acesso instantaneamente.
+      <div className="text-center mb-10">
+        <h3 className="text-2xl font-bold mb-3 tracking-tight text-[#1D1D1F]">Finalize seu Pix</h3>
+        <p className="text-[15px] text-[#6B7280] leading-relaxed max-w-[280px] mx-auto font-normal">
+          Escaneie o QR Code abaixo ou copie o código para concluir sua inscrição.
         </p>
       </div>
 
-      <div className="relative mb-8">
-        <div className="w-[180px] h-[180px] bg-white p-3 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.05)] border border-[#D2D2D7]/30 flex items-center justify-center relative overflow-hidden">
+      <div className="relative mb-10 group">
+        <div className="w-[200px] h-[200px] bg-white p-4 rounded-[24px] shadow-[0_10px_40px_rgba(0,0,0,0.04)] border border-[#E5E7EB]/80 flex items-center justify-center relative overflow-hidden transition-transform duration-500 group-hover:scale-[1.02]">
           {paymentData.qr_code_base64 ? (
             <img 
               src={paymentData.qr_code_base64} 
@@ -269,46 +269,48 @@ function PixGeneratedView({ paymentData, paymentStatus, onReset, colors }: any) 
               className="w-full h-full object-contain"
             />
           ) : (
-            <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
+            <Loader2 className="h-8 w-8 animate-spin text-[#0071E3]" />
           )}
           
           {isPaid && (
             <div className="absolute inset-0 bg-white/95 flex flex-col items-center justify-center animate-in fade-in zoom-in duration-500 z-10">
-              <div className="bg-emerald-500 p-2.5 rounded-full mb-2">
-                <Check className="text-white w-6 h-6" strokeWidth={4} />
+              <div className="bg-emerald-500 p-3 rounded-full mb-3 shadow-lg shadow-emerald-500/20">
+                <Check className="text-white w-8 h-8" strokeWidth={3} />
               </div>
-              <span className="text-[#1D1D1F] font-bold text-[10px] uppercase tracking-wider">Sucesso</span>
+              <span className="text-[#1D1D1F] font-bold text-[12px] uppercase tracking-widest">Acesso Liberado</span>
             </div>
           )}
         </div>
       </div>
 
-      <div className="w-full space-y-3">
-        <div className="bg-[#F5F5F7] rounded-xl p-3 flex flex-col gap-2">
-          <div className="flex items-center justify-between px-1">
-            <span className="text-[10px] font-bold text-[#86868B] uppercase tracking-wider">Código Copia e Cola</span>
+      <div className="w-full space-y-6">
+        <div className="bg-[#F9F9FB] rounded-2xl p-4 border border-[#E5E7EB]/50">
+          <div className="flex items-center justify-between mb-3 px-1">
+            <span className="text-[11px] font-bold text-[#6B7280] uppercase tracking-widest">Código Copia e Cola</span>
             <button 
               onClick={handleCopy}
-              className="text-[10px] font-bold text-[#0071E3] uppercase tracking-wider"
+              className="text-[11px] font-bold text-[#0071E3] uppercase tracking-widest hover:opacity-80 transition-opacity"
             >
-              {copied ? "Copiado" : "Copiar"}
+              {copied ? "Copiado!" : "Copiar"}
             </button>
           </div>
-          <div className="bg-white border border-[#D2D2D7]/50 rounded-lg p-2.5">
-            <p className="text-[11px] font-mono break-all line-clamp-2 text-[#1D1D1F]">
+          <div className="bg-white border border-[#E5E7EB]/40 rounded-xl p-4 shadow-sm">
+            <p className="text-[12px] font-mono break-all line-clamp-2 text-[#1D1D1F] leading-relaxed">
               {paymentData.qr_code}
             </p>
           </div>
         </div>
         
-        <Button 
-          variant="ghost" 
-          onClick={onReset}
-          className="w-full text-[#86868B] text-[11px] font-semibold uppercase tracking-wider hover:text-[#1D1D1F] transition-colors gap-2 h-10"
-        >
-          <RefreshCw size={12} />
-          Voltar e editar dados
-        </Button>
+        <div className="pt-2">
+          <Button 
+            variant="ghost" 
+            onClick={onReset}
+            className="w-full text-[#6B7280] text-[12px] font-bold uppercase tracking-widest hover:text-[#1D1D1F] hover:bg-transparent transition-all gap-2 h-12"
+          >
+            <RefreshCw size={14} className="opacity-60" />
+            Alterar dados de pagamento
+          </Button>
+        </div>
       </div>
     </div>
   );
