@@ -6,10 +6,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { ArrowLeft, Plus, Trash2, ShieldCheck, Info } from "lucide-react";
+import { 
+  ArrowLeft, Plus, Trash2, ShieldCheck, Info, 
+  CheckCircle2, AlertTriangle, XCircle, Copy, Play, 
+  RefreshCcw, Search, Eye
+} from "lucide-react";
 import { MediaField } from "@/components/admin/MediaField";
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 const PIX_REQUIRED_FIELDS = [
   { key: "customer_name", label: "Nome Completo", type: "text", equivalents: ["name", "nome", "full_name", "customer_name"] },
@@ -298,6 +313,114 @@ function CheckoutEditPage() {
     }
   };
 
+  const [isValidatorOpen, setIsValidatorOpen] = useState(false);
+  const [validatorData, setValidatorData] = useState<any>(null);
+  const [validatorLoading, setValidatorLoading] = useState(false);
+  const [isConfirmingPaid, setIsConfirmingPaid] = useState(false);
+  const [isConfirmingWaiting, setIsConfirmingWaiting] = useState(false);
+  const [debugResponse, setDebugResponse] = useState<any>(null);
+
+  const fetchValidatorData = async () => {
+    if (isNew) return;
+    setValidatorLoading(true);
+    try {
+      // 1. Checkout data
+      const { data: checkoutData } = await supabase
+        .from("checkouts")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      // 2. Product mapping
+      const { data: projects } = await supabase
+        .from("checkout_projects")
+        .select("id, thank_you_url");
+      
+      const productData = projects && projects.length > 0 ? projects[0] : null;
+
+      // 3. Last orders
+      const { data: lastOrders } = await supabase
+        .from("orders")
+        .select("*")
+        .eq("checkout_id", id)
+        .order("created_at", { ascending: false })
+        .limit(5);
+
+      setValidatorData({
+        checkout: checkoutData,
+        product: productData,
+        orders: lastOrders || []
+      });
+    } catch (err) {
+      console.error("Error fetching validator data:", err);
+      toast.error("Erro ao carregar dados de validação");
+    } finally {
+      setValidatorLoading(false);
+    }
+  };
+
+  const updateOrderStatus = async (orderId: string, status: string) => {
+    try {
+      const payload: any = {
+        status,
+        updated_at: new Date().toISOString()
+      };
+      
+      if (status === 'paid') {
+        payload.paid_at = new Date().toISOString();
+      } else {
+        payload.paid_at = null;
+      }
+
+      const { error } = await supabase
+        .from("orders")
+        .update(payload)
+        .eq("id", orderId);
+
+      if (error) throw error;
+      
+      toast.success(`Order atualizada para ${status}`);
+      await fetchValidatorData();
+      setIsConfirmingPaid(false);
+      setIsConfirmingWaiting(false);
+    } catch (err: any) {
+      toast.error("Erro ao atualizar status: " + err.message);
+    }
+  };
+
+  const testGetOrderStatus = async (orderId: string, token: string) => {
+    setDebugResponse(null);
+    try {
+      const { data, error } = await supabase.functions.invoke("get-order-status", {
+        body: { orderId, token }
+      });
+      if (error) throw error;
+      setDebugResponse(data);
+      toast.success("Endpoint get-order-status testado!");
+    } catch (err: any) {
+      toast.error("Erro no teste: " + err.message);
+      setDebugResponse({ error: err.message });
+    }
+  };
+
+  const copyTestConsole = (orderId: string, token: string) => {
+    const code = `fetch("https://rqassaxkbntpcwhvevyi.supabase.co/functions/v1/get-order-status", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    orderId: "${orderId}",
+    token: "${token}"
+  })
+})
+  .then(r => r.json())
+  .then(console.log);`;
+    
+    navigator.clipboard.writeText(code);
+    toast.success("Código copiado para o console!");
+  };
+
   const addField = () => {
     setFields([...fields, { field_name: "", field_label: "", field_type: "text", required: false, active: true, sort_order: fields.length + 1 }]);
   };
@@ -320,11 +443,26 @@ function CheckoutEditPage() {
 
   return (
     <div className="p-8 max-w-6xl mx-auto space-y-8 pb-32">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => navigate({ to: "/admin/checkouts" })}>
-          <ArrowLeft className="w-4 h-4" />
-        </Button>
-        <h1 className="text-3xl font-bold">{isNew ? "Novo Checkout" : "Editar Checkout"}</h1>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" onClick={() => navigate({ to: "/admin/checkouts" })}>
+            <ArrowLeft className="w-4 h-4" />
+          </Button>
+          <h1 className="text-3xl font-bold">{isNew ? "Novo Checkout" : "Editar Checkout"}</h1>
+        </div>
+        {!isNew && (
+          <Button 
+            variant="outline" 
+            className="gap-2 border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
+            onClick={() => {
+              setIsValidatorOpen(true);
+              fetchValidatorData();
+            }}
+          >
+            <ShieldCheck className="w-4 h-4" />
+            Validar entrega do checkout
+          </Button>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -566,6 +704,239 @@ function CheckoutEditPage() {
           {loading ? "Salvando..." : "Salvar Checkout"}
         </Button>
       </div>
+    {/* Validador de Entrega Modal */}
+      <Dialog open={isValidatorOpen} onOpenChange={setIsValidatorOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5 text-blue-500" />
+              Validador de Entrega do Checkout
+            </DialogTitle>
+            <DialogDescription>
+              Verifique a integridade do fluxo de entrega pós-pagamento.
+            </DialogDescription>
+          </DialogHeader>
+
+          {validatorLoading ? (
+            <div className="p-12 flex justify-center items-center">
+              <RefreshCcw className="w-8 h-8 animate-spin text-muted-foreground" />
+            </div>
+          ) : validatorData ? (
+            <div className="space-y-6 pt-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* 1. Dados do Checkout */}
+                <Card className="p-4 space-y-3">
+                  <h3 className="font-bold flex items-center gap-2 text-sm border-b pb-2">
+                    <Info className="w-4 h-4" /> Dados do Checkout
+                  </h3>
+                  <div className="space-y-1 text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">ID:</span>
+                      <span className="font-mono">{validatorData.checkout.id}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Slug:</span>
+                      <span>{validatorData.checkout.slug}</span>
+                    </div>
+                    <div className="pt-1">
+                      <p className="text-muted-foreground mb-1">Success Redirect URL:</p>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={validatorData.checkout.success_redirect_url ? "outline" : "destructive"} 
+                          className={validatorData.checkout.success_redirect_url ? "text-green-500 border-green-500/20" : ""}>
+                          {validatorData.checkout.success_redirect_url ? "Preenchida" : "Vazia"}
+                        </Badge>
+                      </div>
+                      <p className="mt-1 font-mono text-[10px] break-all bg-muted/50 p-1 rounded">
+                        {validatorData.checkout.success_redirect_url || "N/A"}
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+
+                {/* 2 & 3. Produto & Sincronização */}
+                <Card className="p-4 space-y-3">
+                  <h3 className="font-bold flex items-center gap-2 text-sm border-b pb-2">
+                    <Search className="w-4 h-4" /> Produto & Sincronização
+                  </h3>
+                  <div className="space-y-1 text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Project Mapping:</span>
+                      <Badge variant={validatorData.product ? "outline" : "destructive"}
+                        className={validatorData.product ? "text-green-500 border-green-500/20" : ""}>
+                        {validatorData.product ? "Existe" : "Não encontrado"}
+                      </Badge>
+                    </div>
+                    {validatorData.product && (
+                      <div className="pt-1">
+                        <p className="text-muted-foreground mb-1">Thank You URL (Project):</p>
+                        <p className="font-mono text-[10px] break-all bg-muted/50 p-1 rounded mb-2">
+                          {validatorData.product.thank_you_url || "N/A"}
+                        </p>
+                        
+                        <div className="flex items-center justify-between p-2 rounded border border-dashed">
+                          <span>Sincronização:</span>
+                          {validatorData.checkout.success_redirect_url === validatorData.product.thank_you_url ? (
+                            <div className="flex items-center gap-1 text-green-500 font-bold">
+                              <CheckCircle2 className="w-4 h-4" /> Sincronizado
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-1 text-yellow-500 font-bold">
+                              <AlertTriangle className="w-4 h-4" /> Diferente (Aviso)
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </Card>
+              </div>
+
+              {/* 4. Orders Vinculadas */}
+              <Card className="p-4 space-y-3">
+                <div className="flex justify-between items-center border-b pb-2">
+                  <h3 className="font-bold flex items-center gap-2 text-sm">
+                    <Play className="w-4 h-4" /> Últimas 5 Orders
+                  </h3>
+                  <Badge variant={validatorData.orders.length > 0 ? "outline" : "destructive"}
+                    className={validatorData.orders.length > 0 ? "text-green-500 border-green-500/20" : "text-yellow-500 border-yellow-500/20"}>
+                    {validatorData.orders.length > 0 ? `${validatorData.orders.length} encontradas` : "Nenhuma order gerada"}
+                  </Badge>
+                </div>
+                
+                <div className="overflow-x-auto">
+                  <table className="w-full text-[10px] text-left">
+                    <thead className="bg-muted/50 uppercase text-muted-foreground">
+                      <tr>
+                        <th className="p-2">ID / Criado em</th>
+                        <th className="p-2">Status</th>
+                        <th className="p-2">Checkout ID</th>
+                        <th className="p-2">Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {validatorData.orders.map((order: any) => (
+                        <tr key={order.id} className="hover:bg-muted/30">
+                          <td className="p-2">
+                            <div className="font-mono text-[9px]">{order.id}</div>
+                            <div className="opacity-60">{format(new Date(order.created_at), 'dd/MM/yy HH:mm', { locale: ptBR })}</div>
+                          </td>
+                          <td className="p-2">
+                            <Badge variant={order.status === 'paid' ? 'default' : 'secondary'} className={order.status === 'paid' ? 'bg-green-500' : ''}>
+                              {order.status}
+                            </Badge>
+                          </td>
+                          <td className="p-2">
+                            <Badge variant={order.checkout_id ? "outline" : "destructive"}>
+                              {order.checkout_id ? "OK" : "NULL"}
+                            </Badge>
+                          </td>
+                          <td className="p-2">
+                            <div className="flex gap-1">
+                              <Button size="icon" variant="ghost" className="h-6 w-6" title="Copiar teste console" onClick={() => copyTestConsole(order.id, order.public_access_token)}>
+                                <Copy className="w-3 h-3" />
+                              </Button>
+                              <Button size="icon" variant="ghost" className="h-6 w-6 text-blue-500" title="Testar get-order-status" onClick={() => testGetOrderStatus(order.id, order.public_access_token)}>
+                                <Eye className="w-3 h-3" />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {validatorData.orders.length > 0 && (
+                  <div className="flex flex-wrap gap-2 pt-4 border-t">
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="text-[10px] h-8 bg-green-500/5 hover:bg-green-500/10 border-green-500/20 text-green-600"
+                      onClick={() => setIsConfirmingPaid(true)}
+                    >
+                      <CheckCircle2 className="w-3 h-3 mr-1" /> Marcar última order como paga
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="text-[10px] h-8 bg-yellow-500/5 hover:bg-yellow-500/10 border-yellow-500/20 text-yellow-600"
+                      onClick={() => setIsConfirmingWaiting(true)}
+                    >
+                      <RefreshCcw className="w-3 h-3 mr-1" /> Reverter última order para aguardando
+                    </Button>
+                  </div>
+                )}
+              </Card>
+
+              {/* Debug Response Area */}
+              {debugResponse && (
+                <Card className="p-4 bg-black/5 dark:bg-black/40 space-y-2">
+                  <div className="flex justify-between items-center border-b border-white/10 pb-1">
+                    <span className="text-[10px] font-bold text-muted-foreground uppercase">Retorno get-order-status:</span>
+                    <Button variant="ghost" size="icon" className="h-4 w-4" onClick={() => setDebugResponse(null)}>
+                      <XCircle className="w-3 h-3" />
+                    </Button>
+                  </div>
+                  <pre className="text-[9px] font-mono p-2 overflow-x-auto whitespace-pre-wrap max-h-40 overflow-y-auto">
+                    {JSON.stringify(debugResponse, null, 2)}
+                  </pre>
+                </Card>
+              )}
+            </div>
+          ) : null}
+          
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setIsValidatorOpen(false)}>Fechar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Confirmação Marcar como Pago */}
+      <Dialog open={isConfirmingPaid} onOpenChange={setIsConfirmingPaid}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirmar alteração de status</DialogTitle>
+            <DialogDescription>
+              Isso é apenas para teste. Deseja continuar?
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-sm font-bold text-red-500">
+              Confirmo que quero marcar a última order como paid manualmente.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setIsConfirmingPaid(false)}>Cancelar</Button>
+            <Button 
+              className="bg-green-500 hover:bg-green-600"
+              onClick={() => updateOrderStatus(validatorData.orders[0].id, 'paid')}
+            >
+              Confirmar e Marcar Pago
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Confirmação Reverter para Waiting */}
+      <Dialog open={isConfirmingWaiting} onOpenChange={setIsConfirmingWaiting}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reverter status de pagamento</DialogTitle>
+            <DialogDescription>
+              Deseja voltar a última order para "waiting_payment"?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setIsConfirmingWaiting(false)}>Cancelar</Button>
+            <Button 
+              className="bg-yellow-500 hover:bg-yellow-600"
+              onClick={() => updateOrderStatus(validatorData.orders[0].id, 'waiting_payment')}
+            >
+              Reverter Status
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
