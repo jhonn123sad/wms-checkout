@@ -87,6 +87,10 @@ async function insertCheckout() {
     body: JSON.stringify(fields)
   });
   console.log("Fields insert status:", fieldRes.status);
+  if (fieldRes.status >= 400) {
+    const error = await fieldRes.json();
+    console.error("Fields error body:", JSON.stringify(error, null, 2));
+  }
 }
 
 insertCheckout();
