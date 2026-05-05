@@ -252,7 +252,7 @@ function CheckoutEditPage() {
     setVerifyingStatus(true);
     try {
       const { data: lastOrder, error: orderError } = await supabase
-        .from("orders")
+        .from("orders" as any)
         .select("id, public_access_token")
         .eq("metadata->>checkout_id" as any, id)
         .order("created_at", { ascending: false })
