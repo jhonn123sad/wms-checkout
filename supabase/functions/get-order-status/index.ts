@@ -33,7 +33,7 @@ Deno.serve(async (req) => {
 
     const { data: order, error } = await supabase
       .from("orders")
-      .select("id,status,paid_at,product_id,project_id,public_access_token")
+      .select("id,status,paid_at,product_id,project_id,checkout_id,public_access_token")
       .eq("id", orderId)
       .maybeSingle();
       
@@ -48,7 +48,14 @@ Deno.serve(async (req) => {
 
     let thank_you_url: string | null = null;
     if (order.status === "paid") {
-      if (order.project_id) {
+      if (order.checkout_id) {
+        const { data: checkout } = await supabase
+          .from("checkouts")
+          .select("success_redirect_url")
+          .eq("id", order.checkout_id)
+          .maybeSingle();
+        thank_you_url = checkout?.success_redirect_url ?? null;
+      } else if (order.project_id) {
         const { data: project } = await supabase
           .from("checkout_projects")
           .select("thank_you_url")

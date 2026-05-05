@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, ShoppingCart, Users, TrendingUp } from "lucide-react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/")({
   component: AdminDashboard,
@@ -82,6 +83,55 @@ function AdminDashboard() {
                 <ShoppingCart className="w-4 h-4" /> Criar Novo Checkout
               </Button>
             </Link>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Ferramentas de Teste</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="p-4 bg-muted/30 rounded-lg space-y-3">
+              <h3 className="text-sm font-semibold">Simular Pagamento Aprovado</h3>
+              <p className="text-xs text-muted-foreground">Último pedido gerado no sistema será marcado como pago.</p>
+              <Button 
+                size="sm" 
+                className="w-full gap-2" 
+                variant="secondary"
+                onClick={async () => {
+                  const { data: lastOrder, error: orderError } = await supabase
+                    .from("orders")
+                    .select("id, status")
+                    .order("created_at", { ascending: false })
+                    .limit(1)
+                    .single();
+
+                  if (orderError || !lastOrder) {
+                    return toast.error("Nenhum pedido encontrado.");
+                  }
+
+                  if (lastOrder.status === 'paid') {
+                    return toast.error("O pedido mais recente já está pago.");
+                  }
+
+                  const { error: updateError } = await supabase
+                    .from("orders")
+                    .update({ 
+                      status: 'paid',
+                      paid_at: new Date().toISOString()
+                    })
+                    .eq("id", lastOrder.id);
+
+                  if (updateError) {
+                    toast.error("Erro ao aprovar pedido: " + updateError.message);
+                  } else {
+                    toast.success("Pedido aprovado com sucesso! (ID: " + lastOrder.id.slice(0,8) + ")");
+                  }
+                }}
+              >
+                <TrendingUp className="w-4 h-4" /> Aprovar Último Pedido
+              </Button>
+            </div>
           </CardContent>
         </Card>
 
