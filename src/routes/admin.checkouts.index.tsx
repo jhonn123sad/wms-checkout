@@ -3,7 +3,7 @@
  import { useState, useEffect } from "react";
  import { Button } from "@/components/ui/button";
  import { Card } from "@/components/ui/card";
-import { Plus, Edit, ExternalLink, Users, Copy, Trash2 } from "lucide-react";
+import { Plus, Edit, ExternalLink, Users, Copy, Trash2, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
  import { Badge } from "@/components/ui/badge";
  
