@@ -1,7 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { corsHeaders } from "../_shared/cors.ts";
 
-function json(payload: unknown, status = 200) {
+const json = (payload: any, status = 200) => {
   return new Response(JSON.stringify(payload), {
     status,
     headers: {
@@ -9,7 +9,7 @@ function json(payload: unknown, status = 200) {
       "Content-Type": "application/json",
     },
   });
-}
+};
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -28,25 +28,14 @@ Deno.serve(async (req) => {
         {
           ok: false,
           code: "CHECKOUT_ID_REQUIRED",
-          message: "ID do checkout é obrigatório.",
+          message: "Checkout id required.",
         },
         400
       );
     }
 
-    const supabaseUrl = Deno.env.get("SUPABASE_URL");
-    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-
-    if (!supabaseUrl || !serviceRoleKey) {
-      return json(
-        {
-          ok: false,
-          code: "ENV_MISSING",
-          message: "Variáveis SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY não configuradas.",
-        },
-        500
-      );
-    }
+    const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
+    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
 
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
@@ -72,7 +61,7 @@ Deno.serve(async (req) => {
         {
           ok: false,
           code: "CHECKOUT_NOT_FOUND",
-          message: "Checkout não encontrado.",
+          message: "Checkout not found.",
         },
         404
       );
@@ -84,7 +73,7 @@ Deno.serve(async (req) => {
       return json({
         ok: false,
         code: "DELIVERY_URL_MISSING",
-        message: "URL de entrega não configurada.",
+        message: "Delivery URL missing.",
         checkout_id: checkout.id,
         checkout_slug: checkout.slug,
         success_redirect_url: null,
@@ -115,7 +104,7 @@ Deno.serve(async (req) => {
       return json({
         ok: false,
         code: "ORDER_NOT_FOUND",
-        message: "Nenhuma order encontrada para este checkout. Gere um Pix primeiro.",
+        message: "No order found. Generate a Pix first.",
         checkout_id: checkout.id,
         checkout_slug: checkout.slug,
         success_redirect_url: successRedirectUrl,
@@ -125,7 +114,7 @@ Deno.serve(async (req) => {
     return json({
       ok: true,
       code: "DELIVERY_READY",
-      message: "Última order encontrada. Quando for paga, será enviada para a URL de entrega.",
+      message: "Delivery ready.",
       checkout_id: checkout.id,
       checkout_slug: checkout.slug,
       order_id: lastOrder.id,
@@ -139,7 +128,7 @@ Deno.serve(async (req) => {
       {
         ok: false,
         code: "UNHANDLED_ERROR",
-        message: err instanceof Error ? err.message : "Erro interno no servidor.",
+        message: err instanceof Error ? err.message : "Internal server error.",
       },
       500
     );
