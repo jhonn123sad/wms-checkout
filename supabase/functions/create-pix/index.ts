@@ -1,6 +1,7 @@
 /**
- * CORE DE PAGAMENTO — V2.0.1 (Force Redeploy)
+ * CORE DE PAGAMENTO — V2.0.2
  * Responsável por criar pedidos e gerar o Pix na Pushin Pay.
+ * REGRA: Exige checkout_slug e usa checkouts.price como fonte oficial.
  */
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { corsHeaders } from "../_shared/cors.ts";
@@ -16,17 +17,17 @@ Deno.serve(async (req) => {
     const apiToken = Deno.env.get("PUSHINPAY_API_TOKEN");
     const baseUrl = Deno.env.get("PUSHINPAY_BASE_URL");
 
-    log("Token present:", !!apiToken, "Base URL:", baseUrl);
-
-    if (!apiToken) {
-      return jsonError("CONFIG_MISSING_PUSHINPAY_API_TOKEN", 500);
-    }
-    if (!baseUrl) {
-      return jsonError("CONFIG_MISSING_PUSHINPAY_BASE_URL", 500);
+    if (!apiToken || !baseUrl) {
+      return jsonError("CONFIG_MISSING", 500);
     }
 
     const body = await req.json().catch(() => ({}));
-    const checkout_slug = body?.checkout_slug || body?.project_slug || null;
+    const checkout_slug = body?.checkout_slug || null;
+    
+    if (!checkout_slug) {
+      return jsonError("CHECKOUT_SLUG_REQUIRED", 400);
+    }
+
     const customer_name = body?.customer_name ? String(body.customer_name).trim() : null;
     const customer_cpf = body?.customer_cpf ? String(body.customer_cpf).replace(/\D/g, "") : null;
     const customer_phone = body?.customer_phone ? String(body.customer_phone).replace(/\D/g, "") : null;
@@ -38,20 +39,10 @@ Deno.serve(async (req) => {
     const utm_content = body?.utm_content || body?.utm?.utm_content || null;
     const utm_term = body?.utm_term || body?.utm?.utm_term || null;
 
-    log("Request received:", { checkout_slug, customer_name, hasCpf: !!customer_cpf, customer_email, customer_phone });
-
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
-
-    let priceCents = 0;
-    let checkoutId = null;
-    let expirationMinutes = 30;
-
-    if (!checkout_slug) {
-      return jsonError("CHECKOUT_SLUG_REQUIRED", 400);
-    }
 
     log("Searching checkout by slug:", checkout_slug);
     const { data: checkout, error: cError } = await supabase
@@ -61,41 +52,29 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     if (cError || !checkout) {
-      log("Checkout not found:", cError);
       return jsonError("CHECKOUT_NOT_FOUND", 404);
     }
 
-    // Validação de status: active=true ou status='published'
     const isPublished = checkout.active === true || checkout.status === 'published';
     if (!isPublished) {
-      log("Checkout is not active/published");
       return jsonError("CHECKOUT_INACTIVE", 403);
     }
 
     if (!checkout.price || checkout.price <= 0) {
-      log("Invalid checkout price:", checkout.price);
       return jsonError("INVALID_PRICE", 400);
     }
 
-    checkoutId = checkout.id;
-    // Converter preço (ex: 29.9) para centavos (2990)
-    priceCents = Math.round(checkout.price * 100);
-    expirationMinutes = checkout.pix_expiration_minutes || 30;
-
-    log("Checkout valid:", { name: checkout.title, priceCents });
-
-
-    // Create order (status=created) with a secure random access token
+    const priceCents = Math.round(checkout.price * 100);
+    const expirationMinutes = checkout.pix_expiration_minutes || 30;
     const publicAccessToken = crypto.randomUUID();
     
-    // Calculate expires_at
     const expiresAt = new Date();
     expiresAt.setMinutes(expiresAt.getMinutes() + expirationMinutes);
     
     const { data: order, error: orderError } = await supabase
       .from("orders")
       .insert({
-        checkout_id: checkoutId,
+        checkout_id: checkout.id,
         customer_name,
         customer_cpf,
         customer_phone,
@@ -110,7 +89,7 @@ Deno.serve(async (req) => {
         utm_term,
         metadata: { 
           checkout_slug, 
-          checkout_id: checkoutId,
+          checkout_id: checkout.id,
           form_data: body?.form_data || {}
         },
         public_access_token: publicAccessToken,
@@ -118,9 +97,7 @@ Deno.serve(async (req) => {
       .select()
       .single();
 
-
     if (orderError || !order) {
-      log("Order insert error:", orderError);
       return jsonError("DB_ERROR_ORDER", 500);
     }
 
@@ -133,11 +110,8 @@ Deno.serve(async (req) => {
     const reqBody = { 
       value: priceCents, 
       webhook_url: webhookUrl,
-      split_rules: [] as unknown[] 
+      split_rules: []
     };
-
-    log("POST", endpoint, "body:", reqBody);
-    log("Webhook URL being sent:", webhookUrl);
 
     const ppResp = await fetch(endpoint, {
       method: "POST",
@@ -150,19 +124,15 @@ Deno.serve(async (req) => {
     });
 
     const respText = await ppResp.text();
-    log("Pushin Pay status:", ppResp.status);
-
     let result: any;
     try {
       result = JSON.parse(respText);
     } catch {
-      log("Invalid JSON from Pushin Pay:", respText.slice(0, 300));
       await supabase.from("orders").update({ status: "failed" }).eq("id", order.id);
       return jsonError("API_RESPONSE_INVALID", 502);
     }
 
     if (!ppResp.ok) {
-      log("Pushin Pay error response:", result);
       await supabase.from("orders").update({ status: "failed" }).eq("id", order.id);
       return jsonError(`API_ERROR_${ppResp.status}`, 502, result);
     }
@@ -171,10 +141,7 @@ Deno.serve(async (req) => {
     const qrCodeBase64: string | null = result.qr_code_base64 ?? null;
     const transactionId = result.id ? String(result.id).trim() : null;
 
-    log("Pushin Pay ID received:", transactionId);
-    log("Order ID:", order.id);
-
-    const { error: updateError } = await supabase
+    await supabase
       .from("orders")
       .update({
         pushinpay_transaction_id: transactionId,
@@ -184,25 +151,20 @@ Deno.serve(async (req) => {
       })
       .eq("id", order.id);
 
-    if (updateError) log("Order update error:", updateError);
-
-    const responsePayload = {
+    return new Response(JSON.stringify({
       orderId: order.id,
       accessToken: publicAccessToken,
       status: "waiting_payment",
       amount_cents: priceCents,
+      checkout_id: checkout.id,
+      checkout_slug: checkout_slug,
       qr_code: qrCode,
       qr_code_base64: qrCodeBase64,
-    };
-
-    log("Pix generated successfully, sending response with accessToken:", !!publicAccessToken);
-
-    return new Response(JSON.stringify(responsePayload), {
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err) {
-    console.error("[create-pix] Unhandled:", err);
-    return jsonError("UNHANDLED_ERROR", 500, { message: String((err as Error)?.message || err) });
+    return jsonError("UNHANDLED_ERROR", 500, { message: String(err) });
   }
 });
 
