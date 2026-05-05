@@ -282,7 +282,7 @@ function CheckoutEditPage() {
     }
   };
 
-  const [verificationResult, setVerificationResult] = useState<any>(null);
+  
   const [isValidatorOpen, setIsValidatorOpen] = useState(false);
   const [validatorData, setValidatorData] = useState<any>(null);
   const [validatorLoading, setValidatorLoading] = useState(false);
