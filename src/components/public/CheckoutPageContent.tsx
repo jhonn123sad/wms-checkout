@@ -179,6 +179,10 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
     InlinePixPanel
   };
 
+  if (designKey === "apple_v1" || checkout.slug === 'wms-novo-teste') {
+    return <WmsNovoTesteCheckoutDesign {...designProps} />;
+  }
+
   if (designKey === "receitas_v1" || designKey === "premium_editorial_v1") {
     return <ReceitasPraticasCheckout {...designProps} />;
   }
@@ -197,10 +201,6 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
 
   if (designKey === "default_v1") {
     return <DefaultCheckoutDesign {...designProps} />;
-  }
-
-  if (designKey === "apple_v1") {
-    return <WmsNovoTesteCheckoutDesign {...designProps} />;
   }
 
   return (
