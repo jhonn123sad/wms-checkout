@@ -45,7 +45,7 @@ function CheckoutEditPage() {
   const isNew = id === "new";
   
   const [loading, setLoading] = useState(false);
-  const [verifyingStatus, setVerifyingStatus] = useState(false);
+  
   const [isUploadingMedia, setIsUploadingMedia] = useState(false);
   const [checkout, setCheckout] = useState<any>({
     title: "",
