@@ -690,82 +690,136 @@ function CheckoutEditPage() {
                 {/* 1. Dados do Checkout */}
                 <Card className="p-4 space-y-3">
                   <h3 className="font-bold flex items-center gap-2 text-sm border-b pb-2">
-                    <Info className="w-4 h-4" /> Dados do Checkout
+                    <Info className="w-4 h-4" /> 1. Checkout
                   </h3>
                   <div className="space-y-1 text-xs">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">ID:</span>
-                      <span className="font-mono">{validatorData.checkout.id}</span>
+                      <span className="font-mono">{validatorData.checkout?.id}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Slug:</span>
-                      <span>{validatorData.checkout.slug}</span>
+                      <span>{validatorData.checkout?.slug}</span>
                     </div>
                     <div className="pt-1">
                       <p className="text-muted-foreground mb-1">Success Redirect URL:</p>
-                      <div className="flex items-center gap-2">
-                        <Badge variant={validatorData.checkout.success_redirect_url ? "outline" : "destructive"} 
-                          className={validatorData.checkout.success_redirect_url ? "text-green-500 border-green-500/20" : ""}>
-                          {validatorData.checkout.success_redirect_url ? "Preenchida" : "Vazia"}
-                        </Badge>
-                      </div>
-                      <p className="mt-1 font-mono text-[10px] break-all bg-muted/50 p-1 rounded">
-                        {validatorData.checkout.success_redirect_url || "N/A"}
+                      <p className="font-mono text-[10px] break-all bg-muted/50 p-1 rounded">
+                        {validatorData.checkout?.success_redirect_url || "N/A"}
                       </p>
                     </div>
                   </div>
                 </Card>
 
-                {/* 2 & 3. Produto & Sincronização */}
+                {/* 2. Produto */}
                 <Card className="p-4 space-y-3">
                   <h3 className="font-bold flex items-center gap-2 text-sm border-b pb-2">
-                    <Search className="w-4 h-4" /> Produto & Sincronização
+                    <Search className="w-4 h-4" /> 2. Produto
                   </h3>
                   <div className="space-y-1 text-xs">
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Project Mapping:</span>
-                      <Badge variant={validatorData.product ? "outline" : "destructive"}
-                        className={validatorData.product ? "text-green-500 border-green-500/20" : ""}>
-                        {validatorData.product ? "Existe" : "Não encontrado"}
-                      </Badge>
+                      <span className="text-muted-foreground">ID:</span>
+                      <span className="font-mono">{validatorData.product?.id || "N/A"}</span>
                     </div>
-                    {validatorData.product && (
-                      <div className="pt-1">
-                        <p className="text-muted-foreground mb-1">Thank You URL (Project):</p>
-                        <p className="font-mono text-[10px] break-all bg-muted/50 p-1 rounded mb-2">
-                          {validatorData.product.thank_you_url || "N/A"}
-                        </p>
-                        
-                        <div className="flex items-center justify-between p-2 rounded border border-dashed">
-                          <span>Sincronização:</span>
-                          {validatorData.checkout.success_redirect_url === validatorData.product.thank_you_url ? (
-                            <div className="flex items-center gap-1 text-green-500 font-bold">
-                              <CheckCircle2 className="w-4 h-4" /> Sincronizado
-                            </div>
-                          ) : (
-                            <div className="flex items-center gap-1 text-yellow-500 font-bold">
-                              <AlertTriangle className="w-4 h-4" /> Diferente (Aviso)
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
+                    <div className="pt-1">
+                      <p className="text-muted-foreground mb-1">Thank You URL (Products Table):</p>
+                      <p className="font-mono text-[10px] break-all bg-muted/50 p-1 rounded mb-2">
+                        {validatorData.product?.thank_you_url || "N/A"}
+                      </p>
+                    </div>
                   </div>
                 </Card>
               </div>
 
-              {/* 4. Orders Vinculadas */}
+              {/* 3. Checklist */}
               <Card className="p-4 space-y-3">
-                <div className="flex justify-between items-center border-b pb-2">
-                  <h3 className="font-bold flex items-center gap-2 text-sm">
-                    <Play className="w-4 h-4" /> Últimas 5 Orders
-                  </h3>
-                  <Badge variant={validatorData.orders.length > 0 ? "outline" : "destructive"}
-                    className={validatorData.orders.length > 0 ? "text-green-500 border-green-500/20" : "text-yellow-500 border-yellow-500/20"}>
-                    {validatorData.orders.length > 0 ? `${validatorData.orders.length} encontradas` : "Nenhuma order gerada"}
-                  </Badge>
+                <h3 className="font-bold flex items-center gap-2 text-sm border-b pb-2">
+                  <ShieldCheck className="w-4 h-4" /> 3. Checklist de Sincronização
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-xs">
+                  {[
+                    { label: "URL do checkout preenchida", value: validatorData.checklist?.url_checkout_filled },
+                    { label: "Produto mapeado", value: validatorData.checklist?.product_mapped },
+                    { label: "URL do produto preenchida", value: validatorData.checklist?.product_url_filled },
+                    { label: "URLs iguais", value: validatorData.checklist?.urls_match },
+                    { label: "Existe última order", value: validatorData.checklist?.has_last_order },
+                    { label: "Última order tem checkout_id", value: validatorData.checklist?.last_order_has_checkout_id },
+                  ].map((item, idx) => (
+                    <div key={idx} className="flex items-center justify-between p-1 border-b border-dashed last:border-0">
+                      <span className="text-muted-foreground">{item.label}</span>
+                      {item.value === true ? (
+                        <Badge variant="outline" className="text-green-500 border-green-500/20 bg-green-500/5">
+                          <CheckCircle2 className="w-3 h-3 mr-1" /> Sim
+                        </Badge>
+                      ) : item.value === false ? (
+                        <Badge variant="outline" className="text-red-500 border-red-500/20 bg-red-500/5">
+                          <XCircle className="w-3 h-3 mr-1" /> Não
+                        </Badge>
+                      ) : (
+                        <Badge variant="outline" className="text-yellow-500 border-yellow-500/20 bg-yellow-500/5">
+                          <AlertTriangle className="w-3 h-3 mr-1" /> N/A
+                        </Badge>
+                      )}
+                    </div>
+                  ))}
                 </div>
-                
+              </Card>
+
+              {/* 4. Última Order */}
+              {validatorData.last_order && (
+                <Card className="p-4 space-y-3 border-blue-500/20 bg-blue-500/5">
+                  <h3 className="font-bold flex items-center gap-2 text-sm border-b border-blue-500/10 pb-2">
+                    <Play className="w-4 h-4 text-blue-500" /> 4. Última Order
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-[10px]">
+                    <div className="space-y-1">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">ID:</span>
+                        <span className="font-mono">{validatorData.last_order.id}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Status:</span>
+                        <Badge variant={validatorData.last_order.status === 'paid' ? 'default' : 'secondary'} className={validatorData.last_order.status === 'paid' ? 'bg-green-500 h-4 text-[9px]' : 'h-4 text-[9px]'}>
+                          {validatorData.last_order.status}
+                        </Badge>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Pago em:</span>
+                        <span>{validatorData.last_order.paid_at ? format(new Date(validatorData.last_order.paid_at), 'dd/MM/yy HH:mm', { locale: ptBR }) : "N/A"}</span>
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Product ID:</span>
+                        <span className="font-mono">{validatorData.last_order.product_id || "NULL"}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Checkout ID:</span>
+                        <Badge variant={validatorData.last_order.checkout_id ? "outline" : "destructive"} className="h-4 text-[9px]">
+                          {validatorData.last_order.checkout_id ? "OK" : "NULL"}
+                        </Badge>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Token:</span>
+                        <span className="font-mono opacity-60">{validatorData.last_order.public_access_token?.substring(0, 8)}...</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 pt-2">
+                    <Button size="sm" variant="outline" className="h-7 text-[10px] flex-1" onClick={() => testGetOrderStatus(validatorData.last_order.id, validatorData.last_order.public_access_token)}>
+                      <Eye className="w-3 h-3 mr-1" /> Testar get-order-status
+                    </Button>
+                    <Button size="sm" variant="outline" className="h-7 text-[10px] flex-1" onClick={() => copyTestConsole(validatorData.last_order.id, validatorData.last_order.public_access_token)}>
+                      <Copy className="w-3 h-3 mr-1" /> Copiar Console Code
+                    </Button>
+                  </div>
+                </Card>
+              )}
+
+              {/* 5. Últimas 5 Orders */}
+              <Card className="p-4 space-y-3">
+                <h3 className="font-bold flex items-center gap-2 text-sm border-b pb-2">
+                  <Search className="w-4 h-4" /> 5. Últimas 5 Orders
+                </h3>
                 <div className="overflow-x-auto">
                   <table className="w-full text-[10px] text-left">
                     <thead className="bg-muted/50 uppercase text-muted-foreground">
@@ -777,19 +831,19 @@ function CheckoutEditPage() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border">
-                      {validatorData.orders.map((order: any) => (
+                      {(validatorData.last_5_orders || []).map((order: any) => (
                         <tr key={order.id} className="hover:bg-muted/30">
                           <td className="p-2">
                             <div className="font-mono text-[9px]">{order.id}</div>
                             <div className="opacity-60">{format(new Date(order.created_at), 'dd/MM/yy HH:mm', { locale: ptBR })}</div>
                           </td>
                           <td className="p-2">
-                            <Badge variant={order.status === 'paid' ? 'default' : 'secondary'} className={order.status === 'paid' ? 'bg-green-500' : ''}>
+                            <Badge variant={order.status === 'paid' ? 'default' : 'secondary'} className={order.status === 'paid' ? 'bg-green-500 h-4 text-[9px]' : 'h-4 text-[9px]'}>
                               {order.status}
                             </Badge>
                           </td>
                           <td className="p-2">
-                            <Badge variant={order.checkout_id ? "outline" : "destructive"}>
+                            <Badge variant={order.checkout_id ? "outline" : "destructive"} className="h-4 text-[9px]">
                               {order.checkout_id ? "OK" : "NULL"}
                             </Badge>
                           </td>
@@ -809,7 +863,7 @@ function CheckoutEditPage() {
                   </table>
                 </div>
 
-                {validatorData.orders.length > 0 && (
+                {validatorData.last_5_orders && validatorData.last_5_orders.length > 0 && (
                   <div className="flex flex-wrap gap-2 pt-4 border-t">
                     <Button 
                       size="sm" 
@@ -830,6 +884,29 @@ function CheckoutEditPage() {
                   </div>
                 )}
               </Card>
+
+              {/* 6. Console Test Code */}
+              {validatorData.console_test_code && (
+                <Card className="p-4 bg-black/5 dark:bg-black/40 space-y-2">
+                  <div className="flex justify-between items-center border-b border-white/10 pb-1">
+                    <span className="text-[10px] font-bold text-muted-foreground uppercase">Código de teste do console:</span>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="h-6 gap-1 text-[10px]" 
+                      onClick={() => {
+                        navigator.clipboard.writeText(validatorData.console_test_code);
+                        toast.success("Código de teste copiado!");
+                      }}
+                    >
+                      <Copy className="w-3 h-3" /> Copiar código de teste do console
+                    </Button>
+                  </div>
+                  <pre className="text-[9px] font-mono p-2 overflow-x-auto whitespace-pre-wrap max-h-32 overflow-y-auto">
+                    {validatorData.console_test_code}
+                  </pre>
+                </Card>
+              )}
 
               {/* Debug Response Area */}
               {debugResponse && (
