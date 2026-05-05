@@ -40,6 +40,7 @@ function CheckoutEditPage() {
     media_asset: null,
     active: true,
     design_key: "default_v1",
+    success_redirect_url: "",
   });
   const [fields, setFields] = useState<any[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
@@ -92,6 +93,7 @@ function CheckoutEditPage() {
         media_asset: null,
         active: true,
         design_key: "default_v1",
+        success_redirect_url: "",
       });
       setFields(normalizeFields([]));
     }
@@ -154,10 +156,12 @@ function CheckoutEditPage() {
         media_json: checkout.media_asset ?? null,
         media_url: checkout.media_asset?.url ?? null,
         media_type: checkout.media_asset?.type ?? null,
+        design_key: checkout.design_key || "default_v1",
+        success_redirect_url: checkout.success_redirect_url || null,
         updated_at: new Date().toISOString(),
       };
 
-      // design_key removido do payload pois não existe na tabela checkouts (usamos slug-based fallback no público)
+      // design_key e success_redirect_url agora existem na tabela checkouts
       console.log("[Admin Save] checkout id", checkoutId);
       console.log("[Admin Save] payload checkouts", checkoutPayload);
       console.log("[Admin Save] payload fields", fields);
@@ -363,9 +367,36 @@ function CheckoutEditPage() {
                   <option value="comunidade_v1">Comunidade Premium</option>
                   <option value="visagismo_v1">Visagismo & IA</option>
                   <option value="reservado_v1">Acesso Reservado</option>
+                  <option value="apple_v1">Premium Style (Apple)</option>
                 </select>
                 <p className="text-[10px] text-muted-foreground italic">
                   O design selecionado define a identidade visual do checkout público.
+                </p>
+              </div>
+            </div>
+          </Card>
+          <Card className="p-6 space-y-4 mb-6">
+            <h2 className="text-xl font-semibold border-b pb-2">Entrega após pagamento</h2>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>URL de Sucesso (Redirecionamento Externo)</Label>
+                <div className="flex gap-2">
+                  <Input 
+                    value={checkout.success_redirect_url || ""} 
+                    onChange={(e) => setCheckout({ ...checkout, success_redirect_url: e.target.value })}
+                    placeholder="https://sua-entrega.com/obrigado"
+                  />
+                  <Button 
+                    variant="outline" 
+                    type="button"
+                    onClick={() => checkout.success_redirect_url && window.open(checkout.success_redirect_url, '_blank')}
+                    disabled={!checkout.success_redirect_url}
+                  >
+                    Testar link
+                  </Button>
+                </div>
+                <p className="text-[10px] text-muted-foreground italic">
+                  Após pagamento confirmado, o comprador será enviado para este link.
                 </p>
               </div>
             </div>
