@@ -3,7 +3,7 @@
  import { useState, useEffect } from "react";
  import { Button } from "@/components/ui/button";
  import { Card } from "@/components/ui/card";
-import { Plus, Edit, ExternalLink, Users, Copy, Trash2 } from "lucide-react";
+import { Plus, Edit, ExternalLink, Users, Copy, Trash2, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
  import { Badge } from "@/components/ui/badge";
  
@@ -112,15 +112,23 @@ import { toast } from "sonner";
            <h1 className="text-3xl font-bold">Checkouts MVP</h1>
            <p className="text-muted-foreground">Gerencie seus checkouts personalizados</p>
          </div>
-          <Link 
-            to="/admin/checkouts/$id" 
-            params={{ id: "new" }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            <Plus className="mr-2 h-4 w-4" /> Novo Checkout
-          </Link>
+         <div className="flex gap-4">
+           <Link 
+             to="/admin/audit" 
+             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+           >
+             <ShieldCheck className="mr-2 h-4 w-4" /> Auditoria Global
+           </Link>
+           <Link 
+             to="/admin/checkouts/$id" 
+             params={{ id: "new" }}
+             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+           >
+             <Plus className="mr-2 h-4 w-4" /> Novo Checkout
+           </Link>
+         </div>
        </div>
- 
+
        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
          {loading ? (
            Array.from({ length: 3 }).map((_, i) => (
