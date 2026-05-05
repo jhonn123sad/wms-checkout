@@ -45,6 +45,7 @@ import { toast } from "sonner";
   };
 
   const handleDuplicate = async (checkout: any) => {
+    console.log("[Duplicate] clique", checkout.id);
     console.log("[Duplicate] checkout original", checkout);
     
     // Remover campos que não são colunas ou que devem ser novos
@@ -76,19 +77,29 @@ import { toast } from "sonner";
     if (error) {
       console.error("[Duplicate] erro", error);
       toast.error("Erro ao duplicar checkout: " + error.message);
-    } else if (data) {
+      return;
+    } 
+    
+    if (data) {
       // Duplicar campos também
       const { data: fields, error: fieldsFetchError } = await supabase
         .from("checkout_fields")
         .select("*")
         .eq("checkout_id", id);
       
+      if (fieldsFetchError) {
+        console.error("[Duplicate] erro ao buscar campos do original", fieldsFetchError);
+      }
+
       if (fields && fields.length > 0) {
-        const newFields = fields.map(({ id: fId, checkout_id, ...fData }) => ({
+        const newFields = fields.map(({ id: fId, checkout_id, created_at: fCa, ...fData }) => ({
           ...fData,
           checkout_id: data.id
         }));
+        
+        console.log("[Duplicate] campos para duplicar", newFields);
         const { error: fieldsInsertError } = await supabase.from("checkout_fields").insert(newFields);
+        
         if (fieldsInsertError) {
           console.error("[Duplicate] erro ao copiar campos", fieldsInsertError);
           toast.error("Checkout duplicado, mas houve erro ao copiar os campos.");
