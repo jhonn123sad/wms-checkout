@@ -675,11 +675,15 @@ function CheckoutEditPage() {
                   <div className="space-y-1 text-xs">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">ID:</span>
-                      <span className="font-mono">{validatorData.checkout?.id}</span>
+                      <span className="font-mono">{validatorData.checkout?.checkout_id}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Slug:</span>
                       <span>{validatorData.checkout?.slug}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Preço:</span>
+                      <span>R$ {validatorData.checkout?.price?.toFixed(2)} ({validatorData.checkout?.price_cents} cents)</span>
                     </div>
                     <div className="pt-1">
                       <p className="text-muted-foreground mb-1">Success Redirect URL:</p>
@@ -693,16 +697,20 @@ function CheckoutEditPage() {
                 {/* 2. Produto */}
                 <Card className="p-4 space-y-3">
                   <h3 className="font-bold flex items-center gap-2 text-sm border-b pb-2">
-                    <Search className="w-4 h-4" /> 2. Produto
+                    <Search className="w-4 h-4" /> 2. Produto Legado
                   </h3>
                   <div className="space-y-1 text-xs">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">ID:</span>
-                      <span className="font-mono">{validatorData.product?.id || "N/A"}</span>
+                      <span className="font-mono">{validatorData.product?.product_id || "N/A"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Preço:</span>
+                      <span>{validatorData.product?.price_cents ? `${validatorData.product.price_cents} cents` : "N/A"}</span>
                     </div>
                     <div className="pt-1">
-                      <p className="text-muted-foreground mb-1">Thank You URL (Products Table):</p>
-                      <p className="font-mono text-[10px] break-all bg-muted/50 p-1 rounded mb-2">
+                      <p className="text-muted-foreground mb-1">Thank You URL:</p>
+                      <p className="font-mono text-[10px] break-all bg-muted/50 p-1 rounded">
                         {validatorData.product?.thank_you_url || "N/A"}
                       </p>
                     </div>
@@ -717,12 +725,14 @@ function CheckoutEditPage() {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-xs">
                   {[
-                    { label: "URL do checkout preenchida", value: validatorData.checklist?.url_checkout_filled },
-                    { label: "Produto mapeado", value: validatorData.checklist?.product_mapped },
-                    { label: "URL do produto preenchida", value: validatorData.checklist?.product_url_filled },
-                    { label: "URLs iguais", value: validatorData.checklist?.urls_match },
-                    { label: "Existe última order", value: validatorData.checklist?.has_last_order },
-                    { label: "Última order tem checkout_id", value: validatorData.checklist?.last_order_has_checkout_id },
+                    { label: "URL do checkout preenchida", value: validatorData.checks?.checkout_url_filled },
+                    { label: "Produto mapeado", value: validatorData.checks?.has_product_map },
+                    { label: "URLs iguais", value: validatorData.checks?.urls_equal },
+                    { label: "Preço checkout válido", value: validatorData.checks?.checkout_price_valid },
+                    { label: "Preço produto sincronizado", value: validatorData.checks?.product_price_synced },
+                    { label: "Existe última order", value: validatorData.checks?.has_latest_order },
+                    { label: "Última order tem checkout_id", value: validatorData.checks?.latest_order_has_checkout_id },
+                    { label: "Preço da order confere", value: validatorData.checks?.latest_order_price_matches_checkout },
                   ].map((item, idx) => (
                     <div key={idx} className="flex items-center justify-between p-1 border-b border-dashed last:border-0">
                       <span className="text-muted-foreground">{item.label}</span>
@@ -745,7 +755,7 @@ function CheckoutEditPage() {
               </Card>
 
               {/* 4. Última Order */}
-              {validatorData.last_order && (
+              {validatorData.latest_order && (
                 <Card className="p-4 space-y-3 border-blue-500/20 bg-blue-500/5">
                   <h3 className="font-bold flex items-center gap-2 text-sm border-b border-blue-500/10 pb-2">
                     <Play className="w-4 h-4 text-blue-500" /> 4. Última Order
@@ -754,41 +764,37 @@ function CheckoutEditPage() {
                     <div className="space-y-1">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">ID:</span>
-                        <span className="font-mono">{validatorData.last_order.id}</span>
+                        <span className="font-mono">{validatorData.latest_order.order_id}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Status:</span>
-                        <Badge variant={validatorData.last_order.status === 'paid' ? 'default' : 'secondary'} className={validatorData.last_order.status === 'paid' ? 'bg-green-500 h-4 text-[9px]' : 'h-4 text-[9px]'}>
-                          {validatorData.last_order.status}
+                        <Badge variant={validatorData.latest_order.status === 'paid' ? 'default' : 'secondary'} className={validatorData.latest_order.status === 'paid' ? 'bg-green-500 h-4 text-[9px]' : 'h-4 text-[9px]'}>
+                          {validatorData.latest_order.status}
                         </Badge>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Pago em:</span>
-                        <span>{validatorData.last_order.paid_at ? format(new Date(validatorData.last_order.paid_at), 'dd/MM/yy HH:mm', { locale: ptBR }) : "N/A"}</span>
+                        <span className="text-muted-foreground">Amount Cents:</span>
+                        <span>{validatorData.latest_order.amount_cents}</span>
                       </div>
                     </div>
                     <div className="space-y-1">
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Product ID:</span>
-                        <span className="font-mono">{validatorData.last_order.product_id || "NULL"}</span>
-                      </div>
-                      <div className="flex justify-between">
                         <span className="text-muted-foreground">Checkout ID:</span>
-                        <Badge variant={validatorData.last_order.checkout_id ? "outline" : "destructive"} className="h-4 text-[9px]">
-                          {validatorData.last_order.checkout_id ? "OK" : "NULL"}
+                        <Badge variant={validatorData.latest_order.checkout_id ? "outline" : "destructive"} className="h-4 text-[9px]">
+                          {validatorData.latest_order.checkout_id || "NULL"}
                         </Badge>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Token:</span>
-                        <span className="font-mono opacity-60">{validatorData.last_order.public_access_token?.substring(0, 8)}...</span>
+                        <span className="font-mono opacity-60">{validatorData.latest_order.public_access_token?.substring(0, 8)}...</span>
                       </div>
                     </div>
                   </div>
                   <div className="flex gap-2 pt-2">
-                    <Button size="sm" variant="outline" className="h-7 text-[10px] flex-1" onClick={() => testGetOrderStatus(validatorData.last_order.id, validatorData.last_order.public_access_token)}>
+                    <Button size="sm" variant="outline" className="h-7 text-[10px] flex-1" onClick={() => testGetOrderStatus(validatorData.latest_order.order_id, validatorData.latest_order.public_access_token)}>
                       <Eye className="w-3 h-3 mr-1" /> Testar get-order-status
                     </Button>
-                    <Button size="sm" variant="outline" className="h-7 text-[10px] flex-1" onClick={() => copyTestConsole(validatorData.last_order.id, validatorData.last_order.public_access_token)}>
+                    <Button size="sm" variant="outline" className="h-7 text-[10px] flex-1" onClick={() => copyTestConsole(validatorData.latest_order.order_id, validatorData.latest_order.public_access_token)}>
                       <Copy className="w-3 h-3 mr-1" /> Copiar Console Code
                     </Button>
                   </div>
