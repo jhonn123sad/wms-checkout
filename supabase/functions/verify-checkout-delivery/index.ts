@@ -68,7 +68,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    const successRedirectUrl = checkout.success_redirect_url || null;
+    const successRedirectUrl = checkout.success_redirect_url;
 
     if (!successRedirectUrl) {
       return json({
