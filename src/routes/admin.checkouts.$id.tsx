@@ -267,43 +267,32 @@ function CheckoutEditPage() {
     }
   };
 
+  const [verificationResult, setVerificationResult] = useState<any>(null);
+
   const verifyLastOrderRedirect = async () => {
     setVerifyingStatus(true);
+    setVerificationResult(null);
     try {
-      const { data, error: orderError } = await (supabase
-        .from("orders")
-        .select("id, public_access_token, checkout_id") as any)
-        .eq("checkout_id", id)
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-
-      const lastOrder = data as any;
-
-      if (orderError || !lastOrder) {
-        toast.error("Nenhuma order encontrada para este checkout. Gere um Pix no checkout público primeiro.");
-        return;
-      }
-
-      const { data: statusData, error: statusError } = await supabase.functions.invoke("get-order-status", {
-        body: { 
-          orderId: lastOrder.id, 
-          token: lastOrder.public_access_token,
-          simulate_paid: true
-        },
-        method: 'POST'
+      const { data, error } = await supabase.functions.invoke("verify-checkout-delivery", {
+        body: { checkout_id: id }
       });
 
-      if (statusError) throw statusError;
+      if (error) throw error;
+      
+      setVerificationResult(data);
 
-      const url = statusData?.redirect_url || statusData?.success_redirect_url || statusData?.thank_you_url;
-      if (url) {
-        toast.success(`Última order encontrada (${lastOrder.id.slice(0,8)}). Quando for paga, será enviada para: ${url}`);
+      if (data.ok) {
+        toast.success(data.message);
       } else {
-        toast.warning("Order encontrada, mas URL de entrega não configurada.");
+        if (data.code === "ORDER_NOT_FOUND") {
+          toast.info(data.message);
+        } else {
+          toast.error(data.message);
+        }
       }
     } catch (err: any) {
-      toast.error("Erro na verificação: " + err.message);
+      console.error("Erro na verificação:", err);
+      toast.error("Erro na verificação: " + (err.message || "Erro inesperado"));
     } finally {
       setVerifyingStatus(false);
     }
@@ -480,9 +469,26 @@ function CheckoutEditPage() {
                   >
                     {verifyingStatus ? "Verificando..." : "Verificar Fluxo de Entrega (Última Order)"}
                   </Button>
-                  <p className="text-[9px] text-muted-foreground mt-1">
-                    Simula um pagamento aprovado para a última order deste checkout e valida a URL de entrega.
-                  </p>
+                  
+                  {verificationResult && (
+                    <div className={`mt-3 p-3 rounded-md text-[11px] border ${
+                      verificationResult.ok ? 'bg-green-500/10 border-green-500/20 text-green-400' : 
+                      verificationResult.code === 'ORDER_NOT_FOUND' ? 'bg-blue-500/10 border-blue-500/20 text-blue-400' :
+                      'bg-red-500/10 border-red-500/20 text-red-400'
+                    }`}>
+                      <p className="font-bold mb-1">{verificationResult.message}</p>
+                      {verificationResult.success_redirect_url && (
+                        <div className="mt-1 opacity-80 break-all">
+                          <strong>URL destino:</strong> {verificationResult.success_redirect_url}
+                        </div>
+                      )}
+                      {verificationResult.order_id && (
+                        <div className="mt-1 opacity-60">
+                          <strong>Order ID:</strong> {verificationResult.order_id}
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
