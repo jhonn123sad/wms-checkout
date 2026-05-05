@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.pushinpay-webhook]
 verify_jwt = false
+
+[functions.verify-checkout-delivery]
+verify_jwt = false
