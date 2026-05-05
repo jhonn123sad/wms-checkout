@@ -49,49 +49,52 @@ Deno.serve(async (req) => {
       return json({ error: "INVALID_TOKEN" }, 403);
     }
 
-    let redirect_url: string | null = null;
+    let finalUrl: string | null = null;
     const currentStatus = simulatePaid ? "paid" : (order.status || "waiting_payment");
     const isPaid = ["paid", "approved", "confirmed", "completed"].includes(currentStatus.toLowerCase());
 
     if (isPaid) {
+      // 1. PRIMEIRO: orders.checkout_id -> checkouts.success_redirect_url
       if (order.checkout_id) {
         const { data: checkout } = await supabase
           .from("checkouts")
           .select("success_redirect_url")
           .eq("id", order.checkout_id)
           .maybeSingle();
-        redirect_url = checkout?.success_redirect_url ?? null;
+        
+        if (checkout?.success_redirect_url) {
+          finalUrl = checkout.success_redirect_url;
+        }
       } 
       
-      // Fallbacks para compatibilidade com fluxos antigos
-      if (!redirect_url && order.project_id) {
-        const { data: project } = await supabase
-          .from("checkout_projects")
-          .select("thank_you_url")
-          .eq("id", order.project_id)
-          .maybeSingle();
-        redirect_url = project?.thank_you_url ?? null;
-      } 
-      
-      if (!redirect_url && order.product_id) {
+      // 2. SEGUNDO (fallback): orders.product_id -> products.thank_you_url
+      if (!finalUrl && order.product_id) {
         const { data: product } = await supabase
           .from("products")
           .select("thank_you_url")
           .eq("id", order.product_id)
           .maybeSingle();
-        redirect_url = product?.thank_you_url ?? Deno.env.get("THANK_YOU_URL") ?? null;
+        
+        if (product?.thank_you_url) {
+          finalUrl = product.thank_you_url;
+        }
+      }
+
+      // Fallback global de ambiente
+      if (!finalUrl) {
+        finalUrl = Deno.env.get("THANK_YOU_URL") || null;
       }
     }
 
     return json({
       orderId: order.id,
       status: currentStatus,
-      paid: isPaid,
       paid_at: order.paid_at,
-      redirect_url,
-      success_redirect_url: redirect_url, // Alias
-      thank_you_url: redirect_url, // Alias
-      message: isPaid && !redirect_url ? "Pagamento confirmado, mas o link de entrega ainda não foi configurado." : undefined
+      thank_you_url: finalUrl,
+      redirect_url: finalUrl,
+      // Campos extras para manter compatibilidade com frontend se necessário
+      paid: isPaid,
+      success_redirect_url: finalUrl
     });
   } catch (err) {
     console.error("[get-order-status]", err);
