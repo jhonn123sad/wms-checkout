@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, ShoppingCart, Users, TrendingUp } from "lucide-react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/")({
   component: AdminDashboard,
