@@ -342,7 +342,7 @@ function CheckoutEditPage() {
       const { data: lastOrders } = await supabase
         .from("orders")
         .select("*")
-        .eq("checkout_id", id)
+        .filter("checkout_id", "eq", id)
         .order("created_at", { ascending: false })
         .limit(5);
 
