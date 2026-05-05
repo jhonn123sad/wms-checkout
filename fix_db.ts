@@ -30,7 +30,6 @@ async function insertCheckout() {
         cta_text: "Garantir meu acesso",
         media_type: "image",
         media_url: "https://rqassaxkbntpcwhvevyi.supabase.co/storage/v1/object/public/checkout-assets/comunidade-wms/edite_essa_imagem_202604160528.jpeg",
-        design_key: "apple_v1",
         active: true,
         status: 'published'
       })
@@ -54,7 +53,6 @@ async function insertCheckout() {
         cta_text: "Garantir meu acesso",
         media_type: "image",
         media_url: "https://rqassaxkbntpcwhvevyi.supabase.co/storage/v1/object/public/checkout-assets/comunidade-wms/edite_essa_imagem_202604160528.jpeg",
-        design_key: "apple_v1",
         active: true,
         status: 'published'
       })
