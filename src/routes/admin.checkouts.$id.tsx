@@ -566,30 +566,10 @@ function CheckoutEditPage() {
                     variant="secondary" 
                     className="w-full text-xs"
                     onClick={verifyLastOrderRedirect}
-                    disabled={verifyingStatus}
+                    disabled={validatorLoading}
                   >
-                    {verifyingStatus ? "Verificando..." : "Verificar Fluxo de Entrega (Última Order)"}
+                    {validatorLoading ? "Gerando relatório..." : "Verificar Fluxo de Entrega (Última Order)"}
                   </Button>
-                  
-                  {verificationResult && (
-                    <div className={`mt-3 p-3 rounded-md text-[11px] border ${
-                      verificationResult.ok ? 'bg-green-500/10 border-green-500/20 text-green-400' : 
-                      verificationResult.code === 'ORDER_NOT_FOUND' ? 'bg-blue-500/10 border-blue-500/20 text-blue-400' :
-                      'bg-red-500/10 border-red-500/20 text-red-400'
-                    }`}>
-                      <p className="font-bold mb-1">{verificationResult.message}</p>
-                      {verificationResult.success_redirect_url && (
-                        <div className="mt-1 opacity-80 break-all">
-                          <strong>URL destino:</strong> {verificationResult.success_redirect_url}
-                        </div>
-                      )}
-                      {verificationResult.order_id && (
-                        <div className="mt-1 opacity-60">
-                          <strong>Order ID:</strong> {verificationResult.order_id}
-                        </div>
-                      )}
-                    </div>
-                  )}
                 </div>
               )}
             </div>
