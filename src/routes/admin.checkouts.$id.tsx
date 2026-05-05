@@ -251,13 +251,14 @@ function CheckoutEditPage() {
   const verifyLastOrderRedirect = async () => {
     setVerifyingStatus(true);
     try {
-      const { data: lastOrder, error: orderError } = await supabase
-        .from("orders" as any)
-        .select("id, public_access_token")
-        .eq("metadata->>checkout_id" as any, id)
+      const { data, error: orderError } = await (supabase
+        .from("orders")
+        .select("id, public_access_token") as any)
         .order("created_at", { ascending: false })
         .limit(1)
         .maybeSingle();
+
+      const lastOrder = data as any;
 
       if (orderError || !lastOrder) {
         toast.error("Nenhuma order encontrada para este checkout. Gere um Pix no checkout público primeiro.");
