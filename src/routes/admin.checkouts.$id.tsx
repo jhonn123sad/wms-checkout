@@ -300,7 +300,7 @@ function CheckoutEditPage() {
     setDebugResponse(null);
     try {
       console.log("[Validator] Calling RPC validate_checkout_delivery_report for slug:", checkout.slug);
-      const { data, error } = await supabase.rpc("validate_checkout_delivery_report", {
+      const { data, error } = await (supabase.rpc as any)("validate_checkout_delivery_report", {
         p_slug: checkout.slug
       });
 
