@@ -46,16 +46,18 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
           method: 'POST'
         });
 
-        if (!error && (data?.status === 'paid' || data?.status === 'approved' || data?.status === 'confirmed' || data?.status === 'completed')) {
+        const isPaid = data?.paid === true || ['paid', 'approved', 'confirmed', 'completed'].includes(data?.status?.toLowerCase());
+        
+        if (!error && isPaid) {
           setPaymentStatus('paid');
           setIsPolling(false);
           toast.success("Pagamento confirmado!");
           
-          const redirectUrl = data.redirect_url || data.thank_you_url;
+          const redirectUrl = data.redirect_url || data.success_redirect_url || data.thank_you_url;
           if (redirectUrl) {
             setTimeout(() => {
               window.location.href = redirectUrl;
-            }, 1500);
+            }, 2000);
           } else {
             toast.info("Pagamento confirmado, mas o link de entrega ainda não foi configurado.");
           }

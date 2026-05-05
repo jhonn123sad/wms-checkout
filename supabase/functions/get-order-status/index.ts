@@ -13,17 +13,17 @@ Deno.serve(async (req) => {
     let token = "";
 
     if (req.method === "POST") {
-      const body = await req.json();
+      const bodyText = await req.text();
+      const body = bodyText ? JSON.parse(bodyText) : {};
       orderId = body.orderId || "";
       token = body.token || "";
+      simulatePaid = body.simulate_paid === true;
     } else {
       const url = new URL(req.url);
       orderId = url.searchParams.get("orderId") || "";
       token = url.searchParams.get("token") || "";
+      simulatePaid = url.searchParams.get("simulate_paid") === "true";
     }
-
-    const body = req.method === "POST" ? await req.json().catch(() => ({})) : {};
-    const simulatePaid = body.simulate_paid === true;
 
     if (!orderId || !token) {
       return json({ error: "ORDER_ID_AND_TOKEN_REQUIRED" }, 400);
@@ -49,40 +49,49 @@ Deno.serve(async (req) => {
       return json({ error: "INVALID_TOKEN" }, 403);
     }
 
-    let thank_you_url: string | null = null;
-    const currentStatus = simulatePaid ? "paid" : order.status;
+    let redirect_url: string | null = null;
+    const currentStatus = simulatePaid ? "paid" : (order.status || "waiting_payment");
+    const isPaid = ["paid", "approved", "confirmed", "completed"].includes(currentStatus.toLowerCase());
 
-    if (currentStatus === "paid" || currentStatus === "approved" || currentStatus === "confirmed" || currentStatus === "completed") {
+    if (isPaid) {
       if (order.checkout_id) {
         const { data: checkout } = await supabase
           .from("checkouts")
           .select("success_redirect_url")
           .eq("id", order.checkout_id)
           .maybeSingle();
-        thank_you_url = checkout?.success_redirect_url ?? null;
-      } else if (order.project_id) {
-        // ... (keep rest of existing logic for project_id, product_id etc)
+        redirect_url = checkout?.success_redirect_url ?? null;
+      } 
+      
+      // Fallbacks para compatibilidade com fluxos antigos
+      if (!redirect_url && order.project_id) {
         const { data: project } = await supabase
           .from("checkout_projects")
           .select("thank_you_url")
           .eq("id", order.project_id)
           .maybeSingle();
-        thank_you_url = project?.thank_you_url ?? null;
-      } else if (order.product_id) {
+        redirect_url = project?.thank_you_url ?? null;
+      } 
+      
+      if (!redirect_url && order.product_id) {
         const { data: product } = await supabase
           .from("products")
           .select("thank_you_url")
           .eq("id", order.product_id)
           .maybeSingle();
-        thank_you_url = product?.thank_you_url ?? Deno.env.get("THANK_YOU_URL") ?? null;
+        redirect_url = product?.thank_you_url ?? Deno.env.get("THANK_YOU_URL") ?? null;
       }
     }
+
     return json({
       orderId: order.id,
-      status: order.status,
+      status: currentStatus,
+      paid: isPaid,
       paid_at: order.paid_at,
-      thank_you_url,
-      redirect_url: thank_you_url, // Alias requested by user
+      redirect_url,
+      success_redirect_url: redirect_url, // Alias
+      thank_you_url: redirect_url, // Alias
+      message: isPaid && !redirect_url ? "Pagamento confirmado, mas o link de entrega ainda não foi configurado." : undefined
     });
   } catch (err) {
     console.error("[get-order-status]", err);

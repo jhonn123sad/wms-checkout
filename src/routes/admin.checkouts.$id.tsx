@@ -248,12 +248,32 @@ function CheckoutEditPage() {
     }
   };
 
+  const handleTestLink = () => {
+    const url = checkout.success_redirect_url;
+    if (!url || !url.trim()) {
+      toast.error("Nenhuma URL de entrega configurada.");
+      return;
+    }
+
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+      toast.error("Informe uma URL válida começando com https://");
+      return;
+    }
+
+    toast.success("Abrindo link de entrega em nova aba...");
+    const win = window.open(url, "_blank", "noopener,noreferrer");
+    if (!win) {
+      toast.error("O navegador bloqueou a nova aba. Tente clicar no link manual abaixo.");
+    }
+  };
+
   const verifyLastOrderRedirect = async () => {
     setVerifyingStatus(true);
     try {
       const { data, error: orderError } = await (supabase
         .from("orders")
-        .select("id, public_access_token") as any)
+        .select("id, public_access_token, checkout_id") as any)
+        .eq("checkout_id", id)
         .order("created_at", { ascending: false })
         .limit(1)
         .maybeSingle();
@@ -269,21 +289,18 @@ function CheckoutEditPage() {
         body: { 
           orderId: lastOrder.id, 
           token: lastOrder.public_access_token,
-          simulate_paid: true // Hook for testing
+          simulate_paid: true
         },
         method: 'POST'
       });
 
       if (statusError) throw statusError;
 
-      const url = statusData?.redirect_url || statusData?.thank_you_url;
+      const url = statusData?.redirect_url || statusData?.success_redirect_url || statusData?.thank_you_url;
       if (url) {
-        toast.success(`Sucesso! Quando a order ${lastOrder.id.slice(0,8)} for paga, redirecionará para: ${url}`);
-        if (confirm(`Deseja testar o redirecionamento agora?\n\nURL: ${url}`)) {
-          window.open(url, '_blank');
-        }
+        toast.success(`Última order encontrada (${lastOrder.id.slice(0,8)}). Quando for paga, será enviada para: ${url}`);
       } else {
-        toast.warning("Pagamento confirmado (simulação), mas nenhuma URL de redirecionamento foi encontrada.");
+        toast.warning("Order encontrada, mas URL de entrega não configurada.");
       }
     } catch (err: any) {
       toast.error("Erro na verificação: " + err.message);
@@ -432,13 +449,23 @@ function CheckoutEditPage() {
                   <Button 
                     variant="outline" 
                     type="button"
-                    onClick={() => checkout.success_redirect_url && window.open(checkout.success_redirect_url, '_blank')}
+                    onClick={handleTestLink}
                     disabled={!checkout.success_redirect_url}
                   >
                     Testar link
                   </Button>
                 </div>
-                <p className="text-[10px] text-muted-foreground italic">
+                {checkout.success_redirect_url && (
+                  <a 
+                    href={checkout.success_redirect_url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-[10px] text-green-500 hover:underline flex items-center gap-1 mt-1"
+                  >
+                    Clique aqui se o popup for bloqueado: {checkout.success_redirect_url}
+                  </a>
+                )}
+                <p className="text-[10px] text-muted-foreground italic mt-2">
                   Após pagamento confirmado, o comprador será enviado para este link.
                 </p>
               </div>
