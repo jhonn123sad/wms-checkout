@@ -45,32 +45,57 @@ import { toast } from "sonner";
   };
 
   const handleDuplicate = async (checkout: any) => {
-    const { id, created_at, updated_at, checkout_leads, ...checkoutData } = checkout;
+    console.log("[Duplicate] checkout original", checkout);
+    
+    // Remover campos que não são colunas ou que devem ser novos
+    const { id, created_at, updated_at, checkout_leads, checkout_fields, ...checkoutData } = checkout;
+    
     const newCheckout = {
       ...checkoutData,
       title: `${checkout.title} (Cópia)`,
-      slug: `${checkout.slug}-copy-${Math.floor(Math.random() * 1000)}`,
+      slug: `${checkout.slug}-copy-${Math.floor(Math.random() * 10000)}`,
+      active: false,
       status: "draft",
       design_key: checkout.design_key || "default_v1",
       success_redirect_url: checkout.success_redirect_url || null,
+      media_json: checkout.media_json || null,
+      media_url: checkout.media_url || null,
+      media_type: checkout.media_type || null,
     };
 
-    const { data, error } = await supabase.from("checkouts").insert(newCheckout).select().single();
+    console.log("[Duplicate] payload novo checkout", newCheckout);
+
+    const { data, error } = await supabase
+      .from("checkouts")
+      .insert([newCheckout])
+      .select()
+      .single();
     
+    console.log("[Duplicate] resultado insert", data);
+
     if (error) {
+      console.error("[Duplicate] erro", error);
       toast.error("Erro ao duplicar checkout: " + error.message);
-    } else {
+    } else if (data) {
       // Duplicar campos também
-      const { data: fields } = await supabase.from("checkout_fields").select("*").eq("checkout_id", id);
+      const { data: fields, error: fieldsFetchError } = await supabase
+        .from("checkout_fields")
+        .select("*")
+        .eq("checkout_id", id);
+      
       if (fields && fields.length > 0) {
         const newFields = fields.map(({ id: fId, checkout_id, ...fData }) => ({
           ...fData,
           checkout_id: data.id
         }));
-        await supabase.from("checkout_fields").insert(newFields);
+        const { error: fieldsInsertError } = await supabase.from("checkout_fields").insert(newFields);
+        if (fieldsInsertError) {
+          console.error("[Duplicate] erro ao copiar campos", fieldsInsertError);
+          toast.error("Checkout duplicado, mas houve erro ao copiar os campos.");
+        }
       }
       
-      toast.success("Checkout duplicado");
+      toast.success("Checkout duplicado com sucesso!");
       fetchCheckouts();
     }
   };

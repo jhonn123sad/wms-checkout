@@ -161,37 +161,37 @@ function CheckoutEditPage() {
         updated_at: new Date().toISOString(),
       };
 
-      // design_key e success_redirect_url agora existem na tabela checkouts
       console.log("[Admin Save] checkout id", checkoutId);
       console.log("[Admin Save] payload checkouts", checkoutPayload);
-      console.log("[Admin Save] payload fields", fields);
 
+      let data, error;
       if (isNew) {
-        const { data, error } = await supabase
+        const result = await supabase
           .from("checkouts")
           .insert([checkoutPayload])
           .select()
           .single();
+        data = result.data;
+        error = result.error;
         
-        console.log("[Admin Save] resposta checkouts", data);
-        if (error) {
-          console.error("[Admin Save] erro insert checkouts", error);
-          throw error;
+        if (!error && data) {
+          checkoutId = data.id;
         }
-        checkoutId = data.id;
       } else {
-        const { data, error } = await supabase
+        const result = await supabase
           .from("checkouts")
           .update(checkoutPayload)
           .eq("id", id)
           .select()
           .single();
-        
-        console.log("[Admin Save] resposta checkouts", data);
-        if (error) {
-          console.error("[Admin Save] erro update checkouts", error);
-          throw error;
-        }
+        data = result.data;
+        error = result.error;
+      }
+
+      console.log("[Admin Save] resultado", data);
+      if (error) {
+        console.error("[Admin Save] erro", error);
+        throw error;
       }
 
       // Re-sincronizar campos
@@ -219,19 +219,15 @@ function CheckoutEditPage() {
 
       console.log("[Admin Save] campos para inserir", fieldsToInsert);
 
-      let fieldsResult = null;
       if (fieldsToInsert.length > 0) {
-        const { data: fData, error: fError } = await supabase
+        const { error: fError } = await supabase
           .from("checkout_fields")
-          .insert(fieldsToInsert)
-          .select();
+          .insert(fieldsToInsert);
         
-        console.log("[Admin Save] resposta fields", fData);
         if (fError) {
           console.error("[Admin Save] erro insert fields", fError);
           throw fError;
         }
-        fieldsResult = fData;
       }
 
       toast.success("Checkout salvo com sucesso!");
@@ -242,7 +238,7 @@ function CheckoutEditPage() {
         await fetchCheckout();
       }
     } catch (error: any) {
-      console.error("[Admin Save] erro", error);
+      console.error("[Admin Save] erro final", error);
       toast.error(error.message || "Erro ao salvar checkout");
     } finally {
       setLoading(false);
