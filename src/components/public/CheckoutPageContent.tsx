@@ -1,5 +1,5 @@
-/**
- * CHECKOUT PAGE CONTENT - DESIGN BASE 01 (PREMIUM DARK)
+/** 
+ * CHECKOUT PAGE CONTENT - REFRESH SYNC v2
  * NÃO ALTERAR O FLUXO DE PAGAMENTO OU PERSISTÊNCIA AO MODIFICAR O DESIGN.
  * Rota: /c/:slug | Tabela: public.checkouts | Pix não depende de campos.
  */
@@ -23,7 +23,7 @@ import { ComunidadeCheckoutDesign } from "./designs/ComunidadeCheckoutDesign";
 import { VisagismoCheckoutDesign } from "./designs/VisagismoCheckoutDesign";
 import { ReservadoCheckoutDesign } from "./designs/ReservadoCheckoutDesign";
 import { DefaultCheckoutDesign } from "./designs/DefaultCheckoutDesign";
-import { WmsNovoTesteCheckoutDesign } from "./designs/WmsNovoTesteCheckoutDesign";
+import { PremiumAppleDesign as WmsNovoTesteCheckoutDesign } from "./designs/PremiumAppleDesign";
 
 export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
   const [formData, setFormData] = useState<Record<string, string>>({});
@@ -66,11 +66,6 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
     return () => clearInterval(interval);
   }, [isPolling, paymentData, paymentStatus]);
 
-  /**
-   * SUBMIT PIX (VALIDADO)
-   * Envia o payload mínimo necessário para create-pix.
-   * NÃO ALTERAR ESTE FLUXO AO MODIFICAR O DESIGN.
-   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -79,7 +74,6 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
       .sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0));
 
 
-    // Dynamic validation for active & required fields
     for (const field of fields) {
       if (field.required && !formData[field.field_name]?.trim()) {
         return toast.error(`Por favor, preencha o campo ${field.field_label}`);
@@ -94,17 +88,15 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
       customer_email: (formData.customer_email || "").trim() || null,
       customer_phone: (formData.customer_phone || "").trim() || null,
       customer_cpf: (formData.customer_cpf || "").trim() ? (formData.customer_cpf || "").replace(/\D/g, "") : null,
-      form_data: formData, // Send everything for metadata
+      form_data: formData,
     };
 
     try {
-      // 1. Save lead (optional)
       await supabase.from("checkout_leads").insert({
         checkout_id: checkout.id,
         data: formData,
       });
 
-      // 2. Invoke real payment function
       const { data, error: invokeError } = await supabase.functions.invoke("create-pix", {
         body: payload,
       });
@@ -205,7 +197,6 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white font-sans selection:bg-green-500/30 overflow-x-hidden">
-      {/* Background patterns */}
       <div className="fixed inset-0 pointer-events-none opacity-[0.03] z-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#22c55e_0%,transparent_50%)]"></div>
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:40px_40px]"></div>
@@ -213,8 +204,6 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
 
       <main className="relative z-10 w-full max-w-[1200px] mx-auto px-4 py-8 md:py-12 lg:py-20">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-12 lg:gap-20 items-start">
-          
-          {/* Coluna Esquerda: Produto e Mídia */}
           <div className="flex flex-col space-y-8 animate-in fade-in slide-in-from-left-4 duration-700">
             <div className="space-y-6">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-500">
@@ -232,7 +221,6 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
               </div>
             </div>
 
-            {/* Media Display Container */}
             <div className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
               <div className="relative aspect-video rounded-3xl overflow-hidden border border-white/5 bg-[#141414] shadow-2xl">
@@ -249,7 +237,6 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
               </div>
             </div>
 
-            {/* Trust Bullets */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4">
               {[
                 { icon: <ShieldCheck className="text-green-500" size={20} />, title: "Pagamento Seguro", desc: "Criptografia de ponta" },
@@ -266,7 +253,6 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
               ))}
             </div>
 
-            {/* Footer Logos Desktop Only */}
             <div className="hidden lg:flex items-center gap-8 opacity-20 grayscale pt-8">
               <img src="https://logodownload.org/wp-content/uploads/2014/07/visa-logo-1.png" alt="Visa" className="h-4 object-contain" />
               <img src="https://logodownload.org/wp-content/uploads/2014/10/mastercard-logo-4.png" alt="Mastercard" className="h-6 object-contain" />
@@ -274,14 +260,11 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
             </div>
           </div>
 
-          {/* Coluna Direita: Card de Compra */}
           <div className="w-full lg:sticky lg:top-12 animate-in fade-in slide-in-from-right-4 duration-700 delay-200">
             <Card className="overflow-hidden bg-[#111111]/80 backdrop-blur-2xl border-white/5 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)] rounded-[2.5rem] relative">
-              {/* Card Glow Effect */}
               <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-64 h-64 bg-green-500/10 blur-[100px] pointer-events-none"></div>
               
               <div className="p-8 md:p-10 relative z-10">
-                {/* Header do Card / Preço */}
                 <div className="mb-8 flex flex-col gap-6">
                   <div className="flex flex-col gap-2">
                     <span className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em]">Investimento Único</span>
@@ -331,10 +314,6 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="space-y-4">
-                      {/**
-                        * FORM CAMPOS (VALIDADO)
-                        * Renderiza apenas campos onde active=true.
-                        */}
                       {(() => {
                         const fields = (checkout.checkout_fields || [])
                           .filter((f: any) => f.active !== false && !f.field_type?.startsWith("hidden:"))
@@ -389,13 +368,6 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
                           <Lock className="w-3 h-3 text-green-500" />
                           <span>Pagamento 100% Seguro</span>
                         </div>
-                        
-                        {/* Footer Logos Mobile */}
-                        <div className="flex lg:hidden items-center gap-6 opacity-20 grayscale">
-                          <img src="https://logodownload.org/wp-content/uploads/2014/07/visa-logo-1.png" alt="Visa" className="h-2.5 object-contain" />
-                          <img src="https://logodownload.org/wp-content/uploads/2014/10/mastercard-logo-4.png" alt="Mastercard" className="h-4 object-contain" />
-                          <img src="https://logodownload.org/wp-content/uploads/2015/03/pix-logo.png" alt="PIX" className="h-3.5 object-contain" />
-                        </div>
                       </div>
                     </div>
                   </form>
@@ -403,36 +375,8 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
               </div>
             </Card>
           </div>
-
         </div>
       </main>
-
-      <footer className="w-full py-12 text-center relative z-10">
-        <p className="text-[10px] font-bold text-white/10 uppercase tracking-[0.4em]">Checkout Protegido via Pushin Pay</p>
-      </footer>
-
-      <style dangerouslySetInnerHTML={{ __html: `
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-        
-        body {
-          font-family: 'Inter', sans-serif;
-          background-color: #0a0a0a;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(255, 255, 255, 0.05);
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgba(255, 255, 255, 0.1);
-        }
-      `}} />
     </div>
   );
 }
