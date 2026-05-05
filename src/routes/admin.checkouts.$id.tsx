@@ -161,8 +161,7 @@ function CheckoutEditPage() {
         updated_at: new Date().toISOString(),
       };
 
-      console.log("[Admin Save] checkout id", checkoutId);
-      console.log("[Admin Save] payload checkouts", checkoutPayload);
+      console.log("[Admin Save] payload", checkoutPayload);
 
       let data, error;
       if (isNew) {
@@ -189,27 +188,24 @@ function CheckoutEditPage() {
       }
 
       console.log("[Admin Save] resultado", data);
+
       if (error) {
-        console.error("[Admin Save] erro ao salvar checkout", error);
-        toast.error(`Erro ao salvar checkout: ${error.message}`);
+        console.error("[Admin Save] erro", error);
+        toast.error(`Erro ao salvar: ${error.message}`);
         setLoading(false);
         return;
       }
 
       if (!checkoutId) {
-        throw new Error("ID do checkout não encontrado após salvar");
+        throw new Error("ID do checkout não retornado");
       }
 
       // Re-sincronizar campos
       if (!isNew) {
-        const { error: delError } = await supabase
+        await supabase
           .from("checkout_fields")
           .delete()
           .eq("checkout_id", checkoutId);
-        if (delError) {
-          console.error("[Admin Save] erro delete fields", delError);
-          // Não trava o processo se for erro de deleção de algo inexistente
-        }
       }
 
       const fieldsToInsert = fields
@@ -223,7 +219,7 @@ function CheckoutEditPage() {
           sort_order: index + 1,
         }));
 
-      console.log("[Admin Save] campos para inserir", fieldsToInsert);
+      console.log("[Admin Save] campos", fieldsToInsert);
 
       if (fieldsToInsert.length > 0) {
         const { error: fError } = await supabase
@@ -231,8 +227,8 @@ function CheckoutEditPage() {
           .insert(fieldsToInsert);
         
         if (fError) {
-          console.error("[Admin Save] erro insert fields", fError);
-          toast.error(`Atenção: Checkout salvo, mas erro nos campos: ${fError.message}`);
+          console.error("[Admin Save] erro campos", fError);
+          toast.error(`Checkout salvo, mas erro nos campos: ${fError.message}`);
         }
       }
 
@@ -244,8 +240,8 @@ function CheckoutEditPage() {
         await fetchCheckout();
       }
     } catch (error: any) {
-      console.error("[Admin Save] erro inesperado", error);
-      toast.error(error.message || "Erro inesperado ao salvar");
+      console.error("[Admin Save] erro fatal", error);
+      toast.error(error.message || "Erro inesperado");
     } finally {
       setLoading(false);
     }
