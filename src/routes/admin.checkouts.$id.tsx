@@ -170,7 +170,7 @@ function CheckoutEditPage() {
           .from("checkouts")
           .insert([checkoutPayload])
           .select()
-          .single();
+          .maybeSingle();
         data = result.data;
         error = result.error;
         
@@ -183,15 +183,21 @@ function CheckoutEditPage() {
           .update(checkoutPayload)
           .eq("id", id)
           .select()
-          .single();
+          .maybeSingle();
         data = result.data;
         error = result.error;
       }
 
       console.log("[Admin Save] resultado", data);
       if (error) {
-        console.error("[Admin Save] erro", error);
-        throw error;
+        console.error("[Admin Save] erro ao salvar checkout", error);
+        toast.error(`Erro ao salvar checkout: ${error.message}`);
+        setLoading(false);
+        return;
+      }
+
+      if (!checkoutId) {
+        throw new Error("ID do checkout não encontrado após salvar");
       }
 
       // Re-sincronizar campos
@@ -202,7 +208,7 @@ function CheckoutEditPage() {
           .eq("checkout_id", checkoutId);
         if (delError) {
           console.error("[Admin Save] erro delete fields", delError);
-          throw delError;
+          // Não trava o processo se for erro de deleção de algo inexistente
         }
       }
 
@@ -226,7 +232,7 @@ function CheckoutEditPage() {
         
         if (fError) {
           console.error("[Admin Save] erro insert fields", fError);
-          throw fError;
+          toast.error(`Atenção: Checkout salvo, mas erro nos campos: ${fError.message}`);
         }
       }
 
@@ -238,8 +244,8 @@ function CheckoutEditPage() {
         await fetchCheckout();
       }
     } catch (error: any) {
-      console.error("[Admin Save] erro final", error);
-      toast.error(error.message || "Erro ao salvar checkout");
+      console.error("[Admin Save] erro inesperado", error);
+      toast.error(error.message || "Erro inesperado ao salvar");
     } finally {
       setLoading(false);
     }
