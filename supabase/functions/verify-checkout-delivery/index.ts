@@ -1,7 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { corsHeaders } from "../_shared/cors.ts";
 
-const json = (payload: any, status = 200) => {
+function json(payload: unknown, status = 200) {
   return new Response(JSON.stringify(payload), {
     status,
     headers: {
@@ -9,31 +9,46 @@ const json = (payload: any, status = 200) => {
       "Content-Type": "application/json",
     },
   });
-};
+}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response("ok", { 
-      status: 200, 
-      headers: corsHeaders 
+    return new Response("ok", {
+      status: 200,
+      headers: corsHeaders,
     });
   }
 
   try {
-    const { checkout_id } = await req.json().catch(() => ({}));
+    const body = await req.json().catch(() => ({}));
+    const checkout_id = body.checkout_id;
 
     if (!checkout_id) {
-      return json({
-        ok: false,
-        code: "CHECKOUT_ID_REQUIRED",
-        message: "ID do checkout é obrigatório.",
-      }, 400);
+      return json(
+        {
+          ok: false,
+          code: "CHECKOUT_ID_REQUIRED",
+          message: "ID do checkout é obrigatório.",
+        },
+        400
+      );
     }
 
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-    );
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+
+    if (!supabaseUrl || !serviceRoleKey) {
+      return json(
+        {
+          ok: false,
+          code: "ENV_MISSING",
+          message: "Variáveis SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY não configuradas.",
+        },
+        500
+      );
+    }
+
+    const supabase = createClient(supabaseUrl, serviceRoleKey);
 
     const { data: checkout, error: checkoutError } = await supabase
       .from("checkouts")
@@ -42,45 +57,58 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     if (checkoutError) {
-      return json({
-        ok: false,
-        code: "CHECKOUT_QUERY_ERROR",
-        message: checkoutError.message,
-      }, 500);
+      return json(
+        {
+          ok: false,
+          code: "CHECKOUT_QUERY_ERROR",
+          message: checkoutError.message,
+        },
+        500
+      );
     }
 
     if (!checkout) {
-      return json({
-        ok: false,
-        code: "CHECKOUT_NOT_FOUND",
-        message: "Checkout não encontrado.",
-      }, 404);
+      return json(
+        {
+          ok: false,
+          code: "CHECKOUT_NOT_FOUND",
+          message: "Checkout não encontrado.",
+        },
+        404
+      );
     }
 
-    if (!checkout.success_redirect_url) {
+    const successRedirectUrl = checkout.success_redirect_url || null;
+
+    if (!successRedirectUrl) {
       return json({
         ok: false,
         code: "DELIVERY_URL_MISSING",
         message: "URL de entrega não configurada.",
         checkout_id: checkout.id,
         checkout_slug: checkout.slug,
-      }, 200);
+        success_redirect_url: null,
+      });
     }
 
     const { data: lastOrder, error: orderError } = await supabase
       .from("orders")
-      .select("id, status")
+      .select("id, status, created_at, checkout_id")
       .eq("checkout_id", checkout_id)
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
 
     if (orderError) {
-      return json({
-        ok: false,
-        code: "ORDER_QUERY_ERROR",
-        message: orderError.message,
-      }, 500);
+      return json(
+        {
+          ok: false,
+          code: "ORDER_QUERY_ERROR",
+          message: orderError.message,
+          success_redirect_url: successRedirectUrl,
+        },
+        500
+      );
     }
 
     if (!lastOrder) {
@@ -90,8 +118,8 @@ Deno.serve(async (req) => {
         message: "Nenhuma order encontrada para este checkout. Gere um Pix primeiro.",
         checkout_id: checkout.id,
         checkout_slug: checkout.slug,
-        success_redirect_url: checkout.success_redirect_url,
-      }, 200);
+        success_redirect_url: successRedirectUrl,
+      });
     }
 
     return json({
@@ -102,16 +130,18 @@ Deno.serve(async (req) => {
       checkout_slug: checkout.slug,
       order_id: lastOrder.id,
       order_status: lastOrder.status,
-      success_redirect_url: checkout.success_redirect_url,
-      redirect_url: checkout.success_redirect_url,
-      thank_you_url: checkout.success_redirect_url,
-    }, 200);
-
-  } catch (err: any) {
-    return json({
-      ok: false,
-      code: "UNHANDLED_ERROR",
-      message: err?.message || "Erro interno no servidor.",
-    }, 500);
+      success_redirect_url: successRedirectUrl,
+      redirect_url: successRedirectUrl,
+      thank_you_url: successRedirectUrl,
+    });
+  } catch (err) {
+    return json(
+      {
+        ok: false,
+        code: "UNHANDLED_ERROR",
+        message: err instanceof Error ? err.message : "Erro interno no servidor.",
+      },
+      500
+    );
   }
 });
