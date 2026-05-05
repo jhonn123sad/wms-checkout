@@ -16,64 +16,24 @@ function Index() {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({ name: "", cpf: "" });
 
-  const handleGeneratePix = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    console.log("[Home] Clique no botão 'Gerar Pix' detectado");
-    
-    if (!formData.name || !formData.cpf) {
-      console.log("[Home] Validação falhou: campos vazios");
-      toast.error("Preencha todos os campos");
-      return;
-    }
-
-    console.log("[Home] Validação OK:", { name: formData.name, cpf: "***" });
-    setLoading(true);
-    try {
-      console.log("[Home] Chamando create-pix via Supabase Functions...");
-      const { data, error } = await supabase.functions.invoke("create-pix", {
-        body: {
-          customer_name: formData.name,
-          customer_cpf: formData.cpf,
-        },
-      });
-
-      if (error) {
-        console.error("[Home] Erro do invoke:", error);
-        throw error;
-      }
-      
-      if (!data || data.error) {
-        console.error("[Home] Resposta da function contém erro:", data?.error);
-        throw new Error(data?.error || "UNKNOWN_ERROR");
-      }
-
-      console.log("[Home] Pix gerado com sucesso, orderId:", data.orderId, "hasToken:", !!data.accessToken);
-      navigate({ 
-        to: `/pagamento/${data.orderId}`, 
-        search: { token: data.accessToken } 
-      } as any);
-     } catch (err: any) {
-       console.error("Erro na integração real:", err);
-
-      const msg = String(err?.message || "");
-      let errorMessage = "Não foi possível gerar o Pix real.";
-      if (msg.includes("CONFIG_MISSING_PUSHINPAY_API_TOKEN")) {
-        errorMessage = "Erro de configuração: Token da Pushin Pay ausente.";
-      } else if (msg.includes("CONFIG_MISSING_PUSHINPAY_BASE_URL")) {
-        errorMessage = "Erro de configuração: URL da Pushin Pay ausente.";
-      } else if (msg.includes("CPF_INVALID")) {
-        errorMessage = "CPF inválido.";
-      } else if (msg.includes("API_ERROR")) {
-        errorMessage = "A API de pagamentos retornou um erro.";
-      }
-
-       toast.error(errorMessage);
-       // Removido redirecionamento para demo-preview em produção
-     } finally {
-      setLoading(false);
-    }
+  const handleRedirect = () => {
+    navigate({ to: "/admin/checkouts" });
   };
 
+  return (
+    <div className="min-h-screen bg-[#F5F5F7] text-[#1D1D1F] font-sans flex flex-col items-center justify-center p-4 md:p-6 text-center">
+      <div className="w-full max-w-md bg-white rounded-[24px] shadow-sm border border-[#D2D2D7]/30 p-10 flex flex-col items-center">
+        <h1 className="text-3xl font-bold mb-4">Bem-vindo</h1>
+        <p className="text-[#86868B] mb-8">
+          Para realizar vendas, acesse um checkout específico através da URL /c/:slug.
+        </p>
+        <Button onClick={handleRedirect} className="w-full h-14 bg-black text-white rounded-xl font-semibold">
+          Acessar Painel Admin
+        </Button>
+      </div>
+    </div>
+  );
+}
   return (
     <div className="min-h-screen bg-[#F5F5F7] text-[#1D1D1F] font-sans flex flex-col items-center justify-center p-4 md:p-6">
       <div className="w-full max-w-[440px] bg-white rounded-[24px] shadow-sm border border-[#D2D2D7]/30 p-8 md:p-10 flex flex-col items-center">
