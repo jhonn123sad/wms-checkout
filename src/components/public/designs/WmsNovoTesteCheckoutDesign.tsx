@@ -44,8 +44,9 @@ export function WmsNovoTesteCheckoutDesign({
   handleSubmit,
   handleInputChange,
   handleResetPayment,
+  InlinePixPanel
 }: DesignProps) {
-  
+
   const activeFields = (checkout.checkout_fields || [])
     .filter((f: any) => f.active !== false && !f.field_type?.startsWith("hidden:"))
     .sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0));

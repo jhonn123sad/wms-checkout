@@ -47,8 +47,9 @@ export function ReceitasPraticasCheckout({
   handleSubmit,
   handleInputChange,
   handleResetPayment,
+  InlinePixPanel
 }: ReceitasPraticasCheckoutProps) {
-  
+
   // Removendo dependência de layout_config e simplificando para design fixo restaurado
   const colors = {
     background: "#FCF9F3",

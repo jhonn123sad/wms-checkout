@@ -44,8 +44,9 @@ export function ComunidadeCheckoutDesign({
   handleSubmit,
   handleInputChange,
   handleResetPayment,
+  InlinePixPanel
 }: DesignProps) {
-  
+
   // Premium Community Theme Colors (Dark + Neon Green)
   const colors = {
     background: "#030604",
