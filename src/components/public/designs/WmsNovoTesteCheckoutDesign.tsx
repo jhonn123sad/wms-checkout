@@ -213,12 +213,7 @@ export function WmsNovoTesteCheckoutDesign({
         </div>
 
         {/* FOOTER */}
-        <footer className="mt-20 pt-10 border-t border-[#D2D2D7]/50 flex flex-col items-center gap-6">
-          <div className="flex items-center gap-6 opacity-40 grayscale contrast-125">
-            <img src="https://logodownload.org/wp-content/uploads/2014/07/visa-logo-1.png" alt="Visa" className="h-3 object-contain" />
-            <img src="https://logodownload.org/wp-content/uploads/2014/10/mastercard-logo-4.png" alt="Mastercard" className="h-5 object-contain" />
-            <img src="https://logodownload.org/wp-content/uploads/2015/03/pix-logo.png" alt="PIX" className="h-4 object-contain" />
-          </div>
+        <footer className="mt-20 pb-20 flex flex-col items-center">
           <p className="text-[11px] text-[#86868B] font-medium">
             © 2026 {checkout.title} • Todos os direitos reservados.
           </p>
