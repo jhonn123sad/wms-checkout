@@ -155,12 +155,11 @@ export function ComunidadeCheckoutDesign({
             <div className="flex-1 flex flex-col justify-center relative z-10">
               
               {paymentData ? (
-                <PixGeneratedView 
+                <InlinePixPanel
                   paymentData={paymentData}
                   paymentStatus={paymentStatus}
                   onReset={handleResetPayment}
-                  hasFields={activeFields.length > 0}
-                  colors={colors}
+                  formatPrice={(cents: number) => `R$ ${(cents / 100).toFixed(2)}`}
                 />
               ) : (
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">

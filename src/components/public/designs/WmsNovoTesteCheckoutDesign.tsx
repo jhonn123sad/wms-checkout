@@ -140,10 +140,11 @@ export function WmsNovoTesteCheckoutDesign({
 
               <div className="p-8 md:p-12">
                 {paymentData ? (
-                  <PixView 
+                  <InlinePixPanel
                     paymentData={paymentData}
                     paymentStatus={paymentStatus}
                     onReset={handleResetPayment}
+                    formatPrice={(cents: number) => `R$ ${(cents / 100).toFixed(2)}`}
                   />
                 ) : (
                   <div className="space-y-10">
