@@ -13,17 +13,17 @@ Deno.serve(async (req) => {
     let token = "";
 
     if (req.method === "POST") {
-      const body = await req.json();
+      const bodyText = await req.text();
+      const body = bodyText ? JSON.parse(bodyText) : {};
       orderId = body.orderId || "";
       token = body.token || "";
+      simulatePaid = body.simulate_paid === true;
     } else {
       const url = new URL(req.url);
       orderId = url.searchParams.get("orderId") || "";
       token = url.searchParams.get("token") || "";
+      simulatePaid = url.searchParams.get("simulate_paid") === "true";
     }
-
-    const body = req.method === "POST" ? await req.json().catch(() => ({})) : {};
-    const simulatePaid = body.simulate_paid === true;
 
     if (!orderId || !token) {
       return json({ error: "ORDER_ID_AND_TOKEN_REQUIRED" }, 400);
