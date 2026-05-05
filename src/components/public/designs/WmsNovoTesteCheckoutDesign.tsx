@@ -215,16 +215,22 @@ export function WmsNovoTesteCheckoutDesign({
         </div>
 
         {/* FOOTER */}
-        <footer className="mt-20 pb-20 flex flex-col items-center">
-          <p className="text-[11px] text-[#86868B] font-medium">
-            © 2026 {checkout.title} • Todos os direitos reservados.
+        <footer className="mt-32 pb-20 border-t border-[#E5E7EB]/40 pt-12 flex flex-col items-center">
+          <p className="text-[13px] text-[#9CA3AF] font-medium tracking-tight">
+            © 2026 {checkout.title} • Experiência Segura e Criptografada
           </p>
         </footer>
       </main>
 
       <style dangerouslySetInnerHTML={{ __html: `
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: ${colors.background}; -webkit-font-smoothing: antialiased; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        body { 
+          font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+          background-color: white; 
+          -webkit-font-smoothing: antialiased; 
+          scroll-behavior: smooth;
+        }
+        input::placeholder { color: #9CA3AF; }
       `}} />
     </div>
   );
