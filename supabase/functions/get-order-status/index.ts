@@ -36,7 +36,7 @@ Deno.serve(async (req) => {
 
     const { data: order, error } = await supabase
       .from("orders")
-      .select("id,status,paid_at,product_id,project_id,checkout_id,public_access_token")
+      .select("id,status,paid_at,product_id,project_id,checkout_id,public_access_token,metadata")
       .eq("id", orderId)
       .maybeSingle();
       
@@ -91,6 +91,8 @@ Deno.serve(async (req) => {
       redirect_url,
       success_redirect_url: redirect_url, // Alias
       thank_you_url: redirect_url, // Alias
+      checkout_id: order.checkout_id, // DEBUG
+      metadata: order.metadata, // DEBUG
       message: isPaid && !redirect_url ? "Pagamento confirmado, mas o link de entrega ainda não foi configurado." : undefined
     });
   } catch (err) {
