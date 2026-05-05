@@ -254,7 +254,7 @@ function CheckoutEditPage() {
       const { data: lastOrder, error: orderError } = await supabase
         .from("orders")
         .select("id, public_access_token")
-        .eq("checkout_id", id)
+        .eq("metadata->>checkout_id" as any, id)
         .order("created_at", { ascending: false })
         .limit(1)
         .maybeSingle();
