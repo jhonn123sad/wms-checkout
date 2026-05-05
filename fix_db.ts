@@ -13,7 +13,7 @@ async function insertCheckout() {
   
   let checkoutId;
   if (existing.length > 0) {
-    console.log("Checkout already exists, updating...");
+    console.log("Checkout exists, updating...");
     checkoutId = existing[0].id;
     const updateRes = await fetch(`${SUPABASE_URL}/rest/v1/checkouts?id=eq.${checkoutId}`, {
       method: "PATCH",
@@ -36,6 +36,7 @@ async function insertCheckout() {
     });
     console.log("Update status:", updateRes.status);
   } else {
+    // Should not happen now as I inserted it with curl, but for completeness:
     console.log("Creating new checkout...");
     const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/checkouts`, {
       method: "POST",
@@ -58,16 +59,10 @@ async function insertCheckout() {
       })
     });
     const created = await insertRes.json();
-    console.log("Insert status:", insertRes.status);
-    if (insertRes.status >= 400) {
-      console.error("Insert error body:", JSON.stringify(created, null, 2));
-      return;
-    }
     checkoutId = created[0].id;
   }
 
   console.log("Updating fields for checkout:", checkoutId);
-  // Delete existing fields first
   await fetch(`${SUPABASE_URL}/rest/v1/checkout_fields?checkout_id=eq.${checkoutId}`, {
     method: "DELETE",
     headers: {
@@ -76,11 +71,10 @@ async function insertCheckout() {
     }
   });
 
-  // Insert standard fields
   const fields = [
-    { checkout_id: checkoutId, field_name: "customer_name", field_label: "Nome Completo", required: true, sort_order: 1, active: true },
-    { checkout_id: checkoutId, field_name: "customer_email", field_label: "E-mail", required: true, sort_order: 2, active: true },
-    { checkout_id: checkoutId, field_name: "customer_phone", field_label: "WhatsApp", required: true, sort_order: 3, active: true }
+    { checkout_id: checkoutId, field_name: "customer_name", field_label: "Nome Completo", required: true, sort_order: 1, field_type: "text" },
+    { checkout_id: checkoutId, field_name: "customer_email", field_label: "E-mail", required: true, sort_order: 2, field_type: "email" },
+    { checkout_id: checkoutId, field_name: "customer_phone", field_label: "WhatsApp", required: true, sort_order: 3, field_type: "tel" }
   ];
 
   const fieldRes = await fetch(`${SUPABASE_URL}/rest/v1/checkout_fields`, {
