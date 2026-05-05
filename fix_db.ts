@@ -61,6 +61,10 @@ async function insertCheckout() {
     });
     const created = await insertRes.json();
     console.log("Insert status:", insertRes.status);
+    if (insertRes.status >= 400) {
+      console.error("Insert error body:", JSON.stringify(created, null, 2));
+      return;
+    }
     checkoutId = created[0].id;
   }
 
