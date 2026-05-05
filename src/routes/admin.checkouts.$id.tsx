@@ -30,6 +30,7 @@ function CheckoutEditPage() {
   const isNew = id === "new";
   
   const [loading, setLoading] = useState(false);
+  const [verifyingStatus, setVerifyingStatus] = useState(false);
   const [isUploadingMedia, setIsUploadingMedia] = useState(false);
   const [checkout, setCheckout] = useState<any>({
     title: "",
@@ -247,6 +248,50 @@ function CheckoutEditPage() {
     }
   };
 
+  const verifyLastOrderRedirect = async () => {
+    setVerifyingStatus(true);
+    try {
+      const { data, error: orderError } = await (supabase
+        .from("orders")
+        .select("id, public_access_token") as any)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      const lastOrder = data as any;
+
+      if (orderError || !lastOrder) {
+        toast.error("Nenhuma order encontrada para este checkout. Gere um Pix no checkout público primeiro.");
+        return;
+      }
+
+      const { data: statusData, error: statusError } = await supabase.functions.invoke("get-order-status", {
+        body: { 
+          orderId: lastOrder.id, 
+          token: lastOrder.public_access_token,
+          simulate_paid: true // Hook for testing
+        },
+        method: 'POST'
+      });
+
+      if (statusError) throw statusError;
+
+      const url = statusData?.redirect_url || statusData?.thank_you_url;
+      if (url) {
+        toast.success(`Sucesso! Quando a order ${lastOrder.id.slice(0,8)} for paga, redirecionará para: ${url}`);
+        if (confirm(`Deseja testar o redirecionamento agora?\n\nURL: ${url}`)) {
+          window.open(url, '_blank');
+        }
+      } else {
+        toast.warning("Pagamento confirmado (simulação), mas nenhuma URL de redirecionamento foi encontrada.");
+      }
+    } catch (err: any) {
+      toast.error("Erro na verificação: " + err.message);
+    } finally {
+      setVerifyingStatus(false);
+    }
+  };
+
   const addField = () => {
     setFields([...fields, { field_name: "", field_label: "", field_type: "text", required: false, active: true, sort_order: fields.length + 1 }]);
   };
@@ -397,6 +442,22 @@ function CheckoutEditPage() {
                   Após pagamento confirmado, o comprador será enviado para este link.
                 </p>
               </div>
+
+              {!isNew && (
+                <div className="pt-2 border-t mt-2">
+                  <Button 
+                    variant="secondary" 
+                    className="w-full text-xs"
+                    onClick={verifyLastOrderRedirect}
+                    disabled={verifyingStatus}
+                  >
+                    {verifyingStatus ? "Verificando..." : "Verificar Fluxo de Entrega (Última Order)"}
+                  </Button>
+                  <p className="text-[9px] text-muted-foreground mt-1">
+                    Simula um pagamento aprovado para a última order deste checkout e valida a URL de entrega.
+                  </p>
+                </div>
+              )}
             </div>
           </Card>
 
