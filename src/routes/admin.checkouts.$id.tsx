@@ -493,13 +493,6 @@ function CheckoutEditPage() {
               )}
             </div>
           </Card>
-                  <p className="text-[9px] text-muted-foreground mt-1">
-                    Simula um pagamento aprovado para a última order deste checkout e valida a URL de entrega.
-                  </p>
-                </div>
-              )}
-            </div>
-          </Card>
 
 
           <Card className="p-6 space-y-4">
