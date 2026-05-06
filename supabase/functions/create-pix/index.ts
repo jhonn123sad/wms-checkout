@@ -75,7 +75,14 @@ Deno.serve(async (req) => {
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const projectRef = new URL(supabaseUrl).hostname.split('.')[0];
-    const webhookUrl = `https://${projectRef}.supabase.co/functions/v1/pushinpay-webhook`;
+    const webhookSecret = Deno.env.get("PUSHINPAY_WEBHOOK_SECRET");
+
+    if (!webhookSecret) {
+      console.error("Missing PUSHINPAY_WEBHOOK_SECRET configuration");
+      return jsonError("PUSHINPAY_WEBHOOK_SECRET_MISSING", 500);
+    }
+
+    const webhookUrl = `https://${projectRef}.supabase.co/functions/v1/pushinpay-webhook?secret=${encodeURIComponent(webhookSecret)}`;
 
     const cleanBase = baseUrl.replace(/\/+$/, "");
     const endpoint = `${cleanBase}/pix/cashIn`;
@@ -116,7 +123,7 @@ Deno.serve(async (req) => {
       .eq("id", order.id);
 
     return new Response(JSON.stringify({
-      function_version: "create-pix-v2.1.1",
+      function_version: "create-pix-v2.1.2",
       orderId: order.id,
       accessToken: publicAccessToken,
       status: "waiting_payment",
