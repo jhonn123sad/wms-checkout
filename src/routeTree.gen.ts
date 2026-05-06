@@ -11,20 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as PageSlugRouteImport } from './routes/page.$slug'
 import { Route as PagamentoDemoPreviewRouteImport } from './routes/pagamento.demo-preview'
 import { Route as PagamentoOrderIdRouteImport } from './routes/pagamento.$orderId'
-import { Route as CheckoutSlugRouteImport } from './routes/checkout.$slug'
 import { Route as CSlugRouteImport } from './routes/c.$slug'
-import { Route as AdminProjectsRouteImport } from './routes/admin.projects'
-import { Route as AdminLoginRouteImport } from './routes/admin.login'
-import { Route as AdminAuditRouteImport } from './routes/admin.audit'
-import { Route as AdminPagesIndexRouteImport } from './routes/admin.pages.index'
-import { Route as AdminCheckoutsIndexRouteImport } from './routes/admin.checkouts.index'
-import { Route as AdminProjectsIdRouteImport } from './routes/admin.projects.$id'
-import { Route as AdminPagesIdRouteImport } from './routes/admin.pages.$id'
-import { Route as AdminCheckoutsIdRouteImport } from './routes/admin.checkouts.$id'
 
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
@@ -34,16 +23,6 @@ const AdminRoute = AdminRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const PageSlugRoute = PageSlugRouteImport.update({
-  id: '/page/$slug',
-  path: '/page/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PagamentoDemoPreviewRoute = PagamentoDemoPreviewRouteImport.update({
@@ -56,175 +35,64 @@ const PagamentoOrderIdRoute = PagamentoOrderIdRouteImport.update({
   path: '/pagamento/$orderId',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CheckoutSlugRoute = CheckoutSlugRouteImport.update({
-  id: '/checkout/$slug',
-  path: '/checkout/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const CSlugRoute = CSlugRouteImport.update({
   id: '/c/$slug',
   path: '/c/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminProjectsRoute = AdminProjectsRouteImport.update({
-  id: '/projects',
-  path: '/projects',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminLoginRoute = AdminLoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminAuditRoute = AdminAuditRouteImport.update({
-  id: '/audit',
-  path: '/audit',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminPagesIndexRoute = AdminPagesIndexRouteImport.update({
-  id: '/pages/',
-  path: '/pages/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminCheckoutsIndexRoute = AdminCheckoutsIndexRouteImport.update({
-  id: '/checkouts/',
-  path: '/checkouts/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminProjectsIdRoute = AdminProjectsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AdminProjectsRoute,
-} as any)
-const AdminPagesIdRoute = AdminPagesIdRouteImport.update({
-  id: '/pages/$id',
-  path: '/pages/$id',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminCheckoutsIdRoute = AdminCheckoutsIdRouteImport.update({
-  id: '/checkouts/$id',
-  path: '/checkouts/$id',
-  getParentRoute: () => AdminRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteWithChildren
-  '/admin/audit': typeof AdminAuditRoute
-  '/admin/login': typeof AdminLoginRoute
-  '/admin/projects': typeof AdminProjectsRouteWithChildren
+  '/admin': typeof AdminRoute
   '/c/$slug': typeof CSlugRoute
-  '/checkout/$slug': typeof CheckoutSlugRoute
   '/pagamento/$orderId': typeof PagamentoOrderIdRoute
   '/pagamento/demo-preview': typeof PagamentoDemoPreviewRoute
-  '/page/$slug': typeof PageSlugRoute
-  '/admin/': typeof AdminIndexRoute
-  '/admin/checkouts/$id': typeof AdminCheckoutsIdRoute
-  '/admin/pages/$id': typeof AdminPagesIdRoute
-  '/admin/projects/$id': typeof AdminProjectsIdRoute
-  '/admin/checkouts/': typeof AdminCheckoutsIndexRoute
-  '/admin/pages/': typeof AdminPagesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin/audit': typeof AdminAuditRoute
-  '/admin/login': typeof AdminLoginRoute
-  '/admin/projects': typeof AdminProjectsRouteWithChildren
+  '/admin': typeof AdminRoute
   '/c/$slug': typeof CSlugRoute
-  '/checkout/$slug': typeof CheckoutSlugRoute
   '/pagamento/$orderId': typeof PagamentoOrderIdRoute
   '/pagamento/demo-preview': typeof PagamentoDemoPreviewRoute
-  '/page/$slug': typeof PageSlugRoute
-  '/admin': typeof AdminIndexRoute
-  '/admin/checkouts/$id': typeof AdminCheckoutsIdRoute
-  '/admin/pages/$id': typeof AdminPagesIdRoute
-  '/admin/projects/$id': typeof AdminProjectsIdRoute
-  '/admin/checkouts': typeof AdminCheckoutsIndexRoute
-  '/admin/pages': typeof AdminPagesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteWithChildren
-  '/admin/audit': typeof AdminAuditRoute
-  '/admin/login': typeof AdminLoginRoute
-  '/admin/projects': typeof AdminProjectsRouteWithChildren
+  '/admin': typeof AdminRoute
   '/c/$slug': typeof CSlugRoute
-  '/checkout/$slug': typeof CheckoutSlugRoute
   '/pagamento/$orderId': typeof PagamentoOrderIdRoute
   '/pagamento/demo-preview': typeof PagamentoDemoPreviewRoute
-  '/page/$slug': typeof PageSlugRoute
-  '/admin/': typeof AdminIndexRoute
-  '/admin/checkouts/$id': typeof AdminCheckoutsIdRoute
-  '/admin/pages/$id': typeof AdminPagesIdRoute
-  '/admin/projects/$id': typeof AdminProjectsIdRoute
-  '/admin/checkouts/': typeof AdminCheckoutsIndexRoute
-  '/admin/pages/': typeof AdminPagesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/admin'
-    | '/admin/audit'
-    | '/admin/login'
-    | '/admin/projects'
     | '/c/$slug'
-    | '/checkout/$slug'
     | '/pagamento/$orderId'
     | '/pagamento/demo-preview'
-    | '/page/$slug'
-    | '/admin/'
-    | '/admin/checkouts/$id'
-    | '/admin/pages/$id'
-    | '/admin/projects/$id'
-    | '/admin/checkouts/'
-    | '/admin/pages/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/admin/audit'
-    | '/admin/login'
-    | '/admin/projects'
+    | '/admin'
     | '/c/$slug'
-    | '/checkout/$slug'
     | '/pagamento/$orderId'
     | '/pagamento/demo-preview'
-    | '/page/$slug'
-    | '/admin'
-    | '/admin/checkouts/$id'
-    | '/admin/pages/$id'
-    | '/admin/projects/$id'
-    | '/admin/checkouts'
-    | '/admin/pages'
   id:
     | '__root__'
     | '/'
     | '/admin'
-    | '/admin/audit'
-    | '/admin/login'
-    | '/admin/projects'
     | '/c/$slug'
-    | '/checkout/$slug'
     | '/pagamento/$orderId'
     | '/pagamento/demo-preview'
-    | '/page/$slug'
-    | '/admin/'
-    | '/admin/checkouts/$id'
-    | '/admin/pages/$id'
-    | '/admin/projects/$id'
-    | '/admin/checkouts/'
-    | '/admin/pages/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRouteWithChildren
+  AdminRoute: typeof AdminRoute
   CSlugRoute: typeof CSlugRoute
-  CheckoutSlugRoute: typeof CheckoutSlugRoute
   PagamentoOrderIdRoute: typeof PagamentoOrderIdRoute
   PagamentoDemoPreviewRoute: typeof PagamentoDemoPreviewRoute
-  PageSlugRoute: typeof PageSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -243,20 +111,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/': {
-      id: '/admin/'
-      path: '/'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/page/$slug': {
-      id: '/page/$slug'
-      path: '/page/$slug'
-      fullPath: '/page/$slug'
-      preLoaderRoute: typeof PageSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/pagamento/demo-preview': {
       id: '/pagamento/demo-preview'
       path: '/pagamento/demo-preview'
@@ -271,13 +125,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PagamentoOrderIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/checkout/$slug': {
-      id: '/checkout/$slug'
-      path: '/checkout/$slug'
-      fullPath: '/checkout/$slug'
-      preLoaderRoute: typeof CheckoutSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/c/$slug': {
       id: '/c/$slug'
       path: '/c/$slug'
@@ -285,110 +132,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/projects': {
-      id: '/admin/projects'
-      path: '/projects'
-      fullPath: '/admin/projects'
-      preLoaderRoute: typeof AdminProjectsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/login': {
-      id: '/admin/login'
-      path: '/login'
-      fullPath: '/admin/login'
-      preLoaderRoute: typeof AdminLoginRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/audit': {
-      id: '/admin/audit'
-      path: '/audit'
-      fullPath: '/admin/audit'
-      preLoaderRoute: typeof AdminAuditRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/pages/': {
-      id: '/admin/pages/'
-      path: '/pages'
-      fullPath: '/admin/pages/'
-      preLoaderRoute: typeof AdminPagesIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/checkouts/': {
-      id: '/admin/checkouts/'
-      path: '/checkouts'
-      fullPath: '/admin/checkouts/'
-      preLoaderRoute: typeof AdminCheckoutsIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/projects/$id': {
-      id: '/admin/projects/$id'
-      path: '/$id'
-      fullPath: '/admin/projects/$id'
-      preLoaderRoute: typeof AdminProjectsIdRouteImport
-      parentRoute: typeof AdminProjectsRoute
-    }
-    '/admin/pages/$id': {
-      id: '/admin/pages/$id'
-      path: '/pages/$id'
-      fullPath: '/admin/pages/$id'
-      preLoaderRoute: typeof AdminPagesIdRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/checkouts/$id': {
-      id: '/admin/checkouts/$id'
-      path: '/checkouts/$id'
-      fullPath: '/admin/checkouts/$id'
-      preLoaderRoute: typeof AdminCheckoutsIdRouteImport
-      parentRoute: typeof AdminRoute
-    }
   }
 }
 
-interface AdminProjectsRouteChildren {
-  AdminProjectsIdRoute: typeof AdminProjectsIdRoute
-}
-
-const AdminProjectsRouteChildren: AdminProjectsRouteChildren = {
-  AdminProjectsIdRoute: AdminProjectsIdRoute,
-}
-
-const AdminProjectsRouteWithChildren = AdminProjectsRoute._addFileChildren(
-  AdminProjectsRouteChildren,
-)
-
-interface AdminRouteChildren {
-  AdminAuditRoute: typeof AdminAuditRoute
-  AdminLoginRoute: typeof AdminLoginRoute
-  AdminProjectsRoute: typeof AdminProjectsRouteWithChildren
-  AdminIndexRoute: typeof AdminIndexRoute
-  AdminCheckoutsIdRoute: typeof AdminCheckoutsIdRoute
-  AdminPagesIdRoute: typeof AdminPagesIdRoute
-  AdminCheckoutsIndexRoute: typeof AdminCheckoutsIndexRoute
-  AdminPagesIndexRoute: typeof AdminPagesIndexRoute
-}
-
-const AdminRouteChildren: AdminRouteChildren = {
-  AdminAuditRoute: AdminAuditRoute,
-  AdminLoginRoute: AdminLoginRoute,
-  AdminProjectsRoute: AdminProjectsRouteWithChildren,
-  AdminIndexRoute: AdminIndexRoute,
-  AdminCheckoutsIdRoute: AdminCheckoutsIdRoute,
-  AdminPagesIdRoute: AdminPagesIdRoute,
-  AdminCheckoutsIndexRoute: AdminCheckoutsIndexRoute,
-  AdminPagesIndexRoute: AdminPagesIndexRoute,
-}
-
-const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRouteWithChildren,
+  AdminRoute: AdminRoute,
   CSlugRoute: CSlugRoute,
-  CheckoutSlugRoute: CheckoutSlugRoute,
   PagamentoOrderIdRoute: PagamentoOrderIdRoute,
   PagamentoDemoPreviewRoute: PagamentoDemoPreviewRoute,
-  PageSlugRoute: PageSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
