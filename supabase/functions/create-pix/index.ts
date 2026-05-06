@@ -1,5 +1,5 @@
 /**
- * CORE DE PAGAMENTO — V2.0.3
+ * CORE DE PAGAMENTO — V2.0.8
  * Responsável por criar pedidos e gerar o Pix na Pushin Pay.
  * REGRA: Exige checkout_slug e usa checkouts.price como fonte oficial.
  */
@@ -175,6 +175,7 @@ Deno.serve(async (req) => {
       checkout_price_used: checkout.price,
       qr_code: qrCode,
       qr_code_base64: qrCodeBase64,
+      version: "2.0.7"
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
