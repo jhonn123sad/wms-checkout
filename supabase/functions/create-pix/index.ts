@@ -123,7 +123,7 @@ Deno.serve(async (req) => {
       .eq("id", order.id);
 
     return new Response(JSON.stringify({
-      function_version: "create-pix-v2.1.2",
+      function_version: "create-pix-stable-2026-05-06-webhook-fix",
       orderId: order.id,
       accessToken: publicAccessToken,
       status: "waiting_payment",
