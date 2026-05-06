@@ -1,5 +1,5 @@
 /**
- * CORE DE PAGAMENTO — V2.0.3
+ * CORE DE PAGAMENTO — V2.0.4
  * Responsável por criar pedidos e gerar o Pix na Pushin Pay.
  * REGRA: Exige checkout_slug e usa checkouts.price como fonte oficial.
  */
