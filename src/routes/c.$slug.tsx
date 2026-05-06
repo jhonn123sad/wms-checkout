@@ -10,27 +10,50 @@ export const Route = createFileRoute("/c/$slug")({
   loader: async ({ params }) => {
     const slug = params.slug;
     
-    const { data: checkout, error } = await supabase
+    // 1. Buscar checkout sozinho
+    const { data: checkout, error: checkoutError } = await supabase
       .from("checkouts")
-      .select("*, checkout_fields(*)")
+      .select("*")
       .eq("slug", slug)
       .maybeSingle();
 
-    if (error) {
-      console.error("[route.c.$slug] erro:", error);
+    // 2. Se checkoutError existir
+    if (checkoutError) {
+      console.error("[c.$slug] erro ao buscar checkout:", checkoutError);
       throw new Error("Erro ao carregar checkout.");
     }
 
+    // 3. Se checkout não existir
     if (!checkout) {
       throw new Error("Checkout não encontrado.");
     }
 
-    const isPublished = checkout.active === true || checkout.status === 'published';
+    // 4. Validar publicado
+    const isPublished = checkout.active === true || checkout.status === "published";
     if (!isPublished) {
       throw new Error("Este checkout não está mais ativo.");
     }
 
-    return { checkout };
+    // 5. Buscar checkout_fields separado
+    const { data: fields, error: fieldsError } = await supabase
+      .from("checkout_fields")
+      .select("*")
+      .eq("checkout_id", checkout.id)
+      .order("sort_order", { ascending: true });
+
+    // 6. Se fieldsError existir
+    if (fieldsError) {
+      console.warn("[c.$slug] erro ao buscar checkout_fields:", fieldsError);
+      // NÃO quebrar a página - usar fields = []
+    }
+
+    // 7. Retornar
+    return { 
+      checkout: {
+        ...checkout,
+        checkout_fields: fields || []
+      } 
+    };
   },
   component: DynamicCheckout,
   errorComponent: ({ error }) => (
