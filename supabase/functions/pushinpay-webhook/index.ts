@@ -1,12 +1,21 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-import { corsHeaders } from "../_shared/cors.ts";
 
-const FUNCTION_VERSION = "pushinpay-webhook-v2-2026-05-06";
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Content-Type": "application/json"
+};
+
+const FUNCTION_VERSION = "pushinpay-webhook-stable-2026-05-06-v3";
 
 Deno.serve(async (req) => {
   // 10. Handle CORS and OPTIONS
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response(null, {
+      status: 200,
+      headers: corsHeaders
+    });
   }
 
   const log = (...a: unknown[]) => console.log(`[${FUNCTION_VERSION}]`, ...a);
@@ -83,7 +92,7 @@ Deno.serve(async (req) => {
       }
       return new Response(
         JSON.stringify({ error: "Unauthorized", code: "INVALID_SECRET", version: FUNCTION_VERSION }), 
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: 401, headers: corsHeaders }
       );
     }
 
@@ -100,7 +109,7 @@ Deno.serve(async (req) => {
       }
       return new Response(
         JSON.stringify({ ok: true, message: "No transaction ID found", version: FUNCTION_VERSION }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { headers: corsHeaders }
       );
     }
 
@@ -120,7 +129,7 @@ Deno.serve(async (req) => {
       }
       return new Response(
         JSON.stringify({ error: findErr.message, version: FUNCTION_VERSION }), 
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: 500, headers: corsHeaders }
       );
     }
 
@@ -137,7 +146,7 @@ Deno.serve(async (req) => {
       }
       return new Response(
         JSON.stringify({ ok: true, message: "Order not found", version: FUNCTION_VERSION }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { headers: corsHeaders }
       );
     }
 
@@ -163,7 +172,7 @@ Deno.serve(async (req) => {
         }
         return new Response(
           JSON.stringify({ error: updErr.message, version: FUNCTION_VERSION }), 
-          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          { status: 500, headers: corsHeaders }
         );
       }
 
@@ -192,7 +201,7 @@ Deno.serve(async (req) => {
 
     return new Response(
       JSON.stringify({ ok: true, version: FUNCTION_VERSION }), 
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { headers: corsHeaders }
     );
 
   } catch (err) {
@@ -205,7 +214,7 @@ Deno.serve(async (req) => {
     }
     return new Response(
       JSON.stringify({ error: String(err), version: FUNCTION_VERSION }), 
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 500, headers: corsHeaders }
     );
   }
 });
