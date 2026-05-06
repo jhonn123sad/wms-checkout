@@ -1,5 +1,12 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-import { corsHeaders } from "../_shared/cors.ts";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-webhook-secret, x-pushinpay-secret",
+  "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+};
+
+const FUNCTION_VERSION = "create-pix-stable-2026-05-06-webhook-v2";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -9,10 +16,18 @@ Deno.serve(async (req) => {
   try {
     const apiToken = Deno.env.get("PUSHINPAY_API_TOKEN");
     const baseUrl = Deno.env.get("PUSHINPAY_BASE_URL");
+    const webhookSecret = Deno.env.get("PUSHINPAY_WEBHOOK_SECRET");
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
     if (!apiToken || !baseUrl) {
       console.error("Missing PushinPay configuration");
       return jsonError("CONFIG_MISSING", 500);
+    }
+
+    if (!webhookSecret) {
+      console.error("Missing PUSHINPAY_WEBHOOK_SECRET configuration");
+      return jsonError("PUSHINPAY_WEBHOOK_SECRET_MISSING", 500);
     }
 
     const body = await req.json().catch(() => ({}));
@@ -22,10 +37,7 @@ Deno.serve(async (req) => {
       return jsonError("CHECKOUT_SLUG_REQUIRED", 400);
     }
 
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-    );
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
     const { data: checkout, error: cError } = await supabase
       .from("checkouts")
@@ -47,6 +59,9 @@ Deno.serve(async (req) => {
     const expiresAt = new Date();
     expiresAt.setMinutes(expiresAt.getMinutes() + (checkout.pix_expiration_minutes || 30));
     
+    const projectRef = new URL(supabaseUrl).hostname.split('.')[0];
+    const webhookUrl = `https://${projectRef}.supabase.co/functions/v1/pushinpay-webhook?secret=${encodeURIComponent(webhookSecret)}`;
+
     const { data: order, error: orderError } = await supabase
       .from("orders")
       .insert({
@@ -57,7 +72,9 @@ Deno.serve(async (req) => {
         metadata: { 
           checkout_slug: checkout.slug, 
           checkout_id: checkout.id,
-          form_data: body?.form_data || {}
+          form_data: body?.form_data || {},
+          webhook_url_sent: webhookUrl,
+          function_version: FUNCTION_VERSION
         },
         public_access_token: publicAccessToken,
         customer_name: body?.customer_name || null,
@@ -72,17 +89,6 @@ Deno.serve(async (req) => {
       console.error("[create-pix] Order creation error:", orderError);
       return jsonError("DB_ERROR_ORDER", 500);
     }
-
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const projectRef = new URL(supabaseUrl).hostname.split('.')[0];
-    const webhookSecret = Deno.env.get("PUSHINPAY_WEBHOOK_SECRET");
-
-    if (!webhookSecret) {
-      console.error("Missing PUSHINPAY_WEBHOOK_SECRET configuration");
-      return jsonError("PUSHINPAY_WEBHOOK_SECRET_MISSING", 500);
-    }
-
-    const webhookUrl = `https://${projectRef}.supabase.co/functions/v1/pushinpay-webhook?secret=${encodeURIComponent(webhookSecret)}`;
 
     const cleanBase = baseUrl.replace(/\/+$/, "");
     const endpoint = `${cleanBase}/pix/cashIn`;
@@ -123,7 +129,7 @@ Deno.serve(async (req) => {
       .eq("id", order.id);
 
     return new Response(JSON.stringify({
-      function_version: "create-pix-stable-2026-05-06-webhook-fix",
+      function_version: FUNCTION_VERSION,
       orderId: order.id,
       accessToken: publicAccessToken,
       status: "waiting_payment",
