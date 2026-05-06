@@ -1,7 +1,7 @@
 /**
- * CORE DE PAGAMENTO — V2.1.0
+ * CORE DE PAGAMENTO — V2.1.1
  * REGRA: Exige checkout_slug e usa checkouts.price como fonte oficial.
- * DEPLOY UNIQUE ID: 2026-05-06-T0615
+ * DEPLOY UNIQUE ID: 2026-05-06-T0700
  */
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { corsHeaders } from "../_shared/cors.ts";
@@ -16,12 +16,11 @@ Deno.serve(async (req) => {
     const baseUrl = Deno.env.get("PUSHINPAY_BASE_URL");
 
     if (!apiToken || !baseUrl) {
+      console.error("Missing PushinPay configuration");
       return jsonError("CONFIG_MISSING", 500);
     }
 
     const body = await req.json().catch(() => ({}));
-    console.log("[create-pix-v2.1.0] Body received:", JSON.stringify(body));
-
     const checkout_slug = body?.checkout_slug || null;
     
     if (!checkout_slug) {
@@ -34,6 +33,7 @@ Deno.serve(async (req) => {
     );
 
     // BUSCA ESTRITA: slug = checkout_slug
+    // Regra 3, 4, 5: Sem fallback, busca exata.
     const { data: checkout, error: cError } = await supabase
       .from("checkouts")
       .select("*")
@@ -41,27 +41,21 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     if (cError || !checkout) {
-      console.error("[create-pix-v2.1.0] Checkout not found:", checkout_slug, cError);
+      console.error("[create-pix] Checkout not found:", checkout_slug, cError);
       return jsonError("CHECKOUT_NOT_FOUND", 404);
     }
 
-    console.log("[create-pix-v2.1.0] Checkout found:", {
-      id: checkout.id,
-      slug: checkout.slug,
-      price: checkout.price
-    });
-
+    // Regra 8, 9: Preço oficial vem de checkouts.price
     if (checkout.price === null || checkout.price === undefined) {
       return jsonError("INVALID_PRICE", 400);
     }
 
-    // Cálculo exato do preço baseado no checkout
     const priceCents = Math.round(Number(checkout.price) * 100);
     const publicAccessToken = crypto.randomUUID();
     const expiresAt = new Date();
     expiresAt.setMinutes(expiresAt.getMinutes() + (checkout.pix_expiration_minutes || 30));
     
-    // Criar a ordem vinculada ao checkout correto
+    // Regra 10: Salva checkout_id, amount_cents e metadata.checkout_slug
     const { data: order, error: orderError } = await supabase
       .from("orders")
       .insert({
@@ -84,7 +78,7 @@ Deno.serve(async (req) => {
       .single();
 
     if (orderError || !order) {
-      console.error("[create-pix-v2.1.0] Order creation error:", orderError);
+      console.error("[create-pix] Order creation error:", orderError);
       return jsonError("DB_ERROR_ORDER", 500);
     }
 
@@ -130,20 +124,23 @@ Deno.serve(async (req) => {
       })
       .eq("id", order.id);
 
+    // Regra 11: Retorno obrigatório
     return new Response(JSON.stringify({
+      function_version: "create-pix-v2.1.1",
       orderId: order.id,
       accessToken: publicAccessToken,
       status: "waiting_payment",
       amount_cents: priceCents,
       checkout_id: checkout.id,
       checkout_slug: checkout.slug,
-      version: "2.1.0",
-      deploy_id: "2026-05-06-T0615"
+      checkout_price_used: checkout.price,
+      qr_code: qrCode,
+      qr_code_base64: qrCodeBase64
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err) {
-    console.error("[create-pix-v2.1.0] Unhandled error:", err);
+    console.error("[create-pix] Unhandled error:", err);
     return jsonError("UNHANDLED_ERROR", 500, { message: String(err) });
   }
 });
