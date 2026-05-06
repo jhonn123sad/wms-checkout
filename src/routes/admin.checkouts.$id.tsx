@@ -286,8 +286,6 @@ function CheckoutEditPage() {
   const [isValidatorOpen, setIsValidatorOpen] = useState(false);
   const [validatorData, setValidatorData] = useState<any>(null);
   const [validatorLoading, setValidatorLoading] = useState(false);
-  const [isConfirmingPaid, setIsConfirmingPaid] = useState(false);
-  const [isConfirmingWaiting, setIsConfirmingWaiting] = useState(false);
   const [debugResponse, setDebugResponse] = useState<any>(null);
 
   const fetchValidatorData = async () => {
@@ -321,39 +319,6 @@ function CheckoutEditPage() {
     fetchValidatorData();
   };
 
-  const updateOrderStatus = async (orderId: string, status: string) => {
-    try {
-      if (!orderId) {
-        toast.error("Nenhuma order encontrada para atualizar.");
-        return;
-      }
-      
-      const payload: any = {
-        status,
-        updated_at: new Date().toISOString()
-      };
-      
-      if (status === 'paid') {
-        payload.paid_at = new Date().toISOString();
-      } else {
-        payload.paid_at = null;
-      }
-
-      const { error } = await supabase
-        .from("orders")
-        .update(payload)
-        .eq("id", orderId);
-
-      if (error) throw error;
-      
-      toast.success(`Order atualizada para ${status}`);
-      await fetchValidatorData();
-      setIsConfirmingPaid(false);
-      setIsConfirmingWaiting(false);
-    } catch (err: any) {
-      toast.error("Erro ao atualizar status: " + err.message);
-    }
-  };
 
   const testGetOrderStatus = async (orderId: string, token: string) => {
     setDebugResponse(null);
@@ -852,26 +817,6 @@ function CheckoutEditPage() {
                   </table>
                 </div>
 
-                {validatorData.last_5_orders && validatorData.last_5_orders.length > 0 && (
-                  <div className="flex flex-wrap gap-2 pt-4 border-t">
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
-                      className="text-[10px] h-8 bg-green-500/5 hover:bg-green-500/10 border-green-500/20 text-green-600"
-                      onClick={() => setIsConfirmingPaid(true)}
-                    >
-                      <CheckCircle2 className="w-3 h-3 mr-1" /> Marcar última order como paga
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
-                      className="text-[10px] h-8 bg-yellow-500/5 hover:bg-yellow-500/10 border-yellow-500/20 text-yellow-600"
-                      onClick={() => setIsConfirmingWaiting(true)}
-                    >
-                      <RefreshCcw className="w-3 h-3 mr-1" /> Reverter última order para aguardando
-                    </Button>
-                  </div>
-                )}
               </Card>
 
               {/* 6. Console Test Code */}
@@ -920,52 +865,6 @@ function CheckoutEditPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Confirmação Marcar como Pago */}
-      <Dialog open={isConfirmingPaid} onOpenChange={setIsConfirmingPaid}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Confirmar alteração de status</DialogTitle>
-            <DialogDescription>
-              Isso é apenas para teste. Deseja continuar?
-            </DialogDescription>
-          </DialogHeader>
-          <div className="py-4">
-            <p className="text-sm font-bold text-red-500">
-              Confirmo que quero marcar a última order como paid manualmente.
-            </p>
-          </div>
-          <DialogFooter>
-            <Button variant="ghost" onClick={() => setIsConfirmingPaid(false)}>Cancelar</Button>
-            <Button 
-              className="bg-green-500 hover:bg-green-600"
-              onClick={() => updateOrderStatus(validatorData?.latest_order?.order_id, 'paid')}
-            >
-              Confirmar e Marcar Pago
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Confirmação Reverter para Waiting */}
-      <Dialog open={isConfirmingWaiting} onOpenChange={setIsConfirmingWaiting}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Reverter status de pagamento</DialogTitle>
-            <DialogDescription>
-              Deseja voltar a última order para "waiting_payment"?
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="ghost" onClick={() => setIsConfirmingWaiting(false)}>Cancelar</Button>
-            <Button 
-              className="bg-yellow-500 hover:bg-yellow-600"
-              onClick={() => updateOrderStatus(validatorData?.latest_order?.order_id, 'waiting_payment')}
-            >
-              Reverter Status
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
