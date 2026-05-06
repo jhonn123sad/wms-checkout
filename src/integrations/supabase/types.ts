@@ -114,12 +114,112 @@ export type Database = {
           },
         ]
       }
+      checkout_offers: {
+        Row: {
+          active: boolean | null
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          price_cents: number
+          project_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          price_cents: number
+          project_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          price_cents?: number
+          project_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checkout_offers_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "checkout_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      checkout_projects: {
+        Row: {
+          active: boolean | null
+          collect_cpf: boolean | null
+          collect_email: boolean | null
+          collect_name: boolean | null
+          collect_phone: boolean | null
+          created_at: string | null
+          headline: string | null
+          id: string
+          legal_text: string | null
+          name: string
+          pix_expiration_minutes: number | null
+          slug: string
+          subheadline: string | null
+          thank_you_url: string | null
+          theme_json: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          active?: boolean | null
+          collect_cpf?: boolean | null
+          collect_email?: boolean | null
+          collect_name?: boolean | null
+          collect_phone?: boolean | null
+          created_at?: string | null
+          headline?: string | null
+          id?: string
+          legal_text?: string | null
+          name: string
+          pix_expiration_minutes?: number | null
+          slug: string
+          subheadline?: string | null
+          thank_you_url?: string | null
+          theme_json?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          active?: boolean | null
+          collect_cpf?: boolean | null
+          collect_email?: boolean | null
+          collect_name?: boolean | null
+          collect_phone?: boolean | null
+          created_at?: string | null
+          headline?: string | null
+          id?: string
+          legal_text?: string | null
+          name?: string
+          pix_expiration_minutes?: number | null
+          slug?: string
+          subheadline?: string | null
+          thank_you_url?: string | null
+          theme_json?: Json | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       checkouts: {
         Row: {
           active: boolean
           created_at: string
           cta_text: string
+          design_key: string | null
           id: string
+          media_json: Json | null
           media_type: string
           media_url: string
           pix_expiration_minutes: number | null
@@ -135,7 +235,9 @@ export type Database = {
           active?: boolean
           created_at?: string
           cta_text?: string
+          design_key?: string | null
           id?: string
+          media_json?: Json | null
           media_type: string
           media_url: string
           pix_expiration_minutes?: number | null
@@ -151,7 +253,9 @@ export type Database = {
           active?: boolean
           created_at?: string
           cta_text?: string
+          design_key?: string | null
           id?: string
+          media_json?: Json | null
           media_type?: string
           media_url?: string
           pix_expiration_minutes?: number | null
@@ -270,6 +374,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          media_json: Json | null
           seo_data: Json | null
           slug: string
           status: string
@@ -279,6 +384,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          media_json?: Json | null
           seo_data?: Json | null
           slug: string
           status?: string
@@ -288,6 +394,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          media_json?: Json | null
           seo_data?: Json | null
           slug?: string
           status?: string
