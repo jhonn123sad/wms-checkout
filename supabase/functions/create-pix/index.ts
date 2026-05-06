@@ -1,8 +1,3 @@
-/**
- * CORE DE PAGAMENTO — V2.1.1
- * REGRA: Exige checkout_slug e usa checkouts.price como fonte oficial.
- * DEPLOY UNIQUE ID: 2026-05-06-T0700
- */
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { corsHeaders } from "../_shared/cors.ts";
 
@@ -32,8 +27,6 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // BUSCA ESTRITA: slug = checkout_slug
-    // Regra 3, 4, 5: Sem fallback, busca exata.
     const { data: checkout, error: cError } = await supabase
       .from("checkouts")
       .select("*")
@@ -45,7 +38,6 @@ Deno.serve(async (req) => {
       return jsonError("CHECKOUT_NOT_FOUND", 404);
     }
 
-    // Regra 8, 9: Preço oficial vem de checkouts.price
     if (checkout.price === null || checkout.price === undefined) {
       return jsonError("INVALID_PRICE", 400);
     }
@@ -55,7 +47,6 @@ Deno.serve(async (req) => {
     const expiresAt = new Date();
     expiresAt.setMinutes(expiresAt.getMinutes() + (checkout.pix_expiration_minutes || 30));
     
-    // Regra 10: Salva checkout_id, amount_cents e metadata.checkout_slug
     const { data: order, error: orderError } = await supabase
       .from("orders")
       .insert({
@@ -124,7 +115,6 @@ Deno.serve(async (req) => {
       })
       .eq("id", order.id);
 
-    // Regra 11: Retorno obrigatório
     return new Response(JSON.stringify({
       function_version: "create-pix-v2.1.1",
       orderId: order.id,
