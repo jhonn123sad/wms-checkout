@@ -102,7 +102,7 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
         data: formData,
       });
 
-      const { data, error: invokeError } = await supabase.functions.invoke("create-pix-v2", {
+      const { data, error: invokeError } = await supabase.functions.invoke("create-pix", {
         body: payload,
       });
 
