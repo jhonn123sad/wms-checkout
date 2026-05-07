@@ -564,15 +564,32 @@ function CheckoutEditPage() {
             </div>
           </Card>
 
-          <Button 
-            className="w-full py-6 text-lg font-bold" 
-            onClick={handleSave}
-            disabled={saving}
-          >
-            {saving ? "Salvando..." : "Salvar Checkout"}
-          </Button>
         </div>
-      </div>
+      </Tabs>
+
+      <Button 
+        className="w-full py-6 text-lg font-bold" 
+        onClick={handleSave}
+        disabled={saving}
+      >
+        {saving ? "Salvando..." : "Salvar Checkout"}
+      </Button>
+    </div>
+  </div>
+</TabsContent>
+
+<TabsContent value="design">
+  <Card className="p-6">
+    <CheckoutSectionsEditor 
+      sections={sections}
+      setSections={setSections}
+      setRemovedSectionIds={setRemovedSectionIds}
+      checkoutId={id}
+    />
+  </Card>
+</TabsContent>
+</Tabs>
+
 
       <div className="pt-8 border-t">
         <Collapsible open={debugOpen} onOpenChange={setDebugOpen} className="space-y-2">
