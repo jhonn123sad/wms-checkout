@@ -339,18 +339,7 @@ function CheckoutEditPage() {
       originalFields,
       removedFieldIds,
       savePayload: {
-        checkoutPayload: {
-          title: checkout.title,
-          subtitle: checkout.subtitle,
-          slug: checkout.slug,
-          price: checkout.price,
-          cta_text: checkout.cta_text,
-          active: checkout.active,
-          media_url: checkout.media_url,
-          media_type: checkout.media_type,
-          media_json: checkout.media_json,
-          success_redirect_url: checkout.success_redirect_url?.trim() || null,
-        },
+        checkoutPayload,
         fieldsPayload: fields.map(f => ({
           id: f.id,
           field_name: f.field_name,
@@ -358,7 +347,14 @@ function CheckoutEditPage() {
           active: f.active,
           required: f.required
         })),
-        removedFieldIds
+        sectionsPayload: sections.map(s => ({
+          id: s.id,
+          section_type: s.section_type,
+          active: s.active,
+          sort_order: s.sort_order
+        })),
+        removedFieldIds,
+        removedSectionIds
       },
       timestamp: new Date().toISOString()
     };
