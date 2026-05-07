@@ -16,6 +16,21 @@ export const Route = createFileRoute("/admin/checkouts/$id")({
   component: CheckoutEditPage,
 });
 
+const cleanFieldType = (type?: string) => {
+  const raw = (type || "text").trim();
+
+  if (raw === "hidden:email") return "email";
+  if (raw === "hidden:tel") return "phone";
+  if (raw === "hidden:phone") return "phone";
+  if (raw === "hidden:cpf") return "cpf";
+  if (raw === "hidden:text") return "text";
+  if (raw.startsWith("hidden:")) return raw.replace(/^hidden:/, "") || "text";
+
+  if (raw === "tel") return "phone";
+
+  return raw;
+};
+
 type CheckoutFieldForm = {
   id?: string;
   checkout_id?: string;
@@ -111,7 +126,7 @@ function CheckoutEditPage() {
           checkout_id: f.checkout_id,
           field_name: f.field_name || "",
           field_label: f.field_label || "",
-          field_type: f.field_type || "text",
+          field_type: cleanFieldType(f.field_type),
           active: f.active === true,
           required: f.required === true,
           sort_order: f.sort_order ?? index + 1,
@@ -183,7 +198,7 @@ function CheckoutEditPage() {
           checkout_id: checkoutId,
           field_name: field.field_name.trim(),
           field_label: field.field_label.trim(),
-          field_type: field.field_type,
+          field_type: cleanFieldType(field.field_type),
           active: field.active === true,
           required: field.required === true,
           sort_order: field.sort_order
@@ -270,6 +285,7 @@ function CheckoutEditPage() {
         fieldsPayload: fields.map(f => ({
           id: f.id,
           field_name: f.field_name,
+          field_type: f.field_type,
           active: f.active,
           required: f.required
         })),
