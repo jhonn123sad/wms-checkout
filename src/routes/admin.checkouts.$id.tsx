@@ -176,15 +176,16 @@ function CheckoutEditPage() {
         if (error) throw error;
       }
 
-      // Processar campos
+      // Processar campos (CRUD SEGURO)
+      // 1. Update/Insert campos
       for (const field of fields) {
         const fieldPayload = {
           checkout_id: checkoutId,
           field_name: field.field_name.trim(),
           field_label: field.field_label.trim(),
           field_type: field.field_type,
-          active: field.active,
-          required: field.required,
+          active: field.active === true,
+          required: field.required === true,
           sort_order: field.sort_order
         };
 
@@ -202,7 +203,7 @@ function CheckoutEditPage() {
         }
       }
 
-      // Deletar removidos
+      // 2. Deletar somente os IDs explicitamente removidos
       if (removedFieldIds.length > 0) {
         const { error: delError } = await supabase
           .from("checkout_fields")
@@ -253,6 +254,27 @@ function CheckoutEditPage() {
       fields,
       originalFields,
       removedFieldIds,
+      savePayload: {
+        checkoutPayload: {
+          title: checkout.title,
+          subtitle: checkout.subtitle,
+          slug: checkout.slug,
+          price: checkout.price,
+          cta_text: checkout.cta_text,
+          active: checkout.active,
+          media_url: checkout.media_url,
+          media_type: checkout.media_type,
+          media_json: checkout.media_json,
+          success_redirect_url: checkout.success_redirect_url?.trim() || null,
+        },
+        fieldsPayload: fields.map(f => ({
+          id: f.id,
+          field_name: f.field_name,
+          active: f.active,
+          required: f.required
+        })),
+        removedFieldIds
+      },
       timestamp: new Date().toISOString()
     };
     navigator.clipboard.writeText(JSON.stringify(diagnostic, null, 2));
