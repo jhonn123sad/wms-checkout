@@ -44,20 +44,41 @@ function CheckoutEditPage() {
   }, [id]);
 
   const fetchCheckout = async () => {
-    const { data, error } = await supabase
-      .from("checkouts")
-      .select("*, checkout_fields(*)")
-      .eq("id", id)
-      .single();
+    setLoading(true);
+    try {
+      const { data: checkoutData, error: checkoutError } = await supabase
+        .from("checkouts")
+        .select("*")
+        .eq("id", id)
+        .single();
 
-    if (error) {
-      toast.error("Erro ao carregar checkout");
-      navigate({ to: "/admin/checkouts" });
-      return;
+      if (checkoutError) {
+        console.error("[admin/checkouts/$id] erro ao buscar checkout:", checkoutError);
+        toast.error("Erro ao carregar checkout: " + checkoutError.message);
+        navigate({ to: "/admin/checkouts" });
+        return;
+      }
+
+      setCheckout(checkoutData);
+
+      const { data: fieldsData, error: fieldsError } = await supabase
+        .from("checkout_fields")
+        .select("*")
+        .eq("checkout_id", id)
+        .order("sort_order", { ascending: true });
+
+      if (fieldsError) {
+        console.warn("[admin/checkouts/$id] erro ao buscar campos:", fieldsError);
+        setFields([]);
+      } else {
+        setFields(fieldsData || []);
+      }
+    } catch (err: any) {
+      console.error("[admin/checkouts/$id] erro inesperado:", err);
+      toast.error("Erro inesperado ao carregar checkout");
+    } finally {
+      setLoading(false);
     }
-
-    setCheckout(data);
-    setFields((data.checkout_fields || []).sort((a: any, b: any) => a.sort_order - b.sort_order));
   };
 
   const handleSave = async () => {
