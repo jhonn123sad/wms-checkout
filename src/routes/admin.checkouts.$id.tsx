@@ -605,7 +605,10 @@ function CheckoutEditPage() {
                 checkout,
                 fields,
                 originalFields,
-                removedFieldIds
+                removedFieldIds,
+                sections,
+                originalSections,
+                removedSectionIds
               }, null, 2)}
             </pre>
           </CollapsibleContent>
