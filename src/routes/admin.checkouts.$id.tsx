@@ -142,6 +142,25 @@ function CheckoutEditPage() {
         setFields(normalized);
         setOriginalFields(JSON.parse(JSON.stringify(normalized)));
       }
+
+      // Buscar seções
+      const { data: sectionsData, error: sectionsError } = await supabase
+        .from("checkout_sections")
+        .select("*")
+        .eq("checkout_id", id)
+        .order("sort_order", { ascending: true });
+
+      if (sectionsError) {
+        console.warn("Erro ao buscar seções:", sectionsError);
+        setSections([]);
+      } else {
+        const normalizedSections = (sectionsData || []).map(s => ({
+          ...s,
+          active: s.active === true
+        }));
+        setSections(normalizedSections);
+        setOriginalSections(JSON.parse(JSON.stringify(normalizedSections)));
+      }
     } catch (err: any) {
       toast.error("Erro inesperado ao carregar checkout");
     } finally {
