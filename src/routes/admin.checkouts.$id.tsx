@@ -26,7 +26,8 @@ function CheckoutEditPage() {
     slug: "",
     price: 0,
     cta_text: "Liberar acesso agora",
-    media_asset: null,
+    media_url: "",
+    media_type: "image",
     active: true,
   });
   const [fields, setFields] = useState<any[]>([]);
@@ -45,7 +46,7 @@ function CheckoutEditPage() {
   const fetchCheckout = async () => {
     const { data, error } = await supabase
       .from("checkouts")
-      .select("*, checkout_fields(*), media_assets(*)")
+      .select("*, checkout_fields(*)")
       .eq("id", id)
       .single();
 
@@ -55,16 +56,8 @@ function CheckoutEditPage() {
       return;
     }
 
-    setCheckout({
-      ...data,
-      media_asset: data.media_assets ? {
-        url: data.media_assets.url,
-        type: data.media_assets.type,
-        provider: data.media_assets.provider,
-        id: data.media_assets.id
-      } : (data.media_url ? { url: data.media_url, type: data.media_type, provider: 'external' } : null)
-    });
-    setFields(data.checkout_fields.sort((a: any, b: any) => a.sort_order - b.sort_order));
+    setCheckout(data);
+    setFields((data.checkout_fields || []).sort((a: any, b: any) => a.sort_order - b.sort_order));
   };
 
   const handleSave = async () => {
@@ -72,32 +65,15 @@ function CheckoutEditPage() {
     try {
       let checkoutId = id;
       
-      let mediaAssetId = checkout.media_asset_id;
-      
-      if (checkout.media_asset && !checkout.media_asset.id) {
-        const { data: mediaData, error: mediaError } = await supabase
-          .from("media_assets")
-          .insert({
-            url: checkout.media_asset.url,
-            type: checkout.media_asset.type,
-            provider: checkout.media_asset.provider
-          })
-          .select()
-          .single();
-        if (mediaError) throw mediaError;
-        mediaAssetId = mediaData.id;
-      }
-
-      const checkoutPayload = {
+      const checkoutPayload: any = {
         title: checkout.title,
         subtitle: checkout.subtitle,
         slug: checkout.slug,
         price: checkout.price,
         cta_text: checkout.cta_text,
         active: checkout.active,
-        media_asset_id: mediaAssetId,
-        media_url: checkout.media_asset?.url,
-        media_type: checkout.media_asset?.type,
+        media_url: checkout.media_url,
+        media_type: checkout.media_type,
         updated_at: new Date().toISOString()
       };
 
@@ -130,8 +106,10 @@ function CheckoutEditPage() {
         sort_order: index + 1,
       }));
 
-      const { error: fError } = await supabase.from("checkout_fields").insert(fieldsToInsert);
-      if (fError) throw fError;
+      if (fieldsToInsert.length > 0) {
+        const { error: fError } = await supabase.from("checkout_fields").insert(fieldsToInsert);
+        if (fError) throw fError;
+      }
 
       toast.success("Checkout salvo com sucesso!");
       navigate({ to: "/admin/checkouts" });
@@ -173,7 +151,7 @@ function CheckoutEditPage() {
             <div className="space-y-2">
               <Label>Título</Label>
               <Input 
-                value={checkout.title} 
+                value={checkout.title || ""} 
                 onChange={(e) => setCheckout({ ...checkout, title: e.target.value })}
                 placeholder="Ex: Acesso Reservado"
               />
@@ -192,7 +170,7 @@ function CheckoutEditPage() {
               <div className="space-y-2">
                 <Label>Slug da URL</Label>
                 <Input 
-                  value={checkout.slug} 
+                  value={checkout.slug || ""} 
                   onChange={(e) => setCheckout({ ...checkout, slug: e.target.value })}
                   placeholder="acesso-reservado"
                 />
@@ -202,7 +180,7 @@ function CheckoutEditPage() {
                 <Input 
                   type="number"
                   step="0.01"
-                  value={checkout.price} 
+                  value={checkout.price || 0} 
                   onChange={(e) => setCheckout({ ...checkout, price: parseFloat(e.target.value) })}
                 />
               </div>
@@ -211,7 +189,7 @@ function CheckoutEditPage() {
             <div className="space-y-2">
               <Label>Texto do Botão (CTA)</Label>
               <Input 
-                value={checkout.cta_text} 
+                value={checkout.cta_text || ""} 
                 onChange={(e) => setCheckout({ ...checkout, cta_text: e.target.value })}
                 placeholder="Liberar acesso agora"
               />
@@ -229,8 +207,8 @@ function CheckoutEditPage() {
           <Card className="p-6 space-y-4">
             <h2 className="text-xl font-semibold border-b pb-2">Mídia do Checkout</h2>
             <MediaField 
-              value={checkout.media_asset} 
-              onChange={(val) => setCheckout({ ...checkout, media_asset: val })} 
+              value={checkout.media_url ? { url: checkout.media_url, type: checkout.media_type, provider: 'external' } : null} 
+              onChange={(val) => setCheckout({ ...checkout, media_url: val?.url || "", media_type: val?.type || "image" })} 
             />
           </Card>
         </div>
