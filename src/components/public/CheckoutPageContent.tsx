@@ -176,6 +176,10 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
     InlinePixPanel
   };
 
+  if (designKey === "custom_media_v1") {
+    return <CustomMediaV1Design {...designProps} />;
+  }
+
   if (designKey === "apple_v1" || checkout.slug === 'wms-novo-teste') {
     return <WmsNovoTesteCheckoutDesign {...designProps} />;
   }
