@@ -46,7 +46,7 @@ export type Database = {
       }
       checkout_fields: {
         Row: {
-          active: boolean | null
+          active: boolean
           checkout_id: string
           created_at: string
           field_label: string
@@ -57,7 +57,7 @@ export type Database = {
           sort_order: number
         }
         Insert: {
-          active?: boolean | null
+          active?: boolean
           checkout_id: string
           created_at?: string
           field_label: string
@@ -68,7 +68,7 @@ export type Database = {
           sort_order?: number
         }
         Update: {
-          active?: boolean | null
+          active?: boolean
           checkout_id?: string
           created_at?: string
           field_label?: string
@@ -87,6 +87,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      checkout_fields_backup_20260507_v2: {
+        Row: {
+          active: boolean | null
+          checkout_id: string | null
+          created_at: string | null
+          field_label: string | null
+          field_name: string | null
+          field_type: string | null
+          id: string | null
+          required: boolean | null
+          sort_order: number | null
+        }
+        Insert: {
+          active?: boolean | null
+          checkout_id?: string | null
+          created_at?: string | null
+          field_label?: string | null
+          field_name?: string | null
+          field_type?: string | null
+          id?: string | null
+          required?: boolean | null
+          sort_order?: number | null
+        }
+        Update: {
+          active?: boolean | null
+          checkout_id?: string | null
+          created_at?: string | null
+          field_label?: string | null
+          field_name?: string | null
+          field_type?: string | null
+          id?: string | null
+          required?: boolean | null
+          sort_order?: number | null
+        }
+        Relationships: []
       }
       checkout_leads: {
         Row: {
