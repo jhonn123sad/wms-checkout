@@ -1,4 +1,4 @@
-import { MediaDisplay } from "./MediaDisplay";
+import { MediaDisplay } from "@/components/public/MediaDisplay";
 
 interface CustomMediaBlockRendererProps {
   section: {
