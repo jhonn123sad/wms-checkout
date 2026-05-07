@@ -95,16 +95,24 @@ import { toast } from "sonner";
           </Link>
        </div>
  
-       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-         {loading ? (
-           Array.from({ length: 3 }).map((_, i) => (
-             <Card key={i} className="h-48 animate-pulse bg-muted" />
-           ))
-         ) : checkouts.length === 0 ? (
-           <div className="col-span-full text-center py-20 bg-muted/30 rounded-xl border-2 border-dashed">
-             <p className="text-muted-foreground">Nenhum checkout cadastrado ainda.</p>
-           </div>
-         ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {loading ? (
+            Array.from({ length: 3 }).map((_, i) => (
+              <Card key={i} className="h-48 animate-pulse bg-muted" />
+            ))
+          ) : loadError ? (
+            <div className="col-span-full text-center py-20 bg-destructive/10 text-destructive rounded-xl border-2 border-dashed border-destructive/20">
+              <p className="font-medium">Erro ao carregar checkouts. Veja o console.</p>
+              <p className="text-sm opacity-80">{loadError}</p>
+              <Button variant="outline" size="sm" className="mt-4" onClick={fetchCheckouts}>
+                Tentar novamente
+              </Button>
+            </div>
+          ) : checkouts.length === 0 ? (
+            <div className="col-span-full text-center py-20 bg-muted/30 rounded-xl border-2 border-dashed">
+              <p className="text-muted-foreground">Nenhum checkout cadastrado ainda.</p>
+            </div>
+          ) : (
            checkouts.map((checkout) => (
              <Card key={checkout.id} className="overflow-hidden border-border flex flex-col">
                <div className="h-32 bg-muted relative">
