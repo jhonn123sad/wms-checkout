@@ -29,6 +29,7 @@ function CheckoutEditPage() {
     media_url: "",
     media_type: "image",
     active: true,
+    success_redirect_url: "",
   });
   const [fields, setFields] = useState<any[]>([]);
 
@@ -59,7 +60,10 @@ function CheckoutEditPage() {
         return;
       }
 
-      setCheckout(checkoutData);
+      setCheckout({
+        ...checkoutData,
+        success_redirect_url: checkoutData.success_redirect_url || ""
+      });
 
       const { data: fieldsData, error: fieldsError } = await supabase
         .from("checkout_fields")
@@ -95,6 +99,7 @@ function CheckoutEditPage() {
         active: checkout.active,
         media_url: checkout.media_url,
         media_type: checkout.media_type,
+        success_redirect_url: checkout.success_redirect_url?.trim() || null,
         updated_at: new Date().toISOString()
       };
 
@@ -220,6 +225,19 @@ function CheckoutEditPage() {
                 onChange={(e) => setCheckout({ ...checkout, cta_text: e.target.value })}
                 placeholder="Liberar acesso agora"
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Página de obrigado / URL de entrega</Label>
+              <Input 
+                type="url"
+                value={checkout.success_redirect_url || ""} 
+                onChange={(e) => setCheckout({ ...checkout, success_redirect_url: e.target.value })}
+                placeholder="https://..."
+              />
+              <p className="text-xs text-muted-foreground">
+                Após o pagamento confirmado, o cliente será redirecionado para este link.
+              </p>
             </div>
 
             <div className="flex items-center justify-between pt-2">
