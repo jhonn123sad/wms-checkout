@@ -38,8 +38,8 @@ function CheckoutEditPage() {
       fetchCheckout();
     } else {
       setFields([
-        { field_name: "nome", field_label: "Nome Completo", field_type: "text", active: true, required: true, sort_order: 1 },
-        { field_name: "email", field_label: "E-mail", field_type: "email", active: true, required: true, sort_order: 2 },
+        { field_name: "customer_name", field_label: "Nome Completo", field_type: "text", active: true, required: true, sort_order: 1 },
+        { field_name: "customer_email", field_label: "E-mail", field_type: "email", active: true, required: true, sort_order: 2 },
       ]);
     }
   }, [id]);
@@ -75,7 +75,11 @@ function CheckoutEditPage() {
         console.warn("[admin/checkouts/$id] erro ao buscar campos:", fieldsError);
         setFields([]);
       } else {
-        setFields(fieldsData || []);
+        setFields((fieldsData || []).map((f) => ({
+          ...f,
+          active: f.active !== false,
+          required: f.required === true,
+        })));
       }
     } catch (err: any) {
       console.error("[admin/checkouts/$id] erro inesperado:", err);
