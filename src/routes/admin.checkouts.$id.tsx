@@ -29,6 +29,7 @@ function CheckoutEditPage() {
     media_url: "",
     media_type: "image",
     active: true,
+    success_redirect_url: "",
   });
   const [fields, setFields] = useState<any[]>([]);
 
