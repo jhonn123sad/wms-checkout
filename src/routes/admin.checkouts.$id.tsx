@@ -38,8 +38,8 @@ function CheckoutEditPage() {
       fetchCheckout();
     } else {
       setFields([
-        { field_name: "nome", field_label: "Nome Completo", field_type: "text", required: true, sort_order: 1 },
-        { field_name: "email", field_label: "E-mail", field_type: "email", required: true, sort_order: 2 },
+        { field_name: "nome", field_label: "Nome Completo", field_type: "text", active: true, required: true, sort_order: 1 },
+        { field_name: "email", field_label: "E-mail", field_type: "email", active: true, required: true, sort_order: 2 },
       ]);
     }
   }, [id]);
@@ -127,7 +127,8 @@ function CheckoutEditPage() {
         field_name: f.field_name,
         field_label: f.field_label,
         field_type: f.field_type || "text",
-        required: f.required,
+        active: f.active !== false,
+        required: f.required === true,
         checkout_id: checkoutId,
         sort_order: index + 1,
       }));
@@ -147,7 +148,7 @@ function CheckoutEditPage() {
   };
 
   const addField = () => {
-    setFields([...fields, { field_name: "", field_label: "", field_type: "text", required: false }]);
+    setFields([...fields, { field_name: "", field_label: "", field_type: "text", active: true, required: false }]);
   };
 
   const removeField = (index: number) => {
@@ -295,12 +296,22 @@ function CheckoutEditPage() {
                   </div>
                   
                   <div className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-2">
-                      <Switch 
-                        checked={field.required}
-                        onCheckedChange={(val) => updateField(index, "required", val)}
-                      />
-                      <span className="text-xs">Obrigatório</span>
+                    <div className="flex gap-4">
+                      <div className="flex items-center gap-2">
+                        <Switch 
+                          checked={field.active !== false}
+                          onCheckedChange={(val) => updateField(index, "active", val)}
+                        />
+                        <span className="text-xs font-medium">Ativo</span>
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <Switch 
+                          checked={field.required === true}
+                          onCheckedChange={(val) => updateField(index, "required", val)}
+                        />
+                        <span className="text-xs font-medium">Obrigatório</span>
+                      </div>
                     </div>
                     
                     <Button variant="ghost" size="icon" onClick={() => removeField(index)} className="text-destructive h-8 w-8">
