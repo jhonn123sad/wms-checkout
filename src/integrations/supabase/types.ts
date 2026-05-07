@@ -212,6 +212,47 @@ export type Database = {
         }
         Relationships: []
       }
+      checkout_sections: {
+        Row: {
+          active: boolean
+          checkout_id: string
+          content: Json
+          created_at: string | null
+          id: string
+          section_type: string
+          sort_order: number
+          updated_at: string | null
+        }
+        Insert: {
+          active?: boolean
+          checkout_id: string
+          content?: Json
+          created_at?: string | null
+          id?: string
+          section_type: string
+          sort_order?: number
+          updated_at?: string | null
+        }
+        Update: {
+          active?: boolean
+          checkout_id?: string
+          content?: Json
+          created_at?: string | null
+          id?: string
+          section_type?: string
+          sort_order?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checkout_sections_checkout_id_fkey"
+            columns: ["checkout_id"]
+            isOneToOne: false
+            referencedRelation: "checkouts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       checkouts: {
         Row: {
           active: boolean
