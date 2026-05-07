@@ -591,16 +591,26 @@ function CheckoutEditPage() {
           </div>
         </TabsContent>
 
-        <TabsContent value="design">
-          <Card className="p-6">
-            <CheckoutSectionsEditor 
-              sections={sections}
-              setSections={setSections}
-              setRemovedSectionIds={setRemovedSectionIds}
-              checkoutId={id}
-            />
-          </Card>
-        </TabsContent>
+<TabsContent value="design">
+  {checkout.design_key !== "custom_media_v1" ? (
+    <Card className="p-12 text-center space-y-4">
+      <Layout className="w-12 h-12 text-muted-foreground mx-auto opacity-20" />
+      <h3 className="text-lg font-medium">Design Livre Indisponível</h3>
+      <p className="text-muted-foreground max-w-sm mx-auto">
+        O Design Livre está disponível apenas quando a chave de design é <span className="font-bold">custom_media_v1</span>.
+      </p>
+    </Card>
+  ) : (
+    <Card className="p-6">
+      <CheckoutSectionsEditor 
+        sections={sections}
+        setSections={setSections}
+        setRemovedSectionIds={setRemovedSectionIds}
+        checkoutId={id}
+      />
+    </Card>
+  )}
+</TabsContent>
       </Tabs>
 
       <Button 
