@@ -99,6 +99,7 @@ function CheckoutEditPage() {
         active: checkout.active,
         media_url: checkout.media_url,
         media_type: checkout.media_type,
+        success_redirect_url: checkout.success_redirect_url?.trim() || null,
         updated_at: new Date().toISOString()
       };
 
