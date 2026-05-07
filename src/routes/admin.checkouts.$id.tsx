@@ -255,6 +255,47 @@ function CheckoutEditPage() {
         if (delError) throw delError;
       }
 
+      // 3. Processar SEÇÕES (CRUD SEGURO)
+      if (checkout.design_key === "custom_media_v1") {
+        // Validação: apenas um checkout_form ativo
+        const activeForms = sections.filter(s => s.section_type === "checkout_form" && s.active);
+        if (activeForms.length > 1) {
+          throw new Error("Apenas um formulário de checkout pode estar ativo por vez.");
+        }
+
+        for (const section of sections) {
+          const sectionPayload = {
+            checkout_id: checkoutId,
+            section_type: section.section_type,
+            sort_order: section.sort_order,
+            active: section.active === true,
+            content: section.content
+          };
+
+          if (section.id) {
+            const { error: upError } = await supabase
+              .from("checkout_sections")
+              .update(sectionPayload)
+              .eq("id", section.id);
+            if (upError) throw upError;
+          } else {
+            const { error: insError } = await supabase
+              .from("checkout_sections")
+              .insert([sectionPayload]);
+            if (insError) throw insError;
+          }
+        }
+
+        // Deletar removidas
+        if (removedSectionIds.length > 0) {
+          const { error: delError } = await supabase
+            .from("checkout_sections")
+            .delete()
+            .in("id", removedSectionIds);
+          if (delError) throw delError;
+        }
+      }
+
       toast.success("Checkout salvo com sucesso!");
       navigate({ to: "/admin/checkouts" });
     } catch (error: any) {
