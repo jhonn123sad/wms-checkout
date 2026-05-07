@@ -12,14 +12,18 @@ import { toast } from "sonner";
  });
  
  function AdminCheckoutsList() {
-   const [checkouts, setCheckouts] = useState<any[]>([]);
-   const [loading, setLoading] = useState(true);
- 
-   useEffect(() => {
-     fetchCheckouts();
-   }, []);
- 
+  const [checkouts, setCheckouts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchCheckouts();
+  }, []);
+
   const fetchCheckouts = async () => {
+    setLoading(true);
+    setLoadError(null);
+    
     const { data, error } = await supabase
       .from("checkouts")
       .select("*")
@@ -27,7 +31,8 @@ import { toast } from "sonner";
 
     if (error) {
       console.error("[admin/checkouts] erro ao buscar checkouts:", error);
-      toast.error("Erro ao carregar checkouts. Veja o console.");
+      setLoadError(error.message || "Erro ao carregar checkouts");
+      setCheckouts([]);
     } else {
       setCheckouts(data || []);
     }
@@ -46,7 +51,7 @@ import { toast } from "sonner";
   };
 
   const handleDuplicate = async (checkout: any) => {
-    const { id, created_at, updated_at, checkout_leads, ...checkoutData } = checkout;
+    const { id, created_at, updated_at, ...checkoutData } = checkout;
     const newCheckout = {
       ...checkoutData,
       title: `${checkout.title} (Cópia)`,
@@ -90,16 +95,24 @@ import { toast } from "sonner";
           </Link>
        </div>
  
-       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-         {loading ? (
-           Array.from({ length: 3 }).map((_, i) => (
-             <Card key={i} className="h-48 animate-pulse bg-muted" />
-           ))
-         ) : checkouts.length === 0 ? (
-           <div className="col-span-full text-center py-20 bg-muted/30 rounded-xl border-2 border-dashed">
-             <p className="text-muted-foreground">Nenhum checkout cadastrado ainda.</p>
-           </div>
-         ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {loading ? (
+            Array.from({ length: 3 }).map((_, i) => (
+              <Card key={i} className="h-48 animate-pulse bg-muted" />
+            ))
+          ) : loadError ? (
+            <div className="col-span-full text-center py-20 bg-destructive/10 text-destructive rounded-xl border-2 border-dashed border-destructive/20">
+              <p className="font-medium">Erro ao carregar checkouts. Veja o console.</p>
+              <p className="text-sm opacity-80">{loadError}</p>
+              <Button variant="outline" size="sm" className="mt-4" onClick={fetchCheckouts}>
+                Tentar novamente
+              </Button>
+            </div>
+          ) : checkouts.length === 0 ? (
+            <div className="col-span-full text-center py-20 bg-muted/30 rounded-xl border-2 border-dashed">
+              <p className="text-muted-foreground">Nenhum checkout cadastrado ainda.</p>
+            </div>
+          ) : (
            checkouts.map((checkout) => (
              <Card key={checkout.id} className="overflow-hidden border-border flex flex-col">
                <div className="h-32 bg-muted relative">
