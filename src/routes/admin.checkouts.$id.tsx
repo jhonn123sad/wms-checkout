@@ -176,15 +176,16 @@ function CheckoutEditPage() {
         if (error) throw error;
       }
 
-      // Processar campos
+      // Processar campos (CRUD SEGURO)
+      // 1. Update/Insert campos
       for (const field of fields) {
         const fieldPayload = {
           checkout_id: checkoutId,
           field_name: field.field_name.trim(),
           field_label: field.field_label.trim(),
           field_type: field.field_type,
-          active: field.active,
-          required: field.required,
+          active: field.active === true,
+          required: field.required === true,
           sort_order: field.sort_order
         };
 
@@ -202,7 +203,7 @@ function CheckoutEditPage() {
         }
       }
 
-      // Deletar removidos
+      // 2. Deletar somente os IDs explicitamente removidos
       if (removedFieldIds.length > 0) {
         const { error: delError } = await supabase
           .from("checkout_fields")
