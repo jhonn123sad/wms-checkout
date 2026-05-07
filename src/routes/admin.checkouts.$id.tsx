@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { ArrowLeft, Plus, Trash2 } from "lucide-react";
-import { MediaField } from "@/components/admin/MediaField";
+import { MediaField, MediaValue } from "@/components/admin/MediaField";
 import { Switch } from "@/components/ui/switch";
 
 export const Route = createFileRoute("/admin/checkouts/$id")({
@@ -134,6 +134,12 @@ function CheckoutEditPage() {
     setFields(newFields);
   };
 
+  const mediaValue: MediaValue | undefined = checkout.media_url ? {
+    url: checkout.media_url,
+    type: checkout.media_type as any,
+    source: (checkout.media_json as any)?.source || "external_url"
+  } : undefined;
+
   return (
     <div className="p-8 max-w-4xl mx-auto space-y-8">
       <div className="flex items-center gap-4">
@@ -198,7 +204,7 @@ function CheckoutEditPage() {
             <div className="flex items-center justify-between pt-2">
               <Label>Status Ativo</Label>
               <Switch 
-                checked={checkout.active} 
+                checked={checkout.active || false} 
                 onCheckedChange={(checked) => setCheckout({ ...checkout, active: checked })}
               />
             </div>
@@ -207,8 +213,13 @@ function CheckoutEditPage() {
           <Card className="p-6 space-y-4">
             <h2 className="text-xl font-semibold border-b pb-2">Mídia do Checkout</h2>
             <MediaField 
-              value={checkout.media_url ? { url: checkout.media_url, type: checkout.media_type, provider: 'external' } : null} 
-              onChange={(val) => setCheckout({ ...checkout, media_url: val?.url || "", media_type: val?.type || "image" })} 
+              value={mediaValue} 
+              onChange={(val) => setCheckout({ 
+                ...checkout, 
+                media_url: val?.url || "", 
+                media_type: val?.type || "image",
+                media_json: val ? val : null
+              })} 
             />
           </Card>
         </div>
