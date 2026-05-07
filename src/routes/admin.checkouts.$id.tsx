@@ -339,7 +339,7 @@ function CheckoutEditPage() {
       originalFields,
       removedFieldIds,
       savePayload: {
-        checkoutPayload,
+        checkout,
         fieldsPayload: fields.map(f => ({
           id: f.id,
           field_name: f.field_name,
