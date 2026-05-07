@@ -393,178 +393,190 @@ function CheckoutEditPage() {
 
         <TabsContent value="dados" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="space-y-6">
-          <Card className="p-6 space-y-4">
-            <h2 className="text-xl font-semibold border-b pb-2">Informações Básicas</h2>
-            
-            <div className="space-y-2">
-              <Label>Título</Label>
-              <Input 
-                value={checkout.title || ""} 
-                onChange={(e) => setCheckout({ ...checkout, title: e.target.value })}
-                placeholder="Ex: Acesso Reservado"
-              />
-            </div>
+            <div className="space-y-6">
+              <Card className="p-6 space-y-4">
+                <h2 className="text-xl font-semibold border-b pb-2">Informações Básicas</h2>
+                
+                <div className="space-y-2">
+                  <Label>Título</Label>
+                  <Input 
+                    value={checkout.title || ""} 
+                    onChange={(e) => setCheckout({ ...checkout, title: e.target.value })}
+                    placeholder="Ex: Acesso Reservado"
+                  />
+                </div>
 
-            <div className="space-y-2">
-              <Label>Subtítulo</Label>
-              <Input 
-                value={checkout.subtitle || ""} 
-                onChange={(e) => setCheckout({ ...checkout, subtitle: e.target.value })}
-                placeholder="Ex: Conteúdo exclusivo liberado após confirmação"
-              />
-            </div>
+                <div className="space-y-2">
+                  <Label>Subtítulo</Label>
+                  <Input 
+                    value={checkout.subtitle || ""} 
+                    onChange={(e) => setCheckout({ ...checkout, subtitle: e.target.value })}
+                    placeholder="Ex: Conteúdo exclusivo liberado após confirmação"
+                  />
+                </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Slug da URL</Label>
-                <Input 
-                  value={checkout.slug || ""} 
-                  onChange={(e) => setCheckout({ ...checkout, slug: e.target.value })}
-                  placeholder="acesso-reservado"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Preço (R$)</Label>
-                <Input 
-                  type="number"
-                  step="0.01"
-                  value={checkout.price || 0} 
-                  onChange={(e) => setCheckout({ ...checkout, price: parseFloat(e.target.value) })}
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Texto do Botão (CTA)</Label>
-              <Input 
-                value={checkout.cta_text || ""} 
-                onChange={(e) => setCheckout({ ...checkout, cta_text: e.target.value })}
-                placeholder="Liberar acesso agora"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label>Página de obrigado / URL de entrega</Label>
-              <Input 
-                type="url"
-                value={checkout.success_redirect_url || ""} 
-                onChange={(e) => setCheckout({ ...checkout, success_redirect_url: e.target.value })}
-                placeholder="https://..."
-              />
-            </div>
-
-            <div className="flex items-center justify-between pt-2 border-t">
-              <Label>Status Ativo</Label>
-              <Switch 
-                checked={checkout.active === true} 
-                onCheckedChange={(checked) => setCheckout({ ...checkout, active: checked })}
-              />
-            </div>
-          </Card>
-
-          <Card className="p-6 space-y-4">
-            <h2 className="text-xl font-semibold border-b pb-2">Mídia do Checkout</h2>
-            <MediaField 
-              value={mediaValue} 
-              onChange={(val) => setCheckout({ 
-                ...checkout, 
-                media_url: val?.url || "", 
-                media_type: val?.type || "image",
-                media_json: val ? val : null
-              })} 
-            />
-          </Card>
-        </div>
-
-        <div className="space-y-6">
-          <Card className="p-6 space-y-4">
-            <div className="flex justify-between items-center border-b pb-2">
-              <h2 className="text-xl font-semibold">Campos do Formulário</h2>
-              <Button size="sm" variant="outline" onClick={addField}>
-                <Plus className="w-4 h-4 mr-1" /> Novo Campo
-              </Button>
-            </div>
-
-            <div className="space-y-4">
-              {fields.map((field, index) => (
-                <div key={index} className="p-4 border rounded-lg bg-muted/30 space-y-3 relative">
-                  <div className="flex gap-2">
-                    <div className="flex-1 space-y-1">
-                      <Label className="text-[10px] uppercase font-bold text-muted-foreground">Label</Label>
-                      <Input 
-                        placeholder="Ex: Nome Completo" 
-                        value={field.field_label}
-                        onChange={(e) => updateField(index, "field_label", e.target.value)}
-                      />
-                    </div>
-                    <div className="flex-1 space-y-1">
-                      <Label className="text-[10px] uppercase font-bold text-muted-foreground">Nome Técnico</Label>
-                      <Input 
-                        placeholder="Ex: customer_name" 
-                        value={field.field_name}
-                        onChange={(e) => updateField(index, "field_name", e.target.value)}
-                      />
-                    </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Slug da URL</Label>
+                    <Input 
+                      value={checkout.slug || ""} 
+                      onChange={(e) => setCheckout({ ...checkout, slug: e.target.value })}
+                      placeholder="acesso-reservado"
+                    />
                   </div>
-
-                  <div className="space-y-1">
-                    <Label className="text-[10px] uppercase font-bold text-muted-foreground">Tipo</Label>
-                    <Select 
-                      value={field.field_type} 
-                      onValueChange={(val) => updateField(index, "field_type", val)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="text">Texto</SelectItem>
-                        <SelectItem value="email">E-mail</SelectItem>
-                        <SelectItem value="phone">Telefone</SelectItem>
-                        <SelectItem value="cpf">CPF</SelectItem>
-                        <SelectItem value="number">Número</SelectItem>
-                        <SelectItem value="textarea">Área de Texto</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="flex items-center justify-between gap-4 pt-2 border-t">
-                    <div className="flex gap-4">
-                      <div className="flex items-center gap-2">
-                        <Switch 
-                          checked={field.active === true}
-                          onCheckedChange={(checked) => updateField(index, "active", checked === true)}
-                        />
-                        <span className="text-xs font-medium">Ativo</span>
-                      </div>
-                      
-                      <div className="flex items-center gap-2">
-                        <Switch 
-                          checked={field.required === true}
-                          onCheckedChange={(checked) => updateField(index, "required", checked === true)}
-                        />
-                        <span className="text-xs font-medium">Obrigatório</span>
-                      </div>
-                    </div>
-                    
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      onClick={() => removeField(index)} 
-                      className="text-destructive h-8 w-8 hover:bg-destructive/10"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
+                  <div className="space-y-2">
+                    <Label>Preço (R$)</Label>
+                    <Input 
+                      type="number"
+                      step="0.01"
+                      value={checkout.price || 0} 
+                      onChange={(e) => setCheckout({ ...checkout, price: parseFloat(e.target.value) })}
+                    />
                   </div>
                 </div>
-              ))}
-              {fields.length === 0 && (
-                <p className="text-center text-muted-foreground text-sm py-4">Nenhum campo adicionado.</p>
-              )}
-            </div>
-          </Card>
 
-        </div>
+                <div className="space-y-2">
+                  <Label>Texto do Botão (CTA)</Label>
+                  <Input 
+                    value={checkout.cta_text || ""} 
+                    onChange={(e) => setCheckout({ ...checkout, cta_text: e.target.value })}
+                    placeholder="Liberar acesso agora"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Página de obrigado / URL de entrega</Label>
+                  <Input 
+                    type="url"
+                    value={checkout.success_redirect_url || ""} 
+                    onChange={(e) => setCheckout({ ...checkout, success_redirect_url: e.target.value })}
+                    placeholder="https://..."
+                  />
+                </div>
+
+                <div className="flex items-center justify-between pt-2 border-t">
+                  <Label>Status Ativo</Label>
+                  <Switch 
+                    checked={checkout.active === true} 
+                    onCheckedChange={(checked) => setCheckout({ ...checkout, active: checked })}
+                  />
+                </div>
+              </Card>
+
+              <Card className="p-6 space-y-4">
+                <h2 className="text-xl font-semibold border-b pb-2">Mídia do Checkout</h2>
+                <MediaField 
+                  value={mediaValue} 
+                  onChange={(val) => setCheckout({ 
+                    ...checkout, 
+                    media_url: val?.url || "", 
+                    media_type: val?.type || "image",
+                    media_json: val ? val : null
+                  })} 
+                />
+              </Card>
+            </div>
+
+            <div className="space-y-6">
+              <Card className="p-6 space-y-4">
+                <div className="flex justify-between items-center border-b pb-2">
+                  <h2 className="text-xl font-semibold">Campos do Formulário</h2>
+                  <Button size="sm" variant="outline" onClick={addField}>
+                    <Plus className="w-4 h-4 mr-1" /> Novo Campo
+                  </Button>
+                </div>
+
+                <div className="space-y-4">
+                  {fields.map((field, index) => (
+                    <div key={index} className="p-4 border rounded-lg bg-muted/30 space-y-3 relative">
+                      <div className="flex gap-2">
+                        <div className="flex-1 space-y-1">
+                          <Label className="text-[10px] uppercase font-bold text-muted-foreground">Label</Label>
+                          <Input 
+                            placeholder="Ex: Nome Completo" 
+                            value={field.field_label}
+                            onChange={(e) => updateField(index, "field_label", e.target.value)}
+                          />
+                        </div>
+                        <div className="flex-1 space-y-1">
+                          <Label className="text-[10px] uppercase font-bold text-muted-foreground">Nome Técnico</Label>
+                          <Input 
+                            placeholder="Ex: customer_name" 
+                            value={field.field_name}
+                            onChange={(e) => updateField(index, "field_name", e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <Label className="text-[10px] uppercase font-bold text-muted-foreground">Tipo</Label>
+                        <Select 
+                          value={field.field_type} 
+                          onValueChange={(val) => updateField(index, "field_type", val)}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="text">Texto</SelectItem>
+                            <SelectItem value="email">E-mail</SelectItem>
+                            <SelectItem value="phone">Telefone</SelectItem>
+                            <SelectItem value="cpf">CPF</SelectItem>
+                            <SelectItem value="number">Número</SelectItem>
+                            <SelectItem value="textarea">Área de Texto</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div className="flex items-center justify-between gap-4 pt-2 border-t">
+                        <div className="flex gap-4">
+                          <div className="flex items-center gap-2">
+                            <Switch 
+                              checked={field.active === true}
+                              onCheckedChange={(checked) => updateField(index, "active", checked === true)}
+                            />
+                            <span className="text-xs font-medium">Ativo</span>
+                          </div>
+                          
+                          <div className="flex items-center gap-2">
+                            <Switch 
+                              checked={field.required === true}
+                              onCheckedChange={(checked) => updateField(index, "required", checked === true)}
+                            />
+                            <span className="text-xs font-medium">Obrigatório</span>
+                          </div>
+                        </div>
+                        
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          onClick={() => removeField(index)} 
+                          className="text-destructive h-8 w-8 hover:bg-destructive/10"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                  {fields.length === 0 && (
+                    <p className="text-center text-muted-foreground text-sm py-4">Nenhum campo adicionado.</p>
+                  )}
+                </div>
+              </Card>
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="design">
+          <Card className="p-6">
+            <CheckoutSectionsEditor 
+              sections={sections}
+              setSections={setSections}
+              setRemovedSectionIds={setRemovedSectionIds}
+              checkoutId={id}
+            />
+          </Card>
+        </TabsContent>
       </Tabs>
 
       <Button 
@@ -574,21 +586,6 @@ function CheckoutEditPage() {
       >
         {saving ? "Salvando..." : "Salvar Checkout"}
       </Button>
-    </div>
-  </div>
-</TabsContent>
-
-<TabsContent value="design">
-  <Card className="p-6">
-    <CheckoutSectionsEditor 
-      sections={sections}
-      setSections={setSections}
-      setRemovedSectionIds={setRemovedSectionIds}
-      checkoutId={id}
-    />
-  </Card>
-</TabsContent>
-</Tabs>
 
 
       <div className="pt-8 border-t">
