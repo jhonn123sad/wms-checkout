@@ -382,12 +382,24 @@ function CheckoutEditPage() {
       <Tabs defaultValue="dados" className="space-y-6">
         <TabsList>
           <TabsTrigger value="dados">Dados do Checkout</TabsTrigger>
-          <TabsTrigger value="design" disabled={checkout.design_key !== "custom_media_v1"}>
+          <TabsTrigger value="design">
             Design Livre
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="dados" className="space-y-6">
+          {checkout.design_key !== "custom_media_v1" && (
+            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
+              <div className="flex">
+                <div className="ml-3">
+                  <p className="text-sm text-yellow-700">
+                    Design Livre disponível apenas para <span className="font-bold">custom_media_v1</span>. 
+                    Altere o design abaixo para habilitar o editor de seções.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-6">
               <Card className="p-6 space-y-4">
