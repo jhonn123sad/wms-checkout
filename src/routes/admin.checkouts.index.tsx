@@ -22,13 +22,14 @@ import { toast } from "sonner";
   const fetchCheckouts = async () => {
     const { data, error } = await supabase
       .from("checkouts")
-      .select("*, checkout_leads(count)")
+      .select("*")
       .order("created_at", { ascending: false });
 
     if (error) {
-      toast.error("Erro ao carregar checkouts");
+      console.error("[admin/checkouts] erro ao buscar checkouts:", error);
+      toast.error("Erro ao carregar checkouts. Veja o console.");
     } else {
-      setCheckouts(data);
+      setCheckouts(data || []);
     }
     setLoading(false);
   };
@@ -130,11 +131,11 @@ import { toast } from "sonner";
                    </div>
                  </div>
                  
-                 <div className="flex items-center justify-between pt-2 border-t text-sm">
-                   <div className="flex items-center text-muted-foreground">
-                     <Users className="w-4 h-4 mr-1" />
-                     {checkout.checkout_leads?.[0]?.count || 0} leads
-                   </div>
+                  <div className="flex items-center justify-between pt-2 border-t text-sm">
+                    <div className="flex items-center text-muted-foreground">
+                      <Users className="w-4 h-4 mr-1" />
+                      Leads: —
+                    </div>
                     <div className="flex gap-2 items-center">
                       <a 
                         href={`/c/${checkout.slug}`} 
