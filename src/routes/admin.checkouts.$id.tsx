@@ -38,8 +38,8 @@ function CheckoutEditPage() {
       fetchCheckout();
     } else {
       setFields([
-        { field_name: "nome", field_label: "Nome Completo", field_type: "text", active: true, required: true, sort_order: 1 },
-        { field_name: "email", field_label: "E-mail", field_type: "email", active: true, required: true, sort_order: 2 },
+        { field_name: "customer_name", field_label: "Nome Completo", field_type: "text", active: true, required: true, sort_order: 1 },
+        { field_name: "customer_email", field_label: "E-mail", field_type: "email", active: true, required: true, sort_order: 2 },
       ]);
     }
   }, [id]);
