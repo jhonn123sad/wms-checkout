@@ -254,6 +254,27 @@ function CheckoutEditPage() {
       fields,
       originalFields,
       removedFieldIds,
+      savePayload: {
+        checkoutPayload: {
+          title: checkout.title,
+          subtitle: checkout.subtitle,
+          slug: checkout.slug,
+          price: checkout.price,
+          cta_text: checkout.cta_text,
+          active: checkout.active,
+          media_url: checkout.media_url,
+          media_type: checkout.media_type,
+          media_json: checkout.media_json,
+          success_redirect_url: checkout.success_redirect_url?.trim() || null,
+        },
+        fieldsPayload: fields.map(f => ({
+          id: f.id,
+          field_name: f.field_name,
+          active: f.active,
+          required: f.required
+        })),
+        removedFieldIds
+      },
       timestamp: new Date().toISOString()
     };
     navigator.clipboard.writeText(JSON.stringify(diagnostic, null, 2));
