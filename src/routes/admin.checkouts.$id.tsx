@@ -75,7 +75,11 @@ function CheckoutEditPage() {
         console.warn("[admin/checkouts/$id] erro ao buscar campos:", fieldsError);
         setFields([]);
       } else {
-        setFields(fieldsData || []);
+        setFields((fieldsData || []).map((f) => ({
+          ...f,
+          active: f.active !== false,
+          required: f.required === true,
+        })));
       }
     } catch (err: any) {
       console.error("[admin/checkouts/$id] erro inesperado:", err);
