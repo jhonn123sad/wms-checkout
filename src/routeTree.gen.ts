@@ -16,6 +16,7 @@ import { Route as PagamentoDemoPreviewRouteImport } from './routes/pagamento.dem
 import { Route as PagamentoOrderIdRouteImport } from './routes/pagamento.$orderId'
 import { Route as CSlugRouteImport } from './routes/c.$slug'
 import { Route as AdminCheckoutsIndexRouteImport } from './routes/admin.checkouts.index'
+import { Route as AdminPagesIdRouteImport } from './routes/admin.pages.$id'
 import { Route as AdminCheckoutsIdRouteImport } from './routes/admin.checkouts.$id'
 
 const AdminRoute = AdminRouteImport.update({
@@ -53,6 +54,11 @@ const AdminCheckoutsIndexRoute = AdminCheckoutsIndexRouteImport.update({
   path: '/checkouts/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminPagesIdRoute = AdminPagesIdRouteImport.update({
+  id: '/pages/$id',
+  path: '/pages/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminCheckoutsIdRoute = AdminCheckoutsIdRouteImport.update({
   id: '/checkouts/$id',
   path: '/checkouts/$id',
@@ -67,6 +73,7 @@ export interface FileRoutesByFullPath {
   '/pagamento/demo-preview': typeof PagamentoDemoPreviewRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/checkouts/$id': typeof AdminCheckoutsIdRoute
+  '/admin/pages/$id': typeof AdminPagesIdRoute
   '/admin/checkouts/': typeof AdminCheckoutsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -76,6 +83,7 @@ export interface FileRoutesByTo {
   '/pagamento/demo-preview': typeof PagamentoDemoPreviewRoute
   '/admin': typeof AdminIndexRoute
   '/admin/checkouts/$id': typeof AdminCheckoutsIdRoute
+  '/admin/pages/$id': typeof AdminPagesIdRoute
   '/admin/checkouts': typeof AdminCheckoutsIndexRoute
 }
 export interface FileRoutesById {
@@ -87,6 +95,7 @@ export interface FileRoutesById {
   '/pagamento/demo-preview': typeof PagamentoDemoPreviewRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/checkouts/$id': typeof AdminCheckoutsIdRoute
+  '/admin/pages/$id': typeof AdminPagesIdRoute
   '/admin/checkouts/': typeof AdminCheckoutsIndexRoute
 }
 export interface FileRouteTypes {
@@ -99,6 +108,7 @@ export interface FileRouteTypes {
     | '/pagamento/demo-preview'
     | '/admin/'
     | '/admin/checkouts/$id'
+    | '/admin/pages/$id'
     | '/admin/checkouts/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -108,6 +118,7 @@ export interface FileRouteTypes {
     | '/pagamento/demo-preview'
     | '/admin'
     | '/admin/checkouts/$id'
+    | '/admin/pages/$id'
     | '/admin/checkouts'
   id:
     | '__root__'
@@ -118,6 +129,7 @@ export interface FileRouteTypes {
     | '/pagamento/demo-preview'
     | '/admin/'
     | '/admin/checkouts/$id'
+    | '/admin/pages/$id'
     | '/admin/checkouts/'
   fileRoutesById: FileRoutesById
 }
@@ -180,6 +192,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCheckoutsIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/pages/$id': {
+      id: '/admin/pages/$id'
+      path: '/pages/$id'
+      fullPath: '/admin/pages/$id'
+      preLoaderRoute: typeof AdminPagesIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/checkouts/$id': {
       id: '/admin/checkouts/$id'
       path: '/checkouts/$id'
@@ -193,12 +212,14 @@ declare module '@tanstack/react-router' {
 interface AdminRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
   AdminCheckoutsIdRoute: typeof AdminCheckoutsIdRoute
+  AdminPagesIdRoute: typeof AdminPagesIdRoute
   AdminCheckoutsIndexRoute: typeof AdminCheckoutsIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
   AdminCheckoutsIdRoute: AdminCheckoutsIdRoute,
+  AdminPagesIdRoute: AdminPagesIdRoute,
   AdminCheckoutsIndexRoute: AdminCheckoutsIndexRoute,
 }
 
@@ -214,3 +235,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
