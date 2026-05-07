@@ -450,13 +450,29 @@ function CheckoutEditPage() {
                   />
                 </div>
 
-                <div className="flex items-center justify-between pt-2 border-t">
-                  <Label>Status Ativo</Label>
-                  <Switch 
-                    checked={checkout.active === true} 
-                    onCheckedChange={(checked) => setCheckout({ ...checkout, active: checked })}
-                  />
-                </div>
+            <div className="space-y-2 pt-2 border-t">
+              <Label>Design do Checkout</Label>
+              <Select 
+                value={checkout.design_key || "default"} 
+                onValueChange={(val) => setCheckout({ ...checkout, design_key: val })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="default">Padrão</SelectItem>
+                  <SelectItem value="custom_media_v1">Design Livre (Mídia + Seções)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex items-center justify-between pt-2">
+              <Label>Status Ativo</Label>
+              <Switch 
+                checked={checkout.active === true} 
+                onCheckedChange={(checked) => setCheckout({ ...checkout, active: checked })}
+              />
+            </div>
               </Card>
 
               <Card className="p-6 space-y-4">
