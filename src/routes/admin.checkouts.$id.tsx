@@ -6,13 +6,26 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { ArrowLeft, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, ChevronDown, ChevronUp, Copy } from "lucide-react";
 import { MediaField, MediaValue } from "@/components/admin/MediaField";
 import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 export const Route = createFileRoute("/admin/checkouts/$id")({
   component: CheckoutEditPage,
 });
+
+type CheckoutFieldForm = {
+  id?: string;
+  checkout_id?: string;
+  field_name: string;
+  field_label: string;
+  field_type: string;
+  active: boolean;
+  required: boolean;
+  sort_order: number;
+};
 
 function CheckoutEditPage() {
   const { id } = Route.useParams();
@@ -20,6 +33,7 @@ function CheckoutEditPage() {
   const isNew = id === "new";
   
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [checkout, setCheckout] = useState<any>({
     title: "",
     subtitle: "",
@@ -31,15 +45,33 @@ function CheckoutEditPage() {
     active: true,
     success_redirect_url: "",
   });
-  const [fields, setFields] = useState<any[]>([]);
+  
+  const [fields, setFields] = useState<CheckoutFieldForm[]>([]);
+  const [removedFieldIds, setRemovedFieldIds] = useState<string[]>([]);
+  const [originalFields, setOriginalFields] = useState<CheckoutFieldForm[]>([]);
+  const [debugOpen, setDebugOpen] = useState(false);
 
   useEffect(() => {
     if (!isNew) {
       fetchCheckout();
     } else {
       setFields([
-        { field_name: "customer_name", field_label: "Nome Completo", field_type: "text", active: true, required: true, sort_order: 1 },
-        { field_name: "customer_email", field_label: "E-mail", field_type: "email", active: true, required: true, sort_order: 2 },
+        {
+          field_name: "customer_name",
+          field_label: "Nome Completo",
+          field_type: "text",
+          active: true,
+          required: true,
+          sort_order: 1
+        },
+        {
+          field_name: "customer_email",
+          field_label: "E-mail",
+          field_type: "email",
+          active: true,
+          required: true,
+          sort_order: 2
+        }
       ]);
     }
   }, [id]);
@@ -54,7 +86,6 @@ function CheckoutEditPage() {
         .single();
 
       if (checkoutError) {
-        console.error("[admin/checkouts/$id] erro ao buscar checkout:", checkoutError);
         toast.error("Erro ao carregar checkout: " + checkoutError.message);
         navigate({ to: "/admin/checkouts" });
         return;
@@ -72,17 +103,23 @@ function CheckoutEditPage() {
         .order("sort_order", { ascending: true });
 
       if (fieldsError) {
-        console.warn("[admin/checkouts/$id] erro ao buscar campos:", fieldsError);
+        console.warn("Erro ao buscar campos:", fieldsError);
         setFields([]);
       } else {
-        setFields((fieldsData || []).map((f) => ({
-          ...f,
-          active: f.active !== false,
+        const normalized = (fieldsData || []).map((f, index) => ({
+          id: f.id,
+          checkout_id: f.checkout_id,
+          field_name: f.field_name || "",
+          field_label: f.field_label || "",
+          field_type: f.field_type || "text",
+          active: f.active === true,
           required: f.required === true,
-        })));
+          sort_order: f.sort_order ?? index + 1,
+        }));
+        setFields(normalized);
+        setOriginalFields(JSON.parse(JSON.stringify(normalized)));
       }
     } catch (err: any) {
-      console.error("[admin/checkouts/$id] erro inesperado:", err);
       toast.error("Erro inesperado ao carregar checkout");
     } finally {
       setLoading(false);
@@ -90,7 +127,22 @@ function CheckoutEditPage() {
   };
 
   const handleSave = async () => {
-    setLoading(true);
+    // Validar campos
+    for (const f of fields) {
+      if (!f.field_name.trim() || !f.field_label.trim()) {
+        toast.error("Todos os campos devem ter Nome Técnico e Label");
+        return;
+      }
+    }
+
+    const names = fields.map(f => f.field_name.trim());
+    const hasDuplicate = names.some((name, index) => names.indexOf(name) !== index);
+    if (hasDuplicate) {
+      toast.error("Não é permitido nomes técnicos duplicados");
+      return;
+    }
+
+    setSaving(true);
     try {
       let checkoutId = id;
       
@@ -103,6 +155,7 @@ function CheckoutEditPage() {
         active: checkout.active,
         media_url: checkout.media_url,
         media_type: checkout.media_type,
+        media_json: checkout.media_json,
         success_redirect_url: checkout.success_redirect_url?.trim() || null,
         updated_at: new Date().toISOString()
       };
@@ -123,23 +176,39 @@ function CheckoutEditPage() {
         if (error) throw error;
       }
 
-      if (!isNew) {
-        await supabase.from("checkout_fields").delete().eq("checkout_id", checkoutId);
-      }
-      
-      const fieldsToInsert = fields.map((f, index) => ({
-        field_name: f.field_name,
-        field_label: f.field_label,
-        field_type: f.field_type || "text",
-        active: f.active !== false,
-        required: f.required === true,
-        checkout_id: checkoutId,
-        sort_order: index + 1,
-      }));
+      // Processar campos
+      for (const field of fields) {
+        const fieldPayload = {
+          checkout_id: checkoutId,
+          field_name: field.field_name.trim(),
+          field_label: field.field_label.trim(),
+          field_type: field.field_type,
+          active: field.active,
+          required: field.required,
+          sort_order: field.sort_order
+        };
 
-      if (fieldsToInsert.length > 0) {
-        const { error: fError } = await supabase.from("checkout_fields").insert(fieldsToInsert);
-        if (fError) throw fError;
+        if (field.id) {
+          const { error: upError } = await supabase
+            .from("checkout_fields")
+            .update(fieldPayload)
+            .eq("id", field.id);
+          if (upError) throw upError;
+        } else {
+          const { error: insError } = await supabase
+            .from("checkout_fields")
+            .insert([fieldPayload]);
+          if (insError) throw insError;
+        }
+      }
+
+      // Deletar removidos
+      if (removedFieldIds.length > 0) {
+        const { error: delError } = await supabase
+          .from("checkout_fields")
+          .delete()
+          .in("id", removedFieldIds);
+        if (delError) throw delError;
       }
 
       toast.success("Checkout salvo com sucesso!");
@@ -147,22 +216,47 @@ function CheckoutEditPage() {
     } catch (error: any) {
       toast.error(error.message || "Erro ao salvar");
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
   const addField = () => {
-    setFields([...fields, { field_name: "", field_label: "", field_type: "text", active: true, required: false, sort_order: fields.length + 1 }]);
+    setFields(prev => [...prev, { 
+      field_name: "", 
+      field_label: "", 
+      field_type: "text", 
+      active: true, 
+      required: false, 
+      sort_order: prev.length + 1 
+    }]);
   };
 
   const removeField = (index: number) => {
-    setFields(fields.filter((_, i) => i !== index));
+    const fieldToRemove = fields[index];
+    if (fieldToRemove.id) {
+      setRemovedFieldIds(prev => [...prev, fieldToRemove.id!]);
+    }
+    setFields(prev => prev.filter((_, i) => i !== index));
   };
 
-  const updateField = (index: number, key: string, value: any) => {
-    const newFields = [...fields];
-    newFields[index][key] = value;
-    setFields(newFields);
+  const updateField = (index: number, key: keyof CheckoutFieldForm, value: any) => {
+    setFields(prev =>
+      prev.map((field, i) =>
+        i === index ? { ...field, [key]: value } : field
+      )
+    );
+  };
+
+  const copyDiagnostic = () => {
+    const diagnostic = {
+      checkout,
+      fields,
+      originalFields,
+      removedFieldIds,
+      timestamp: new Date().toISOString()
+    };
+    navigator.clipboard.writeText(JSON.stringify(diagnostic, null, 2));
+    toast.success("Diagnóstico copiado!");
   };
 
   const mediaValue: MediaValue | undefined = checkout.media_url ? {
@@ -171,8 +265,10 @@ function CheckoutEditPage() {
     source: (checkout.media_json as any)?.source || "external_url"
   } : undefined;
 
+  if (loading) return <div className="p-8 text-center">Carregando...</div>;
+
   return (
-    <div className="p-8 max-w-4xl mx-auto space-y-8">
+    <div className="p-8 max-w-4xl mx-auto space-y-8 pb-32">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" onClick={() => navigate({ to: "/admin/checkouts" })}>
           <ArrowLeft className="w-4 h-4" />
@@ -240,15 +336,12 @@ function CheckoutEditPage() {
                 onChange={(e) => setCheckout({ ...checkout, success_redirect_url: e.target.value })}
                 placeholder="https://..."
               />
-              <p className="text-xs text-muted-foreground">
-                Após o pagamento confirmado, o cliente será redirecionado para este link.
-              </p>
             </div>
 
-            <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center justify-between pt-2 border-t">
               <Label>Status Ativo</Label>
               <Switch 
-                checked={checkout.active || false} 
+                checked={checkout.active === true} 
                 onCheckedChange={(checked) => setCheckout({ ...checkout, active: checked })}
               />
             </div>
@@ -273,13 +366,13 @@ function CheckoutEditPage() {
             <div className="flex justify-between items-center border-b pb-2">
               <h2 className="text-xl font-semibold">Campos do Formulário</h2>
               <Button size="sm" variant="outline" onClick={addField}>
-                <Plus className="w-4 h-4 mr-1" /> Add
+                <Plus className="w-4 h-4 mr-1" /> Novo Campo
               </Button>
             </div>
 
             <div className="space-y-4">
               {fields.map((field, index) => (
-                <div key={index} className="p-4 border rounded-lg bg-muted/30 space-y-3 relative group">
+                <div key={index} className="p-4 border rounded-lg bg-muted/30 space-y-3 relative">
                   <div className="flex gap-2">
                     <div className="flex-1 space-y-1">
                       <Label className="text-[10px] uppercase font-bold text-muted-foreground">Label</Label>
@@ -290,21 +383,41 @@ function CheckoutEditPage() {
                       />
                     </div>
                     <div className="flex-1 space-y-1">
-                      <Label className="text-[10px] uppercase font-bold text-muted-foreground">Name (DB)</Label>
+                      <Label className="text-[10px] uppercase font-bold text-muted-foreground">Nome Técnico</Label>
                       <Input 
-                        placeholder="Ex: nome" 
+                        placeholder="Ex: customer_name" 
                         value={field.field_name}
                         onChange={(e) => updateField(index, "field_name", e.target.value)}
                       />
                     </div>
                   </div>
+
+                  <div className="space-y-1">
+                    <Label className="text-[10px] uppercase font-bold text-muted-foreground">Tipo</Label>
+                    <Select 
+                      value={field.field_type} 
+                      onValueChange={(val) => updateField(index, "field_type", val)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="text">Texto</SelectItem>
+                        <SelectItem value="email">E-mail</SelectItem>
+                        <SelectItem value="phone">Telefone</SelectItem>
+                        <SelectItem value="cpf">CPF</SelectItem>
+                        <SelectItem value="number">Número</SelectItem>
+                        <SelectItem value="textarea">Área de Texto</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                   
-                  <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-center justify-between gap-4 pt-2 border-t">
                     <div className="flex gap-4">
                       <div className="flex items-center gap-2">
                         <Switch 
-                          checked={field.active !== false}
-                          onCheckedChange={(val) => updateField(index, "active", val)}
+                          checked={field.active === true}
+                          onCheckedChange={(checked) => updateField(index, "active", checked === true)}
                         />
                         <span className="text-xs font-medium">Ativo</span>
                       </div>
@@ -312,29 +425,65 @@ function CheckoutEditPage() {
                       <div className="flex items-center gap-2">
                         <Switch 
                           checked={field.required === true}
-                          onCheckedChange={(val) => updateField(index, "required", val)}
+                          onCheckedChange={(checked) => updateField(index, "required", checked === true)}
                         />
                         <span className="text-xs font-medium">Obrigatório</span>
                       </div>
                     </div>
                     
-                    <Button variant="ghost" size="icon" onClick={() => removeField(index)} className="text-destructive h-8 w-8">
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      onClick={() => removeField(index)} 
+                      className="text-destructive h-8 w-8 hover:bg-destructive/10"
+                    >
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
               ))}
+              {fields.length === 0 && (
+                <p className="text-center text-muted-foreground text-sm py-4">Nenhum campo adicionado.</p>
+              )}
             </div>
           </Card>
 
           <Button 
             className="w-full py-6 text-lg font-bold" 
             onClick={handleSave}
-            disabled={loading}
+            disabled={saving}
           >
-            {loading ? "Salvando..." : "Salvar Checkout"}
+            {saving ? "Salvando..." : "Salvar Checkout"}
           </Button>
         </div>
+      </div>
+
+      <div className="pt-8 border-t">
+        <Collapsible open={debugOpen} onOpenChange={setDebugOpen} className="space-y-2">
+          <div className="flex items-center justify-between">
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                {debugOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                <span className="font-semibold text-muted-foreground">Diagnóstico</span>
+              </Button>
+            </CollapsibleTrigger>
+            {debugOpen && (
+              <Button variant="outline" size="sm" onClick={copyDiagnostic} className="gap-2">
+                <Copy className="w-4 h-4" /> Copiar diagnóstico
+              </Button>
+            )}
+          </div>
+          <CollapsibleContent className="bg-muted p-4 rounded-lg overflow-auto max-h-96">
+            <pre className="text-[10px] leading-tight">
+              {JSON.stringify({
+                checkout,
+                fields,
+                originalFields,
+                removedFieldIds
+              }, null, 2)}
+            </pre>
+          </CollapsibleContent>
+        </Collapsible>
       </div>
     </div>
   );
