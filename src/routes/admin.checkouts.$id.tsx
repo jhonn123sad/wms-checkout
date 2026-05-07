@@ -67,6 +67,11 @@ function CheckoutEditPage() {
   const [fields, setFields] = useState<CheckoutFieldForm[]>([]);
   const [removedFieldIds, setRemovedFieldIds] = useState<string[]>([]);
   const [originalFields, setOriginalFields] = useState<CheckoutFieldForm[]>([]);
+
+  const [sections, setSections] = useState<CheckoutSection[]>([]);
+  const [removedSectionIds, setRemovedSectionIds] = useState<string[]>([]);
+  const [originalSections, setOriginalSections] = useState<CheckoutSection[]>([]);
+
   const [debugOpen, setDebugOpen] = useState(false);
 
   useEffect(() => {
