@@ -12,14 +12,18 @@ import { toast } from "sonner";
  });
  
  function AdminCheckoutsList() {
-   const [checkouts, setCheckouts] = useState<any[]>([]);
-   const [loading, setLoading] = useState(true);
- 
-   useEffect(() => {
-     fetchCheckouts();
-   }, []);
- 
+  const [checkouts, setCheckouts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchCheckouts();
+  }, []);
+
   const fetchCheckouts = async () => {
+    setLoading(true);
+    setLoadError(null);
+    
     const { data, error } = await supabase
       .from("checkouts")
       .select("*")
@@ -27,7 +31,8 @@ import { toast } from "sonner";
 
     if (error) {
       console.error("[admin/checkouts] erro ao buscar checkouts:", error);
-      toast.error("Erro ao carregar checkouts. Veja o console.");
+      setLoadError(error.message || "Erro ao carregar checkouts");
+      setCheckouts([]);
     } else {
       setCheckouts(data || []);
     }
