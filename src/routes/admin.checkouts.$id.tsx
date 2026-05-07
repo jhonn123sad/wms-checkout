@@ -156,7 +156,8 @@ function CheckoutEditPage() {
       } else {
         const normalizedSections = (sectionsData || []).map(s => ({
           ...s,
-          active: s.active === true
+          active: s.active === true,
+          section_type: s.section_type as any
         }));
         setSections(normalizedSections);
         setOriginalSections(JSON.parse(JSON.stringify(normalizedSections)));
