@@ -148,7 +148,7 @@ function CheckoutEditPage() {
   };
 
   const addField = () => {
-    setFields([...fields, { field_name: "", field_label: "", field_type: "text", active: true, required: false }]);
+    setFields([...fields, { field_name: "", field_label: "", field_type: "text", active: true, required: false, sort_order: fields.length + 1 }]);
   };
 
   const removeField = (index: number) => {
