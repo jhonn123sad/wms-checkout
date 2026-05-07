@@ -1,0 +1,1 @@
+ALTER TABLE public.checkout_fields ADD COLUMN IF NOT EXISTS active BOOLEAN DEFAULT true;

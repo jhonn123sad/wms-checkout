@@ -46,6 +46,7 @@ export type Database = {
       }
       checkout_fields: {
         Row: {
+          active: boolean | null
           checkout_id: string
           created_at: string
           field_label: string
@@ -56,6 +57,7 @@ export type Database = {
           sort_order: number
         }
         Insert: {
+          active?: boolean | null
           checkout_id: string
           created_at?: string
           field_label: string
@@ -66,6 +68,7 @@ export type Database = {
           sort_order?: number
         }
         Update: {
+          active?: boolean | null
           checkout_id?: string
           created_at?: string
           field_label?: string
