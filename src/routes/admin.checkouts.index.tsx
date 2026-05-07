@@ -51,7 +51,7 @@ import { toast } from "sonner";
   };
 
   const handleDuplicate = async (checkout: any) => {
-    const { id, created_at, updated_at, checkout_leads, ...checkoutData } = checkout;
+    const { id, created_at, updated_at, ...checkoutData } = checkout;
     const newCheckout = {
       ...checkoutData,
       title: `${checkout.title} (Cópia)`,
