@@ -24,6 +24,7 @@ import { VisagismoCheckoutDesign } from "./designs/VisagismoCheckoutDesign";
 import { ReservadoCheckoutDesign } from "./designs/ReservadoCheckoutDesign";
 import { DefaultCheckoutDesign } from "./designs/DefaultCheckoutDesign";
 import { WmsNovoTesteCheckoutDesign } from "./designs/WmsNovoTesteCheckoutDesign";
+import { CustomMediaV1Design } from "./designs/CustomMediaV1Design";
 
 export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
   const [formData, setFormData] = useState<Record<string, string>>({});
@@ -174,6 +175,10 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
     handleResetPayment,
     InlinePixPanel
   };
+
+  if (designKey === "custom_media_v1") {
+    return <CustomMediaV1Design {...designProps} />;
+  }
 
   if (designKey === "apple_v1" || checkout.slug === 'wms-novo-teste') {
     return <WmsNovoTesteCheckoutDesign {...designProps} />;

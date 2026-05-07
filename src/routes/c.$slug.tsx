@@ -37,10 +37,23 @@ export const Route = createFileRoute("/c/$slug")({
       console.warn("[c.$slug] erro ao buscar checkout_fields:", fieldsError);
     }
 
+    // Busca opcional de checkout_sections para o design custom_media_v1
+    const { data: sections, error: sectionsError } = await supabase
+      .from("checkout_sections")
+      .select("*")
+      .eq("checkout_id", checkout.id)
+      .eq("active", true)
+      .order("sort_order", { ascending: true });
+
+    if (sectionsError) {
+      console.warn("[c.$slug] erro ao buscar checkout_sections:", sectionsError);
+    }
+
     return {
       checkout: {
         ...checkout,
         checkout_fields: fields || [],
+        checkout_sections: sections || [],
       },
     };
   },
