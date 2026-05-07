@@ -60,7 +60,10 @@ function CheckoutEditPage() {
         return;
       }
 
-      setCheckout(checkoutData);
+      setCheckout({
+        ...checkoutData,
+        success_redirect_url: checkoutData.success_redirect_url || ""
+      });
 
       const { data: fieldsData, error: fieldsError } = await supabase
         .from("checkout_fields")
