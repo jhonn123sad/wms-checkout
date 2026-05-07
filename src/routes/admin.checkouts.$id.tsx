@@ -227,6 +227,19 @@ function CheckoutEditPage() {
               />
             </div>
 
+            <div className="space-y-2">
+              <Label>Página de obrigado / URL de entrega</Label>
+              <Input 
+                type="url"
+                value={checkout.success_redirect_url || ""} 
+                onChange={(e) => setCheckout({ ...checkout, success_redirect_url: e.target.value })}
+                placeholder="https://..."
+              />
+              <p className="text-xs text-muted-foreground">
+                Após o pagamento confirmado, o cliente será redirecionado para este link.
+              </p>
+            </div>
+
             <div className="flex items-center justify-between pt-2">
               <Label>Status Ativo</Label>
               <Switch 
