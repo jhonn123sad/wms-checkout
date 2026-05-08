@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Trash2, ChevronUp, ChevronDown, Plus } from "lucide-react";
 import { MediaField, MediaValue } from "@/components/admin/MediaField";
 
-export type SectionType = "hero" | "text" | "media" | "gallery" | "benefits" | "checkout_form";
+export type SectionType = "hero" | "text" | "media" | "gallery" | "benefits" | "checkout_form" | "media_slot" | "gallery_slot";
 
 export interface CheckoutSection {
   id?: string;
@@ -269,6 +269,75 @@ export function SectionEditor({
                 onChange={(e) => updateContent("subtitle", e.target.value)}
                 placeholder="Ex: Preencha os dados abaixo"
               />
+            </div>
+          </div>
+        );
+
+      case "media_slot":
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Mídia (Slot: {content.slot_key})</Label>
+              <MediaField 
+                value={content.media} 
+                onChange={(val) => updateContent("media", val)}
+                pathPrefix={`checkouts/${section.checkout_id}/sections`}
+              />
+            </div>
+          </div>
+        );
+
+      case "gallery_slot":
+        return (
+          <div className="space-y-4">
+            <Label>Galeria (Slot: {content.slot_key})</Label>
+            <div className="grid grid-cols-1 gap-4">
+              {(content.items || []).map((item: any, itemIdx: number) => (
+                <div key={itemIdx} className="p-3 border rounded relative bg-background/50">
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="absolute top-1 right-1 h-6 w-6 text-destructive"
+                    onClick={() => {
+                      const newItems = [...(content.items || [])];
+                      newItems.splice(itemIdx, 1);
+                      updateContent("items", newItems);
+                    }}
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                  <div className="space-y-2">
+                    <MediaField 
+                      value={item.media} 
+                      onChange={(val) => {
+                        const newItems = [...(content.items || [])];
+                        newItems[itemIdx] = { ...newItems[itemIdx], media: val };
+                        updateContent("items", newItems);
+                      }}
+                      pathPrefix={`checkouts/${section.checkout_id}/sections`}
+                    />
+                    <Input 
+                      placeholder="Legenda"
+                      value={item.caption || ""}
+                      onChange={(e) => {
+                        const newItems = [...(content.items || [])];
+                        newItems[itemIdx] = { ...newItems[itemIdx], caption: e.target.value };
+                        updateContent("items", newItems);
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => {
+                  const newItems = [...(content.items || []), { media: null, caption: "" }];
+                  updateContent("items", newItems);
+                }}
+              >
+                <Plus className="h-4 w-4 mr-2" /> Adicionar Item
+              </Button>
             </div>
           </div>
         );

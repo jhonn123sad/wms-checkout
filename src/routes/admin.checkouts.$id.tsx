@@ -6,14 +6,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { ArrowLeft, Plus, Trash2, ChevronDown, ChevronUp, Copy, Layout } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, ChevronDown, ChevronUp, Copy, Layout, Settings, Image, Grid } from "lucide-react";
 import { MediaField, MediaValue } from "@/components/admin/MediaField";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckoutSectionsEditor } from "@/components/admin/sections/CheckoutSectionsEditor";
+import { DesignMediaSlotsEditor } from "@/components/admin/sections/DesignMediaSlotsEditor";
 import { CheckoutSection } from "@/components/admin/sections/SectionEditor";
+
 
 export const Route = createFileRoute("/admin/checkouts/$id")({
   component: CheckoutEditPage,
@@ -116,7 +118,8 @@ function CheckoutEditPage() {
 
       setCheckout({
         ...checkoutData,
-        success_redirect_url: checkoutData.success_redirect_url || ""
+        success_redirect_url: checkoutData.success_redirect_url || "",
+        design_key: checkoutData.design_key || "default"
       });
 
       const { data: fieldsData, error: fieldsError } = await supabase
@@ -199,6 +202,7 @@ function CheckoutEditPage() {
         media_url: checkout.media_url,
         media_type: checkout.media_type,
         media_json: checkout.media_json,
+        design_key: checkout.design_key,
         success_redirect_url: checkout.success_redirect_url?.trim() || null,
         updated_at: new Date().toISOString()
       };
@@ -256,7 +260,7 @@ function CheckoutEditPage() {
       }
 
       // 3. Processar SEÇÕES (CRUD SEGURO)
-      if (checkout.design_key === "custom_media_v1") {
+      if (checkout.design_key === "custom_media_v1" || sections.length > 0) {
         // Validação: apenas um checkout_form ativo
         const activeForms = sections.filter(s => s.section_type === "checkout_form" && s.active);
         if (activeForms.length > 1) {
@@ -379,7 +383,7 @@ function CheckoutEditPage() {
   if (loading) return <div className="p-8 text-center">Carregando...</div>;
 
   return (
-    <div className="p-8 max-w-4xl mx-auto space-y-8 pb-32">
+    <div className="p-8 max-w-7xl mx-auto space-y-8 pb-32">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" onClick={() => navigate({ to: "/admin/checkouts" })}>
           <ArrowLeft className="w-4 h-4" />
@@ -388,10 +392,12 @@ function CheckoutEditPage() {
       </div>
 
       <Tabs defaultValue="dados" className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="dados">Dados do Checkout</TabsTrigger>
-          <TabsTrigger value="design">
-            Design Livre
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="dados" className="flex items-center gap-2">
+            <Settings className="w-4 h-4" /> Dados do Checkout
+          </TabsTrigger>
+          <TabsTrigger value="design" className="flex items-center gap-2">
+            <Image className="w-4 h-4" /> Design Livre
           </TabsTrigger>
         </TabsList>
 
@@ -408,7 +414,7 @@ function CheckoutEditPage() {
               </div>
             </div>
           )}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
             <div className="space-y-6">
               <Card className="p-6 space-y-4">
                 <h2 className="text-xl font-semibold border-b pb-2">Informações Básicas</h2>
@@ -503,8 +509,9 @@ function CheckoutEditPage() {
                     ...checkout, 
                     media_url: val?.url || "", 
                     media_type: val?.type || "image",
-                    media_json: val ? val : null
-                  })} 
+                    media_json: val ? { source: val.source } : null
+                  })}
+                  pathPrefix={`checkouts/${id}`}
                 />
               </Card>
             </div>
@@ -599,26 +606,49 @@ function CheckoutEditPage() {
           </div>
         </TabsContent>
 
-<TabsContent value="design">
-  {checkout.design_key !== "custom_media_v1" ? (
-    <Card className="p-12 text-center space-y-4">
-      <Layout className="w-12 h-12 text-muted-foreground mx-auto opacity-20" />
-      <h3 className="text-lg font-medium">Design Livre Indisponível</h3>
-      <p className="text-muted-foreground max-w-sm mx-auto">
-        O Design Livre está disponível apenas quando a chave de design é <span className="font-bold">custom_media_v1</span>.
-      </p>
-    </Card>
-  ) : (
-    <Card className="p-6">
-      <CheckoutSectionsEditor 
-        sections={sections}
-        setSections={setSections}
-        setRemovedSectionIds={setRemovedSectionIds}
-        checkoutId={id}
-      />
-    </Card>
-  )}
-</TabsContent>
+        <TabsContent value="design" className="space-y-8 animate-in fade-in duration-300">
+          {checkout.design_key !== "custom_media_v1" ? (
+            <Card className="p-12 text-center space-y-4">
+              <Layout className="w-12 h-12 text-muted-foreground mx-auto opacity-20" />
+              <h3 className="text-lg font-medium">Design Livre Indisponível</h3>
+              <p className="text-muted-foreground max-w-sm mx-auto">
+                O Design Livre está disponível apenas quando a chave de design é <span className="font-bold">custom_media_v1</span>.
+              </p>
+            </Card>
+          ) : (
+            <>
+              <DesignMediaSlotsEditor
+                checkoutId={id}
+                designKey={checkout.design_key}
+                sections={sections}
+                setSections={setSections}
+                setRemovedSectionIds={setRemovedSectionIds}
+              />
+
+              <Collapsible className="space-y-4 pt-8 border-t">
+                <CollapsibleTrigger asChild>
+                  <Button variant="ghost" className="w-full flex justify-between items-center group">
+                    <div className="flex items-center gap-2">
+                      <Layout className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <span className="font-bold text-muted-foreground group-hover:text-primary transition-colors">Avançado / Blocos de Conteúdo</span>
+                    </div>
+                    <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                  </Button>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="space-y-4 pt-4">
+                  <Card className="p-6">
+                    <CheckoutSectionsEditor 
+                      sections={sections}
+                      setSections={setSections}
+                      setRemovedSectionIds={setRemovedSectionIds}
+                      checkoutId={id}
+                    />
+                  </Card>
+                </CollapsibleContent>
+              </Collapsible>
+            </>
+          )}
+        </TabsContent>
       </Tabs>
 
       <Button 

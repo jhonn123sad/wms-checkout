@@ -117,6 +117,35 @@ export function CustomMediaBlockRenderer({ section, checkout_form }: CustomMedia
         </section>
       );
 
+    case "media_slot":
+      return (
+        <section className="py-8 md:py-12 w-full max-w-5xl mx-auto px-4">
+          {content.media && (
+            <div className="aspect-video rounded-3xl overflow-hidden border border-white/5 bg-[#141414] shadow-2xl">
+              <MediaDisplay media={content.media} />
+            </div>
+          )}
+        </section>
+      );
+
+    case "gallery_slot":
+      return (
+        <section className="py-12 md:py-20 w-full max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {content.items?.map((item: any, idx: number) => (
+              <div key={idx} className="flex flex-col gap-2">
+                <div className="aspect-square rounded-2xl overflow-hidden border border-white/5 bg-[#141414]">
+                  {item.media && <MediaDisplay media={item.media} />}
+                </div>
+                {item.caption && (
+                  <p className="text-center text-xs text-gray-500">{item.caption}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+
     default:
       return null;
   }

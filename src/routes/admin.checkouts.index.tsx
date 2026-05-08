@@ -64,14 +64,26 @@ import { toast } from "sonner";
     if (error) {
       toast.error("Erro ao duplicar checkout: " + error.message);
     } else {
-      // Duplicar campos também
+      const newCheckoutId = data.id;
+
+      // 1. Duplicar campos
       const { data: fields } = await supabase.from("checkout_fields").select("*").eq("checkout_id", id);
       if (fields && fields.length > 0) {
-        const newFields = fields.map(({ id: fId, checkout_id, ...fData }) => ({
+        const newFields = fields.map(({ id: fId, checkout_id, created_at: fCa, ...fData }) => ({
           ...fData,
-          checkout_id: data.id
+          checkout_id: newCheckoutId
         }));
         await supabase.from("checkout_fields").insert(newFields);
+      }
+
+      // 2. Duplicar seções
+      const { data: sections } = await supabase.from("checkout_sections").select("*").eq("checkout_id", id);
+      if (sections && sections.length > 0) {
+        const newSections = sections.map(({ id: sId, checkout_id, created_at: sCa, ...sData }) => ({
+          ...sData,
+          checkout_id: newCheckoutId
+        }));
+        await supabase.from("checkout_sections").insert(newSections);
       }
       
       toast.success("Checkout duplicado");
