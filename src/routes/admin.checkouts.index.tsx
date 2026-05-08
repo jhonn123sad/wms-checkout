@@ -56,7 +56,8 @@ import { toast } from "sonner";
       ...checkoutData,
       title: `${checkout.title} (Cópia)`,
       slug: `${checkout.slug}-copy-${Math.floor(Math.random() * 1000)}`,
-      status: "draft"
+      status: "draft",
+      active: false
     };
 
     const { data, error } = await supabase.from("checkouts").insert(newCheckout).select().single();
