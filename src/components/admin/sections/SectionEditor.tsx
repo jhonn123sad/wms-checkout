@@ -284,7 +284,8 @@ export function SectionEditor({
               <MediaField 
                 value={content.media} 
                 onChange={(val) => updateContent("media", val)}
-                pathPrefix={`checkouts/${section.checkout_id}/sections`}
+                pathPrefix={section.checkout_id === "new" ? "temp" : `checkouts/${section.checkout_id}/sections`}
+                disabled={section.checkout_id === "new"}
               />
             </div>
           </div>
