@@ -69,7 +69,7 @@ import { toast } from "sonner";
       // 1. Duplicar campos
       const { data: fields } = await supabase.from("checkout_fields").select("*").eq("checkout_id", id);
       if (fields && fields.length > 0) {
-        const newFields = fields.map(({ id: fId, checkout_id, created_at: fCa, updated_at: fUa, ...fData }) => ({
+        const newFields = fields.map(({ id: fId, checkout_id, created_at: fCa, ...fData }) => ({
           ...fData,
           checkout_id: newCheckoutId
         }));
