@@ -34,42 +34,42 @@ export const DESIGN_MEDIA_SLOTS: Record<string, DesignMediaSlot[]> = {
     {
       slot_key: "hero_background",
       label: "Imagem/Fundo do Hero",
-      description: "fundo ou imagem principal do topo (16:9)",
+      description: "Fundo ou imagem principal do topo. Proporção recomendada: 16:9 ou 1920x1080.",
       section_type: "media_slot",
-      accepted: ["image", "gif", "video", "external"]
+      accepted: ["image", "gif", "video", "youtube", "vimeo", "drive", "external"]
     },
     {
       slot_key: "hero_product",
       label: "Mockup/Produto Principal",
-      description: "imagem principal do produto/oferta (4:5)",
+      description: "Imagem principal do produto/oferta. Proporção recomendada: 4:5 ou 1080x1350.",
       section_type: "media_slot",
       accepted: ["image", "gif", "external"]
     },
     {
       slot_key: "vsl_video",
       label: "Vídeo de Vendas / VSL",
-      description: "vídeo principal da oferta (16:9)",
+      description: "Vídeo principal da oferta. Proporção recomendada: 16:9.",
       section_type: "media_slot",
       accepted: ["video", "youtube", "vimeo", "drive", "external"]
     },
     {
       slot_key: "proof_image_1",
       label: "Prova Visual 1",
-      description: "print, depoimento ou prova (1:1 ou 4:5)",
+      description: "Print, depoimento, antes/depois ou prova. Proporção recomendada: 1:1 ou 4:5.",
       section_type: "media_slot",
       accepted: ["image", "gif", "external"]
     },
     {
       slot_key: "proof_image_2",
       label: "Prova Visual 2",
-      description: "segunda prova visual (1:1 ou 4:5)",
+      description: "Segunda prova visual. Proporção recomendada: 1:1 ou 4:5.",
       section_type: "media_slot",
       accepted: ["image", "gif", "external"]
     },
     {
       slot_key: "bonus_mockup",
       label: "Mockup de Bônus",
-      description: "imagem de bônus/extra (4:5 ou PNG)",
+      description: "Imagem de bônus/entrega/extra. Proporção recomendada: 4:5 ou PNG transparente.",
       section_type: "media_slot",
       accepted: ["image", "gif", "external"]
     }
@@ -78,21 +78,21 @@ export const DESIGN_MEDIA_SLOTS: Record<string, DesignMediaSlot[]> = {
     {
       slot_key: "cover_image",
       label: "Imagem Principal",
-      description: "imagem principal do produto (1:1 ou 4:5)",
+      description: "Imagem principal do produto/oferta. Proporção recomendada: 1:1 ou 4:5.",
       section_type: "media_slot",
       accepted: ["image", "gif", "external"]
     },
     {
       slot_key: "side_image",
       label: "Imagem Secundária",
-      description: "imagem lateral/de apoio (4:5 ou 3:4)",
+      description: "Imagem lateral/de apoio. Proporção recomendada: 4:5 ou 3:4.",
       section_type: "media_slot",
       accepted: ["image", "gif", "external"]
     },
     {
       slot_key: "trust_badge",
       label: "Selo/Prova Visual",
-      description: "selo, garantia ou destaque (PNG ou 1:1)",
+      description: "Selo, garantia, prova ou destaque visual. PNG transparente ou 1:1.",
       section_type: "media_slot",
       accepted: ["image", "gif", "external"]
     }
