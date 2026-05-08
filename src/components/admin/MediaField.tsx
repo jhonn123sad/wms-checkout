@@ -17,6 +17,7 @@ interface MediaFieldProps {
   label?: string;
   /** Pasta lógica dentro do bucket. Ex.: `checkouts/{checkoutId}` */
   pathPrefix?: string;
+  disabled?: boolean;
 }
 
 const ACCEPTED_TYPES = [
