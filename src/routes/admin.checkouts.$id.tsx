@@ -118,7 +118,8 @@ function CheckoutEditPage() {
 
       setCheckout({
         ...checkoutData,
-        success_redirect_url: checkoutData.success_redirect_url || ""
+        success_redirect_url: checkoutData.success_redirect_url || "",
+        design_key: checkoutData.design_key || "default"
       });
 
       const { data: fieldsData, error: fieldsError } = await supabase
