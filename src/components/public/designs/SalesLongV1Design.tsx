@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { MediaDisplay } from "@/components/public/MediaDisplay";
-import { ShieldCheck, Zap, Star, ChevronRight, Lock, CheckCircle2, PlayCircle } from "lucide-react";
+import { ShieldCheck, Zap, Star, ChevronRight, Lock, CheckCircle2, PlayCircle, Image as ImageIcon } from "lucide-react";
 import { getSlotMedia } from "@/lib/designMediaSlots";
 
 interface SalesLongV1DesignProps {
@@ -47,13 +47,15 @@ export function SalesLongV1Design({
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-500/30 overflow-x-hidden">
       {/* Hero Section */}
       <section className="relative pt-12 pb-20 lg:pt-20 lg:pb-32 overflow-hidden bg-slate-900 text-white">
-        {heroBackground && (
-          <div className="absolute inset-0 opacity-20 pointer-events-none">
+        <div className="absolute inset-0 opacity-20 pointer-events-none">
+          {heroBackground ? (
             <div className="w-full h-full [&_img]:object-cover [&_img]:h-full">
               <MediaDisplay media={heroBackground} />
             </div>
-          </div>
-        )}
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-blue-900 to-slate-900"></div>
+          )}
+        </div>
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-slate-900/90 pointer-events-none"></div>
         
         <div className="container relative z-10 mx-auto px-4 text-center max-w-4xl">
@@ -69,15 +71,22 @@ export function SalesLongV1Design({
             {checkout.subtitle}
           </p>
 
-          {vslVideo ? (
-            <div className="aspect-video rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-black mb-12 animate-in zoom-in-95 delay-300 group cursor-pointer relative">
-               <MediaDisplay media={vslVideo} />
-            </div>
-          ) : heroProduct && (
-            <div className="max-w-md mx-auto aspect-[4/5] rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-slate-800 mb-12 animate-in zoom-in-95 delay-300">
-              <MediaDisplay media={heroProduct} />
-            </div>
-          )}
+          <div className="max-w-4xl mx-auto mb-12 animate-in zoom-in-95 delay-300">
+            {vslVideo ? (
+              <div className="aspect-video rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-black group cursor-pointer relative">
+                 <MediaDisplay media={vslVideo} />
+              </div>
+            ) : heroProduct ? (
+              <div className="max-w-md mx-auto aspect-[4/5] rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-slate-800">
+                <MediaDisplay media={heroProduct} />
+              </div>
+            ) : (
+              <div className="aspect-video rounded-3xl border border-dashed border-white/20 flex flex-col items-center justify-center bg-white/5">
+                <PlayCircle className="w-16 h-16 text-white/20 mb-4" />
+                <p className="text-white/40 font-medium">Configure seu Vídeo ou Mockup Principal</p>
+              </div>
+            )}
+          </div>
 
           <Button 
             onClick={() => document.getElementById('checkout-form')?.scrollIntoView({ behavior: 'smooth' })}
@@ -89,41 +98,54 @@ export function SalesLongV1Design({
       </section>
 
       {/* Proof Section */}
-      {(proof1 || proof2) && (
-        <section className="py-20 bg-white">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Resultados Reais</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-              {proof1 && (
-                <div className="rounded-3xl overflow-hidden border border-slate-100 shadow-lg bg-slate-50">
-                  <MediaDisplay media={proof1} />
-                </div>
-              )}
-              {proof2 && (
-                <div className="rounded-3xl overflow-hidden border border-slate-100 shadow-lg bg-slate-50">
-                  <MediaDisplay media={proof2} />
-                </div>
-              )}
-            </div>
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Resultados Reais</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {proof1 ? (
+              <div className="rounded-3xl overflow-hidden border border-slate-100 shadow-lg bg-slate-50">
+                <MediaDisplay media={proof1} />
+              </div>
+            ) : (
+              <div className="aspect-square rounded-3xl border border-dashed border-slate-200 flex flex-col items-center justify-center bg-slate-50 text-slate-400">
+                <ImageIcon className="w-12 h-12 mb-2 opacity-20" />
+                <p className="text-xs font-bold uppercase tracking-widest">Prova Visual 1</p>
+              </div>
+            )}
+            {proof2 ? (
+              <div className="rounded-3xl overflow-hidden border border-slate-100 shadow-lg bg-slate-50">
+                <MediaDisplay media={proof2} />
+              </div>
+            ) : (
+              <div className="aspect-square rounded-3xl border border-dashed border-slate-200 flex flex-col items-center justify-center bg-slate-50 text-slate-400">
+                <ImageIcon className="w-12 h-12 mb-2 opacity-20" />
+                <p className="text-xs font-bold uppercase tracking-widest">Prova Visual 2</p>
+              </div>
+            )}
           </div>
-        </section>
-      )}
+        </div>
+      </section>
 
       {/* Bonus Section */}
-      {bonusMockup && (
-        <section className="py-20 bg-slate-50">
-          <div className="container mx-auto px-4 text-center">
-            <div className="max-w-4xl mx-auto bg-white rounded-[3rem] p-8 md:p-12 shadow-xl border border-slate-100">
-               <div className="inline-block px-4 py-1 rounded-full bg-orange-500 text-white text-xs font-bold uppercase tracking-widest mb-6">BÔNUS EXCLUSIVO</div>
-               <h2 className="text-3xl md:text-4xl font-bold mb-8">Você ainda leva isso de presente:</h2>
-               <div className="max-w-sm mx-auto mb-8">
+      <section className="py-20 bg-slate-50">
+        <div className="container mx-auto px-4 text-center">
+          <div className="max-w-4xl mx-auto bg-white rounded-[3rem] p-8 md:p-12 shadow-xl border border-slate-100">
+             <div className="inline-block px-4 py-1 rounded-full bg-orange-500 text-white text-xs font-bold uppercase tracking-widest mb-6">BÔNUS EXCLUSIVO</div>
+             <h2 className="text-3xl md:text-4xl font-bold mb-8">Você ainda leva isso de presente:</h2>
+             <div className="max-w-sm mx-auto mb-8">
+               {bonusMockup ? (
                  <MediaDisplay media={bonusMockup} />
-               </div>
-               <p className="text-slate-600 text-lg mb-0 italic">"Um complemento perfeito para acelerar seus resultados."</p>
-            </div>
+               ) : (
+                 <div className="aspect-[4/5] rounded-3xl border border-dashed border-slate-200 flex flex-col items-center justify-center bg-slate-50 text-slate-400">
+                   <ImageIcon className="w-12 h-12 mb-2 opacity-20" />
+                   <p className="text-xs font-bold uppercase tracking-widest">Mockup de Bônus</p>
+                 </div>
+               )}
+             </div>
+             <p className="text-slate-600 text-lg mb-0 italic">"Um complemento perfeito para acelerar seus resultados."</p>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
 
       {/* Checkout Section */}
       <section id="checkout-form" className="py-20 bg-slate-900 text-white relative overflow-hidden">
