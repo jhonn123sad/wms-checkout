@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Trash2, ChevronUp, ChevronDown, Plus } from "lucide-react";
 import { MediaField, MediaValue } from "@/components/admin/MediaField";
 
-export type SectionType = "hero" | "text" | "media" | "gallery" | "benefits" | "checkout_form";
+export type SectionType = "hero" | "text" | "media" | "gallery" | "benefits" | "checkout_form" | "media_slot" | "gallery_slot";
 
 export interface CheckoutSection {
   id?: string;
