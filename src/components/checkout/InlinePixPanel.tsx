@@ -19,7 +19,7 @@ interface InlinePixPanelProps {
 /**
  * INLINE PIX PANEL (VALIDADO)
  * Exibe QR Code e código copia-e-cola com design premium dark.
- * NÃO ALTERAR A LÓGICA DE EXIBIÇÃO OU PERSISTÊNCIA.
+ * Blindagem visual do QR Code para evitar glitches de renderização.
  */
 export const InlinePixPanel: React.FC<InlinePixPanelProps> = ({
   paymentData,
@@ -47,6 +47,14 @@ export const InlinePixPanel: React.FC<InlinePixPanelProps> = ({
 
   const isPaid = paymentStatus === "paid";
 
+  const getQrImageSrc = (value?: string | null) => {
+    if (!value) return "";
+    if (value.startsWith("data:image")) return value;
+    return `data:image/png;base64,${value}`;
+  };
+
+  const qrSrc = getQrImageSrc(paymentData?.qr_code_base64);
+
   return (
     <div className="w-full flex flex-col items-center animate-in fade-in slide-in-from-bottom-4 duration-500 py-2">
       {/* Status Badge */}
@@ -64,23 +72,78 @@ export const InlinePixPanel: React.FC<InlinePixPanelProps> = ({
         </p>
       </div>
 
-      {/* QR Code Container */}
+      {/* QR Code Container - ÁREA ISOLADA COM PRIORIDADE MÁXIMA */}
       <div className="relative group mb-8">
-        <div className="absolute -inset-4 bg-green-500/10 rounded-[2.5rem] blur-2xl opacity-0 group-hover:opacity-100 transition duration-700"></div>
-        <div className="relative w-48 h-48 bg-white p-3 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] flex items-center justify-center overflow-hidden transition-transform duration-500 hover:scale-[1.02]">
-          {paymentData.qr_code_base64 ? (
-            <img 
-              src={paymentData.qr_code_base64} 
-              alt="QR Code Pix" 
-              className="w-full h-full object-contain"
-            />
-          ) : (
-            <div className="flex flex-col items-center justify-center text-center p-4">
-              <Loader2 className="h-8 w-8 animate-spin text-green-500 mb-3" />
-              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Gerando QR...</p>
-            </div>
-          )}
+        {/* Glow decorativo explicitamente abaixo */}
+        <div className="absolute -inset-4 bg-green-500/10 rounded-[2.5rem] blur-2xl opacity-0 group-hover:opacity-100 transition duration-700 z-0 pointer-events-none"></div>
+        
+        <div 
+          className="relative z-[9999] isolate flex items-center justify-center"
+          style={{
+            isolation: "isolate",
+            position: "relative",
+            zIndex: 9999,
+            pointerEvents: "auto",
+            transform: "translateZ(0)"
+          }}
+        >
+          <div 
+            className="relative z-[10000] bg-white p-4 rounded-xl border border-slate-200 shadow-sm w-48 h-48 sm:w-56 sm:h-56 flex items-center justify-center overflow-hidden transition-transform duration-500 hover:scale-[1.02]"
+            style={{
+              position: "relative",
+              zIndex: 10000,
+              backgroundColor: "#ffffff",
+              isolation: "isolate",
+              filter: "none",
+              backdropFilter: "none",
+              mixBlendMode: "normal",
+              opacity: 1,
+              pointerEvents: "auto",
+              transform: "translateZ(0)"
+            }}
+          >
+            {paymentData.qr_code_base64 ? (
+              <img 
+                src={qrSrc} 
+                alt="QR Code Pix" 
+                className="relative z-[10001] block w-full h-full max-w-full object-contain select-auto"
+                draggable={true}
+                style={{
+                  position: "relative",
+                  zIndex: 10001,
+                  backgroundColor: "#ffffff",
+                  filter: "none",
+                  backdropFilter: "none",
+                  mixBlendMode: "normal",
+                  opacity: 1,
+                  pointerEvents: "auto",
+                  imageRendering: "auto",
+                  transform: "translateZ(0)"
+                }}
+              />
+            ) : (
+              <div className="flex flex-col items-center justify-center text-center p-4">
+                <Loader2 className="h-8 w-8 animate-spin text-green-500 mb-3" />
+                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Gerando QR...</p>
+              </div>
+            )}
+          </div>
         </div>
+      </div>
+
+      <div className="flex flex-col items-center gap-2 mb-8 -mt-4">
+        <a 
+          href={qrSrc}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[10px] font-bold text-gray-400 hover:text-green-500 flex items-center gap-1.5 transition-all uppercase tracking-widest bg-white/5 px-3 py-1.5 rounded-full border border-white/5"
+        >
+          <ExternalLink size={10} />
+          Abrir QR isolado
+        </a>
+        <p className="text-[9px] text-gray-500 uppercase tracking-widest text-center opacity-70">
+          Se o QR não escanear, use o Pix copia e cola abaixo.
+        </p>
       </div>
 
       {/* Copy & Paste Box */}
