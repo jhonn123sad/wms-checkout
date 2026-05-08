@@ -311,8 +311,13 @@ function CheckoutEditPage() {
         }
       }
 
-      toast.success("Checkout salvo com sucesso!");
-      navigate({ to: "/admin/checkouts" });
+      if (isNew) {
+        toast.success("Checkout criado como rascunho. Agora você pode adicionar mídias e slots.");
+        navigate({ to: `/admin/checkouts/${checkoutId}` });
+      } else {
+        toast.success("Checkout salvo com sucesso!");
+        navigate({ to: "/admin/checkouts" });
+      }
     } catch (error: any) {
       toast.error(error.message || "Erro ao salvar");
     } finally {
