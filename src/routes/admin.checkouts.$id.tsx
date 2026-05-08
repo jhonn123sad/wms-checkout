@@ -383,7 +383,7 @@ function CheckoutEditPage() {
   if (loading) return <div className="p-8 text-center">Carregando...</div>;
 
   return (
-    <div className="p-8 max-w-4xl mx-auto space-y-8 pb-32">
+    <div className="p-8 max-w-7xl mx-auto space-y-8 pb-32">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" onClick={() => navigate({ to: "/admin/checkouts" })}>
           <ArrowLeft className="w-4 h-4" />
