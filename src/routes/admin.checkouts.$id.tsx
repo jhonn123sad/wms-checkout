@@ -258,7 +258,7 @@ function CheckoutEditPage() {
       }
 
       // 3. Processar SEÇÕES (CRUD SEGURO)
-      if (checkout.design_key === "custom_media_v1") {
+      if (checkout.design_key === "custom_media_v1" || sections.length > 0) {
         // Validação: apenas um checkout_form ativo
         const activeForms = sections.filter(s => s.section_type === "checkout_form" && s.active);
         if (activeForms.length > 1) {
