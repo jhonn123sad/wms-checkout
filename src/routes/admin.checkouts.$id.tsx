@@ -201,6 +201,7 @@ function CheckoutEditPage() {
         media_url: checkout.media_url,
         media_type: checkout.media_type,
         media_json: checkout.media_json,
+        design_key: checkout.design_key,
         success_redirect_url: checkout.success_redirect_url?.trim() || null,
         updated_at: new Date().toISOString()
       };
