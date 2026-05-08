@@ -502,8 +502,14 @@ function CheckoutEditPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="default">Padrão</SelectItem>
                   <SelectItem value="custom_media_v1">Design Livre (Mídia + Seções)</SelectItem>
+                  <SelectItem value="sales_long_v1">Página de Vendas Longa</SelectItem>
+                  <SelectItem value="compact_offer_v1">Oferta Compacta</SelectItem>
+                  <SelectItem value="default">Padrão</SelectItem>
+                  <SelectItem value="receitas_v1">Receitas Práticas (Slots)</SelectItem>
+                  <SelectItem value="comunidade_v1">Comunidade WMS</SelectItem>
+                  <SelectItem value="visagismo_v1">Visagismo IA</SelectItem>
+                  <SelectItem value="reservado_v1">Acesso Reservado</SelectItem>
                 </SelectContent>
               </Select>
             </div>
