@@ -169,7 +169,8 @@ export function DesignMediaSlotsEditor({
                     <MediaField 
                       value={section.content.media} 
                       onChange={(val) => updateSlotContent(slot.slot_key, { media: val })}
-                      pathPrefix={`checkouts/${checkoutId}/sections`}
+                      pathPrefix={checkoutId === "new" ? "temp" : `checkouts/${checkoutId}/sections`}
+                      disabled={checkoutId === "new"}
                     />
                   </div>
                 ) : (
