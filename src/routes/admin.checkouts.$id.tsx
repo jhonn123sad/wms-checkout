@@ -629,7 +629,7 @@ function CheckoutEditPage() {
                 <CollapsibleTrigger asChild>
                   <Button variant="ghost" className="w-full flex justify-between items-center group">
                     <div className="flex items-center gap-2">
-                      <Grid className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <Layout className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
                       <span className="font-bold text-muted-foreground group-hover:text-primary transition-colors">Avançado / Blocos de Conteúdo</span>
                     </div>
                     <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
