@@ -623,7 +623,15 @@ function CheckoutEditPage() {
         </TabsContent>
 
         <TabsContent value="design" className="space-y-8 animate-in fade-in duration-300">
-          {checkout.design_key !== "custom_media_v1" ? (
+          {isNew ? (
+            <Card className="p-12 text-center space-y-4">
+              <Layout className="w-12 h-12 text-muted-foreground mx-auto opacity-20" />
+              <h3 className="text-lg font-medium">Checkout Novo</h3>
+              <p className="text-muted-foreground max-w-sm mx-auto">
+                Salve o checkout primeiro para liberar uploads e mídias do design.
+              </p>
+            </Card>
+          ) : checkout.design_key !== "custom_media_v1" ? (
             <Card className="p-12 text-center space-y-4">
               <Layout className="w-12 h-12 text-muted-foreground mx-auto opacity-20" />
               <h3 className="text-lg font-medium">Design Livre Indisponível</h3>
