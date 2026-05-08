@@ -8,6 +8,7 @@ interface CheckoutSectionsEditorProps {
   setSections: (sections: CheckoutSection[] | ((prev: CheckoutSection[]) => CheckoutSection[])) => void;
   setRemovedSectionIds: (ids: string[] | ((prev: string[]) => string[])) => void;
   checkoutId: string;
+  disabled?: boolean;
 }
 
 export function CheckoutSectionsEditor({ 
