@@ -338,6 +338,13 @@ function CheckoutEditPage() {
       fields,
       originalFields,
       removedFieldIds,
+      sections: sections.map(s => ({
+        id: s.id,
+        section_type: s.section_type,
+        active: s.active,
+        sort_order: s.sort_order,
+        content: s.content
+      })),
       savePayload: {
         checkout,
         fieldsPayload: fields.map(f => ({
@@ -351,7 +358,8 @@ function CheckoutEditPage() {
           id: s.id,
           section_type: s.section_type,
           active: s.active,
-          sort_order: s.sort_order
+          sort_order: s.sort_order,
+          content: s.content
         })),
         removedFieldIds,
         removedSectionIds
