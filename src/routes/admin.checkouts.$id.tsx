@@ -527,7 +527,8 @@ function CheckoutEditPage() {
                     media_type: val?.type || "image",
                     media_json: val || null
                   })}
-                  pathPrefix={`checkouts/${id}`}
+                  pathPrefix={isNew ? "temp" : `checkouts/${id}`}
+                  disabled={isNew}
                 />
               </Card>
             </div>
