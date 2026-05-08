@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { MediaDisplay } from "@/components/public/MediaDisplay";
-import { ShieldCheck, Lock, ChevronRight, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, Lock, ChevronRight, CheckCircle2, Image as ImageIcon } from "lucide-react";
 import { getSlotMedia } from "@/lib/designMediaSlots";
 
 interface CompactOfferV1DesignProps {
@@ -51,8 +51,11 @@ export function CompactOfferV1Design({
               {coverImage ? (
                 <MediaDisplay media={coverImage} />
               ) : (
-                <div className="absolute inset-0 flex items-center justify-center bg-slate-100">
-                  <p className="text-slate-300 font-bold uppercase tracking-widest">Sua Oferta Aqui</p>
+                <div className="absolute inset-0 flex items-center justify-center bg-slate-100 text-slate-300">
+                  <div className="flex flex-col items-center gap-2">
+                    <ImageIcon className="w-12 h-12 opacity-20" />
+                    <p className="font-bold uppercase tracking-widest text-[10px]">Sua Oferta Aqui</p>
+                  </div>
                 </div>
               )}
               {trustBadge && (
@@ -71,9 +74,13 @@ export function CompactOfferV1Design({
                </p>
                
                <div className="grid grid-cols-2 gap-4 pt-4">
-                  {sideImage && (
+                  {sideImage ? (
                     <div className="aspect-[3/4] rounded-2xl overflow-hidden border border-slate-50">
                        <MediaDisplay media={sideImage} />
+                    </div>
+                  ) : (
+                    <div className="aspect-[3/4] rounded-2xl border border-dashed border-slate-100 bg-slate-50 flex items-center justify-center text-slate-300">
+                       <ImageIcon className="w-8 h-8 opacity-20" />
                     </div>
                   )}
                   <div className="space-y-3 flex flex-col justify-center">
