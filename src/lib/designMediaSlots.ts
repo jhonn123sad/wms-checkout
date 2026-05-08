@@ -29,6 +29,73 @@ export const DESIGN_MEDIA_SLOTS: Record<string, DesignMediaSlot[]> = {
       section_type: "gallery_slot",
       accepted: ["image", "gif", "video", "external"]
     }
+  ],
+  sales_long_v1: [
+    {
+      slot_key: "hero_background",
+      label: "Imagem/Fundo do Hero",
+      description: "fundo ou imagem principal do topo (16:9)",
+      section_type: "media_slot",
+      accepted: ["image", "gif", "video", "external"]
+    },
+    {
+      slot_key: "hero_product",
+      label: "Mockup/Produto Principal",
+      description: "imagem principal do produto/oferta (4:5)",
+      section_type: "media_slot",
+      accepted: ["image", "gif", "external"]
+    },
+    {
+      slot_key: "vsl_video",
+      label: "Vídeo de Vendas / VSL",
+      description: "vídeo principal da oferta (16:9)",
+      section_type: "media_slot",
+      accepted: ["video", "youtube", "vimeo", "drive", "external"]
+    },
+    {
+      slot_key: "proof_image_1",
+      label: "Prova Visual 1",
+      description: "print, depoimento ou prova (1:1 ou 4:5)",
+      section_type: "media_slot",
+      accepted: ["image", "gif", "external"]
+    },
+    {
+      slot_key: "proof_image_2",
+      label: "Prova Visual 2",
+      description: "segunda prova visual (1:1 ou 4:5)",
+      section_type: "media_slot",
+      accepted: ["image", "gif", "external"]
+    },
+    {
+      slot_key: "bonus_mockup",
+      label: "Mockup de Bônus",
+      description: "imagem de bônus/extra (4:5 ou PNG)",
+      section_type: "media_slot",
+      accepted: ["image", "gif", "external"]
+    }
+  ],
+  compact_offer_v1: [
+    {
+      slot_key: "cover_image",
+      label: "Imagem Principal",
+      description: "imagem principal do produto (1:1 ou 4:5)",
+      section_type: "media_slot",
+      accepted: ["image", "gif", "external"]
+    },
+    {
+      slot_key: "side_image",
+      label: "Imagem Secundária",
+      description: "imagem lateral/de apoio (4:5 ou 3:4)",
+      section_type: "media_slot",
+      accepted: ["image", "gif", "external"]
+    },
+    {
+      slot_key: "trust_badge",
+      label: "Selo/Prova Visual",
+      description: "selo, garantia ou destaque (PNG ou 1:1)",
+      section_type: "media_slot",
+      accepted: ["image", "gif", "external"]
+    }
   ]
 };
 
