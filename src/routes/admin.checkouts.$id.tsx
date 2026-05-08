@@ -62,8 +62,10 @@ function CheckoutEditPage() {
     cta_text: "Liberar acesso agora",
     media_url: "",
     media_type: "image",
-    active: true,
-    success_redirect_url: "",
+    active: false,
+    status: "draft",
+    design_key: "custom_media_v1",
+    success_redirect_url: "https://boas-vindas-wms.lovable.app/onboarding",
   });
   
   const [fields, setFields] = useState<CheckoutFieldForm[]>([]);
