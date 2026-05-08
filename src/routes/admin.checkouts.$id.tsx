@@ -62,8 +62,10 @@ function CheckoutEditPage() {
     cta_text: "Liberar acesso agora",
     media_url: "",
     media_type: "image",
-    active: true,
-    success_redirect_url: "",
+    active: false,
+    status: "draft",
+    design_key: "custom_media_v1",
+    success_redirect_url: "https://boas-vindas-wms.lovable.app/onboarding",
   });
   
   const [fields, setFields] = useState<CheckoutFieldForm[]>([]);
@@ -96,6 +98,14 @@ function CheckoutEditPage() {
           active: true,
           required: true,
           sort_order: 2
+        },
+        {
+          field_name: "customer_phone",
+          field_label: "Telefone",
+          field_type: "phone",
+          active: false,
+          required: false,
+          sort_order: 3
         }
       ]);
     }
@@ -198,10 +208,11 @@ function CheckoutEditPage() {
         slug: checkout.slug,
         price: checkout.price,
         cta_text: checkout.cta_text,
-        active: checkout.active,
+        active: isNew ? false : checkout.active,
+        status: isNew ? "draft" : (checkout.status || "published"),
         media_url: checkout.media_url,
         media_type: checkout.media_type,
-        media_json: checkout.media_json,
+        media_json: checkout.media_json || null,
         design_key: checkout.design_key,
         success_redirect_url: checkout.success_redirect_url?.trim() || null,
         updated_at: new Date().toISOString()
@@ -300,8 +311,13 @@ function CheckoutEditPage() {
         }
       }
 
-      toast.success("Checkout salvo com sucesso!");
-      navigate({ to: "/admin/checkouts" });
+      if (isNew) {
+        toast.success("Checkout criado como rascunho. Agora você pode adicionar mídias e slots.");
+        navigate({ to: `/admin/checkouts/${checkoutId}` });
+      } else {
+        toast.success("Checkout salvo com sucesso!");
+        navigate({ to: "/admin/checkouts" });
+      }
     } catch (error: any) {
       toast.error(error.message || "Erro ao salvar");
     } finally {
@@ -509,9 +525,10 @@ function CheckoutEditPage() {
                     ...checkout, 
                     media_url: val?.url || "", 
                     media_type: val?.type || "image",
-                    media_json: val ? { source: val.source } : null
+                    media_json: val || null
                   })}
-                  pathPrefix={`checkouts/${id}`}
+                  pathPrefix={isNew ? "temp" : `checkouts/${id}`}
+                  disabled={isNew}
                 />
               </Card>
             </div>
@@ -607,7 +624,15 @@ function CheckoutEditPage() {
         </TabsContent>
 
         <TabsContent value="design" className="space-y-8 animate-in fade-in duration-300">
-          {checkout.design_key !== "custom_media_v1" ? (
+          {isNew ? (
+            <Card className="p-12 text-center space-y-4">
+              <Layout className="w-12 h-12 text-muted-foreground mx-auto opacity-20" />
+              <h3 className="text-lg font-medium">Checkout Novo</h3>
+              <p className="text-muted-foreground max-w-sm mx-auto">
+                Salve o checkout primeiro para liberar uploads e mídias do design.
+              </p>
+            </Card>
+          ) : checkout.design_key !== "custom_media_v1" ? (
             <Card className="p-12 text-center space-y-4">
               <Layout className="w-12 h-12 text-muted-foreground mx-auto opacity-20" />
               <h3 className="text-lg font-medium">Design Livre Indisponível</h3>
@@ -642,6 +667,7 @@ function CheckoutEditPage() {
                       setSections={setSections}
                       setRemovedSectionIds={setRemovedSectionIds}
                       checkoutId={id}
+                      disabled={isNew}
                     />
                   </Card>
                 </CollapsibleContent>

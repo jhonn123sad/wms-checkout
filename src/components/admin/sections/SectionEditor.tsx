@@ -73,7 +73,8 @@ export function SectionEditor({
               <MediaField 
                 value={content.media} 
                 onChange={(val) => updateContent("media", val)}
-                pathPrefix={`checkouts/${section.checkout_id}/sections`}
+                pathPrefix={section.checkout_id === "new" ? "temp" : `checkouts/${section.checkout_id}/sections`}
+                disabled={section.checkout_id === "new"}
               />
             </div>
           </div>
@@ -108,7 +109,8 @@ export function SectionEditor({
               <MediaField 
                 value={content.media} 
                 onChange={(val) => updateContent("media", val)}
-                pathPrefix={`checkouts/${section.checkout_id}/sections`}
+                pathPrefix={section.checkout_id === "new" ? "temp" : `checkouts/${section.checkout_id}/sections`}
+                disabled={section.checkout_id === "new"}
               />
             </div>
             <div className="space-y-2">
@@ -148,7 +150,8 @@ export function SectionEditor({
                         newItems[itemIdx] = { ...newItems[itemIdx], media: val };
                         updateContent("items", newItems);
                       }}
-                      pathPrefix={`checkouts/${section.checkout_id}/sections`}
+                      pathPrefix={section.checkout_id === "new" ? "temp" : `checkouts/${section.checkout_id}/sections`}
+                      disabled={section.checkout_id === "new"}
                     />
                     <Input 
                       placeholder="Legenda"
@@ -281,7 +284,8 @@ export function SectionEditor({
               <MediaField 
                 value={content.media} 
                 onChange={(val) => updateContent("media", val)}
-                pathPrefix={`checkouts/${section.checkout_id}/sections`}
+                pathPrefix={section.checkout_id === "new" ? "temp" : `checkouts/${section.checkout_id}/sections`}
+                disabled={section.checkout_id === "new"}
               />
             </div>
           </div>
@@ -314,7 +318,8 @@ export function SectionEditor({
                         newItems[itemIdx] = { ...newItems[itemIdx], media: val };
                         updateContent("items", newItems);
                       }}
-                      pathPrefix={`checkouts/${section.checkout_id}/sections`}
+                      pathPrefix={section.checkout_id === "new" ? "temp" : `checkouts/${section.checkout_id}/sections`}
+                      disabled={section.checkout_id === "new"}
                     />
                     <Input 
                       placeholder="Legenda"
