@@ -13,7 +13,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckoutSectionsEditor } from "@/components/admin/sections/CheckoutSectionsEditor";
+import { DesignMediaSlotsEditor } from "@/components/admin/sections/DesignMediaSlotsEditor";
 import { CheckoutSection } from "@/components/admin/sections/SectionEditor";
+import { Settings, Image, Grid } from "lucide-react";
 
 export const Route = createFileRoute("/admin/checkouts/$id")({
   component: CheckoutEditPage,
@@ -388,10 +390,12 @@ function CheckoutEditPage() {
       </div>
 
       <Tabs defaultValue="dados" className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="dados">Dados do Checkout</TabsTrigger>
-          <TabsTrigger value="design">
-            Design Livre
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="dados" className="flex items-center gap-2">
+            <Settings className="w-4 h-4" /> Dados do Checkout
+          </TabsTrigger>
+          <TabsTrigger value="design" className="flex items-center gap-2">
+            <Image className="w-4 h-4" /> Design Livre
           </TabsTrigger>
         </TabsList>
 
@@ -408,7 +412,7 @@ function CheckoutEditPage() {
               </div>
             </div>
           )}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
             <div className="space-y-6">
               <Card className="p-6 space-y-4">
                 <h2 className="text-xl font-semibold border-b pb-2">Informações Básicas</h2>
@@ -503,8 +507,9 @@ function CheckoutEditPage() {
                     ...checkout, 
                     media_url: val?.url || "", 
                     media_type: val?.type || "image",
-                    media_json: val ? val : null
-                  })} 
+                    media_json: val ? { source: val.source } : null
+                  })}
+                  pathPrefix={`checkouts/${id}`}
                 />
               </Card>
             </div>
