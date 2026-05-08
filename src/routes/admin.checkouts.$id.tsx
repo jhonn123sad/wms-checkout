@@ -98,6 +98,14 @@ function CheckoutEditPage() {
           active: true,
           required: true,
           sort_order: 2
+        },
+        {
+          field_name: "customer_phone",
+          field_label: "Telefone",
+          field_type: "phone",
+          active: false,
+          required: false,
+          sort_order: 3
         }
       ]);
     }
