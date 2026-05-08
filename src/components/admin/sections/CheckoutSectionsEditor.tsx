@@ -15,7 +15,8 @@ export function CheckoutSectionsEditor({
   sections, 
   setSections, 
   setRemovedSectionIds,
-  checkoutId 
+  checkoutId,
+  disabled = false
 }: CheckoutSectionsEditorProps) {
   
   const addSection = (type: SectionType) => {
