@@ -49,7 +49,9 @@ export function SalesLongV1Design({
       <section className="relative pt-12 pb-20 lg:pt-20 lg:pb-32 overflow-hidden bg-slate-900 text-white">
         {heroBackground && (
           <div className="absolute inset-0 opacity-20 pointer-events-none">
-            <MediaDisplay media={heroBackground} className="w-full h-full object-cover" />
+            <div className="w-full h-full [&_img]:object-cover [&_img]:h-full">
+              <MediaDisplay media={heroBackground} />
+            </div>
           </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-slate-900/90 pointer-events-none"></div>
