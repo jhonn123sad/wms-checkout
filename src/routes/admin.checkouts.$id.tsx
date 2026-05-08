@@ -667,6 +667,7 @@ function CheckoutEditPage() {
                       setSections={setSections}
                       setRemovedSectionIds={setRemovedSectionIds}
                       checkoutId={id}
+                      disabled={isNew}
                     />
                   </Card>
                 </CollapsibleContent>
