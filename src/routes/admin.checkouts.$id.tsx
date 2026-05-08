@@ -604,26 +604,49 @@ function CheckoutEditPage() {
           </div>
         </TabsContent>
 
-<TabsContent value="design">
-  {checkout.design_key !== "custom_media_v1" ? (
-    <Card className="p-12 text-center space-y-4">
-      <Layout className="w-12 h-12 text-muted-foreground mx-auto opacity-20" />
-      <h3 className="text-lg font-medium">Design Livre Indisponível</h3>
-      <p className="text-muted-foreground max-w-sm mx-auto">
-        O Design Livre está disponível apenas quando a chave de design é <span className="font-bold">custom_media_v1</span>.
-      </p>
-    </Card>
-  ) : (
-    <Card className="p-6">
-      <CheckoutSectionsEditor 
-        sections={sections}
-        setSections={setSections}
-        setRemovedSectionIds={setRemovedSectionIds}
-        checkoutId={id}
-      />
-    </Card>
-  )}
-</TabsContent>
+        <TabsContent value="design" className="space-y-8 animate-in fade-in duration-300">
+          {checkout.design_key !== "custom_media_v1" ? (
+            <Card className="p-12 text-center space-y-4">
+              <Layout className="w-12 h-12 text-muted-foreground mx-auto opacity-20" />
+              <h3 className="text-lg font-medium">Design Livre Indisponível</h3>
+              <p className="text-muted-foreground max-w-sm mx-auto">
+                O Design Livre está disponível apenas quando a chave de design é <span className="font-bold">custom_media_v1</span>.
+              </p>
+            </Card>
+          ) : (
+            <>
+              <DesignMediaSlotsEditor
+                checkoutId={id}
+                designKey={checkout.design_key}
+                sections={sections}
+                setSections={setSections}
+                setRemovedSectionIds={setRemovedSectionIds}
+              />
+
+              <Collapsible className="space-y-4 pt-8 border-t">
+                <CollapsibleTrigger asChild>
+                  <Button variant="ghost" className="w-full flex justify-between items-center group">
+                    <div className="flex items-center gap-2">
+                      <Grid className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <span className="font-bold text-muted-foreground group-hover:text-primary transition-colors">Avançado / Blocos de Conteúdo</span>
+                    </div>
+                    <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                  </Button>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="space-y-4 pt-4">
+                  <Card className="p-6">
+                    <CheckoutSectionsEditor 
+                      sections={sections}
+                      setSections={setSections}
+                      setRemovedSectionIds={setRemovedSectionIds}
+                      checkoutId={id}
+                    />
+                  </Card>
+                </CollapsibleContent>
+              </Collapsible>
+            </>
+          )}
+        </TabsContent>
       </Tabs>
 
       <Button 
