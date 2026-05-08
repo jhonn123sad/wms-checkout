@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { ArrowLeft, Plus, Trash2, ChevronDown, ChevronUp, Copy, Layout } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, ChevronDown, ChevronUp, Copy, Layout, Settings, Image, Grid } from "lucide-react";
 import { MediaField, MediaValue } from "@/components/admin/MediaField";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -15,7 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckoutSectionsEditor } from "@/components/admin/sections/CheckoutSectionsEditor";
 import { DesignMediaSlotsEditor } from "@/components/admin/sections/DesignMediaSlotsEditor";
 import { CheckoutSection } from "@/components/admin/sections/SectionEditor";
-import { Settings, Image, Grid } from "lucide-react";
+
 
 export const Route = createFileRoute("/admin/checkouts/$id")({
   component: CheckoutEditPage,
