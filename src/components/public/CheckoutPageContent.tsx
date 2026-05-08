@@ -182,7 +182,14 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
     return <CustomMediaV1Design {...designProps} />;
   }
 
-  if (designKey === "apple_v1" || checkout.slug === 'wms-novo-teste') {
+  if (designKey === "sales_long_v1") {
+    return <SalesLongV1Design {...designProps} />;
+  }
+
+  if (designKey === "compact_offer_v1") {
+    return <CompactOfferV1Design {...designProps} />;
+  }
+
     return <WmsNovoTesteCheckoutDesign {...designProps} />;
   }
 
