@@ -15,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckoutSectionsEditor } from "@/components/admin/sections/CheckoutSectionsEditor";
 import { DesignMediaSlotsEditor } from "@/components/admin/sections/DesignMediaSlotsEditor";
 import { CheckoutSection } from "@/components/admin/sections/SectionEditor";
+import { getDesignSlots } from "@/lib/designMediaSlots";
 
 
 export const Route = createFileRoute("/admin/checkouts/$id")({
@@ -77,6 +78,8 @@ function CheckoutEditPage() {
   const [originalSections, setOriginalSections] = useState<CheckoutSection[]>([]);
 
   const [debugOpen, setDebugOpen] = useState(false);
+  const designSlots = getDesignSlots(checkout.design_key || "");
+  const hasDesignSlots = designSlots.length > 0;
 
   useEffect(() => {
     if (!isNew) {
@@ -271,7 +274,7 @@ function CheckoutEditPage() {
       }
 
       // 3. Processar SEÇÕES (CRUD SEGURO)
-      if (checkout.design_key === "custom_media_v1" || sections.length > 0) {
+      if (hasDesignSlots || sections.length > 0) {
         // Validação: apenas um checkout_form ativo
         const activeForms = sections.filter(s => s.section_type === "checkout_form" && s.active);
         if (activeForms.length > 1) {
@@ -418,12 +421,12 @@ function CheckoutEditPage() {
         </TabsList>
 
         <TabsContent value="dados" className="space-y-6">
-          {checkout.design_key !== "custom_media_v1" && (
+          {!hasDesignSlots && (
             <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
               <div className="flex">
                 <div className="ml-3">
                   <p className="text-sm text-yellow-700">
-                    Design Livre disponível apenas para <span className="font-bold">custom_media_v1</span>. 
+                    Este design ainda não possui slots de mídia configurados. 
                     Altere o design abaixo para habilitar o editor de seções.
                   </p>
                 </div>
@@ -638,12 +641,12 @@ function CheckoutEditPage() {
                 Salve o checkout primeiro para liberar uploads e mídias do design.
               </p>
             </Card>
-          ) : checkout.design_key !== "custom_media_v1" ? (
+          ) : !hasDesignSlots ? (
             <Card className="p-12 text-center space-y-4">
               <Layout className="w-12 h-12 text-muted-foreground mx-auto opacity-20" />
               <h3 className="text-lg font-medium">Design Livre Indisponível</h3>
               <p className="text-muted-foreground max-w-sm mx-auto">
-                O Design Livre está disponível apenas quando a chave de design é <span className="font-bold">custom_media_v1</span>.
+                Este design ainda não possui slots de mídia configurados.
               </p>
             </Card>
           ) : (
