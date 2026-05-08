@@ -32,7 +32,9 @@ export function CheckoutSectionsEditor({
       media: { media: null, caption: "" },
       gallery: { items: [] },
       benefits: { title: "", items: [] },
-      checkout_form: { title: "", subtitle: "" }
+      checkout_form: { title: "", subtitle: "" },
+      media_slot: { media: null },
+      gallery_slot: { items: [] }
     };
 
     const newSection: CheckoutSection = {
