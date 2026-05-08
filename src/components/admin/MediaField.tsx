@@ -175,7 +175,7 @@ export const MediaField = ({
   };
 
   return (
-    <div className="space-y-4 p-4 border rounded-lg bg-background/50">
+    <div className={`space-y-4 p-4 border rounded-lg bg-background/50 ${disabled ? "opacity-60 grayscale pointer-events-none" : ""}`}>
       {label && <Label className="text-sm font-medium">{label}</Label>}
 
       {value ? (
