@@ -525,7 +525,7 @@ function CheckoutEditPage() {
                     ...checkout, 
                     media_url: val?.url || "", 
                     media_type: val?.type || "image",
-                    media_json: val ? { source: val.source } : null
+                    media_json: val || null
                   })}
                   pathPrefix={`checkouts/${id}`}
                 />
