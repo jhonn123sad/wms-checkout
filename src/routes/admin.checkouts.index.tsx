@@ -79,7 +79,7 @@ import { toast } from "sonner";
       // 2. Duplicar seções
       const { data: sections } = await supabase.from("checkout_sections").select("*").eq("checkout_id", id);
       if (sections && sections.length > 0) {
-        const newSections = sections.map(({ id: sId, checkout_id, created_at: sCa, updated_at: sUa, ...sData }) => ({
+        const newSections = sections.map(({ id: sId, checkout_id, created_at: sCa, ...sData }) => ({
           ...sData,
           checkout_id: newCheckoutId
         }));
