@@ -198,7 +198,8 @@ export function DesignMediaSlotsEditor({
                                 newItems[itemIdx] = { ...newItems[itemIdx], media: val };
                                 updateSlotContent(slot.slot_key, { items: newItems });
                               }}
-                              pathPrefix={`checkouts/${checkoutId}/sections`}
+                              pathPrefix={checkoutId === "new" ? "temp" : `checkouts/${checkoutId}/sections`}
+                              disabled={checkoutId === "new"}
                             />
                             <Input 
                               placeholder="Legenda"
