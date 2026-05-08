@@ -38,6 +38,7 @@ export const MediaField = ({
   label,
   onUploading,
   pathPrefix = "checkouts",
+  disabled = false,
 }: MediaFieldProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
