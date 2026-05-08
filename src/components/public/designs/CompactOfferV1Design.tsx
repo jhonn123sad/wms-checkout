@@ -12,7 +12,7 @@ interface CompactOfferV1DesignProps {
   loading: boolean;
   paymentData: any;
   paymentStatus: string;
-  handleSubmit: (e: React.FormEvent) => Promise<void>;
+  handleSubmit: (e: React.FormEvent) => Promise<any>;
   handleInputChange: (name: string, value: string) => void;
   handleResetPayment: () => void;
   InlinePixPanel: any;
