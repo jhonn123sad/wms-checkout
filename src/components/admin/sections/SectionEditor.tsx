@@ -318,7 +318,8 @@ export function SectionEditor({
                         newItems[itemIdx] = { ...newItems[itemIdx], media: val };
                         updateContent("items", newItems);
                       }}
-                      pathPrefix={`checkouts/${section.checkout_id}/sections`}
+                      pathPrefix={section.checkout_id === "new" ? "temp" : `checkouts/${section.checkout_id}/sections`}
+                      disabled={section.checkout_id === "new"}
                     />
                     <Input 
                       placeholder="Legenda"
