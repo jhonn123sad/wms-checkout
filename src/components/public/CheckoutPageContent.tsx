@@ -191,6 +191,10 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
     return <CompactOfferV1Design {...designProps} />;
   }
 
+  if (designKey === "wms_liquid_v1") {
+    return <WmsLiquidCheckout {...designProps} />;
+  }
+
   if (designKey === "apple_v1" || checkout.slug === 'wms-novo-teste') {
     return <WmsNovoTesteCheckoutDesign {...designProps} />;
   }
