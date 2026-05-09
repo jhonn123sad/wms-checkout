@@ -146,8 +146,8 @@ export function WmsLiquidCheckout(props: any) {
             {/* Proof Visual Slot (Hidden or very small on mobile) */}
             {proofVisual && (
               <div className="hidden md:block pt-2">
-                <div className="max-w-[140px] rounded-lg overflow-hidden border border-white/5 opacity-60 hover:opacity-90 transition-opacity grayscale hover:grayscale-0">
-                  <MediaDisplay media={proofVisual} className="aspect-square object-cover" />
+                <div className="max-w-[140px] rounded-lg overflow-hidden border border-white/5 opacity-60 hover:opacity-90 transition-opacity grayscale hover:grayscale-0 aspect-square">
+                  <MediaDisplay media={proofVisual} />
                 </div>
               </div>
             )}
