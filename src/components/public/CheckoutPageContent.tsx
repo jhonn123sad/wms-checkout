@@ -27,6 +27,7 @@ import { WmsNovoTesteCheckoutDesign } from "./designs/WmsNovoTesteCheckoutDesign
 import { CustomMediaV1Design } from "./designs/CustomMediaV1Design";
 import { SalesLongV1Design } from "./designs/SalesLongV1Design";
 import { CompactOfferV1Design } from "./designs/CompactOfferV1Design";
+import { WmsLiquidCheckout } from "./designs/WmsLiquidCheckout";
 
 export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
   const [formData, setFormData] = useState<Record<string, string>>({});
@@ -188,6 +189,10 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
 
   if (designKey === "compact_offer_v1") {
     return <CompactOfferV1Design {...designProps} />;
+  }
+
+  if (designKey === "wms_liquid_v1") {
+    return <WmsLiquidCheckout {...designProps} />;
   }
 
   if (designKey === "apple_v1" || checkout.slug === 'wms-novo-teste') {
