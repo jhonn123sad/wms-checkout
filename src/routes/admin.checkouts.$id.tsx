@@ -513,6 +513,7 @@ function CheckoutEditPage() {
                   <SelectItem value="comunidade_v1">Comunidade WMS</SelectItem>
                   <SelectItem value="visagismo_v1">Visagismo IA</SelectItem>
                   <SelectItem value="reservado_v1">Acesso Reservado</SelectItem>
+                  <SelectItem value="wms_liquid_v1">WMS Liquid Glass (Clean/Premium)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
