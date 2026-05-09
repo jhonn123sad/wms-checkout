@@ -114,7 +114,9 @@ export function WmsLiquidCheckout(props: any) {
               <div className="absolute -inset-1 bg-gradient-to-r from-white/10 to-transparent rounded-2xl blur-lg opacity-30 group-hover:opacity-50 transition duration-1000"></div>
               <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-white/[0.02] backdrop-blur-sm max-h-[220px] md:max-h-[280px]">
                 {heroVisual ? (
-                  <MediaDisplay media={heroVisual} className="w-full h-full object-cover aspect-video" />
+                  <div className="w-full h-full object-cover aspect-video overflow-hidden">
+                    <MediaDisplay media={heroVisual} />
+                  </div>
                 ) : (
                   <div className="aspect-video flex items-center justify-center bg-white/[0.02]">
                     <div className="flex flex-col items-center gap-2 opacity-20">
