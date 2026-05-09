@@ -5,81 +5,37 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Lock, ChevronRight, CheckCircle2, ShieldCheck, Zap, Globe, Award } from "lucide-react";
 import { getSlotMedia } from "@/lib/designMediaSlots";
+import React from "react";
 
-export function WmsLiquidCheckout(props: any) {
-  const {
-    checkout,
-    formData,
-    loading,
-    paymentData,
-    paymentStatus,
-    handleSubmit,
-    handleInputChange,
-    handleResetPayment,
-    InlinePixPanel
-  } = props;
-
-  const sections = checkout.checkout_sections || [];
-  const heroVisual = getSlotMedia(sections, "hero_visual");
-  const proofVisual = getSlotMedia(sections, "proof_visual");
-  const trustBadge = getSlotMedia(sections, "trust_badge");
-
-  const renderForm = () => (
-    <div className="w-full space-y-3">
-      <div className="space-y-2">
-        {(checkout.checkout_fields || [])
-          .filter((f: any) => f.active !== false && !f.field_type?.startsWith("hidden:"))
-          .sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0))
-          .map((field: any) => (
-            <div key={field.id || field.field_name} className="group space-y-1">
-              <Label 
-                htmlFor={field.field_name} 
-                className="text-[10px] font-bold text-gray-500 uppercase tracking-wider ml-1 group-focus-within:text-blue-600 transition-colors"
-              >
-                {field.field_label}
-                {field.required && <span className="text-red-400 ml-0.5">*</span>}
-              </Label>
-              <Input
-                id={field.field_name}
-                type={field.field_type?.replace("hidden:", "") || "text"}
-                placeholder={`Seu ${field.field_label.toLowerCase()}`}
-                required={field.required}
-                className="h-11 bg-white border-slate-200 text-slate-900 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all rounded-xl placeholder:text-slate-300 text-sm px-4 shadow-sm"
-                value={formData[field.field_name] || ""}
-                onChange={(e) => handleInputChange(field.field_name, e.target.value)}
-              />
-            </div>
-          ))}
-      </div>
-
-      <div className="pt-2">
-        <Button
-          type="submit"
-          disabled={loading}
-          className="w-full h-14 text-base font-bold bg-blue-600 text-white hover:bg-blue-700 transition-all active:scale-[0.98] rounded-2xl relative group overflow-hidden shadow-lg shadow-blue-200"
-        >
-          <div className="relative flex items-center justify-center gap-2">
-            {loading ? (
-              <span className="animate-pulse">Processando...</span>
-            ) : (
-              <>
-                <span>{checkout.cta_text || "Entrar na WMS"}</span>
-                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </>
-            )}
-          </div>
-        </Button>
-        
-        <div className="mt-4 flex flex-col items-center">
-          <div className="flex items-center gap-1.5 text-[10px] text-slate-400 uppercase tracking-widest font-bold">
-            <Lock className="w-3 h-3 text-blue-500" />
-            <span>Pagamento Seguro 256-bit</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
+/**
+ * WmsLiquidVisualShell
+ * 
+ * Este componente é responsável exclusivamente pela camada visual (UI/UX).
+ * Ele recebe elementos pré-processados e os renderiza no layout.
+ */
+function WmsLiquidVisualShell({
+  checkout,
+  title,
+  subtitle,
+  price,
+  heroSlot,
+  proofSlot,
+  trustBadgeSlot,
+  formSlot,
+  pixSlot,
+  hasPaymentData
+}: {
+  checkout: any;
+  title: string;
+  subtitle: string;
+  price: string;
+  heroSlot: React.ReactNode;
+  proofSlot: React.ReactNode;
+  trustBadgeSlot: React.ReactNode;
+  formSlot: React.ReactNode;
+  pixSlot: React.ReactNode;
+  hasPaymentData: boolean;
+}) {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-100 overflow-x-hidden relative flex flex-col items-center">
       {/* Liquid Glass Background Elements */}
@@ -102,34 +58,23 @@ export function WmsLiquidCheckout(props: any) {
               
               <div className="space-y-3">
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-[1.05] text-slate-900">
-                  {checkout.title || "Crie renda com IA sem aparecer"}
+                  {title}
                 </h1>
                 <p className="text-lg md:text-xl text-slate-500 max-w-lg leading-relaxed font-medium">
-                  {checkout.subtitle || "Aprenda a construir páginas e Influencers AI no Instagram, mesmo começando do zero."}
+                  {subtitle}
                 </p>
               </div>
             </div>
 
-            {/* Hero Visual Slot (Compact & Glassy) */}
+            {/* Hero Visual Slot */}
             <div className="relative group max-w-md">
               <div className="absolute -inset-2 bg-gradient-to-tr from-blue-100 to-purple-50 rounded-[2.5rem] blur-2xl opacity-40 group-hover:opacity-60 transition duration-1000"></div>
               <div className="relative rounded-[2rem] overflow-hidden border border-white bg-white/40 backdrop-blur-md shadow-xl max-h-[170px] md:max-h-[240px]">
-                {heroVisual ? (
-                  <div className="w-full h-full object-cover aspect-video overflow-hidden">
-                    <MediaDisplay media={heroVisual} />
-                  </div>
-                ) : (
-                  <div className="aspect-video flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50">
-                    <div className="flex flex-col items-center gap-3 opacity-20">
-                      <Zap className="w-10 h-10 text-blue-600" />
-                      <p className="text-[10px] uppercase tracking-widest font-black">Design Premium</p>
-                    </div>
-                  </div>
-                )}
+                {heroSlot}
               </div>
             </div>
 
-            {/* Features / Bullets (Modern Chips) */}
+            {/* Features / Bullets */}
             <div className="flex flex-wrap gap-2.5 max-w-lg">
               {[
                 { text: "Sem programação", icon: Zap },
@@ -144,17 +89,17 @@ export function WmsLiquidCheckout(props: any) {
               ))}
             </div>
 
-            {/* Proof Visual (Mini Supporting Card) */}
-            {proofVisual && (
+            {/* Proof Visual Slot */}
+            {proofSlot && (
               <div className="hidden lg:block pt-2 animate-in fade-in slide-in-from-left-4 duration-700 delay-300">
                 <div className="max-w-[120px] rounded-2xl overflow-hidden border-4 border-white shadow-lg rotate-[-3deg] hover:rotate-0 transition-all duration-500 aspect-square">
-                  <MediaDisplay media={proofVisual} />
+                  {proofSlot}
                 </div>
               </div>
             )}
           </div>
 
-          {/* Right Column: Checkout Card (Premium Liquid Glass) */}
+          {/* Right Column: Checkout Card */}
           <div className="w-full relative">
             <div className="absolute -top-12 -right-12 w-32 h-32 bg-blue-400/10 blur-3xl rounded-full"></div>
             <div className="relative">
@@ -169,20 +114,13 @@ export function WmsLiquidCheckout(props: any) {
                       <div className="flex flex-col gap-0.5">
                         <span className="text-[10px] font-black text-blue-500/60 uppercase tracking-[0.2em]">Investimento</span>
                         <div className="text-5xl font-black text-slate-900 tracking-tighter">
-                          {new Intl.NumberFormat("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
-                          }).format(checkout.price)}
+                          {price}
                         </div>
                       </div>
                       
                       {/* Trust Badge Slot */}
                       <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-white bg-slate-50/50 shadow-sm flex-shrink-0 flex items-center justify-center p-1.5">
-                        {trustBadge ? (
-                          <MediaDisplay media={trustBadge} />
-                        ) : (
-                          <ShieldCheck className="w-8 h-8 text-blue-500 opacity-30" />
-                        )}
+                        {trustBadgeSlot}
                       </div>
                     </div>
                     
@@ -191,29 +129,7 @@ export function WmsLiquidCheckout(props: any) {
 
                   {/* Dynamic Panel (Form or Pix) */}
                   <div className="relative">
-                    {paymentData ? (
-                      <div className="animate-in fade-in zoom-in-95 duration-500 max-h-[420px] overflow-y-auto pr-1 custom-scrollbar">
-                        <InlinePixPanel 
-                          paymentData={paymentData}
-                          paymentStatus={paymentStatus}
-                          onReset={handleResetPayment}
-                          formatPrice={(cents: number) => new Intl.NumberFormat("pt-BR", {
-                            style: "currency",
-                            currency: "BRL",
-                          }).format(cents / 100)}
-                          theme={{
-                            button: "#2563eb",
-                            buttonText: "#ffffff",
-                            accent: "#2563eb",
-                            card: "transparent"
-                          }}
-                        />
-                      </div>
-                    ) : (
-                      <form onSubmit={handleSubmit} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                        {renderForm()}
-                      </form>
-                    )}
+                    {hasPaymentData ? pixSlot : formSlot}
                   </div>
 
                   {/* Micro Trust Info */}
@@ -274,5 +190,160 @@ export function WmsLiquidCheckout(props: any) {
         }
       `}} />
     </div>
+  );
+}
+
+/**
+ * WmsLiquidCheckout
+ * 
+ * Componente principal que gerencia a integração de dados e lógica.
+ * Passa os elementos prontos para o WmsLiquidVisualShell.
+ */
+export function WmsLiquidCheckout(props: any) {
+  const {
+    checkout,
+    formData,
+    loading,
+    paymentData,
+    paymentStatus,
+    handleSubmit,
+    handleInputChange,
+    handleResetPayment,
+    InlinePixPanel
+  } = props;
+
+  const sections = checkout.checkout_sections || [];
+  const heroVisual = getSlotMedia(sections, "hero_visual");
+  const proofVisual = getSlotMedia(sections, "proof_visual");
+  const trustBadge = getSlotMedia(sections, "trust_badge");
+
+  // --- SLOT: HERO ---
+  const heroSlot = heroVisual ? (
+    <div className="w-full h-full object-cover aspect-video overflow-hidden">
+      <MediaDisplay media={heroVisual} />
+    </div>
+  ) : (
+    <div className="aspect-video flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50">
+      <div className="flex flex-col items-center gap-3 opacity-20">
+        <Zap className="w-10 h-10 text-blue-600" />
+        <p className="text-[10px] uppercase tracking-widest font-black">Design Premium</p>
+      </div>
+    </div>
+  );
+
+  // --- SLOT: PROOF ---
+  const proofSlot = proofVisual ? (
+    <MediaDisplay media={proofVisual} />
+  ) : null;
+
+  // --- SLOT: TRUST BADGE ---
+  const trustBadgeSlot = trustBadge ? (
+    <MediaDisplay media={trustBadge} />
+  ) : (
+    <ShieldCheck className="w-8 h-8 text-blue-500 opacity-30" />
+  );
+
+  // --- RENDER FORM (Contrato preservado) ---
+  const renderForm = () => (
+    <div className="w-full space-y-3">
+      <div className="space-y-2">
+        {(checkout.checkout_fields || [])
+          .filter((f: any) => f.active !== false && !f.field_type?.startsWith("hidden:"))
+          .sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0))
+          .map((field: any) => (
+            <div key={field.id || field.field_name} className="group space-y-1">
+              <Label 
+                htmlFor={field.field_name} 
+                className="text-[10px] font-bold text-gray-500 uppercase tracking-wider ml-1 group-focus-within:text-blue-600 transition-colors"
+              >
+                {field.field_label}
+                {field.required && <span className="text-red-400 ml-0.5">*</span>}
+              </Label>
+              <Input
+                id={field.field_name}
+                type={field.field_type?.replace("hidden:", "") || "text"}
+                placeholder={`Seu ${field.field_label.toLowerCase()}`}
+                required={field.required}
+                className="h-11 bg-white border-slate-200 text-slate-900 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all rounded-xl placeholder:text-slate-300 text-sm px-4 shadow-sm"
+                value={formData[field.field_name] || ""}
+                onChange={(e) => handleInputChange(field.field_name, e.target.value)}
+              />
+            </div>
+          ))}
+      </div>
+
+      <div className="pt-2">
+        <Button
+          type="submit"
+          disabled={loading}
+          className="w-full h-14 text-base font-bold bg-blue-600 text-white hover:bg-blue-700 transition-all active:scale-[0.98] rounded-2xl relative group overflow-hidden shadow-lg shadow-blue-200"
+        >
+          <div className="relative flex items-center justify-center gap-2">
+            {loading ? (
+              <span className="animate-pulse">Processando...</span>
+            ) : (
+              <>
+                <span>{checkout.cta_text || "Entrar na WMS"}</span>
+                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </>
+            )}
+          </div>
+        </Button>
+        
+        <div className="mt-4 flex flex-col items-center">
+          <div className="flex items-center gap-1.5 text-[10px] text-slate-400 uppercase tracking-widest font-bold">
+            <Lock className="w-3 h-3 text-blue-500" />
+            <span>Pagamento Seguro 256-bit</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // --- FORM SLOT ---
+  const formSlot = (
+    <form onSubmit={handleSubmit} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+      {renderForm()}
+    </form>
+  );
+
+  // --- PIX SLOT (Contrato preservado) ---
+  const pixSlot = (
+    <div className="animate-in fade-in zoom-in-95 duration-500 max-h-[420px] overflow-y-auto pr-1 custom-scrollbar">
+      <InlinePixPanel 
+        paymentData={paymentData}
+        paymentStatus={paymentStatus}
+        onReset={handleResetPayment}
+        formatPrice={(cents: number) => new Intl.NumberFormat("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        }).format(cents / 100)}
+        theme={{
+          button: "#2563eb",
+          buttonText: "#ffffff",
+          accent: "#2563eb",
+          card: "transparent"
+        }}
+      />
+    </div>
+  );
+
+  // --- RENDER VISUAL SHELL ---
+  return (
+    <WmsLiquidVisualShell 
+      checkout={checkout}
+      title={checkout.title || "Crie renda com IA sem aparecer"}
+      subtitle={checkout.subtitle || "Aprenda a construir páginas e Influencers AI no Instagram, mesmo começando do zero."}
+      price={new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      }).format(checkout.price)}
+      heroSlot={heroSlot}
+      proofSlot={proofSlot}
+      trustBadgeSlot={trustBadgeSlot}
+      formSlot={formSlot}
+      pixSlot={pixSlot}
+      hasPaymentData={!!paymentData}
+    />
   );
 }
