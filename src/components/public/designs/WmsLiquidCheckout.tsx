@@ -18,177 +18,220 @@ function WmsLiquidVisualShell({
   title,
   subtitle,
   price,
+  ctaText,
   heroSlot,
   proofSlot,
   trustBadgeSlot,
   formSlot,
   pixSlot,
-  hasPaymentData
-}: {
-  checkout: any;
-  title: string;
-  subtitle: string;
-  price: string;
-  heroSlot: React.ReactNode;
-  proofSlot: React.ReactNode;
-  trustBadgeSlot: React.ReactNode;
-  formSlot: React.ReactNode;
-  pixSlot: React.ReactNode;
-  hasPaymentData: boolean;
-}) {
+  hasPaymentData,
+}: any) {
+  const displayTitle = title || "Crie renda com IA sem aparecer";
+  const displaySubtitle =
+    subtitle ||
+    "Aprenda a construir páginas e Influencers AI no Instagram, mesmo começando do zero.";
+
+  const rawPrice = price ?? checkout?.price;
+
+  const formattedPrice =
+    typeof rawPrice === "number"
+      ? rawPrice.toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        })
+      : rawPrice || "R$37";
+
+  const benefits = [
+    {
+      label: "Sem aparecer",
+      icon: (
+        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M12 18h.01" />
+          <path d="M8 21h8a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2Z" />
+        </svg>
+      ),
+    },
+    {
+      label: "Sem programação",
+      icon: (
+        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8Z" />
+        </svg>
+      ),
+    },
+    {
+      label: "Método prático",
+      icon: (
+        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="m9 12 2 2 4-4" />
+          <circle cx="12" cy="12" r="10" />
+        </svg>
+      ),
+    },
+    {
+      label: "Comunidade de execução",
+      icon: (
+        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+      ),
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-100 overflow-x-hidden relative flex flex-col items-center">
-      {/* Liquid Glass Background Elements */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute top-[-10%] left-[-5%] w-[40%] h-[40%] bg-blue-100/40 blur-[120px] rounded-full"></div>
-        <div className="absolute bottom-[5%] right-[-5%] w-[50%] h-[50%] bg-purple-100/30 blur-[150px] rounded-full"></div>
-        <div className="absolute top-[30%] right-[10%] w-[30%] h-[30%] bg-indigo-50/50 blur-[100px] rounded-full"></div>
+    <div className="relative min-h-screen overflow-x-hidden bg-[#f8fafc] font-sans text-slate-900 selection:bg-blue-100">
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className="absolute left-[-10%] top-[-10%] h-[50%] w-[50%] rounded-full bg-blue-100/60 blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] h-[50%] w-[50%] rounded-full bg-indigo-100/50 blur-[120px]" />
+        <div className="absolute right-[10%] top-[20%] h-[30%] w-[30%] rounded-full bg-cyan-100/45 blur-[100px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.9),rgba(248,250,252,0.45)_42%,rgba(226,239,255,0.5)_100%)]" />
       </div>
 
-      <main className="relative z-10 w-full max-w-[1100px] mx-auto px-4 md:px-6 lg:h-screen lg:flex lg:items-center py-6 md:py-10 lg:py-0">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-8 lg:gap-16 items-center w-full">
-          
-          {/* Left Column: Brand & Hero */}
-          <div className="flex flex-col space-y-5 md:space-y-8 lg:max-h-full">
+      <main className="relative z-10 mx-auto flex min-h-screen max-w-[1400px] items-center px-4 py-6 sm:px-6 md:py-10 lg:px-8">
+        <div className="grid w-full grid-cols-1 items-center gap-6 lg:grid-cols-12 lg:gap-8">
+          <section className="space-y-5 lg:col-span-7 xl:col-span-6">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/60 px-4 py-2 shadow-sm backdrop-blur-md">
+              <svg viewBox="0 0 24 24" className="h-4 w-4 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 3 13.8 8.2 19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z" />
+                <path d="M19 15 20 18l3 1-3 1-1 3-1-3-3-1 3-1 1-3Z" />
+              </svg>
+              <span className="text-xs font-semibold uppercase tracking-wider text-blue-600/80">
+                WMS — Web Money Society
+              </span>
+            </div>
+
             <div className="space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-600 shadow-sm">
-                <Globe size={14} className="animate-pulse" />
-                <span className="text-[10px] font-black uppercase tracking-[0.2em]">Web Money Society</span>
-              </div>
-              
-              <div className="space-y-3">
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-[1.05] text-slate-900">
-                  {title}
-                </h1>
-                <p className="text-lg md:text-xl text-slate-500 max-w-lg leading-relaxed font-medium">
-                  {subtitle}
-                </p>
-              </div>
+              <h1 className="text-4xl font-bold leading-[0.95] tracking-[-0.06em] text-slate-950 sm:text-5xl md:text-6xl lg:text-7xl">
+                {displayTitle.includes("sem aparecer") ? (
+                  <>
+                    Crie renda com IA{" "}
+                    <span className="bg-gradient-to-r from-blue-600 via-indigo-500 to-cyan-500 bg-clip-text text-transparent">
+                      sem aparecer
+                    </span>
+                  </>
+                ) : (
+                  displayTitle
+                )}
+              </h1>
+
+              <p className="max-w-xl text-base leading-relaxed text-slate-600 sm:text-lg md:text-xl">
+                {displaySubtitle}
+              </p>
             </div>
 
-            {/* Hero Visual Slot */}
-            <div className="relative group max-w-md">
-              <div className="absolute -inset-2 bg-gradient-to-tr from-blue-100 to-purple-50 rounded-[2.5rem] blur-2xl opacity-40 group-hover:opacity-60 transition duration-1000"></div>
-              <div className="relative rounded-[2rem] overflow-hidden border border-white bg-white/40 backdrop-blur-md shadow-xl max-h-[170px] md:max-h-[240px]">
-                {heroSlot}
-              </div>
-            </div>
-
-            {/* Features / Bullets */}
-            <div className="flex flex-wrap gap-2.5 max-w-lg">
-              {[
-                { text: "Sem programação", icon: Zap },
-                { text: "Sem aparecer", icon: CheckCircle2 },
-                { text: "Método prático", icon: Award },
-                { text: "Comunidade ativa", icon: Globe }
-              ].map((item, i) => (
-                <div key={i} className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/60 border border-slate-100 shadow-sm backdrop-blur-sm hover:border-blue-200 transition-colors">
-                  <item.icon size={15} className="text-blue-500 shrink-0" />
-                  <span className="text-xs font-bold text-slate-700">{item.text}</span>
+            <div className="grid max-w-md grid-cols-2 gap-3">
+              {benefits.map((item) => (
+                <div
+                  key={item.label}
+                  className="flex items-center gap-3 rounded-2xl border border-white/60 bg-white/45 p-3 shadow-sm backdrop-blur-sm"
+                >
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-600">
+                    {item.icon}
+                  </div>
+                  <span className="text-sm font-medium text-slate-700">
+                    {item.label}
+                  </span>
                 </div>
               ))}
             </div>
 
-            {/* Proof Visual Slot */}
-            {proofSlot && (
-              <div className="hidden lg:block pt-2 animate-in fade-in slide-in-from-left-4 duration-700 delay-300">
-                <div className="max-w-[120px] rounded-2xl overflow-hidden border-4 border-white shadow-lg rotate-[-3deg] hover:rotate-0 transition-all duration-500 aspect-square">
-                  {proofSlot}
-                </div>
-              </div>
-            )}
-          </div>
+            <div className="relative hidden pt-4 md:block">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-400/20 to-cyan-400/20 blur-[60px]" />
 
-          {/* Right Column: Checkout Card */}
-          <div className="w-full relative">
-            <div className="absolute -top-12 -right-12 w-32 h-32 bg-blue-400/10 blur-3xl rounded-full"></div>
-            <div className="relative">
-              {/* Card Container */}
-              <div className="absolute inset-0 bg-white/40 rounded-[2.5rem] blur-[2px] border border-white/60"></div>
-              <Card className="relative overflow-hidden bg-white/70 backdrop-blur-xl border-white/80 shadow-[0_20px_50px_rgba(0,0,0,0.05)] rounded-[2.5rem]">
-                <div className="p-7 md:p-10 relative z-10">
-                  
-                  {/* Price & Badge Header */}
-                  <div className="mb-8 flex flex-col gap-5">
-                    <div className="flex justify-between items-center">
-                      <div className="flex flex-col gap-0.5">
-                        <span className="text-[10px] font-black text-blue-500/60 uppercase tracking-[0.2em]">Investimento</span>
-                        <div className="text-5xl font-black text-slate-900 tracking-tighter">
-                          {price}
-                        </div>
+              <div className="relative aspect-video max-h-[260px] overflow-hidden rounded-[2.5rem] border border-white/80 bg-white/25 shadow-2xl backdrop-blur-xl">
+                <div className="absolute inset-0 [&>*]:h-full [&>*]:w-full [&_img]:h-full [&_img]:w-full [&_img]:object-cover [&_video]:h-full [&_video]:w-full [&_video]:object-cover">
+                  {heroSlot}
+                </div>
+
+                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.35),transparent_45%,rgba(255,255,255,0.18))]" />
+              </div>
+            </div>
+          </section>
+
+          <section className="relative lg:col-span-5 xl:col-span-6">
+            <div className="relative z-20">
+              <div className="relative rounded-[2.5rem] border border-white/60 bg-gradient-to-b from-white/90 to-white/45 p-1 shadow-[0_32px_80px_-16px_rgba(15,23,42,0.16)] backdrop-blur-3xl sm:rounded-[3rem]">
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/90 to-transparent" />
+
+                <div className="space-y-5 p-5 sm:p-7 md:p-8">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <h2 className="text-2xl font-bold tracking-[-0.04em] text-slate-900">
+                        {checkout?.title || "Checkout"}
+                      </h2>
+                      <p className="mt-1 text-sm text-slate-500">
+                        Complete sua inscrição agora
+                      </p>
+                    </div>
+
+                    <div className="text-right">
+                      <div className="text-xs text-slate-400 line-through">
+                        R$ 197
                       </div>
-                      
-                      {/* Trust Badge Slot */}
-                      <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-white bg-slate-50/50 shadow-sm flex-shrink-0 flex items-center justify-center p-1.5">
-                        {trustBadgeSlot}
+                      <div className="text-4xl font-bold tracking-tight text-slate-950">
+                        {formattedPrice}
+                      </div>
+                      <div className="mt-1 inline-block rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-bold text-blue-600">
+                        OFERTA LIMITADA
                       </div>
                     </div>
-                    
-                    <div className="h-1.5 w-16 bg-blue-600 rounded-full"></div>
                   </div>
 
-                  {/* Dynamic Panel (Form or Pix) */}
-                  <div className="relative">
+                  <div className="h-px w-full bg-slate-200/60" />
+
+                  <div className="rounded-[2rem] border border-white/80 bg-slate-50/45 p-3 shadow-inner backdrop-blur-xl sm:p-4">
                     {hasPaymentData ? pixSlot : formSlot}
                   </div>
 
-                  {/* Micro Trust Info */}
-                  <div className="mt-8 flex items-center justify-center gap-6 border-t border-slate-100 pt-6">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
-                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Acesso Vitalício</span>
+                  <div className="space-y-4 pt-1">
+                    <div className="flex items-center justify-center gap-4 sm:gap-6">
+                      <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M20 13c0 5-3.5 7.5-7.3 8.8a2 2 0 0 1-1.4 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.2-2.7a1.2 1.2 0 0 1 1.6 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1v7Z" />
+                          <path d="m9 12 2 2 4-4" />
+                        </svg>
+                        Ambiente Seguro
+                      </div>
+
+                      <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="m9 12 2 2 4-4" />
+                          <circle cx="12" cy="12" r="10" />
+                        </svg>
+                        Pix Seguro
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
-                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">SSL Seguro</span>
+
+                    <div className="flex justify-center text-slate-300">
+                      <div className="max-h-12 max-w-[160px] overflow-hidden [&>*]:max-h-12 [&_img]:max-h-12 [&_img]:w-auto [&_img]:object-contain">
+                        {trustBadgeSlot}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </Card>
-            </div>
-            
-            {/* Guarantee Badge */}
-            <div className="mt-6 flex items-center justify-center gap-2 text-slate-400">
-              <CheckCircle2 size={12} className="text-blue-400" />
-              <p className="text-[10px] font-medium tracking-tight">
-                7 dias de garantia ou seu dinheiro de volta.
-              </p>
-            </div>
-          </div>
+              </div>
 
+              <div className="absolute -right-2 bottom-[-18px] z-30 hidden items-center justify-center sm:flex lg:-right-8 lg:bottom-20">
+                <div className="rounded-3xl border border-white/90 bg-white/80 px-5 py-4 text-xs font-bold uppercase tracking-wide text-slate-700 shadow-2xl shadow-blue-500/10 backdrop-blur-xl">
+                  <div className="max-h-14 max-w-[180px] overflow-hidden [&>*]:max-h-14 [&_img]:max-h-14 [&_img]:w-auto [&_img]:object-contain">
+                    {proofSlot}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="absolute -left-12 -top-12 h-32 w-32 rounded-full bg-blue-200/25 blur-2xl" />
+            <div className="absolute -bottom-8 -right-8 h-40 w-40 rounded-full bg-indigo-200/25 blur-3xl" />
+          </section>
         </div>
       </main>
 
-      {/* Footer minimal */}
-      <footer className="w-full py-6 mt-auto">
-        <div className="max-w-[1100px] mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 border-t border-slate-200/50 pt-6">
-          <div className="flex items-center gap-2 grayscale opacity-40">
-             <span className="text-xs font-black tracking-tighter">WMS</span>
-             <div className="h-3 w-px bg-slate-300"></div>
-             <span className="text-[10px] font-bold uppercase tracking-widest">Web Money Society</span>
-          </div>
-          <p className="text-[10px] text-slate-300 uppercase tracking-[0.2em] font-medium">
-            © 2026 • Todos os direitos reservados
-          </p>
-        </div>
-      </footer>
-
-      <style dangerouslySetInnerHTML={{ __html: `
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: rgba(0, 0, 0, 0.02);
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(37, 99, 235, 0.1);
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgba(37, 99, 235, 0.2);
-        }
-      `}} />
+      <div className="pointer-events-none fixed inset-0 z-[100] opacity-[0.04]">
+        <div className="h-full w-full bg-[radial-gradient(circle_at_50%_50%,transparent_0%,rgba(0,0,0,0.12)_100%)]" />
+      </div>
     </div>
   );
 }
