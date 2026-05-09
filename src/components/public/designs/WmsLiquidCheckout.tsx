@@ -176,7 +176,7 @@ export function WmsLiquidCheckout(props: any) {
                       {/* Trust Badge Slot */}
                       {trustBadge && (
                         <div className="w-10 h-10 rounded-lg overflow-hidden border border-white/10 bg-white/[0.05] p-1 flex-shrink-0">
-                          <MediaDisplay media={trustBadge} className="w-full h-full object-contain" />
+                          <MediaDisplay media={trustBadge} />
                         </div>
                       )}
                     </div>
