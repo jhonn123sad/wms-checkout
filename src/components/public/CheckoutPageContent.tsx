@@ -27,6 +27,7 @@ import { WmsNovoTesteCheckoutDesign } from "./designs/WmsNovoTesteCheckoutDesign
 import { CustomMediaV1Design } from "./designs/CustomMediaV1Design";
 import { SalesLongV1Design } from "./designs/SalesLongV1Design";
 import { CompactOfferV1Design } from "./designs/CompactOfferV1Design";
+import { WmsLiquidCheckout } from "./designs/WmsLiquidCheckout";
 
 export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
   const [formData, setFormData] = useState<Record<string, string>>({});
