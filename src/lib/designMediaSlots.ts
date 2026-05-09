@@ -96,6 +96,29 @@ export const DESIGN_MEDIA_SLOTS: Record<string, DesignMediaSlot[]> = {
       section_type: "media_slot",
       accepted: ["image", "gif", "external"]
     }
+  ],
+  wms_liquid_v1: [
+    {
+      slot_key: "hero_visual",
+      label: "Visual principal",
+      description: "Imagem, mockup ou arte principal do checkout WMS. Proporção sugerida: 1:1 ou 4:5.",
+      section_type: "media_slot",
+      accepted: ["image", "gif", "video", "youtube", "vimeo", "drive", "external"]
+    },
+    {
+      slot_key: "proof_visual",
+      label: "Prova / mockup secundário",
+      description: "Imagem de apoio, print, mockup da comunidade ou visual de autoridade. Proporção sugerida: 16:9 ou 4:3.",
+      section_type: "media_slot",
+      accepted: ["image", "gif", "external"]
+    },
+    {
+      slot_key: "trust_badge",
+      label: "Selo de confiança",
+      description: "Selo, ícone, garantia ou elemento visual pequeno de confiança. Proporção sugerida: 1:1.",
+      section_type: "media_slot",
+      accepted: ["image", "gif", "external"]
+    }
   ]
 };
 
