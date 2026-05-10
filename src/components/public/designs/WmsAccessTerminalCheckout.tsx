@@ -14,8 +14,8 @@ function GlitchTitle({ text, className = "" }: { text: string; className?: strin
 
   React.useEffect(() => {
     const cycle = () => {
-      const burstDuration = 350 + Math.random() * 300;
-      const waitDuration = 4000 + Math.random() * 3000;
+      const burstDuration = 250 + Math.random() * 200;
+      const waitDuration = 3000 + Math.random() * 5000;
       
       setTimeout(() => {
         setIsGlitching(true);
@@ -34,13 +34,13 @@ function GlitchTitle({ text, className = "" }: { text: string; className?: strin
       <span className="relative z-10">{text}</span>
       {isGlitching && (
         <>
-          <span className="absolute inset-0 z-0 text-[#00FF41] opacity-70 translate-x-[2px] -translate-y-[1px] mix-blend-screen overflow-hidden whitespace-nowrap">
+          <span className="absolute inset-0 z-0 text-[#00FF41] opacity-60 translate-x-[1px] -translate-y-[0.5px] mix-blend-screen overflow-hidden whitespace-nowrap">
             {text}
           </span>
-          <span className="absolute inset-0 z-0 text-[#00e5ff] opacity-70 -translate-x-[2px] translate-y-[1px] mix-blend-screen overflow-hidden whitespace-nowrap">
+          <span className="absolute inset-0 z-0 text-[#00e5ff] opacity-60 -translate-x-[1px] translate-y-[0.5px] mix-blend-screen overflow-hidden whitespace-nowrap">
             {text}
           </span>
-          <div className="absolute inset-0 z-20 bg-gradient-to-r from-transparent via-[#00FF41]/20 to-transparent w-full h-[1px] top-1/2 animate-scan-line-burst pointer-events-none"></div>
+          <div className="absolute inset-0 z-20 bg-gradient-to-r from-transparent via-[#00FF41]/40 to-transparent w-full h-[2px] top-[40%] animate-scan-line-burst pointer-events-none shadow-[0_0_10px_#00FF41]"></div>
         </>
       )}
     </div>
