@@ -44,90 +44,87 @@ function WmsAccessTerminalVisualShell({
       <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none opacity-20">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,255,65,0.05)_0%,transparent_70%,black_100%)]"></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] bg-gradient-to-br from-[#00FF41]/3 to-cyan-500/3 blur-[180px] animate-pulse"></div>
-        
         <div className="absolute inset-0 opacity-[0.05] bg-[linear-gradient(rgba(0,255,65,.5)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,65,.5)_1px,transparent_1px)] bg-[length:40px_40px]"></div>
-        
-        <div className="absolute inset-0">
-          {heroBackgroundSlot}
-        </div>
+        <div className="absolute inset-0">{heroBackgroundSlot}</div>
       </div>
 
       {/* Main Content Wrapper */}
-      <div className="relative z-10 flex flex-col items-center justify-start min-h-[100dvh] py-0 lg:py-12 px-0 lg:px-6">
+      <div className="relative z-10 flex flex-col items-center justify-start min-h-[100dvh] py-0 lg:py-8 px-0 lg:px-6">
         
         {/* Container Principal */}
-        <div className="w-full max-w-[1200px] bg-[#0A0A0A]/70 backdrop-blur-3xl lg:rounded-[32px] border border-white/5 shadow-[0_0_100px_rgba(0,0,0,0.9)] flex flex-col lg:grid lg:grid-cols-[1.2fr_0.8fr] overflow-hidden min-h-screen lg:min-h-0">
+        <div className="w-full max-w-[1200px] bg-[#0A0A0A]/70 backdrop-blur-3xl lg:rounded-[32px] border border-white/5 shadow-[0_0_100px_rgba(0,0,0,0.9)] flex flex-col lg:grid lg:grid-cols-[1.1fr_0.9fr] overflow-hidden min-h-screen lg:min-h-0">
           
-          {/* Left Column - Content & Media */}
-          <div className="p-6 lg:p-12 lg:pr-8 flex flex-col">
+          {/* Desktop Left Column / Mobile Header & Media Section */}
+          <div className={`p-5 lg:p-10 flex flex-col ${hasPaymentData ? 'hidden lg:flex' : 'flex'}`}>
             
             {/* Header Area */}
-            <header className="mb-8 lg:mb-10 relative z-10">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-6 mb-6">
+            <header className="mb-6 lg:mb-8 relative z-10">
+              <div className="flex items-center gap-4 lg:gap-6 mb-4 lg:mb-6">
                 {/* LOGO_ICON_SLOT */}
-                <div className="w-16 h-16 lg:w-20 lg:h-20 relative flex items-center justify-center border border-[#00FF41]/20 rounded-full p-1.5 bg-black/80 shadow-[0_0_30px_rgba(0,255,65,0.1)] group shrink-0">
+                <div className="w-12 h-12 lg:w-16 lg:h-16 relative flex items-center justify-center border border-[#00FF41]/20 rounded-full p-1 bg-black/80 shadow-[0_0_20px_rgba(0,255,65,0.1)] group shrink-0">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#00FF41]/10 to-cyan-500/10 opacity-40 rounded-full"></div>
                   <div className="w-full h-full rounded-full border border-dashed border-[#00FF41]/20 flex items-center justify-center overflow-hidden">
                     {logoIconSlot}
                   </div>
-                  <div className="absolute -inset-2 border border-[#00FF41]/5 rounded-full animate-spin-slow"></div>
                 </div>
                 
-                <div className="flex-1">
-                  <h1 className="text-2xl lg:text-4xl font-black tracking-tighter text-white uppercase italic animate-glitch-premium mb-2 break-words" data-text={checkout.title || "WEB MONEY SOCIETY"}>
+                <div className="flex-1 min-w-0">
+                  <h1 
+                    className="text-xl lg:text-3xl font-black tracking-tighter text-white uppercase italic animate-glitch-premium mb-1 lg:mb-2 break-words leading-tight lg:leading-none" 
+                    data-text={checkout.title || "WEB MONEY SOCIETY"}
+                  >
                     {checkout.title || "WEB MONEY SOCIETY"}
                   </h1>
                   <div className="flex flex-wrap gap-2">
-                    <span className="px-2 py-0.5 bg-white/5 border border-white/10 text-[8px] font-black text-white/50 tracking-[0.15em] rounded-sm uppercase italic">
+                    <span className="px-1.5 py-0.5 bg-white/5 border border-white/10 text-[7px] lg:text-[8px] font-black text-white/50 tracking-[0.1em] lg:tracking-[0.15em] rounded-sm uppercase italic">
                       ACESSO PRIVADO
                     </span>
-                    <span className="px-2 py-0.5 bg-[#00FF41]/5 border border-[#00FF41]/20 text-[8px] font-black text-[#00FF41]/60 tracking-[0.15em] rounded-sm uppercase italic">
+                    <span className="px-1.5 py-0.5 bg-[#00FF41]/5 border border-[#00FF41]/20 text-[7px] lg:text-[8px] font-black text-[#00FF41]/60 tracking-[0.1em] lg:tracking-[0.15em] rounded-sm uppercase italic">
                       MEMBRO WMS
                     </span>
                   </div>
                 </div>
               </div>
               
-              <div className="relative">
-                <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-[#00FF41]/50 to-transparent"></div>
-                <p className="text-gray-400 text-sm lg:text-base font-medium leading-relaxed italic pl-6">
-                  {checkout.subtitle || "Acesso privado para quem quer entrar no jogo com método, visão e execução. Conteúdo prático e estratégias validadas pela Sociedade."}
-                </p>
-              </div>
+              {checkout.subtitle && (
+                <div className="relative">
+                  <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-[#00FF41]/50 to-transparent"></div>
+                  <p className="text-gray-400 text-xs lg:text-sm font-medium leading-relaxed italic pl-4 lg:pl-6 max-w-2xl">
+                    {checkout.subtitle}
+                  </p>
+                </div>
+              )}
             </header>
 
-            {/* MAIN_MEDIA_SLOT */}
-            <div className="relative aspect-video w-full bg-[#050505]/80 rounded-2xl border border-white/5 overflow-hidden mb-8 shadow-2xl group/media transition-all hover:border-[#00FF41]/10 shadow-[inset_0_0_50px_rgba(0,0,0,0.8)]">
-              {/* HUD elements */}
+            {/* MAIN_MEDIA_SLOT - Compact on Mobile */}
+            <div className="relative aspect-video w-full bg-[#050505]/80 rounded-xl lg:rounded-2xl border border-white/5 overflow-hidden mb-6 lg:mb-8 shadow-2xl group/media transition-all hover:border-[#00FF41]/10 shadow-[inset_0_0_50px_rgba(0,0,0,0.8)]">
               <div className="absolute inset-0 pointer-events-none z-10">
-                <div className="absolute top-4 left-4 w-8 h-8 border-t border-l border-white/10"></div>
-                <div className="absolute bottom-4 right-4 w-8 h-8 border-b border-r border-white/10"></div>
+                <div className="absolute top-3 left-3 w-6 h-6 border-t border-l border-white/10 lg:w-8 lg:h-8 lg:top-4 lg:left-4"></div>
+                <div className="absolute bottom-3 right-3 w-6 h-6 border-b border-r border-white/10 lg:w-8 lg:h-8 lg:bottom-4 lg:right-4"></div>
               </div>
-
               <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
                 <div className="w-full h-full transform group-hover/media:scale-105 transition-transform duration-1000 flex items-center justify-center">
                   {mainMediaSlot}
                 </div>
               </div>
-
-              <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md border border-[#00FF41]/20 px-2 py-1 rounded-sm z-20">
-                 <span className="text-[8px] text-[#00FF41] font-black uppercase tracking-widest italic">STREAM_ENCRYPTED</span>
+              <div className="absolute top-3 right-3 lg:top-4 lg:right-4 bg-black/60 backdrop-blur-md border border-[#00FF41]/20 px-1.5 py-0.5 lg:px-2 lg:py-1 rounded-sm z-20">
+                 <span className="text-[7px] lg:text-[8px] text-[#00FF41] font-black uppercase tracking-widest italic">STREAM_ENCRYPTED</span>
               </div>
             </div>
 
-            {/* Proof Units */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-auto">
+            {/* Proof Units - Hidden if very small screen or just made more compact */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-auto">
               {[
                 { id: '1', label: 'Sinal Privado', slot: proofMedia1Slot },
                 { id: '2', label: 'Estratégias', slot: proofMedia2Slot },
                 { id: '3', label: 'Comunidade', slot: proofMedia3Slot }
               ].map((card, idx) => (
-                <div key={idx} className="bg-white/[0.02] border border-white/5 p-3 rounded-xl flex items-center gap-3">
-                  <div className="w-12 h-8 bg-black border border-white/5 rounded flex items-center justify-center overflow-hidden shrink-0">
+                <div key={idx} className="bg-white/[0.02] border border-white/5 p-2 lg:p-3 rounded-lg lg:rounded-xl flex items-center gap-3">
+                  <div className="w-10 h-7 lg:w-12 lg:h-8 bg-black border border-white/5 rounded flex items-center justify-center overflow-hidden shrink-0">
                     {card.slot}
                   </div>
                   <div className="flex flex-col min-w-0">
-                    <span className="text-[9px] font-black text-gray-500 uppercase italic truncate">{card.label}</span>
+                    <span className="text-[8px] lg:text-[9px] font-black text-gray-500 uppercase italic truncate">{card.label}</span>
                     <div className="flex gap-0.5">
                       <div className="w-2 h-0.5 rounded-full bg-[#00FF41]/40"></div>
                       <div className="w-0.5 h-0.5 rounded-full bg-[#00FF41]/40"></div>
@@ -138,13 +135,28 @@ function WmsAccessTerminalVisualShell({
             </div>
           </div>
 
+          {/* Mobile Status Header - Visible only on mobile when Pix is generated */}
+          {hasPaymentData && (
+            <div className="lg:hidden p-5 border-b border-white/5 bg-[#050505]/80 flex flex-col items-center text-center animate-in fade-in slide-in-from-top-4 duration-500">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#00FF41] animate-pulse shadow-[0_0_10px_#00FF41]"></div>
+                <h2 className="text-[10px] font-black text-[#00FF41] tracking-[0.4em] uppercase italic">PAGAMENTO_SOLICITADO</h2>
+              </div>
+              <h1 className="text-lg font-black text-white uppercase italic mb-2 tracking-tight line-clamp-1">{checkout.title}</h1>
+              <div className="flex items-center gap-2 bg-[#00FF41]/10 border border-[#00FF41]/20 px-3 py-1 rounded-full">
+                <span className="text-[8px] text-gray-400 font-black uppercase tracking-widest italic">TOTAL:</span>
+                <span className="text-xs font-black text-white italic">R$ {integerPart},{decimalPart}</span>
+              </div>
+            </div>
+          )}
+
           {/* Right Column - Checkout Terminal */}
-          <div className="bg-[#050505]/60 p-6 lg:p-12 flex flex-col border-t lg:border-t-0 lg:border-l border-white/5 relative">
+          <div className="bg-[#050505]/60 p-5 lg:p-10 flex flex-col border-t lg:border-t-0 lg:border-l border-white/5 relative min-h-0">
             
             <div className="absolute inset-0 pointer-events-none opacity-[0.03] sm-scanlines"></div>
 
-            {/* Checkout Header */}
-            <div className="flex items-center justify-between mb-8 relative z-10">
+            {/* Checkout Header - Hidden on mobile if Pix is generated (using Mobile Status Header instead) */}
+            <div className={`items-center justify-between mb-6 lg:mb-8 relative z-10 ${hasPaymentData ? 'hidden lg:flex' : 'flex'}`}>
               <div className="flex flex-col">
                 <h2 className="text-[10px] font-black text-[#00FF41] tracking-[0.4em] uppercase italic mb-1">ACCESS_POINT</h2>
                 <div className="flex items-center gap-2">
@@ -153,27 +165,36 @@ function WmsAccessTerminalVisualShell({
                 </div>
               </div>
               
-              <div className="w-12 h-12 bg-black border border-white/5 rounded-lg flex items-center justify-center overflow-hidden">
+              <div className="w-10 h-10 lg:w-12 lg:h-12 bg-black border border-white/5 rounded-lg flex items-center justify-center overflow-hidden">
                 {sideVisualSlot}
               </div>
             </div>
 
-            {/* Price Display */}
-            <div className="mb-8 relative z-10">
-              <span className="text-gray-500 text-[9px] font-black tracking-[0.2em] uppercase italic mb-2 block">VALOR DO ACESSO</span>
-              <div className="flex items-baseline gap-1">
-                <span className="text-5xl lg:text-6xl font-black text-white italic tracking-tighter">R$ {integerPart}</span>
-                <span className="text-2xl lg:text-3xl font-black text-[#00FF41] italic opacity-80">,{decimalPart}</span>
+            {/* Price Display - Chip style on Pix mode */}
+            {!hasPaymentData ? (
+              <div className="mb-6 lg:mb-8 relative z-10">
+                <span className="text-gray-500 text-[9px] font-black tracking-[0.2em] uppercase italic mb-2 block">VALOR DO ACESSO</span>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-4xl lg:text-6xl font-black text-white italic tracking-tighter">R$ {integerPart}</span>
+                  <span className="text-xl lg:text-3xl font-black text-[#00FF41] italic opacity-80">,{decimalPart}</span>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="hidden lg:flex mb-6 relative z-10 bg-white/[0.03] border border-white/10 px-4 py-2 rounded-xl items-center justify-between">
+                 <span className="text-gray-500 text-[8px] font-black tracking-[0.2em] uppercase italic">VALOR TOTAL</span>
+                 <div className="flex items-baseline gap-1">
+                    <span className="text-xl font-black text-white italic">R$ {integerPart}</span>
+                    <span className="text-sm font-black text-[#00FF41] italic opacity-80">,{decimalPart}</span>
+                 </div>
+              </div>
+            )}
 
             {/* Main Form/Pix Area */}
-            <div className="flex-1 relative z-10 flex flex-col">
-              <div className="flex-1 bg-white/[0.02] border border-white/5 rounded-2xl p-6 lg:p-8 shadow-inner relative overflow-hidden flex flex-col justify-center">
-                 {/* This container will hold either the form or the Pix area */}
+            <div className="flex-1 relative z-10 flex flex-col wms-access-pix-panel">
+              <div className={`flex-1 bg-white/[0.02] border border-white/5 rounded-2xl p-5 lg:p-8 shadow-inner relative overflow-hidden flex flex-col ${hasPaymentData ? 'justify-start' : 'justify-center'}`}>
                  <div className="w-full relative z-20">
                     {hasPaymentData ? (
-                      <div className="bg-transparent">
+                      <div className="bg-transparent -mt-2 lg:-mt-4">
                         {pixSlot}
                       </div>
                     ) : (
@@ -184,19 +205,19 @@ function WmsAccessTerminalVisualShell({
 
               {!hasPaymentData && (
                 <div className="mt-4 text-center">
-                  <span className="text-white/20 text-[9px] font-black uppercase tracking-[0.2em] italic">TECNOLOGIA DE PAGAMENTO PUSHINPAY</span>
+                  <span className="text-white/20 text-[8px] lg:text-[9px] font-black uppercase tracking-[0.15em] lg:tracking-[0.2em] italic">TECNOLOGIA DE PAGAMENTO PUSHINPAY</span>
                 </div>
               )}
             </div>
 
             {/* Footer Trust Section */}
-            <footer className="mt-8 pt-6 border-t border-white/5 flex items-center gap-4 relative z-10">
-              <div className="w-12 h-12 border border-white/5 bg-white/[0.03] rounded-xl flex items-center justify-center p-2 shrink-0">
+            <footer className={`mt-6 lg:mt-8 pt-5 lg:pt-6 border-t border-white/5 items-center gap-4 relative z-10 ${hasPaymentData ? 'flex justify-center lg:justify-start' : 'flex'}`}>
+              <div className="w-10 h-10 lg:w-12 lg:h-12 border border-white/5 bg-white/[0.03] rounded-xl flex items-center justify-center p-2 shrink-0">
                 {trustBadgeSlot}
               </div>
               <div className="flex flex-col">
-                <span className="text-white text-[10px] font-black tracking-[0.15em] uppercase italic">PAGAMENTO SEGURO</span>
-                <p className="text-gray-600 text-[8px] font-bold uppercase tracking-widest italic">
+                <span className="text-white text-[9px] lg:text-[10px] font-black tracking-[0.15em] uppercase italic">PAGAMENTO SEGURO</span>
+                <p className="text-gray-600 text-[7px] lg:text-[8px] font-bold uppercase tracking-widest italic leading-tight">
                   LIBERAÇÃO IMEDIATA DO ACESSO
                 </p>
               </div>
@@ -218,13 +239,6 @@ function WmsAccessTerminalVisualShell({
           height: 150px;
           background: linear-gradient(to bottom, transparent 0%, rgba(0, 255, 65, 0.08) 50%, transparent 100%);
         }
-        .animate-spin-slow {
-          animation: spin 60s linear infinite;
-        }
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
         .animate-sweep {
           animation: sweep 1.5s ease-in-out infinite;
         }
@@ -232,54 +246,93 @@ function WmsAccessTerminalVisualShell({
           0% { transform: translateX(-100%); }
           100% { transform: translateX(100%); }
         }
+        
+        /* Premium Glitch Effect */
         .animate-glitch-premium {
           position: relative;
+          text-shadow: 0.05em 0 0 rgba(0, 255, 65, 0.75),
+                      -0.025em -0.05em 0 rgba(0, 229, 255, 0.75),
+                      0.025em 0.05em 0 rgba(255, 0, 0, 0.75);
+          animation: glitch 500ms infinite;
         }
-        .animate-glitch-premium::after, .animate-glitch-premium::before {
+        
+        .animate-glitch-premium::before,
+        .animate-glitch-premium::after {
           content: attr(data-text);
           position: absolute;
           top: 0;
           left: 0;
+          opacity: 0.8;
           width: 100%;
           height: 100%;
-          opacity: 0.6;
-          z-index: -1;
         }
+        
         .animate-glitch-premium::before {
+          animation: glitch-top 1.5s infinite linear alternate-reverse;
+          clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+          -webkit-clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
           color: #00FF41;
-          animation: glitch-anim-1 2.5s infinite linear alternate-reverse;
-          clip: rect(20px, 9999px, 60px, 0);
-          left: -1px;
+          left: -2px;
         }
+        
         .animate-glitch-premium::after {
+          animation: glitch-bottom 1.8s infinite linear alternate-reverse;
+          clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+          -webkit-clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
           color: #00E5FF;
-          animation: glitch-anim-2 3s infinite linear alternate-reverse;
-          clip: rect(80px, 9999px, 120px, 0);
-          left: 1px;
+          left: 2px;
         }
-        @keyframes glitch-anim-1 {
-          0% { clip: rect(10px, 9999px, 30px, 0); transform: skew(0.5deg); }
-          20% { clip: rect(40px, 9999px, 50px, 0); transform: skew(-0.5deg); }
-          40% { clip: rect(20px, 9999px, 80px, 0); transform: skew(1deg); }
-          60% { clip: rect(70px, 9999px, 90px, 0); transform: skew(-1deg); }
-          80% { clip: rect(30px, 9999px, 60px, 0); transform: skew(0.5deg); }
-          100% { clip: rect(50px, 9999px, 100px, 0); transform: skew(-0.5deg); }
+
+        @keyframes glitch {
+          0% { text-shadow: 0.05em 0 0 rgba(0, 255, 65, 0.75), -0.025em -0.05em 0 rgba(0, 229, 255, 0.75), 0.025em 0.05em 0 rgba(255, 0, 0, 0.75); }
+          14% { text-shadow: 0.05em 0 0 rgba(0, 255, 65, 0.75), -0.025em -0.05em 0 rgba(0, 229, 255, 0.75), 0.025em 0.05em 0 rgba(255, 0, 0, 0.75); }
+          15% { text-shadow: -0.05em -0.025em 0 rgba(0, 255, 65, 0.75), 0.025em 0.025em 0 rgba(0, 229, 255, 0.75), -0.05em -0.05em 0 rgba(255, 0, 0, 0.75); }
+          49% { text-shadow: -0.05em -0.025em 0 rgba(0, 255, 65, 0.75), 0.025em 0.025em 0 rgba(0, 229, 255, 0.75), -0.05em -0.05em 0 rgba(255, 0, 0, 0.75); }
+          50% { text-shadow: 0.025em 0.05em 0 rgba(0, 255, 65, 0.75), 0.05em 0 0 rgba(0, 229, 255, 0.75), 0 -0.05em 0 rgba(255, 0, 0, 0.75); }
+          99% { text-shadow: 0.025em 0.05em 0 rgba(0, 255, 65, 0.75), 0.05em 0 0 rgba(0, 229, 255, 0.75), 0 -0.05em 0 rgba(255, 0, 0, 0.75); }
+          100% { text-shadow: -0.025em 0 0 rgba(0, 255, 65, 0.75), -0.025em -0.025em 0 rgba(0, 229, 255, 0.75), -0.025em -0.05em 0 rgba(255, 0, 0, 0.75); }
         }
-        @keyframes glitch-anim-2 {
-          0% { clip: rect(70px, 9999px, 100px, 0); transform: skew(-0.8deg); }
-          20% { clip: rect(20px, 9999px, 40px, 0); transform: skew(0.8deg); }
-          40% { clip: rect(50px, 9999px, 70px, 0); transform: skew(-1.2deg); }
-          60% { clip: rect(10px, 9999px, 20px, 0); transform: skew(1.2deg); }
-          80% { clip: rect(80px, 9999px, 110px, 0); transform: skew(-0.8deg); }
-          100% { clip: rect(30px, 9999px, 60px, 0); transform: skew(0.8deg); }
+
+        @keyframes glitch-top {
+          0% { transform: translate(0); }
+          20% { transform: translate(-2px, 1px); }
+          40% { transform: translate(-2px, -1px); }
+          60% { transform: translate(2px, 1px); }
+          80% { transform: translate(2px, -1px); }
+          100% { transform: translate(0); }
         }
+
+        @keyframes glitch-bottom {
+          0% { transform: translate(0); }
+          20% { transform: translate(2px, -1px); }
+          40% { transform: translate(2px, 1px); }
+          60% { transform: translate(-2px, -1px); }
+          80% { transform: translate(-2px, 1px); }
+          100% { transform: translate(0); }
+        }
+
         .sm-scanlines {
            background: linear-gradient(rgba(255,255,255,0) 50%, rgba(255,255,255,0.02) 50%);
            background-size: 100% 4px;
         }
+
+        /* Scoped styles for Pix Panel inside this terminal */
+        .wms-access-pix-panel button {
+          height: 2.75rem !important;
+          font-size: 0.75rem !important;
+          text-transform: uppercase !important;
+          font-weight: 900 !important;
+          letter-spacing: 0.1em !important;
+          border-radius: 0.75rem !important;
+        }
+        
         @media (max-width: 1024px) {
            .animate-glitch-premium::after, .animate-glitch-premium::before {
               display: none;
+           }
+           .animate-glitch-premium {
+             text-shadow: none;
+             animation: none;
            }
         }
       `}</style>
