@@ -320,19 +320,38 @@ function WmsAccessTerminalVisualShell({
 
         /* Copy Field Block Refinement */
         .wms-access-pix-panel div[class*="bg-white/"][class*="p-4"].rounded-xl {
-          padding: 0.75rem !important;
-          background: rgba(255, 255, 255, 0.02) !important;
-          border-radius: 12px !important;
-          margin-bottom: 1rem !important;
+          padding: 0.85rem 1rem !important;
+          background: rgba(255, 255, 255, 0.015) !important;
+          border: 1px solid rgba(255, 255, 255, 0.05) !important;
+          border-radius: 14px !important;
+          margin-bottom: 0.85rem !important;
+          width: 100% !important;
+        }
+
+        /* Target the label "Pix Copia e Cola" */
+        .wms-access-pix-panel span[class*="text-gray-400"],
+        .wms-access-pix-panel p[class*="text-gray-400"] {
+          font-size: 9px !important;
+          font-weight: 800 !important;
+          color: #666 !important;
+          text-transform: uppercase !important;
+          letter-spacing: 0.1em !important;
+          margin-bottom: 0.4rem !important;
+          display: block !important;
+          text-align: left !important;
         }
 
         .wms-access-pix-panel .font-mono.text-xs {
-          font-size: 10px !important;
-          line-height: 1.4 !important;
-          color: #aaa !important;
-          max-height: 60px !important;
+          font-size: 9px !important;
+          line-height: 1.5 !important;
+          color: #999 !important;
+          text-align: left !important;
+          word-break: break-all !important;
+          overflow-wrap: anywhere !important;
+          max-height: 54px !important;
           overflow-y: auto !important;
           scrollbar-width: none !important;
+          white-space: normal !important;
         }
         .wms-access-pix-panel .font-mono.text-xs::-webkit-scrollbar { display: none; }
 
@@ -343,43 +362,47 @@ function WmsAccessTerminalVisualShell({
 
         /* Main Copy Button Style */
         .wms-access-pix-panel button.w-full.py-4 {
-          height: 3.25rem !important;
-          font-size: 0.8rem !important;
-          border-radius: 14px !important;
+          height: 3rem !important;
+          font-size: 0.75rem !important;
+          border-radius: 12px !important;
           font-weight: 900 !important;
-          letter-spacing: 0.1em !important;
+          letter-spacing: 0.05em !important;
           text-transform: uppercase !important;
           background: var(--wms-neon) !important;
           color: black !important;
           border: none !important;
-          box-shadow: 0 4px 20px rgba(0, 255, 65, 0.15) !important;
+          box-shadow: 0 4px 15px rgba(0, 255, 65, 0.1) !important;
           transition: all 0.2s ease !important;
           font-style: italic !important;
-          margin-top: 0.5rem !important;
+          margin-top: 0.25rem !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
         }
 
         .wms-access-pix-panel button.w-full.py-4:hover {
           transform: translateY(-1px) !important;
-          box-shadow: 0 6px 25px rgba(0, 255, 65, 0.25) !important;
+          box-shadow: 0 6px 20px rgba(0, 255, 65, 0.2) !important;
           filter: brightness(1.05);
         }
 
-        /* Secondary Actions Style */
+        /* Secondary Actions Style - Ghost Links */
         .wms-access-pix-panel .flex.flex-col.gap-2.mt-6,
         .wms-access-pix-panel .flex.flex-wrap.justify-center.gap-4.mt-8 {
-          margin-top: 1.5rem !important;
-          gap: 0.75rem !important;
+          margin-top: 1.25rem !important;
+          gap: 0.6rem !important;
         }
 
         .wms-access-pix-panel a, 
-        .wms-access-pix-panel button[class*="text-[9px]"] {
-          background: rgba(255,255,255,0.03) !important;
-          border: 1px solid rgba(255,255,255,0.08) !important;
-          color: #777 !important;
-          padding: 8px 14px !important;
+        .wms-access-pix-panel button[class*="text-[9px]"],
+        .wms-access-pix-panel button[class*="text-xs"][class*="text-gray-500"] {
+          background: transparent !important;
+          border: 1px solid rgba(255, 255, 255, 0.05) !important;
+          color: #666 !important;
+          padding: 8px 12px !important;
           border-radius: 10px !important;
           height: auto !important;
-          font-size: 9px !important;
+          font-size: 8px !important;
           font-weight: 700 !important;
           letter-spacing: 0.05em !important;
           box-shadow: none !important;
@@ -388,34 +411,37 @@ function WmsAccessTerminalVisualShell({
           align-items: center !important;
           justify-content: center !important;
           text-decoration: none !important;
+          text-transform: uppercase !important;
         }
 
         .wms-access-pix-panel a:hover, 
-        .wms-access-pix-panel button.text-\[9px\]:hover {
-          color: white !important;
-          background: rgba(255,255,255,0.08) !important;
-          border-color: rgba(255,255,255,0.15) !important;
+        .wms-access-pix-panel button:hover {
+          color: #888 !important;
+          background: rgba(255, 255, 255, 0.02) !important;
+          border-color: rgba(255, 255, 255, 0.1) !important;
         }
 
         /* QR Code Card Refinement */
         .wms-access-pix-panel .bg-white.p-4 {
-          padding: 0.75rem !important;
-          border-radius: 16px !important;
-          box-shadow: 0 10px 40px rgba(0,0,0,0.6) !important;
-          border: 4px solid #111 !important;
-          width: 200px !important;
-          height: 200px !important;
+          padding: 0.6rem !important;
+          border-radius: 12px !important;
+          box-shadow: 0 8px 30px rgba(0,0,0,0.5) !important;
+          border: 4px solid #080808 !important;
+          width: 180px !important;
+          height: 180px !important;
           margin-bottom: 0.5rem !important;
+          margin-left: auto !important;
+          margin-right: auto !important;
         }
 
         @media (max-width: 1024px) {
           .wms-access-pix-panel .bg-white.p-4 {
-            width: 170px !important;
-            height: 170px !important;
+            width: 150px !important;
+            height: 150px !important;
           }
           .wms-access-pix-panel button.w-full.py-4 {
-            height: 3rem !important;
-            font-size: 0.75rem !important;
+            height: 2.75rem !important;
+            font-size: 0.7rem !important;
           }
         }
       `}</style>
