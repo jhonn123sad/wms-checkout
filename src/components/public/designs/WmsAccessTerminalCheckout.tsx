@@ -372,7 +372,7 @@ function WmsAccessTerminalVisualShell({
         }
 
         .wms-access-pix-panel a, 
-        .wms-access-pix-panel button.text-\[9px\] {
+        .wms-access-pix-panel button[class*="text-[9px]"] {
           background: rgba(255,255,255,0.03) !important;
           border: 1px solid rgba(255,255,255,0.08) !important;
           color: #777 !important;
