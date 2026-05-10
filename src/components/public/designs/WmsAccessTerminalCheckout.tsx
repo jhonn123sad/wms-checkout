@@ -14,8 +14,8 @@ function GlitchTitle({ text, className = "" }: { text: string; className?: strin
 
   React.useEffect(() => {
     const cycle = () => {
-      const burstDuration = 350 + Math.random() * 300;
-      const waitDuration = 4000 + Math.random() * 3000;
+      const burstDuration = 250 + Math.random() * 200;
+      const waitDuration = 3000 + Math.random() * 5000;
       
       setTimeout(() => {
         setIsGlitching(true);
@@ -34,13 +34,13 @@ function GlitchTitle({ text, className = "" }: { text: string; className?: strin
       <span className="relative z-10">{text}</span>
       {isGlitching && (
         <>
-          <span className="absolute inset-0 z-0 text-[#00FF41] opacity-70 translate-x-[2px] -translate-y-[1px] mix-blend-screen overflow-hidden whitespace-nowrap">
+          <span className="absolute inset-0 z-0 text-[#00FF41] opacity-60 translate-x-[1px] -translate-y-[0.5px] mix-blend-screen overflow-hidden whitespace-nowrap">
             {text}
           </span>
-          <span className="absolute inset-0 z-0 text-[#00e5ff] opacity-70 -translate-x-[2px] translate-y-[1px] mix-blend-screen overflow-hidden whitespace-nowrap">
+          <span className="absolute inset-0 z-0 text-[#00e5ff] opacity-60 -translate-x-[1px] translate-y-[0.5px] mix-blend-screen overflow-hidden whitespace-nowrap">
             {text}
           </span>
-          <div className="absolute inset-0 z-20 bg-gradient-to-r from-transparent via-[#00FF41]/20 to-transparent w-full h-[1px] top-1/2 animate-scan-line-burst pointer-events-none"></div>
+          <div className="absolute inset-0 z-20 bg-gradient-to-r from-transparent via-[#00FF41]/40 to-transparent w-full h-[2px] top-[40%] animate-scan-line-burst pointer-events-none shadow-[0_0_10px_#00FF41]"></div>
         </>
       )}
     </div>
@@ -112,67 +112,69 @@ function WmsAccessTerminalVisualShell({
         <div className="absolute inset-0 grayscale opacity-10">{heroBackgroundSlot}</div>
       </div>
 
-      <div className="relative z-10 flex flex-col items-center justify-start min-h-[100dvh] py-0 lg:py-10 px-0 lg:px-6">
+      <div className="relative z-10 flex flex-col items-center justify-start min-h-[100dvh] py-0 lg:py-6 px-0 lg:px-4">
         
         {/* Main Container */}
-        <div className="w-full max-w-[1150px] bg-[#0A0A0A]/80 backdrop-blur-3xl lg:rounded-[40px] border border-white/5 shadow-[0_0_80px_rgba(0,0,0,1)] flex flex-col lg:grid lg:grid-cols-[1.15fr_0.85fr] overflow-hidden min-h-screen lg:min-h-0">
+        <div className="w-full max-w-[1100px] bg-[#0A0A0A]/90 backdrop-blur-3xl lg:rounded-[32px] border border-white/5 shadow-[0_0_100px_rgba(0,0,0,1)] flex flex-col lg:grid lg:grid-cols-[1.1fr_0.9fr] overflow-hidden min-h-screen lg:min-h-0">
           
           {/* LEFT COLUMN: Authority & Visual */}
-          <div className={`p-6 lg:p-12 flex flex-col ${hasPaymentData ? 'hidden lg:flex' : 'flex'}`}>
+          <div className={`p-6 lg:p-10 flex flex-col transition-all duration-500 ${hasPaymentData ? 'lg:py-8' : 'lg:py-10'}`}>
             
             {/* Header */}
-            <header className="mb-8 lg:mb-12 relative">
-              <div className="flex items-center gap-5 lg:gap-7 mb-6">
-                <div className="w-14 h-14 lg:w-20 lg:h-20 relative flex items-center justify-center border border-[#00FF41]/20 rounded-2xl p-1 bg-black/80 shadow-[0_0_30px_rgba(0,255,65,0.1)] group overflow-hidden">
+            <header className={`relative transition-all duration-500 ${hasPaymentData ? 'mb-6 lg:mb-8' : 'mb-8 lg:mb-10'}`}>
+              <div className="flex items-center gap-4 lg:gap-6 mb-4 lg:mb-6">
+                <div className={`relative flex items-center justify-center border border-[#00FF41]/20 rounded-xl p-1 bg-black/80 shadow-[0_0_30px_rgba(0,255,65,0.1)] group overflow-hidden transition-all duration-500 ${hasPaymentData ? 'w-12 h-12 lg:w-14 lg:h-14' : 'w-14 h-14 lg:w-18 lg:h-18'}`}>
                   <div className="absolute inset-0 bg-gradient-to-br from-[#00FF41]/10 to-transparent"></div>
-                  <div className="w-full h-full rounded-xl border border-dashed border-[#00FF41]/30 flex items-center justify-center overflow-hidden">
+                  <div className="w-full h-full rounded-lg border border-dashed border-[#00FF41]/20 flex items-center justify-center overflow-hidden">
                     {logoIconSlot}
                   </div>
                 </div>
                 
                 <div className="flex-1">
-                  <GlitchTitle text="WEB MONEY SOCIETY" className="text-2xl lg:text-4xl font-black tracking-tighter text-white uppercase italic leading-none block mb-2" />
-                  <div className="flex items-center gap-3">
-                    <span className="px-2 py-0.5 bg-[#00FF41]/5 border border-[#00FF41]/20 text-[9px] font-black text-[#00FF41]/80 tracking-[0.2em] rounded uppercase italic">
-                      ESTADO PRIVADO
+                  <GlitchTitle text="WEB MONEY SOCIETY" className={`font-black tracking-tighter text-white uppercase italic leading-none block mb-1.5 transition-all duration-500 ${hasPaymentData ? 'text-xl lg:text-2xl' : 'text-2xl lg:text-3xl'}`} />
+                  <div className="flex items-center gap-2.5">
+                    <span className="px-1.5 py-0.5 bg-[#00FF41]/5 border border-[#00FF41]/10 text-[8px] font-black text-[#00FF41]/70 tracking-[0.2em] rounded uppercase italic">
+                      {hasPaymentData ? 'TERMINAL_SECURE' : 'ESTADO PRIVADO'}
                     </span>
-                    <div className="h-[1px] w-8 bg-[#00FF41]/20"></div>
+                    <div className="h-[1px] w-6 bg-[#00FF41]/10"></div>
                   </div>
                 </div>
               </div>
               
-              <div className="relative pl-6 border-l-2 border-[#00FF41]/40">
-                <p className="text-gray-400 text-xs lg:text-[13px] font-medium leading-relaxed italic max-w-lg">
-                  Acesso exclusivo ao terminal de operações WMS. Execute sua visão com método e tecnologia de ponta.
-                </p>
-              </div>
+              {!hasPaymentData && (
+                <div className="relative pl-5 border-l-2 border-[#00FF41]/30">
+                  <p className="text-gray-400 text-xs lg:text-[13px] font-medium leading-relaxed italic max-w-md">
+                    Acesso exclusivo ao terminal de operações WMS. Execute sua visão com método e tecnologia de ponta.
+                  </p>
+                </div>
+              )}
             </header>
 
             {/* Main Media Showcase */}
-            <div className="relative aspect-[16/10] w-full bg-black rounded-2xl lg:rounded-3xl border border-white/5 overflow-hidden mb-8 lg:mb-10 shadow-2xl group">
-              <div className="absolute inset-0 z-10 bg-gradient-to-t from-black via-transparent to-black/40"></div>
-              <div className="absolute inset-0 flex items-center justify-center">
+            <div className={`relative w-full bg-black rounded-2xl border border-white/5 overflow-hidden shadow-2xl group transition-all duration-500 ${hasPaymentData ? 'aspect-video lg:max-w-md mx-auto mb-6 lg:mb-8' : 'aspect-[16/10] mb-8 lg:mb-10'}`}>
+              <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 via-transparent to-black/20"></div>
+              <div className="absolute inset-0 flex items-center justify-center scale-105 group-hover:scale-100 transition-transform duration-700">
                 {mainMediaSlot}
               </div>
-              <div className="absolute top-4 right-4 bg-black/80 backdrop-blur-xl border border-[#00FF41]/30 px-3 py-1.5 rounded-lg z-20 flex items-center gap-2">
-                 <div className="w-1.5 h-1.5 rounded-full bg-[#00FF41] animate-pulse"></div>
-                 <span className="text-[9px] text-[#00FF41] font-black uppercase tracking-widest italic">CONTEÚDO PRIVADO</span>
+              <div className="absolute top-3 right-3 bg-black/80 backdrop-blur-xl border border-[#00FF41]/20 px-2.5 py-1 rounded-md z-20 flex items-center gap-1.5">
+                 <div className="w-1 h-1 rounded-full bg-[#00FF41] animate-pulse"></div>
+                 <span className="text-[8px] text-[#00FF41] font-black uppercase tracking-widest italic">CONTEÚDO PROTEGIDO</span>
               </div>
             </div>
 
             {/* Proof Section */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-auto">
+            <div className={`grid gap-3 transition-all duration-500 ${hasPaymentData ? 'grid-cols-3 max-w-md mx-auto' : 'grid-cols-1 md:grid-cols-3 mt-auto'}`}>
               {[
                 { label: 'OPERAÇÃO', slot: proofMedia1Slot },
                 { label: 'REDE', slot: proofMedia2Slot },
                 { label: 'RESULTADO', slot: proofMedia3Slot }
               ].map((card, idx) => (
-                <div key={idx} className="bg-white/[0.03] border border-white/5 p-3 rounded-2xl flex items-center gap-4 group hover:bg-[#00FF41]/5 transition-all duration-300">
-                  <div className="w-12 h-9 bg-black border border-white/10 rounded-lg flex items-center justify-center overflow-hidden shrink-0 group-hover:border-[#00FF41]/30 transition-colors">
+                <div key={idx} className={`bg-white/[0.02] border border-white/5 p-2.5 rounded-xl flex items-center gap-3 group hover:bg-[#00FF41]/5 transition-all duration-300 ${hasPaymentData ? 'flex-col lg:flex-row' : ''}`}>
+                  <div className="w-10 h-7 bg-black border border-white/10 rounded-lg flex items-center justify-center overflow-hidden shrink-0 group-hover:border-[#00FF41]/20 transition-colors">
                     {card.slot}
                   </div>
                   <div className="flex flex-col min-w-0">
-                    <span className="text-[8px] font-black text-gray-500 uppercase tracking-widest italic group-hover:text-[#00FF41]/60">{card.label}</span>
+                    <span className={`font-black text-gray-500 uppercase tracking-widest italic group-hover:text-[#00FF41]/60 transition-all ${hasPaymentData ? 'text-[7px]' : 'text-[8px]'}`}>{card.label}</span>
                   </div>
                 </div>
               ))}
@@ -180,22 +182,27 @@ function WmsAccessTerminalVisualShell({
           </div>
 
           {/* RIGHT COLUMN: Transactional */}
-          <div className="bg-[#050505]/80 p-6 lg:p-12 flex flex-col border-t lg:border-t-0 lg:border-l border-white/10 relative overflow-hidden">
+          <div className="bg-[#050505]/90 p-6 lg:p-10 flex flex-col border-t lg:border-t-0 lg:border-l border-white/10 relative overflow-hidden">
             
             {/* Payment Header */}
-            <div className="relative z-10 mb-8 lg:mb-10">
+            <div className={`relative z-10 transition-all duration-500 ${hasPaymentData ? 'mb-6 lg:mb-8' : 'mb-8 lg:mb-10'}`}>
               {hasPaymentData ? (
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-[#00FF41] shadow-[0_0_10px_#00FF41]"></div>
-                      <h2 className="text-xs font-black text-[#00FF41] tracking-[0.3em] uppercase italic">PIX GERADO</h2>
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center justify-between bg-[#00FF41]/5 border border-[#00FF41]/10 px-4 py-3 rounded-2xl backdrop-blur-sm">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-2 h-2 rounded-full bg-[#00FF41] shadow-[0_0_10px_#00FF41] animate-pulse"></div>
+                      <h2 className="text-[10px] lg:text-xs font-black text-[#00FF41] tracking-[0.2em] uppercase italic">PIX GERADO</h2>
                     </div>
                     <PriceDisplay integer={integerPart} decimal={decimalPart} label="TOTAL" size="small" />
                   </div>
-                  <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest leading-relaxed">
-                    Escaneie o QR ou copie o código. O acesso será liberado <span className="text-white">imediatamente</span>.
-                  </p>
+                  <div className="flex flex-col gap-1 pl-1">
+                    <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed">
+                      Escaneie o QR ou copie o código. 
+                    </p>
+                    <p className="text-[9px] text-[#00FF41]/60 font-bold uppercase tracking-widest leading-relaxed italic">
+                      O acesso será liberado após a confirmação.
+                    </p>
+                  </div>
                 </div>
               ) : (
                 <div className="flex flex-col gap-6">
@@ -210,9 +217,9 @@ function WmsAccessTerminalVisualShell({
 
             {/* Checkout Area */}
             <div className={`flex-1 relative z-10 flex flex-col wms-access-pix-panel ${hasPaymentData ? 'payment-focus' : ''}`}>
-               <div className={`bg-white/[0.03] border border-white/10 rounded-3xl overflow-hidden transition-all duration-500 ${hasPaymentData ? 'p-0 bg-transparent border-none' : 'p-6 lg:p-8'}`}>
+               <div className={`bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden transition-all duration-500 ${hasPaymentData ? 'p-0 bg-transparent border-none' : 'p-6 lg:p-8'}`}>
                   {hasPaymentData ? (
-                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    <div className="animate-in fade-in slide-in-from-bottom-3 duration-700">
                        {pixSlot}
                     </div>
                   ) : (
@@ -224,19 +231,19 @@ function WmsAccessTerminalVisualShell({
             </div>
 
             {/* Trust Section */}
-            <footer className="mt-10 pt-8 border-t border-white/5 flex items-center justify-between relative z-10">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 border border-white/10 bg-white/[0.03] rounded-2xl flex items-center justify-center p-2.5 shadow-xl">
+            <footer className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between relative z-10">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 border border-white/10 bg-white/[0.02] rounded-xl flex items-center justify-center p-2 shadow-lg">
                   {trustBadgeSlot}
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-white text-[10px] font-black tracking-widest uppercase italic">PAGAMENTO SEGURO</span>
-                  <p className="text-[#00FF41]/60 text-[9px] font-bold uppercase tracking-widest italic">TERMINAL PROTEGIDO</p>
+                  <span className="text-white text-[9px] font-black tracking-widest uppercase italic">PAGAMENTO SEGURO</span>
+                  <p className="text-[#00FF41]/50 text-[8px] font-bold uppercase tracking-widest italic">TERMINAL PROTEGIDO</p>
                 </div>
               </div>
-              <div className="hidden lg:flex flex-col items-end opacity-20">
-                <span className="text-[8px] font-mono">WMS_ACCESS_v1.0.4</span>
-                <span className="text-[8px] font-mono text-[#00FF41]">SECURE_CONNECTION</span>
+              <div className="hidden sm:flex flex-col items-end opacity-20">
+                <span className="text-[7px] font-mono tracking-tighter">WMS_ACCESS_v1.0.8</span>
+                <span className="text-[7px] font-mono text-[#00FF41] tracking-tighter uppercase">SECURE_LINK_ENCRYPTED</span>
               </div>
             </footer>
             
@@ -253,27 +260,27 @@ function WmsAccessTerminalVisualShell({
         }
 
         @keyframes scan-line-burst {
-          0% { transform: translateY(-100%); opacity: 0; }
+          0% { transform: translateY(-150%); opacity: 0; }
           50% { opacity: 1; }
-          100% { transform: translateY(100%); opacity: 0; }
+          100% { transform: translateY(150%); opacity: 0; }
         }
-        .animate-scan-line-burst { animation: scan-line-burst 0.5s linear infinite; }
+        .animate-scan-line-burst { animation: scan-line-burst 0.8s ease-in-out infinite; }
 
         .glitch-active {
-          animation: glitch-skew 0.3s cubic-bezier(.25,.46,.45,.94) both infinite;
+          animation: glitch-skew 0.25s cubic-bezier(.25,.46,.45,.94) both infinite;
         }
         @keyframes glitch-skew {
           0% { transform: skew(0deg); }
-          20% { transform: skew(2deg); }
-          40% { transform: skew(-1deg); }
-          60% { transform: skew(1deg); }
-          80% { transform: skew(-2deg); }
+          20% { transform: skew(3deg); filter: hue-rotate(90deg); }
+          40% { transform: skew(-2deg); }
+          60% { transform: skew(1deg); filter: hue-rotate(-90deg); }
+          80% { transform: skew(-3deg); }
           100% { transform: skew(0deg); }
         }
 
         .sm-scanlines {
-           background: linear-gradient(rgba(255,255,255,0) 50%, rgba(255,255,255,0.02) 50%);
-           background-size: 100% 4px;
+           background: linear-gradient(rgba(255,255,255,0) 50%, rgba(255,255,255,0.015) 50%);
+           background-size: 100% 3px;
         }
 
         /* SCOPED PIX PANEL OVERRIDES */
@@ -281,78 +288,134 @@ function WmsAccessTerminalVisualShell({
           width: 100%;
         }
 
-        /* Remove small copy button next to field */
-        .wms-access-pix-panel div.flex.items-center.justify-between.px-1 button {
-          display: none !important;
-        }
-
-        /* Hide specific elements to focus mode */
-        .payment-focus h3, .payment-focus .text-center.mb-8 p {
-          display: none !important;
-        }
-
-        /* Large Action Button Style */
-        .wms-access-pix-panel button {
-          height: 3.5rem !important;
-          font-size: 0.85rem !important;
-          border-radius: 18px !important;
+        /* Status Badge Overrides */
+        .wms-access-pix-panel h3 {
+          display: inline-flex !important;
+          background: rgba(0, 255, 65, 0.1) !important;
+          border: 1px solid rgba(0, 255, 65, 0.2) !important;
+          color: var(--wms-neon) !important;
+          padding: 6px 12px !important;
+          border-radius: 8px !important;
+          font-size: 10px !important;
           font-weight: 900 !important;
+          text-transform: uppercase !important;
           letter-spacing: 0.15em !important;
+          margin-bottom: 1.5rem !important;
+          font-style: italic !important;
+        }
+        
+        /* Replace text content of h3 if it says something wrong */
+        .wms-access-pix-panel h3::after {
+          content: "AGUARDANDO PAGAMENTO" !important;
+          display: block !important;
+        }
+        .wms-access-pix-panel h3 {
+          font-size: 0 !important; /* Hide original text */
+        }
+
+        /* Remove subtext that might be redundant */
+        .wms-access-pix-panel .text-center.mb-8 p {
+          display: none !important;
+        }
+
+        /* Copy Field Block Refinement */
+        .wms-access-pix-panel div[class*="bg-white/"][class*="p-4"].rounded-xl {
+          padding: 0.75rem !important;
+          background: rgba(255, 255, 255, 0.02) !important;
+          border-radius: 12px !important;
+          margin-bottom: 1rem !important;
+        }
+
+        .wms-access-pix-panel .font-mono.text-xs {
+          font-size: 10px !important;
+          line-height: 1.4 !important;
+          color: #aaa !important;
+          max-height: 60px !important;
+          overflow-y: auto !important;
+          scrollbar-width: none !important;
+        }
+        .wms-access-pix-panel .font-mono.text-xs::-webkit-scrollbar { display: none; }
+
+        /* Remove small copy button next to field */
+        .wms-access-pix-panel div[class*="justify-between"] button {
+          display: none !important;
+        }
+
+        /* Main Copy Button Style */
+        .wms-access-pix-panel button.w-full.py-4 {
+          height: 3.25rem !important;
+          font-size: 0.8rem !important;
+          border-radius: 14px !important;
+          font-weight: 900 !important;
+          letter-spacing: 0.1em !important;
           text-transform: uppercase !important;
           background: var(--wms-neon) !important;
           color: black !important;
           border: none !important;
-          box-shadow: 0 0 30px rgba(0, 255, 65, 0.2) !important;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+          box-shadow: 0 4px 20px rgba(0, 255, 65, 0.15) !important;
+          transition: all 0.2s ease !important;
           font-style: italic !important;
           margin-top: 0.5rem !important;
         }
 
-        .wms-access-pix-panel button:hover {
-          transform: translateY(-2px) !important;
-          box-shadow: 0 0 40px rgba(0, 255, 65, 0.3) !important;
-          filter: brightness(1.1);
+        .wms-access-pix-panel button.w-full.py-4:hover {
+          transform: translateY(-1px) !important;
+          box-shadow: 0 6px 25px rgba(0, 255, 65, 0.25) !important;
+          filter: brightness(1.05);
         }
 
         /* Secondary Actions Style */
+        .wms-access-pix-panel .flex.flex-col.gap-2.mt-6,
+        .wms-access-pix-panel .flex.flex-wrap.justify-center.gap-4.mt-8 {
+          margin-top: 1.5rem !important;
+          gap: 0.75rem !important;
+        }
+
         .wms-access-pix-panel a, 
-        .wms-access-pix-panel button.text-\[9px\] {
+        .wms-access-pix-panel button[class*="text-[9px]"] {
           background: rgba(255,255,255,0.03) !important;
-          border: 1px border rgba(255,255,255,0.05) !important;
-          color: #888 !important;
-          padding: 10px 16px !important;
-          border-radius: 12px !important;
+          border: 1px solid rgba(255,255,255,0.08) !important;
+          color: #777 !important;
+          padding: 8px 14px !important;
+          border-radius: 10px !important;
           height: auto !important;
-          font-size: 8px !important;
-          letter-spacing: 0.2em !important;
+          font-size: 9px !important;
+          font-weight: 700 !important;
+          letter-spacing: 0.05em !important;
           box-shadow: none !important;
+          transition: all 0.2s ease !important;
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          text-decoration: none !important;
         }
 
         .wms-access-pix-panel a:hover, 
         .wms-access-pix-panel button.text-\[9px\]:hover {
           color: white !important;
           background: rgba(255,255,255,0.08) !important;
-          transform: none !important;
+          border-color: rgba(255,255,255,0.15) !important;
         }
 
         /* QR Code Card Refinement */
         .wms-access-pix-panel .bg-white.p-4 {
-          padding: 1rem !important;
-          border-radius: 20px !important;
-          box-shadow: 0 0 40px rgba(0,0,0,0.5) !important;
-          border: 1px solid rgba(255,255,255,0.1) !important;
-          width: 220px !important;
-          height: 220px !important;
+          padding: 0.75rem !important;
+          border-radius: 16px !important;
+          box-shadow: 0 10px 40px rgba(0,0,0,0.6) !important;
+          border: 4px solid #111 !important;
+          width: 200px !important;
+          height: 200px !important;
+          margin-bottom: 0.5rem !important;
         }
 
         @media (max-width: 1024px) {
-          .wms-access-pix-panel button {
-            height: 3.25rem !important;
-            font-size: 0.75rem !important;
-          }
           .wms-access-pix-panel .bg-white.p-4 {
-            width: 180px !important;
-            height: 180px !important;
+            width: 170px !important;
+            height: 170px !important;
+          }
+          .wms-access-pix-panel button.w-full.py-4 {
+            height: 3rem !important;
+            font-size: 0.75rem !important;
           }
         }
       `}</style>
