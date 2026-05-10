@@ -112,67 +112,69 @@ function WmsAccessTerminalVisualShell({
         <div className="absolute inset-0 grayscale opacity-10">{heroBackgroundSlot}</div>
       </div>
 
-      <div className="relative z-10 flex flex-col items-center justify-start min-h-[100dvh] py-0 lg:py-10 px-0 lg:px-6">
+      <div className="relative z-10 flex flex-col items-center justify-start min-h-[100dvh] py-0 lg:py-6 px-0 lg:px-4">
         
         {/* Main Container */}
-        <div className="w-full max-w-[1150px] bg-[#0A0A0A]/80 backdrop-blur-3xl lg:rounded-[40px] border border-white/5 shadow-[0_0_80px_rgba(0,0,0,1)] flex flex-col lg:grid lg:grid-cols-[1.15fr_0.85fr] overflow-hidden min-h-screen lg:min-h-0">
+        <div className="w-full max-w-[1100px] bg-[#0A0A0A]/90 backdrop-blur-3xl lg:rounded-[32px] border border-white/5 shadow-[0_0_100px_rgba(0,0,0,1)] flex flex-col lg:grid lg:grid-cols-[1.1fr_0.9fr] overflow-hidden min-h-screen lg:min-h-0">
           
           {/* LEFT COLUMN: Authority & Visual */}
-          <div className={`p-6 lg:p-12 flex flex-col ${hasPaymentData ? 'hidden lg:flex' : 'flex'}`}>
+          <div className={`p-6 lg:p-10 flex flex-col transition-all duration-500 ${hasPaymentData ? 'lg:py-8' : 'lg:py-10'}`}>
             
             {/* Header */}
-            <header className="mb-8 lg:mb-12 relative">
-              <div className="flex items-center gap-5 lg:gap-7 mb-6">
-                <div className="w-14 h-14 lg:w-20 lg:h-20 relative flex items-center justify-center border border-[#00FF41]/20 rounded-2xl p-1 bg-black/80 shadow-[0_0_30px_rgba(0,255,65,0.1)] group overflow-hidden">
+            <header className={`relative transition-all duration-500 ${hasPaymentData ? 'mb-6 lg:mb-8' : 'mb-8 lg:mb-10'}`}>
+              <div className="flex items-center gap-4 lg:gap-6 mb-4 lg:mb-6">
+                <div className={`relative flex items-center justify-center border border-[#00FF41]/20 rounded-xl p-1 bg-black/80 shadow-[0_0_30px_rgba(0,255,65,0.1)] group overflow-hidden transition-all duration-500 ${hasPaymentData ? 'w-12 h-12 lg:w-14 lg:h-14' : 'w-14 h-14 lg:w-18 lg:h-18'}`}>
                   <div className="absolute inset-0 bg-gradient-to-br from-[#00FF41]/10 to-transparent"></div>
-                  <div className="w-full h-full rounded-xl border border-dashed border-[#00FF41]/30 flex items-center justify-center overflow-hidden">
+                  <div className="w-full h-full rounded-lg border border-dashed border-[#00FF41]/20 flex items-center justify-center overflow-hidden">
                     {logoIconSlot}
                   </div>
                 </div>
                 
                 <div className="flex-1">
-                  <GlitchTitle text="WEB MONEY SOCIETY" className="text-2xl lg:text-4xl font-black tracking-tighter text-white uppercase italic leading-none block mb-2" />
-                  <div className="flex items-center gap-3">
-                    <span className="px-2 py-0.5 bg-[#00FF41]/5 border border-[#00FF41]/20 text-[9px] font-black text-[#00FF41]/80 tracking-[0.2em] rounded uppercase italic">
-                      ESTADO PRIVADO
+                  <GlitchTitle text="WEB MONEY SOCIETY" className={`font-black tracking-tighter text-white uppercase italic leading-none block mb-1.5 transition-all duration-500 ${hasPaymentData ? 'text-xl lg:text-2xl' : 'text-2xl lg:text-3xl'}`} />
+                  <div className="flex items-center gap-2.5">
+                    <span className="px-1.5 py-0.5 bg-[#00FF41]/5 border border-[#00FF41]/10 text-[8px] font-black text-[#00FF41]/70 tracking-[0.2em] rounded uppercase italic">
+                      {hasPaymentData ? 'TERMINAL_SECURE' : 'ESTADO PRIVADO'}
                     </span>
-                    <div className="h-[1px] w-8 bg-[#00FF41]/20"></div>
+                    <div className="h-[1px] w-6 bg-[#00FF41]/10"></div>
                   </div>
                 </div>
               </div>
               
-              <div className="relative pl-6 border-l-2 border-[#00FF41]/40">
-                <p className="text-gray-400 text-xs lg:text-[13px] font-medium leading-relaxed italic max-w-lg">
-                  Acesso exclusivo ao terminal de operações WMS. Execute sua visão com método e tecnologia de ponta.
-                </p>
-              </div>
+              {!hasPaymentData && (
+                <div className="relative pl-5 border-l-2 border-[#00FF41]/30">
+                  <p className="text-gray-400 text-xs lg:text-[13px] font-medium leading-relaxed italic max-w-md">
+                    Acesso exclusivo ao terminal de operações WMS. Execute sua visão com método e tecnologia de ponta.
+                  </p>
+                </div>
+              )}
             </header>
 
             {/* Main Media Showcase */}
-            <div className="relative aspect-[16/10] w-full bg-black rounded-2xl lg:rounded-3xl border border-white/5 overflow-hidden mb-8 lg:mb-10 shadow-2xl group">
-              <div className="absolute inset-0 z-10 bg-gradient-to-t from-black via-transparent to-black/40"></div>
-              <div className="absolute inset-0 flex items-center justify-center">
+            <div className={`relative w-full bg-black rounded-2xl border border-white/5 overflow-hidden shadow-2xl group transition-all duration-500 ${hasPaymentData ? 'aspect-video lg:max-w-md mx-auto mb-6 lg:mb-8' : 'aspect-[16/10] mb-8 lg:mb-10'}`}>
+              <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 via-transparent to-black/20"></div>
+              <div className="absolute inset-0 flex items-center justify-center scale-105 group-hover:scale-100 transition-transform duration-700">
                 {mainMediaSlot}
               </div>
-              <div className="absolute top-4 right-4 bg-black/80 backdrop-blur-xl border border-[#00FF41]/30 px-3 py-1.5 rounded-lg z-20 flex items-center gap-2">
-                 <div className="w-1.5 h-1.5 rounded-full bg-[#00FF41] animate-pulse"></div>
-                 <span className="text-[9px] text-[#00FF41] font-black uppercase tracking-widest italic">CONTEÚDO PRIVADO</span>
+              <div className="absolute top-3 right-3 bg-black/80 backdrop-blur-xl border border-[#00FF41]/20 px-2.5 py-1 rounded-md z-20 flex items-center gap-1.5">
+                 <div className="w-1 h-1 rounded-full bg-[#00FF41] animate-pulse"></div>
+                 <span className="text-[8px] text-[#00FF41] font-black uppercase tracking-widest italic">CONTEÚDO PROTEGIDO</span>
               </div>
             </div>
 
             {/* Proof Section */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-auto">
+            <div className={`grid gap-3 transition-all duration-500 ${hasPaymentData ? 'grid-cols-3 max-w-md mx-auto' : 'grid-cols-1 md:grid-cols-3 mt-auto'}`}>
               {[
                 { label: 'OPERAÇÃO', slot: proofMedia1Slot },
                 { label: 'REDE', slot: proofMedia2Slot },
                 { label: 'RESULTADO', slot: proofMedia3Slot }
               ].map((card, idx) => (
-                <div key={idx} className="bg-white/[0.03] border border-white/5 p-3 rounded-2xl flex items-center gap-4 group hover:bg-[#00FF41]/5 transition-all duration-300">
-                  <div className="w-12 h-9 bg-black border border-white/10 rounded-lg flex items-center justify-center overflow-hidden shrink-0 group-hover:border-[#00FF41]/30 transition-colors">
+                <div key={idx} className={`bg-white/[0.02] border border-white/5 p-2.5 rounded-xl flex items-center gap-3 group hover:bg-[#00FF41]/5 transition-all duration-300 ${hasPaymentData ? 'flex-col lg:flex-row' : ''}`}>
+                  <div className="w-10 h-7 bg-black border border-white/10 rounded-lg flex items-center justify-center overflow-hidden shrink-0 group-hover:border-[#00FF41]/20 transition-colors">
                     {card.slot}
                   </div>
                   <div className="flex flex-col min-w-0">
-                    <span className="text-[8px] font-black text-gray-500 uppercase tracking-widest italic group-hover:text-[#00FF41]/60">{card.label}</span>
+                    <span className={`font-black text-gray-500 uppercase tracking-widest italic group-hover:text-[#00FF41]/60 transition-all ${hasPaymentData ? 'text-[7px]' : 'text-[8px]'}`}>{card.label}</span>
                   </div>
                 </div>
               ))}
@@ -180,22 +182,27 @@ function WmsAccessTerminalVisualShell({
           </div>
 
           {/* RIGHT COLUMN: Transactional */}
-          <div className="bg-[#050505]/80 p-6 lg:p-12 flex flex-col border-t lg:border-t-0 lg:border-l border-white/10 relative overflow-hidden">
+          <div className="bg-[#050505]/90 p-6 lg:p-10 flex flex-col border-t lg:border-t-0 lg:border-l border-white/10 relative overflow-hidden">
             
             {/* Payment Header */}
-            <div className="relative z-10 mb-8 lg:mb-10">
+            <div className={`relative z-10 transition-all duration-500 ${hasPaymentData ? 'mb-6 lg:mb-8' : 'mb-8 lg:mb-10'}`}>
               {hasPaymentData ? (
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-[#00FF41] shadow-[0_0_10px_#00FF41]"></div>
-                      <h2 className="text-xs font-black text-[#00FF41] tracking-[0.3em] uppercase italic">PIX GERADO</h2>
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center justify-between bg-[#00FF41]/5 border border-[#00FF41]/10 px-4 py-3 rounded-2xl backdrop-blur-sm">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-2 h-2 rounded-full bg-[#00FF41] shadow-[0_0_10px_#00FF41] animate-pulse"></div>
+                      <h2 className="text-[10px] lg:text-xs font-black text-[#00FF41] tracking-[0.2em] uppercase italic">PIX GERADO</h2>
                     </div>
                     <PriceDisplay integer={integerPart} decimal={decimalPart} label="TOTAL" size="small" />
                   </div>
-                  <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest leading-relaxed">
-                    Escaneie o QR ou copie o código. O acesso será liberado <span className="text-white">imediatamente</span>.
-                  </p>
+                  <div className="flex flex-col gap-1 pl-1">
+                    <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed">
+                      Escaneie o QR ou copie o código. 
+                    </p>
+                    <p className="text-[9px] text-[#00FF41]/60 font-bold uppercase tracking-widest leading-relaxed italic">
+                      O acesso será liberado após a confirmação.
+                    </p>
+                  </div>
                 </div>
               ) : (
                 <div className="flex flex-col gap-6">
@@ -210,9 +217,9 @@ function WmsAccessTerminalVisualShell({
 
             {/* Checkout Area */}
             <div className={`flex-1 relative z-10 flex flex-col wms-access-pix-panel ${hasPaymentData ? 'payment-focus' : ''}`}>
-               <div className={`bg-white/[0.03] border border-white/10 rounded-3xl overflow-hidden transition-all duration-500 ${hasPaymentData ? 'p-0 bg-transparent border-none' : 'p-6 lg:p-8'}`}>
+               <div className={`bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden transition-all duration-500 ${hasPaymentData ? 'p-0 bg-transparent border-none' : 'p-6 lg:p-8'}`}>
                   {hasPaymentData ? (
-                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    <div className="animate-in fade-in slide-in-from-bottom-3 duration-700">
                        {pixSlot}
                     </div>
                   ) : (
@@ -224,19 +231,19 @@ function WmsAccessTerminalVisualShell({
             </div>
 
             {/* Trust Section */}
-            <footer className="mt-10 pt-8 border-t border-white/5 flex items-center justify-between relative z-10">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 border border-white/10 bg-white/[0.03] rounded-2xl flex items-center justify-center p-2.5 shadow-xl">
+            <footer className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between relative z-10">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 border border-white/10 bg-white/[0.02] rounded-xl flex items-center justify-center p-2 shadow-lg">
                   {trustBadgeSlot}
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-white text-[10px] font-black tracking-widest uppercase italic">PAGAMENTO SEGURO</span>
-                  <p className="text-[#00FF41]/60 text-[9px] font-bold uppercase tracking-widest italic">TERMINAL PROTEGIDO</p>
+                  <span className="text-white text-[9px] font-black tracking-widest uppercase italic">PAGAMENTO SEGURO</span>
+                  <p className="text-[#00FF41]/50 text-[8px] font-bold uppercase tracking-widest italic">TERMINAL PROTEGIDO</p>
                 </div>
               </div>
-              <div className="hidden lg:flex flex-col items-end opacity-20">
-                <span className="text-[8px] font-mono">WMS_ACCESS_v1.0.4</span>
-                <span className="text-[8px] font-mono text-[#00FF41]">SECURE_CONNECTION</span>
+              <div className="hidden sm:flex flex-col items-end opacity-20">
+                <span className="text-[7px] font-mono tracking-tighter">WMS_ACCESS_v1.0.8</span>
+                <span className="text-[7px] font-mono text-[#00FF41] tracking-tighter uppercase">SECURE_LINK_ENCRYPTED</span>
               </div>
             </footer>
             
