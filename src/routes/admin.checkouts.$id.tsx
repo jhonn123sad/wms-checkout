@@ -514,6 +514,7 @@ function CheckoutEditPage() {
                   <SelectItem value="visagismo_v1">Visagismo IA</SelectItem>
                   <SelectItem value="reservado_v1">Acesso Reservado</SelectItem>
                   <SelectItem value="wms_liquid_v1">WMS Liquid Glass (Clean/Premium)</SelectItem>
+                  <SelectItem value="wms_access_terminal_v1">WMS Access Terminal (Premium Dark)</SelectItem>
                 </SelectContent>
               </Select>
             </div>

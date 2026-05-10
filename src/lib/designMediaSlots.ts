@@ -119,6 +119,64 @@ export const DESIGN_MEDIA_SLOTS: Record<string, DesignMediaSlot[]> = {
       section_type: "media_slot",
       accepted: ["image", "gif", "external"]
     }
+  ],
+  wms_access_terminal_v1: [
+    {
+      slot_key: "logo_icon",
+      label: "Logo / Ícone WMS",
+      description: "Logo PNG transparente ou emblema principal da Web Money Society. Proporção sugerida 1:1.",
+      section_type: "media_slot",
+      accepted: ["image", "gif", "external"]
+    },
+    {
+      slot_key: "main_media",
+      label: "Mídia Principal",
+      description: "Imagem, vídeo, thumbnail, mockup, print ou arte principal do checkout. Deve funcionar como mídia dominante. Proporção sugerida 16:9.",
+      section_type: "media_slot",
+      accepted: ["image", "gif", "video", "youtube", "vimeo", "drive", "external"]
+    },
+    {
+      slot_key: "hero_background",
+      label: "Fundo / Textura do Hero",
+      description: "Imagem ou textura opcional para fundo visual. Deve ter fallback quando vazio. Proporção sugerida 1920x1080.",
+      section_type: "media_slot",
+      accepted: ["image", "gif", "external"]
+    },
+    {
+      slot_key: "proof_media_1",
+      label: "Prova Visual 1",
+      description: "Print, prova, mini mídia ou benefício visual. Proporção sugerida 1:1 ou 4:3.",
+      section_type: "media_slot",
+      accepted: ["image", "gif", "external"]
+    },
+    {
+      slot_key: "proof_media_2",
+      label: "Prova Visual 2",
+      description: "Segunda prova, print, mini mídia ou benefício visual. Proporção sugerida 1:1 ou 4:3.",
+      section_type: "media_slot",
+      accepted: ["image", "gif", "external"]
+    },
+    {
+      slot_key: "proof_media_3",
+      label: "Prova Visual 3",
+      description: "Terceira prova, print, mini mídia ou benefício visual. Proporção sugerida 1:1 ou 4:3.",
+      section_type: "media_slot",
+      accepted: ["image", "gif", "external"]
+    },
+    {
+      slot_key: "trust_badge",
+      label: "Selo de Confiança",
+      description: "Selo, garantia, segurança, liberação imediata ou badge visual. Proporção sugerida 1:1, PNG transparente.",
+      section_type: "media_slot",
+      accepted: ["image", "gif", "external"]
+    },
+    {
+      slot_key: "side_visual",
+      label: "Visual Secundário",
+      description: "Mockup, avatar, print, imagem lateral ou detalhe visual de apoio. Proporção sugerida 1:1 ou 4:5.",
+      section_type: "media_slot",
+      accepted: ["image", "gif", "video", "external"]
+    }
   ]
 };
 
