@@ -7,32 +7,74 @@ import React from "react";
 
 /**
  * GlitchTitle
- * Componente interno para aplicar o efeito de glitch no título de forma controlada.
+ * Efeito de glitch premium com camadas e burst controlado.
  */
-function GlitchTitle({ text }: { text: string }) {
+function GlitchTitle({ text, className = "" }: { text: string; className?: string }) {
   const [isGlitching, setIsGlitching] = React.useState(false);
 
   React.useEffect(() => {
-    // Ciclo de glitch: 80-90% normal, 10-20% glitch bursts
-    const interval = setInterval(() => {
-      setIsGlitching(true);
-      setTimeout(() => setIsGlitching(false), 800); // burst curto de 800ms
-    }, 5000 + Math.random() * 2000); // Ciclo entre 5s e 7s
-    return () => clearInterval(interval);
+    const cycle = () => {
+      const burstDuration = 350 + Math.random() * 300;
+      const waitDuration = 4000 + Math.random() * 3000;
+      
+      setTimeout(() => {
+        setIsGlitching(true);
+        setTimeout(() => {
+          setIsGlitching(false);
+          cycle();
+        }, burstDuration);
+      }, waitDuration);
+    };
+    
+    cycle();
   }, []);
 
   return (
-    <div className={`relative inline-block ${isGlitching ? "animate-glitch-premium" : ""}`}>
-      {text}
+    <div className={`relative inline-block ${className} ${isGlitching ? "glitch-active" : ""}`} data-text={text}>
+      <span className="relative z-10">{text}</span>
+      {isGlitching && (
+        <>
+          <span className="absolute inset-0 z-0 text-[#00FF41] opacity-70 translate-x-[2px] -translate-y-[1px] mix-blend-screen overflow-hidden whitespace-nowrap">
+            {text}
+          </span>
+          <span className="absolute inset-0 z-0 text-[#00e5ff] opacity-70 -translate-x-[2px] translate-y-[1px] mix-blend-screen overflow-hidden whitespace-nowrap">
+            {text}
+          </span>
+          <div className="absolute inset-0 z-20 bg-gradient-to-r from-transparent via-[#00FF41]/20 to-transparent w-full h-[1px] top-1/2 animate-scan-line-burst pointer-events-none"></div>
+        </>
+      )}
+    </div>
+  );
+}
+
+/**
+ * PriceDisplay
+ * Renderiza o preço de forma refinada.
+ */
+function PriceDisplay({ integer, decimal, label = "VALOR DO ACESSO", size = "large" }: any) {
+  if (size === "small") {
+    return (
+      <div className="flex items-center gap-2 bg-[#00FF41]/10 border border-[#00FF41]/20 px-3 py-1 rounded-full backdrop-blur-sm">
+        <span className="text-[8px] text-[#00FF41]/60 font-black uppercase tracking-widest">{label}:</span>
+        <span className="text-xs font-black text-white italic">R$ {integer},{decimal}</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col">
+      <span className="text-gray-500 text-[9px] font-black tracking-[0.2em] uppercase italic mb-1">{label}</span>
+      <div className="flex items-baseline">
+        <span className="text-white text-[10px] lg:text-xs font-black mr-1 opacity-60">R$</span>
+        <span className="text-4xl lg:text-5xl font-black text-white italic tracking-tighter leading-none">{integer}</span>
+        <span className="text-xl lg:text-2xl font-black text-[#00FF41] italic opacity-90 leading-none">,{decimal}</span>
+      </div>
     </div>
   );
 }
 
 /**
  * WmsAccessTerminalVisualShell
- * 
- * Camada visual inspirada no terminal privado WMS.
- * Estética: Dark, Green Neon, Glitch, Glassmorphism.
  */
 function WmsAccessTerminalVisualShell({
   checkout,
@@ -56,176 +98,177 @@ function WmsAccessTerminalVisualShell({
   const [integerPart, decimalPart] = formattedPrice.replace("R$", "").trim().split(",");
 
   return (
-    <div className="min-h-[100dvh] bg-[#020202] text-[#E0E0E0] font-sans selection:bg-[#00FF41]/30 relative overflow-x-hidden">
-      {/* GLOBAL HUD OVERLAYS */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-[0.06]">
+    <div className="min-h-[100dvh] bg-[#020202] text-[#E0E0E0] font-sans selection:bg-[#00FF41]/30 relative overflow-x-hidden wms-access-terminal">
+      {/* HUD OVERLAYS */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-[0.04]">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.04),rgba(0,255,0,0.01),rgba(0,0,255,0.04))] bg-[length:100%_2px,3px_100%]"></div>
-        <div className="absolute inset-0 scanline animate-scanline"></div>
+        <div className="absolute inset-0 bg-[#00FF41]/5 animate-pulse"></div>
       </div>
 
-      {/* HERO_BACKGROUND_SLOT */}
-      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none opacity-20">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,255,65,0.05)_0%,transparent_70%,black_100%)]"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] bg-gradient-to-br from-[#00FF41]/3 to-cyan-500/3 blur-[180px] animate-pulse"></div>
-        <div className="absolute inset-0 opacity-[0.05] bg-[linear-gradient(rgba(0,255,65,.5)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,65,.5)_1px,transparent_1px)] bg-[length:40px_40px]"></div>
-        <div className="absolute inset-0">{heroBackgroundSlot}</div>
+      {/* BACKGROUND SCENE */}
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(0,255,65,0.04)_0%,transparent_70%,black_100%)]"></div>
+        <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(rgba(0,255,65,.5)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,65,.5)_1px,transparent_1px)] bg-[length:60px_60px]"></div>
+        <div className="absolute inset-0 grayscale opacity-10">{heroBackgroundSlot}</div>
       </div>
 
-      {/* Main Content Wrapper */}
-      <div className="relative z-10 flex flex-col items-center justify-start min-h-[100dvh] py-0 lg:py-8 px-0 lg:px-6">
+      <div className="relative z-10 flex flex-col items-center justify-start min-h-[100dvh] py-0 lg:py-10 px-0 lg:px-6">
         
-        {/* Container Principal */}
-        <div className="w-full max-w-[1200px] bg-[#0A0A0A]/70 backdrop-blur-3xl lg:rounded-[32px] border border-white/5 shadow-[0_0_100px_rgba(0,0,0,0.9)] flex flex-col lg:grid lg:grid-cols-[1.1fr_0.9fr] overflow-hidden min-h-screen lg:min-h-0">
+        {/* Main Container */}
+        <div className="w-full max-w-[1150px] bg-[#0A0A0A]/80 backdrop-blur-3xl lg:rounded-[40px] border border-white/5 shadow-[0_0_80px_rgba(0,0,0,1)] flex flex-col lg:grid lg:grid-cols-[1.15fr_0.85fr] overflow-hidden min-h-screen lg:min-h-0">
           
-          {/* Desktop Left Column / Mobile Header & Media Section */}
-          <div className={`p-5 lg:p-10 flex flex-col ${hasPaymentData ? 'hidden lg:flex' : 'flex'}`}>
+          {/* LEFT COLUMN: Authority & Visual */}
+          <div className={`p-6 lg:p-12 flex flex-col ${hasPaymentData ? 'hidden lg:flex' : 'flex'}`}>
             
-            {/* Header Area */}
-            <header className="mb-6 lg:mb-8 relative z-10">
-              <div className="flex items-center gap-4 lg:gap-6 mb-4 lg:mb-6">
-                {/* LOGO_ICON_SLOT */}
-                <div className="w-12 h-12 lg:w-16 lg:h-16 relative flex items-center justify-center border border-[#00FF41]/20 rounded-full p-1 bg-black/80 shadow-[0_0_20px_rgba(0,255,65,0.1)] group shrink-0">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#00FF41]/10 to-cyan-500/10 opacity-40 rounded-full"></div>
-                  <div className="w-full h-full rounded-full border border-dashed border-[#00FF41]/20 flex items-center justify-center overflow-hidden">
+            {/* Header */}
+            <header className="mb-8 lg:mb-12 relative">
+              <div className="flex items-center gap-5 lg:gap-7 mb-6">
+                <div className="w-14 h-14 lg:w-20 lg:h-20 relative flex items-center justify-center border border-[#00FF41]/20 rounded-2xl p-1 bg-black/80 shadow-[0_0_30px_rgba(0,255,65,0.1)] group overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#00FF41]/10 to-transparent"></div>
+                  <div className="w-full h-full rounded-xl border border-dashed border-[#00FF41]/30 flex items-center justify-center overflow-hidden">
                     {logoIconSlot}
                   </div>
                 </div>
                 
-                <div className="flex-1 min-w-0">
-                  <div className="text-xl lg:text-3xl font-black tracking-tighter text-white uppercase italic mb-1 lg:mb-2 break-words leading-tight lg:leading-none">
-                    <GlitchTitle text="WEB MONEY SOCIETY" />
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <span className="px-1.5 py-0.5 bg-[#00FF41]/5 border border-[#00FF41]/20 text-[8px] lg:text-[9px] font-black text-[#00FF41]/70 tracking-[0.1em] rounded-sm uppercase italic">
-                      ACESSO PRIVADO
+                <div className="flex-1">
+                  <GlitchTitle text="WEB MONEY SOCIETY" className="text-2xl lg:text-4xl font-black tracking-tighter text-white uppercase italic leading-none block mb-2" />
+                  <div className="flex items-center gap-3">
+                    <span className="px-2 py-0.5 bg-[#00FF41]/5 border border-[#00FF41]/20 text-[9px] font-black text-[#00FF41]/80 tracking-[0.2em] rounded uppercase italic">
+                      ESTADO PRIVADO
                     </span>
+                    <div className="h-[1px] w-8 bg-[#00FF41]/20"></div>
                   </div>
                 </div>
               </div>
               
-              <div className="relative">
-                <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-[#00FF41]/50 to-transparent"></div>
-                <p className="text-gray-400 text-xs lg:text-sm font-medium leading-relaxed italic pl-4 lg:pl-6 max-w-2xl">
-                  Acesso privado para quem quer entrar no jogo com método, visão e execução.
+              <div className="relative pl-6 border-l-2 border-[#00FF41]/40">
+                <p className="text-gray-400 text-xs lg:text-[13px] font-medium leading-relaxed italic max-w-lg">
+                  Acesso exclusivo ao terminal de operações WMS. Execute sua visão com método e tecnologia de ponta.
                 </p>
               </div>
             </header>
 
-            {/* MAIN_MEDIA_SLOT */}
-            <div className="relative aspect-video w-full bg-[#050505]/80 rounded-xl lg:rounded-2xl border border-white/5 overflow-hidden mb-6 lg:mb-8 shadow-2xl shadow-[inset_0_0_50px_rgba(0,0,0,0.8)]">
-              <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
+            {/* Main Media Showcase */}
+            <div className="relative aspect-[16/10] w-full bg-black rounded-2xl lg:rounded-3xl border border-white/5 overflow-hidden mb-8 lg:mb-10 shadow-2xl group">
+              <div className="absolute inset-0 z-10 bg-gradient-to-t from-black via-transparent to-black/40"></div>
+              <div className="absolute inset-0 flex items-center justify-center">
                 {mainMediaSlot}
               </div>
-              <div className="absolute top-3 right-3 lg:top-4 lg:right-4 bg-black/60 backdrop-blur-md border border-[#00FF41]/20 px-2 py-1 rounded-sm z-20">
-                 <span className="text-[8px] text-[#00FF41] font-black uppercase tracking-widest italic">TERMINAL SEGURO</span>
+              <div className="absolute top-4 right-4 bg-black/80 backdrop-blur-xl border border-[#00FF41]/30 px-3 py-1.5 rounded-lg z-20 flex items-center gap-2">
+                 <div className="w-1.5 h-1.5 rounded-full bg-[#00FF41] animate-pulse"></div>
+                 <span className="text-[9px] text-[#00FF41] font-black uppercase tracking-widest italic">CONTEÚDO PRIVADO</span>
               </div>
             </div>
 
-            {/* Proof Units */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-auto">
+            {/* Proof Section */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-auto">
               {[
-                { id: '1', label: 'Conexão', slot: proofMedia1Slot },
-                { id: '2', label: 'Estratégia', slot: proofMedia2Slot },
-                { id: '3', label: 'Execução', slot: proofMedia3Slot }
+                { label: 'OPERAÇÃO', slot: proofMedia1Slot },
+                { label: 'REDE', slot: proofMedia2Slot },
+                { label: 'RESULTADO', slot: proofMedia3Slot }
               ].map((card, idx) => (
-                <div key={idx} className="bg-white/[0.02] border border-white/5 p-2 lg:p-3 rounded-lg lg:rounded-xl flex items-center gap-3">
-                  <div className="w-10 h-7 bg-black border border-white/5 rounded flex items-center justify-center overflow-hidden shrink-0">
+                <div key={idx} className="bg-white/[0.03] border border-white/5 p-3 rounded-2xl flex items-center gap-4 group hover:bg-[#00FF41]/5 transition-all duration-300">
+                  <div className="w-12 h-9 bg-black border border-white/10 rounded-lg flex items-center justify-center overflow-hidden shrink-0 group-hover:border-[#00FF41]/30 transition-colors">
                     {card.slot}
                   </div>
                   <div className="flex flex-col min-w-0">
-                    <span className="text-[8px] font-black text-gray-500 uppercase italic truncate">{card.label}</span>
+                    <span className="text-[8px] font-black text-gray-500 uppercase tracking-widest italic group-hover:text-[#00FF41]/60">{card.label}</span>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Mobile Status Header - Pix Generated */}
-          {hasPaymentData && (
-            <div className="lg:hidden p-5 border-b border-white/5 bg-[#050505]/80 flex flex-col items-center text-center">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#00FF41] animate-pulse"></div>
-                <h2 className="text-[9px] font-black text-[#00FF41] tracking-[0.3em] uppercase italic">PAGAMENTO SOLICITADO</h2>
-              </div>
-              <div className="flex items-center gap-1 bg-[#00FF41]/10 px-3 py-1 rounded-full border border-[#00FF41]/20">
-                <span className="text-[8px] text-white/50 font-black uppercase">VALOR:</span>
-                <span className="text-xs font-black text-white italic">R$ {integerPart},{decimalPart}</span>
-              </div>
-            </div>
-          )}
-
-          {/* Right Column - Checkout Terminal */}
-          <div className="bg-[#050505]/60 p-5 lg:p-10 flex flex-col border-t lg:border-t-0 lg:border-l border-white/5 relative">
+          {/* RIGHT COLUMN: Transactional */}
+          <div className="bg-[#050505]/80 p-6 lg:p-12 flex flex-col border-t lg:border-t-0 lg:border-l border-white/10 relative overflow-hidden">
             
-            <div className="absolute inset-0 pointer-events-none opacity-[0.03] sm-scanlines"></div>
-
-            {/* Price Display */}
-            {!hasPaymentData ? (
-              <div className="mb-6 lg:mb-8 relative z-10">
-                <span className="text-gray-500 text-[9px] font-black tracking-[0.2em] uppercase italic mb-2 block">VALOR DO ACESSO</span>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-4xl lg:text-5xl font-black text-white italic tracking-tighter">R$ {integerPart}</span>
-                  <span className="text-xl lg:text-2xl font-black text-[#00FF41] italic opacity-80">,{decimalPart}</span>
+            {/* Payment Header */}
+            <div className="relative z-10 mb-8 lg:mb-10">
+              {hasPaymentData ? (
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-[#00FF41] shadow-[0_0_10px_#00FF41]"></div>
+                      <h2 className="text-xs font-black text-[#00FF41] tracking-[0.3em] uppercase italic">PIX GERADO</h2>
+                    </div>
+                    <PriceDisplay integer={integerPart} decimal={decimalPart} label="TOTAL" size="small" />
+                  </div>
+                  <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest leading-relaxed">
+                    Escaneie o QR ou copie o código. O acesso será liberado <span className="text-white">imediatamente</span>.
+                  </p>
                 </div>
-              </div>
-            ) : (
-              <div className="hidden lg:flex mb-6 relative z-10 bg-white/[0.03] border border-white/10 px-4 py-2 rounded-xl items-center justify-between">
-                 <span className="text-gray-500 text-[8px] font-black tracking-[0.2em] uppercase italic">TOTAL</span>
-                 <div className="flex items-baseline gap-1">
-                    <span className="text-lg font-black text-white italic">R$ {integerPart},{decimalPart}</span>
-                 </div>
-              </div>
-            )}
+              ) : (
+                <div className="flex flex-col gap-6">
+                  <PriceDisplay integer={integerPart} decimal={decimalPart} />
+                  <div className="flex items-center gap-2 bg-[#00FF41]/5 border border-[#00FF41]/10 px-3 py-2 rounded-xl">
+                    <div className="w-1 h-1 rounded-full bg-[#00FF41]/40"></div>
+                    <span className="text-[9px] text-[#00FF41]/60 font-bold uppercase tracking-widest">LIBERAÇÃO AUTOMÁTICA VIA PIX</span>
+                  </div>
+                </div>
+              )}
+            </div>
 
-            {/* Main Form/Pix Area */}
-            <div className="flex-1 relative z-10 flex flex-col wms-access-pix-panel">
-               <div className={`flex-1 bg-white/[0.02] border border-white/5 rounded-2xl p-5 lg:p-8 flex flex-col ${hasPaymentData ? 'justify-start' : 'justify-center'}`}>
+            {/* Checkout Area */}
+            <div className={`flex-1 relative z-10 flex flex-col wms-access-pix-panel ${hasPaymentData ? 'payment-focus' : ''}`}>
+               <div className={`bg-white/[0.03] border border-white/10 rounded-3xl overflow-hidden transition-all duration-500 ${hasPaymentData ? 'p-0 bg-transparent border-none' : 'p-6 lg:p-8'}`}>
                   {hasPaymentData ? (
-                    <div className="bg-transparent">{pixSlot}</div>
+                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+                       {pixSlot}
+                    </div>
                   ) : (
-                    formSlot
+                    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+                       {formSlot}
+                    </div>
                   )}
                </div>
             </div>
 
-            {/* Footer Trust Section */}
-            <footer className="mt-6 lg:mt-8 pt-5 border-t border-white/5 flex items-center gap-4 relative z-10">
-              <div className="w-10 h-10 border border-white/5 bg-white/[0.03] rounded-xl flex items-center justify-center p-2">
-                {trustBadgeSlot}
+            {/* Trust Section */}
+            <footer className="mt-10 pt-8 border-t border-white/5 flex items-center justify-between relative z-10">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 border border-white/10 bg-white/[0.03] rounded-2xl flex items-center justify-center p-2.5 shadow-xl">
+                  {trustBadgeSlot}
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-white text-[10px] font-black tracking-widest uppercase italic">PAGAMENTO SEGURO</span>
+                  <p className="text-[#00FF41]/60 text-[9px] font-bold uppercase tracking-widest italic">TERMINAL PROTEGIDO</p>
+                </div>
               </div>
-              <div className="flex flex-col">
-                <span className="text-white text-[9px] font-black tracking-[0.1em] uppercase italic">PAGAMENTO SEGURO</span>
-                <p className="text-gray-600 text-[8px] font-bold uppercase tracking-widest italic">LIBERAÇÃO IMEDIATA</p>
+              <div className="hidden lg:flex flex-col items-end opacity-20">
+                <span className="text-[8px] font-mono">WMS_ACCESS_v1.0.4</span>
+                <span className="text-[8px] font-mono text-[#00FF41]">SECURE_CONNECTION</span>
               </div>
             </footer>
+            
+            {/* Background Texture for Right Column */}
+            <div className="absolute inset-0 pointer-events-none opacity-[0.03] sm-scanlines"></div>
           </div>
         </div>
       </div>
 
       <style>{`
-        @keyframes scanline {
-          0% { transform: translateY(-100%); }
-          100% { transform: translateY(100%); }
+        .wms-access-terminal {
+          --wms-neon: #00FF41;
+          --wms-cyan: #00e5ff;
         }
-        .animate-scanline { animation: scanline 12s linear infinite; }
-        .scanline {
-          width: 100%;
-          height: 150px;
-          background: linear-gradient(to bottom, transparent 0%, rgba(0, 255, 65, 0.08) 50%, transparent 100%);
+
+        @keyframes scan-line-burst {
+          0% { transform: translateY(-100%); opacity: 0; }
+          50% { opacity: 1; }
+          100% { transform: translateY(100%); opacity: 0; }
         }
-        
-        .animate-glitch-premium {
-          position: relative;
-          text-shadow: 0.05em 0 0 rgba(0, 255, 65, 0.75), -0.025em -0.05em 0 rgba(0, 229, 255, 0.75), 0.025em 0.05em 0 rgba(255, 0, 0, 0.75);
-          animation: glitch 250ms linear infinite;
+        .animate-scan-line-burst { animation: scan-line-burst 0.5s linear infinite; }
+
+        .glitch-active {
+          animation: glitch-skew 0.3s cubic-bezier(.25,.46,.45,.94) both infinite;
         }
-        
-        @keyframes glitch {
-          0% { transform: translate(0); text-shadow: 0.05em 0 0 rgba(0, 255, 65, 0.75), -0.025em -0.05em 0 rgba(0, 229, 255, 0.75); }
-          25% { transform: translate(-1px, 1px); }
-          50% { transform: translate(1px, -1px); text-shadow: -0.05em -0.025em 0 rgba(0, 255, 65, 0.75), 0.025em 0.025em 0 rgba(0, 229, 255, 0.75); }
-          75% { transform: translate(-1px, -1px); }
-          100% { transform: translate(0); }
+        @keyframes glitch-skew {
+          0% { transform: skew(0deg); }
+          20% { transform: skew(2deg); }
+          40% { transform: skew(-1deg); }
+          60% { transform: skew(1deg); }
+          80% { transform: skew(-2deg); }
+          100% { transform: skew(0deg); }
         }
 
         .sm-scanlines {
@@ -233,20 +276,84 @@ function WmsAccessTerminalVisualShell({
            background-size: 100% 4px;
         }
 
-        .wms-access-pix-panel button {
-          height: 2.75rem !important;
-          font-size: 0.75rem !important;
-          border-radius: 12px !important;
-          font-weight: 900 !important;
-          letter-spacing: 0.1em !important;
-          text-transform: uppercase !important;
-          background-color: #00FF41 !important;
-          color: black !important;
-          transition: all 0.2s ease !important;
+        /* SCOPED PIX PANEL OVERRIDES */
+        .wms-access-pix-panel {
+          width: 100%;
         }
+
+        /* Remove small copy button next to field */
+        .wms-access-pix-panel div.flex.items-center.justify-between.px-1 button {
+          display: none !important;
+        }
+
+        /* Hide specific elements to focus mode */
+        .payment-focus h3, .payment-focus .text-center.mb-8 p {
+          display: none !important;
+        }
+
+        /* Large Action Button Style */
+        .wms-access-pix-panel button {
+          height: 3.5rem !important;
+          font-size: 0.85rem !important;
+          border-radius: 18px !important;
+          font-weight: 900 !important;
+          letter-spacing: 0.15em !important;
+          text-transform: uppercase !important;
+          background: var(--wms-neon) !important;
+          color: black !important;
+          border: none !important;
+          box-shadow: 0 0 30px rgba(0, 255, 65, 0.2) !important;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+          font-style: italic !important;
+          margin-top: 0.5rem !important;
+        }
+
         .wms-access-pix-panel button:hover {
-          opacity: 0.9 !important;
-          transform: translateY(-1px) !important;
+          transform: translateY(-2px) !important;
+          box-shadow: 0 0 40px rgba(0, 255, 65, 0.3) !important;
+          filter: brightness(1.1);
+        }
+
+        /* Secondary Actions Style */
+        .wms-access-pix-panel a, 
+        .wms-access-pix-panel button.text-\[9px\] {
+          background: rgba(255,255,255,0.03) !important;
+          border: 1px border rgba(255,255,255,0.05) !important;
+          color: #888 !important;
+          padding: 10px 16px !important;
+          border-radius: 12px !important;
+          height: auto !important;
+          font-size: 8px !important;
+          letter-spacing: 0.2em !important;
+          box-shadow: none !important;
+        }
+
+        .wms-access-pix-panel a:hover, 
+        .wms-access-pix-panel button.text-\[9px\]:hover {
+          color: white !important;
+          background: rgba(255,255,255,0.08) !important;
+          transform: none !important;
+        }
+
+        /* QR Code Card Refinement */
+        .wms-access-pix-panel .bg-white.p-4 {
+          padding: 1rem !important;
+          border-radius: 20px !important;
+          box-shadow: 0 0 40px rgba(0,0,0,0.5) !important;
+          border: 1px solid rgba(255,255,255,0.1) !important;
+          width: 220px !important;
+          height: 220px !important;
+        }
+
+        @media (max-width: 1024px) {
+          .wms-access-pix-panel button {
+            height: 3.25rem !important;
+            font-size: 0.75rem !important;
+          }
+          .wms-access-pix-panel .bg-white.p-4 {
+            width: 180px !important;
+            height: 180px !important;
+          }
         }
       `}</style>
     </div>
@@ -255,9 +362,6 @@ function WmsAccessTerminalVisualShell({
 
 /**
  * WmsAccessTerminalCheckout
- * 
- * Componente principal que gerencia a integração de dados e lógica.
- * Segue o padrão estabelecido no WmsLiquidCheckout para garantir compatibilidade.
  */
 export function WmsAccessTerminalCheckout(props: any) {
   const {
@@ -274,7 +378,6 @@ export function WmsAccessTerminalCheckout(props: any) {
 
   const sections = checkout.checkout_sections || [];
   
-  // Mapeamento de Slots
   const logoIcon = getSlotMedia(sections, "logo_icon");
   const mainMedia = getSlotMedia(sections, "main_media");
   const heroBackground = getSlotMedia(sections, "hero_background");
@@ -284,7 +387,6 @@ export function WmsAccessTerminalCheckout(props: any) {
   const trustBadge = getSlotMedia(sections, "trust_badge");
   const sideVisual = getSlotMedia(sections, "side_visual");
 
-  // Helper para renderizar slots com fallback visual
   const renderSlot = (media: any, fallbackLabel: string) => {
     if (media) return <MediaDisplay media={media} />;
     return (
@@ -319,7 +421,6 @@ export function WmsAccessTerminalCheckout(props: any) {
   const trustBadgeSlot = renderSlot(trustBadge, "T");
   const sideVisualSlot = renderSlot(sideVisual, "S");
 
-  // --- RENDER FORM ---
   const renderForm = () => (
     <div className="w-full space-y-5">
       <div className="space-y-3">
@@ -337,9 +438,9 @@ export function WmsAccessTerminalCheckout(props: any) {
               <Input
                 id={field.field_name}
                 type={field.field_type?.replace("hidden:", "") || "text"}
-                placeholder={`Informe seu ${field.field_label.toLowerCase()}`}
+                placeholder={`Seu ${field.field_label.toLowerCase()}`}
                 required={field.required}
-                className="h-12 bg-white/[0.03] border-white/5 text-white focus:bg-white/[0.05] focus:ring-1 focus:ring-[#00FF41]/30 focus:border-[#00FF41]/50 transition-all rounded-xl placeholder:text-gray-700 text-sm px-5"
+                className="h-12 bg-white/[0.04] border-white/5 text-white focus:bg-white/[0.06] focus:ring-1 focus:ring-[#00FF41]/30 focus:border-[#00FF41]/50 transition-all rounded-xl placeholder:text-gray-700 text-sm px-5"
                 value={formData[field.field_name] || ""}
                 onChange={(e) => handleInputChange(field.field_name, e.target.value)}
               />
@@ -347,43 +448,41 @@ export function WmsAccessTerminalCheckout(props: any) {
           ))}
       </div>
 
-      <div className="pt-3">
+      <div className="pt-2">
         <Button
           type="submit"
           disabled={loading}
-          className="w-full h-14 bg-[#00FF41] hover:bg-[#00FF41]/90 text-black font-black uppercase tracking-[0.1em] text-sm lg:text-base rounded-2xl shadow-[0_0_20px_rgba(0,255,65,0.2)] transition-all active:scale-[0.98]"
+          className="w-full h-14 bg-[#00FF41] hover:bg-[#00FF41]/90 text-black font-black uppercase tracking-[0.1em] text-sm lg:text-base rounded-2xl shadow-[0_0_20px_rgba(0,255,65,0.2)] transition-all active:scale-[0.98] italic"
         >
-          {loading ? "PROCESSANDO..." : (checkout.cta_text || "LIBERAR ACESSO AGORA")}
+          {loading ? "CONECTANDO..." : (checkout.cta_text || "LIBERAR ACESSO AGORA")}
         </Button>
       </div>
     </div>
   );
 
   const formSlot = (
-    <form onSubmit={handleSubmit} className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+    <form onSubmit={handleSubmit} className="w-full">
       {renderForm()}
     </form>
   );
 
   const pixSlot = (
-    <div className="animate-in fade-in zoom-in-95 duration-500 bg-transparent">
-      <div className="relative z-30">
-        <InlinePixPanel 
-          paymentData={paymentData}
-          paymentStatus={paymentStatus}
-          onReset={handleResetPayment}
-          formatPrice={(cents: number) => new Intl.NumberFormat("pt-BR", {
-            style: "currency",
-            currency: "BRL",
-          }).format(cents / 100)}
-          theme={{
-            button: "#00FF41",
-            buttonText: "#000000",
-            accent: "#00FF41",
-            card: "transparent"
-          }}
-        />
-      </div>
+    <div className="w-full bg-transparent">
+      <InlinePixPanel 
+        paymentData={paymentData}
+        paymentStatus={paymentStatus}
+        onReset={handleResetPayment}
+        formatPrice={(cents: number) => new Intl.NumberFormat("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        }).format(cents / 100)}
+        theme={{
+          button: "#00FF41",
+          buttonText: "#000000",
+          accent: "#00FF41",
+          card: "transparent"
+        }}
+      />
     </div>
   );
 
@@ -404,4 +503,15 @@ export function WmsAccessTerminalCheckout(props: any) {
       hasPaymentData={!!paymentData}
     />
   );
+}
+
+export default function App() {
+  return <WmsAccessTerminalCheckout 
+    checkout={{ price: 147.90 }}
+    formData={{}}
+    loading={false}
+    handleInputChange={() => {}}
+    handleSubmit={(e: any) => e.preventDefault()}
+    InlinePixPanel={() => <div className="p-10 border border-white/10 rounded-xl text-center">PIX_PANEL_MOCK</div>}
+  />;
 }
