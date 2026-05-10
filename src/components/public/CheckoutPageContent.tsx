@@ -28,6 +28,7 @@ import { CustomMediaV1Design } from "./designs/CustomMediaV1Design";
 import { SalesLongV1Design } from "./designs/SalesLongV1Design";
 import { CompactOfferV1Design } from "./designs/CompactOfferV1Design";
 import { WmsLiquidCheckout } from "./designs/WmsLiquidCheckout";
+import { WmsAccessTerminalCheckout } from "./designs/WmsAccessTerminalCheckout";
 
 export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
   const [formData, setFormData] = useState<Record<string, string>>({});
@@ -193,6 +194,10 @@ export function CheckoutPageContent({ checkout }: CheckoutPageContentProps) {
 
   if (designKey === "wms_liquid_v1") {
     return <WmsLiquidCheckout {...designProps} />;
+  }
+
+  if (designKey === "wms_access_terminal_v1") {
+    return <WmsAccessTerminalCheckout {...designProps} />;
   }
 
   if (designKey === "apple_v1" || checkout.slug === 'wms-novo-teste') {
