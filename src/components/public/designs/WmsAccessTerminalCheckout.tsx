@@ -260,27 +260,27 @@ function WmsAccessTerminalVisualShell({
         }
 
         @keyframes scan-line-burst {
-          0% { transform: translateY(-100%); opacity: 0; }
+          0% { transform: translateY(-150%); opacity: 0; }
           50% { opacity: 1; }
-          100% { transform: translateY(100%); opacity: 0; }
+          100% { transform: translateY(150%); opacity: 0; }
         }
-        .animate-scan-line-burst { animation: scan-line-burst 0.5s linear infinite; }
+        .animate-scan-line-burst { animation: scan-line-burst 0.8s ease-in-out infinite; }
 
         .glitch-active {
-          animation: glitch-skew 0.3s cubic-bezier(.25,.46,.45,.94) both infinite;
+          animation: glitch-skew 0.25s cubic-bezier(.25,.46,.45,.94) both infinite;
         }
         @keyframes glitch-skew {
           0% { transform: skew(0deg); }
-          20% { transform: skew(2deg); }
-          40% { transform: skew(-1deg); }
-          60% { transform: skew(1deg); }
-          80% { transform: skew(-2deg); }
+          20% { transform: skew(3deg); filter: hue-rotate(90deg); }
+          40% { transform: skew(-2deg); }
+          60% { transform: skew(1deg); filter: hue-rotate(-90deg); }
+          80% { transform: skew(-3deg); }
           100% { transform: skew(0deg); }
         }
 
         .sm-scanlines {
-           background: linear-gradient(rgba(255,255,255,0) 50%, rgba(255,255,255,0.02) 50%);
-           background-size: 100% 4px;
+           background: linear-gradient(rgba(255,255,255,0) 50%, rgba(255,255,255,0.015) 50%);
+           background-size: 100% 3px;
         }
 
         /* SCOPED PIX PANEL OVERRIDES */
@@ -288,80 +288,137 @@ function WmsAccessTerminalVisualShell({
           width: 100%;
         }
 
+        /* Status Badge Overrides */
+        .wms-access-pix-panel h3 {
+          display: inline-flex !important;
+          background: rgba(0, 255, 65, 0.1) !important;
+          border: 1px solid rgba(0, 255, 65, 0.2) !important;
+          color: var(--wms-neon) !important;
+          padding: 6px 12px !important;
+          border-radius: 8px !important;
+          font-size: 10px !important;
+          font-weight: 900 !important;
+          text-transform: uppercase !important;
+          letter-spacing: 0.15em !important;
+          margin-bottom: 1.5rem !important;
+          font-style: italic !important;
+        }
+        
+        /* Replace text content of h3 if it says something wrong */
+        .wms-access-pix-panel h3::after {
+          content: "AGUARDANDO PAGAMENTO" !important;
+          display: block !important;
+        }
+        .wms-access-pix-panel h3 {
+          font-size: 0 !important; /* Hide original text */
+        }
+
+        /* Remove subtext that might be redundant */
+        .wms-access-pix-panel .text-center.mb-8 p {
+          display: none !important;
+        }
+
+        /* Copy Field Block Refinement */
+        .wms-access-pix-panel .bg-white\/\[0\.03\].p-4.rounded-xl.border.border-white\/10 {
+          padding: 0.75rem !important;
+          background: rgba(255, 255, 255, 0.02) !important;
+          border-radius: 12px !important;
+          margin-bottom: 1rem !important;
+        }
+
+        .wms-access-pix-panel .font-mono.text-xs {
+          font-size: 10px !important;
+          line-height: 1.4 !important;
+          color: #aaa !important;
+          max-height: 60px !important;
+          overflow-y: auto !important;
+          scrollbar-width: none !important;
+        }
+        .wms-access-pix-panel .font-mono.text-xs::-webkit-scrollbar { display: none; }
+
         /* Remove small copy button next to field */
         .wms-access-pix-panel div.flex.items-center.justify-between.px-1 button {
           display: none !important;
         }
 
-        /* Hide specific elements to focus mode */
-        .payment-focus h3, .payment-focus .text-center.mb-8 p {
-          display: none !important;
-        }
-
-        /* Large Action Button Style */
-        .wms-access-pix-panel button {
-          height: 3.5rem !important;
-          font-size: 0.85rem !important;
-          border-radius: 18px !important;
+        /* Main Copy Button Style */
+        .wms-access-pix-panel button.w-full.py-4 {
+          height: 3.25rem !important;
+          font-size: 0.8rem !important;
+          border-radius: 14px !important;
           font-weight: 900 !important;
-          letter-spacing: 0.15em !important;
+          letter-spacing: 0.1em !important;
           text-transform: uppercase !important;
           background: var(--wms-neon) !important;
           color: black !important;
           border: none !important;
-          box-shadow: 0 0 30px rgba(0, 255, 65, 0.2) !important;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+          box-shadow: 0 4px 20px rgba(0, 255, 65, 0.15) !important;
+          transition: all 0.2s ease !important;
           font-style: italic !important;
           margin-top: 0.5rem !important;
         }
 
-        .wms-access-pix-panel button:hover {
-          transform: translateY(-2px) !important;
-          box-shadow: 0 0 40px rgba(0, 255, 65, 0.3) !important;
-          filter: brightness(1.1);
+        .wms-access-pix-panel button.w-full.py-4:hover {
+          transform: translateY(-1px) !important;
+          box-shadow: 0 6px 25px rgba(0, 255, 65, 0.25) !important;
+          filter: brightness(1.05);
         }
 
         /* Secondary Actions Style */
+        .wms-access-pix-panel .flex.flex-col.gap-2.mt-6,
+        .wms-access-pix-panel .flex.flex-wrap.justify-center.gap-4.mt-8 {
+          margin-top: 1.5rem !important;
+          gap: 0.75rem !important;
+        }
+
         .wms-access-pix-panel a, 
         .wms-access-pix-panel button.text-\[9px\] {
           background: rgba(255,255,255,0.03) !important;
-          border: 1px border rgba(255,255,255,0.05) !important;
-          color: #888 !important;
-          padding: 10px 16px !important;
-          border-radius: 12px !important;
+          border: 1px solid rgba(255,255,255,0.08) !important;
+          color: #777 !important;
+          padding: 8px 14px !important;
+          border-radius: 10px !important;
           height: auto !important;
-          font-size: 8px !important;
-          letter-spacing: 0.2em !important;
+          font-size: 9px !important;
+          font-weight: 700 !important;
+          letter-spacing: 0.05em !important;
           box-shadow: none !important;
+          transition: all 0.2s ease !important;
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          text-decoration: none !important;
         }
 
         .wms-access-pix-panel a:hover, 
         .wms-access-pix-panel button.text-\[9px\]:hover {
           color: white !important;
           background: rgba(255,255,255,0.08) !important;
-          transform: none !important;
+          border-color: rgba(255,255,255,0.15) !important;
         }
 
         /* QR Code Card Refinement */
         .wms-access-pix-panel .bg-white.p-4 {
-          padding: 1rem !important;
-          border-radius: 20px !important;
-          box-shadow: 0 0 40px rgba(0,0,0,0.5) !important;
-          border: 1px solid rgba(255,255,255,0.1) !important;
-          width: 220px !important;
-          height: 220px !important;
+          padding: 0.75rem !important;
+          border-radius: 16px !important;
+          box-shadow: 0 10px 40px rgba(0,0,0,0.6) !important;
+          border: 4px solid #111 !important;
+          width: 200px !important;
+          height: 200px !important;
+          margin-bottom: 0.5rem !important;
         }
 
         @media (max-width: 1024px) {
-          .wms-access-pix-panel button {
-            height: 3.25rem !important;
+          .wms-access-pix-panel .bg-white.p-4 {
+            width: 170px !important;
+            height: 170px !important;
+          }
+          .wms-access-pix-panel button.w-full.py-4 {
+            height: 3rem !important;
             font-size: 0.75rem !important;
           }
-          .wms-access-pix-panel .bg-white.p-4 {
-            width: 180px !important;
-            height: 180px !important;
-          }
         }
+      `}</style>
       `}</style>
     </div>
   );
