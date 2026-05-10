@@ -419,7 +419,6 @@ function WmsAccessTerminalVisualShell({
           }
         }
       `}</style>
-      `}</style>
     </div>
   );
 }
