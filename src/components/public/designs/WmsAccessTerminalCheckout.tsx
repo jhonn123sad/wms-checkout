@@ -319,7 +319,7 @@ function WmsAccessTerminalVisualShell({
         }
 
         /* Copy Field Block Refinement */
-        .wms-access-pix-panel .bg-white\/\[0\.03\].p-4.rounded-xl.border.border-white\/10 {
+        .wms-access-pix-panel div[class*="bg-white/"][class*="p-4"].rounded-xl {
           padding: 0.75rem !important;
           background: rgba(255, 255, 255, 0.02) !important;
           border-radius: 12px !important;
@@ -337,7 +337,7 @@ function WmsAccessTerminalVisualShell({
         .wms-access-pix-panel .font-mono.text-xs::-webkit-scrollbar { display: none; }
 
         /* Remove small copy button next to field */
-        .wms-access-pix-panel div.flex.items-center.justify-between.px-1 button {
+        .wms-access-pix-panel div[class*="justify-between"] button {
           display: none !important;
         }
 
