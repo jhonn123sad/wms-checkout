@@ -70,11 +70,11 @@ function GlitchTitle({ text, className = "" }: { text: string; className?: strin
  * PriceDisplay
  * Renderiza o preço de forma refinada.
  */
-function PriceDisplay({ integer, decimal, label = "VALOR DO ACESSO", size = "large" }: any) {
+function PriceDisplay({ integer, decimal, label = "Valor do acesso", size = "large" }: any) {
   if (size === "small") {
     return (
       <div className="flex items-center gap-2 bg-[#00FF41]/10 border border-[#00FF41]/20 px-3 py-1 rounded-full backdrop-blur-sm">
-        <span className="text-[8px] text-[#00FF41]/60 font-black uppercase tracking-widest">{label}:</span>
+        <span className="text-[10px] lg:text-[11px] text-[#00FF41]/60 font-black uppercase tracking-widest">{label}:</span>
         <span className="text-xs font-black text-white italic">R$ {integer},{decimal}</span>
       </div>
     );
@@ -82,12 +82,13 @@ function PriceDisplay({ integer, decimal, label = "VALOR DO ACESSO", size = "lar
 
   return (
     <div className="flex flex-col">
-      <span className="text-gray-500 text-[9px] font-black tracking-[0.2em] uppercase italic mb-1">{label}</span>
+      <span className="text-gray-500 text-[10px] lg:text-xs font-black tracking-[0.2em] uppercase italic mb-1">{label}</span>
       <div className="flex items-baseline">
         <span className="text-white text-[10px] lg:text-xs font-black mr-1 opacity-60">R$</span>
-        <span className="text-4xl lg:text-5xl font-black text-white italic tracking-tighter leading-none">{integer}</span>
+        <span className="text-4xl lg:text-[44px] font-black text-white italic tracking-tighter leading-tight">{integer}</span>
         <span className="text-xl lg:text-2xl font-black text-[#00FF41] italic opacity-90 leading-none">,{decimal}</span>
       </div>
+      <span className="text-[10px] text-[#00FF41]/60 font-bold uppercase tracking-widest mt-1">Liberação imediata via Pix</span>
     </div>
   );
 }
