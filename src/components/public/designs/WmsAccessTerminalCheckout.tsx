@@ -199,7 +199,7 @@ function WmsAccessTerminalVisualShell({
             </div>
 
             {/* Proof Section */}
-            <div className="grid gap-3 grid-cols-1 md:grid-cols-3 mt-auto">
+            <div className="grid gap-3 grid-cols-1 md:grid-cols-3 mt-8 lg:mt-10">
               {[
                 { label: 'OPERAÇÃO', slot: proofMedia1Slot },
                 { label: 'REDE', slot: proofMedia2Slot },
