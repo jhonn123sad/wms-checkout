@@ -220,7 +220,7 @@ function WmsAccessTerminalVisualShell({
           </div>
 
           {/* RIGHT COLUMN: Transactional */}
-          <div className="bg-[#050505]/90 p-6 lg:p-10 flex flex-col border-t lg:border-t-0 lg:border-l border-white/10 relative overflow-hidden">
+          <div className="bg-[#050505]/90 p-6 lg:p-10 flex flex-col border-t lg:border-t-0 lg:border-l border-white/10 relative overflow-hidden min-w-0 w-full">
             
             {/* Payment Header */}
             <div className="relative z-10 mb-8 lg:mb-10">
