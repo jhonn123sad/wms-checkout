@@ -123,7 +123,7 @@ function WmsAccessTerminalVisualShell({
   const { integer: integerPart, decimal: decimalPart } = formatPriceParts(price);
 
   return (
-    <div className="min-h-[100dvh] bg-[#020202] text-[#E0E0E0] font-sans selection:bg-[#00FF41]/30 relative w-full overflow-x-hidden wms-access-terminal">
+    <div className="min-h-screen bg-[#020202] text-[#E0E0E0] font-sans selection:bg-[#00FF41]/30 relative w-full wms-access-terminal">
       {/* HUD OVERLAYS */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-[0.04]">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.04),rgba(0,255,0,0.01),rgba(0,0,255,0.04))] bg-[length:100%_2px,3px_100%]"></div>
@@ -137,10 +137,10 @@ function WmsAccessTerminalVisualShell({
         <div className="absolute inset-0 grayscale opacity-10">{heroBackgroundSlot}</div>
       </div>
 
-      <div className="relative z-10 flex flex-col items-center justify-start min-h-[100dvh] py-0 lg:py-6 px-0 lg:px-4">
+      <div className="relative z-10 flex flex-col items-center justify-start min-h-screen py-0 lg:py-6 px-0 lg:px-4">
         
         {/* Main Container */}
-        <div className="w-full max-w-[1100px] bg-[#0A0A0A]/90 backdrop-blur-3xl lg:rounded-[32px] border border-white/5 shadow-[0_0_100px_rgba(0,0,0,1)] flex flex-col lg:grid lg:grid-cols-[1.1fr_0.9fr] overflow-hidden min-h-screen lg:min-h-0 lg:max-h-none">
+        <div className="w-full max-w-[1100px] bg-[#0A0A0A]/90 backdrop-blur-3xl lg:rounded-[32px] border border-white/5 shadow-[0_0_100px_rgba(0,0,0,1)] flex flex-col lg:grid lg:grid-cols-[1.1fr_0.9fr] lg:overflow-hidden min-h-screen lg:min-h-0 lg:max-h-none">
           
           {/* LEFT COLUMN: Authority & Visual */}
           <div className={`p-6 lg:p-10 flex flex-col transition-all duration-500 ${hasPaymentData ? 'lg:py-6 lg:max-h-[700px]' : 'lg:py-10'}`}>
@@ -314,8 +314,9 @@ function WmsAccessTerminalVisualShell({
           width: 100%;
         }
 
-        /* Status Badge Overrides */
-        .wms-access-pix-panel h3 {
+        /* Status Badge Overrides - Target InlinePixPanel status box */
+        .wms-access-pix-panel div[class*="bg-green-500/10"],
+        .wms-access-pix-panel div[class*="bg-white/5"] {
           display: inline-flex !important;
           background: rgba(0, 255, 65, 0.1) !important;
           border: 1px solid rgba(0, 255, 65, 0.2) !important;
@@ -328,127 +329,18 @@ function WmsAccessTerminalVisualShell({
           letter-spacing: 0.15em !important;
           margin-bottom: 1.5rem !important;
           font-style: italic !important;
+          height: auto !important;
+          width: auto !important;
         }
         
-        /* Replace text content of h3 if it says something wrong */
-        .wms-access-pix-panel h3::after {
-          content: "AGUARDANDO PAGAMENTO" !important;
-          display: block !important;
-        }
-        .wms-access-pix-panel h3 {
-          font-size: 0 !important; /* Hide original text */
+        /* Pulse for status dot */
+        .wms-access-pix-panel div[class*="bg-green-500 shadow"],
+        .wms-access-pix-panel div[class*="bg-gray-400 animate-pulse"] {
+          background-color: var(--wms-neon) !important;
         }
 
-        /* Remove subtext that might be redundant */
-        .wms-access-pix-panel .text-center.mb-8 p {
-          display: none !important;
-        }
-
-        /* Copy Field Block Refinement */
-        .wms-access-pix-panel div[class*="bg-white/"][class*="p-4"].rounded-xl {
-          padding: 0.85rem 1rem !important;
-          background: rgba(255, 255, 255, 0.015) !important;
-          border: 1px solid rgba(255, 255, 255, 0.05) !important;
-          border-radius: 14px !important;
-          margin-bottom: 0.85rem !important;
-          width: 100% !important;
-        }
-
-        /* Target the label "Pix Copia e Cola" */
-        .wms-access-pix-panel span[class*="text-gray-400"],
-        .wms-access-pix-panel p[class*="text-gray-400"] {
-          font-size: 9px !important;
-          font-weight: 800 !important;
-          color: #666 !important;
-          text-transform: uppercase !important;
-          letter-spacing: 0.1em !important;
-          margin-bottom: 0.4rem !important;
-          display: block !important;
-          text-align: left !important;
-        }
-
-        .wms-access-pix-panel .font-mono.text-xs {
-          font-size: 9px !important;
-          line-height: 1.5 !important;
-          color: #999 !important;
-          text-align: left !important;
-          word-break: break-all !important;
-          overflow-wrap: anywhere !important;
-          max-height: 54px !important;
-          overflow-y: auto !important;
-          scrollbar-width: none !important;
-          white-space: normal !important;
-        }
-        .wms-access-pix-panel .font-mono.text-xs::-webkit-scrollbar { display: none; }
-
-        /* Remove small copy button next to field */
-        .wms-access-pix-panel div[class*="justify-between"] button {
-          display: none !important;
-        }
-
-        /* Main Copy Button Style */
-        .wms-access-pix-panel button.w-full.py-4 {
-          height: 3rem !important;
-          font-size: 0.75rem !important;
-          border-radius: 12px !important;
-          font-weight: 900 !important;
-          letter-spacing: 0.05em !important;
-          text-transform: uppercase !important;
-          background: var(--wms-neon) !important;
-          color: black !important;
-          border: none !important;
-          box-shadow: 0 4px 15px rgba(0, 255, 65, 0.1) !important;
-          transition: all 0.2s ease !important;
-          font-style: italic !important;
-          margin-top: 0.25rem !important;
-          display: flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-        }
-
-        .wms-access-pix-panel button.w-full.py-4:hover {
-          transform: translateY(-1px) !important;
-          box-shadow: 0 6px 20px rgba(0, 255, 65, 0.2) !important;
-          filter: brightness(1.05);
-        }
-
-        /* Secondary Actions Style - Ghost Links */
-        .wms-access-pix-panel .flex.flex-col.gap-2.mt-6,
-        .wms-access-pix-panel .flex.flex-wrap.justify-center.gap-4.mt-8 {
-          margin-top: 1.25rem !important;
-          gap: 0.6rem !important;
-        }
-
-        .wms-access-pix-panel a, 
-        .wms-access-pix-panel button[class*="text-[9px]"],
-        .wms-access-pix-panel button[class*="text-xs"][class*="text-gray-500"] {
-          background: transparent !important;
-          border: 1px solid rgba(255, 255, 255, 0.05) !important;
-          color: #666 !important;
-          padding: 8px 12px !important;
-          border-radius: 10px !important;
-          height: auto !important;
-          font-size: 8px !important;
-          font-weight: 700 !important;
-          letter-spacing: 0.05em !important;
-          box-shadow: none !important;
-          transition: all 0.2s ease !important;
-          display: inline-flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-          text-decoration: none !important;
-          text-transform: uppercase !important;
-        }
-
-        .wms-access-pix-panel a:hover, 
-        .wms-access-pix-panel button:hover {
-          color: #888 !important;
-          background: rgba(255, 255, 255, 0.02) !important;
-          border-color: rgba(255, 255, 255, 0.1) !important;
-        }
-
-        /* QR Code Card Refinement */
-        .wms-access-pix-panel .bg-white.p-4 {
+        /* QR Code Container Refinement */
+        .wms-access-pix-panel .bg-white.p-3 {
           padding: 0.6rem !important;
           border-radius: 12px !important;
           box-shadow: 0 8px 30px rgba(0,0,0,0.5) !important;
@@ -458,28 +350,94 @@ function WmsAccessTerminalVisualShell({
           margin-bottom: 0.5rem !important;
           margin-left: auto !important;
           margin-right: auto !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        }
+
+        /* Subtext instruction */
+        .wms-access-pix-panel p[class*="text-gray-500"][class*="tracking-widest"] {
+          font-size: 9px !important;
+          color: #555 !important;
+          margin-bottom: 1.5rem !important;
+        }
+
+        /* Copy & Paste Box Refinement */
+        .wms-access-pix-panel div[class*="bg-white/[0.03]"].rounded-xl.p-3 {
+          padding: 0.85rem 1rem !important;
+          background: rgba(255, 255, 255, 0.015) !important;
+          border: 1px solid rgba(255, 255, 255, 0.05) !important;
+          border-radius: 14px !important;
+          margin-bottom: 0.85rem !important;
+          width: 100% !important;
+          cursor: pointer !important;
+        }
+
+        .wms-access-pix-panel p[class*="break-all"].text-gray-400 {
+          font-size: 10px !important;
+          font-family: monospace !important;
+          line-height: 1.4 !important;
+          color: #999 !important;
+          text-align: left !important;
+          word-break: break-all !important;
+        }
+
+        /* Copy & Paste Label */
+        .wms-access-pix-panel p[class*="font-black"][class*="text-gray-500"] {
+          font-size: 9px !important;
+          font-weight: 800 !important;
+          color: #666 !important;
+          text-transform: uppercase !important;
+          letter-spacing: 0.1em !important;
+          margin-bottom: 0.4rem !important;
+          text-align: left !important;
+        }
+
+        /* Main Action Buttons (Copy / Reset) */
+        .wms-access-pix-panel button[style*="background-color: rgb(0, 255, 65)"],
+        .wms-access-pix-panel button[style*="background-color: #00FF41"] {
+          height: 3.25rem !important;
+          font-size: 0.75rem !important;
+          border-radius: 12px !important;
+          font-weight: 900 !important;
+          letter-spacing: 0.05em !important;
+          text-transform: uppercase !important;
+          background-color: var(--wms-neon) !important;
+          color: black !important;
+          border: none !important;
+          box-shadow: 0 4px 15px rgba(0, 255, 65, 0.2) !important;
+          transition: all 0.2s ease !important;
+          font-style: italic !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          width: 100% !important;
+        }
+
+        .wms-access-pix-panel button[class*="text-gray-500"][class*="hover:text-white"] {
+          background: transparent !important;
+          border: 1px solid rgba(255, 255, 255, 0.05) !important;
+          color: #666 !important;
+          padding: 10px 16px !important;
+          border-radius: 10px !important;
+          height: auto !important;
+          font-size: 9px !important;
+          font-weight: 700 !important;
+          letter-spacing: 0.05em !important;
+          text-transform: uppercase !important;
+          width: 100% !important;
+          opacity: 1 !important;
+          margin-top: 0.5rem !important;
         }
 
         @media (max-width: 1024px) {
           .wms-access-pix-panel {
             padding-bottom: 2rem !important;
+            width: 100% !important;
+            max-width: 100% !important;
           }
-          .wms-access-pix-panel .bg-white.p-4 {
-            width: 180px !important;
-            height: 180px !important;
-            max-width: 80vw !important;
-            max-height: 80vw !important;
-          }
-          .wms-access-pix-panel button.w-full.py-4 {
-            height: 3.25rem !important;
-            font-size: 0.75rem !important;
-          }
-          /* Garantir que o container do checkout no mobile não corte conteúdo */
           .wms-access-terminal, 
-          .wms-access-terminal > div,
-          .wms-access-terminal .max-w-\[1100px\] {
-            height: auto !important;
-            min-height: 100vh !important;
+          .wms-access-terminal > div {
             overflow: visible !important;
           }
         }
@@ -569,7 +527,7 @@ export function WmsAccessTerminalCheckout(props: any) {
                 type={field.field_type?.replace("hidden:", "") || "text"}
                 placeholder={`Seu ${field.field_label.toLowerCase()}`}
                 required={field.required}
-                className="h-12 bg-white/[0.04] border-white/5 text-white focus:bg-white/[0.06] focus:ring-1 focus:ring-[#00FF41]/30 focus:border-[#00FF41]/50 transition-all rounded-xl placeholder:text-gray-700 text-sm px-5"
+                className="h-12 bg-white/[0.04] border-white/5 text-white focus:bg-white/[0.06] focus:ring-1 focus:ring-[#00FF41]/30 focus:border-[#00FF41]/50 transition-all rounded-xl placeholder:text-gray-700 text-base px-5"
                 value={formData[field.field_name] || ""}
                 onChange={(e) => handleInputChange(field.field_name, e.target.value)}
               />
