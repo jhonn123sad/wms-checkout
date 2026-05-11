@@ -21,25 +21,36 @@ function AnomalyText({ text, className = "", intensity = "medium" }: { text: str
  * PriceDisplay
  * Renderiza o preço de forma refinada.
  */
-function PriceDisplay({ integer, decimal, label = "Valor do acesso", size = "large" }: any) {
+function PriceDisplay({ integer, decimal, label = "VALOR DO ACESSO", size = "large" }: any) {
   if (size === "small") {
     return (
       <div className="flex items-center gap-2 bg-[#00FF41]/10 border border-[#00FF41]/20 px-3 py-1 rounded-full backdrop-blur-sm">
-        <span className="text-[10px] lg:text-[11px] text-[#00FF41]/60 font-black uppercase tracking-widest">{label}:</span>
-        <span className="text-xs font-black text-white italic">R$ {integer},{decimal}</span>
+        <span className="text-[9px] lg:text-[10px] text-[#00FF41]/60 font-black uppercase tracking-widest">{label}:</span>
+        <span className="text-xs font-black text-white italic">R$ {integer},<span className="text-[#00FF41]">{decimal}</span></span>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col">
-      <span className="text-gray-500 text-[10px] lg:text-xs font-black tracking-[0.2em] uppercase italic mb-1">{label}</span>
-      <div className="flex items-baseline">
-        <span className="text-white text-[10px] lg:text-xs font-black mr-1 opacity-60">R$</span>
-        <span className="text-4xl lg:text-[44px] font-black text-white italic tracking-tighter leading-tight">{integer}</span>
-        <span className="text-xl lg:text-2xl font-black text-[#00FF41] italic opacity-90 leading-none">,{decimal}</span>
+    <div className="flex flex-col bg-white/[0.02] border border-white/5 p-4 lg:p-5 rounded-2xl group transition-all duration-300 hover:bg-white/[0.03]">
+      <span className="text-gray-500 text-[10px] lg:text-[11px] font-black tracking-[0.25em] uppercase italic mb-1 opacity-60">{label}</span>
+      <div className="flex items-baseline gap-1">
+        <span className="text-white text-[14px] lg:text-[18px] font-black opacity-40 italic">R$</span>
+        <div className="flex items-baseline">
+          <AnomalyText 
+            text={integer} 
+            intensity="low" 
+            className="text-[40px] lg:text-[52px] font-black text-white italic tracking-tighter leading-none" 
+          />
+          <span className="text-[20px] lg:text-[26px] font-black text-[#00FF41] italic leading-none ml-0.5">
+            <AnomalyText text={"," + decimal} intensity="low" />
+          </span>
+        </div>
       </div>
-      <span className="text-[10px] text-[#00FF41]/60 font-bold uppercase tracking-widest mt-1">Liberação imediata via Pix</span>
+      <div className="flex items-center gap-2 mt-2">
+        <div className="w-1 h-1 rounded-full bg-[#00FF41] animate-pulse"></div>
+        <span className="text-[9px] lg:text-[10px] text-[#00FF41]/60 font-black uppercase tracking-widest italic">Liberação imediata via Pix</span>
+      </div>
     </div>
   );
 }
