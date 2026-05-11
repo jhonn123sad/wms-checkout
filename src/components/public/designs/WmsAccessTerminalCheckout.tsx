@@ -442,9 +442,9 @@ export function WmsAccessTerminalCheckout(props: any) {
         <Button
           type="submit"
           disabled={loading}
-          className="w-full h-14 bg-[#00FF41] hover:bg-[#00FF41]/90 text-black font-black uppercase tracking-[0.1em] text-sm lg:text-base rounded-2xl shadow-[0_0_20px_rgba(0,255,65,0.2)] transition-all active:scale-[0.98] italic"
+          className="w-full h-14 bg-[#00FF41] hover:bg-[#00FF41]/90 text-black font-black uppercase tracking-tight text-[14px] lg:text-[16px] rounded-2xl shadow-[0_0_20px_rgba(0,255,65,0.2)] transition-all active:scale-[0.98] italic px-4"
         >
-          {loading ? "CONECTANDO..." : (checkout.cta_text || "LIBERAR ACESSO AGORA")}
+          {loading ? "Gerando acesso..." : (checkout.cta_text || "Acessar a biblioteca agora")}
         </Button>
       </div>
     </div>
