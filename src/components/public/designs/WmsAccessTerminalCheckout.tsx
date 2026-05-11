@@ -131,13 +131,24 @@ function WmsAccessTerminalVisualShell({
                   </div>
                 </div>
                 
-                <div className="flex-1">
-                  <GlitchTitle text="Faça parte da maior Biblioteca do Digital" className="font-black tracking-tighter text-white uppercase italic leading-[1.1] block mb-2 text-[24px] lg:text-[40px] max-w-xl break-words" />
-                  <div className="flex items-center gap-2.5">
-                    <span className="px-1.5 py-0.5 bg-[#00FF41]/5 border border-[#00FF41]/10 text-[10px] lg:text-[11px] font-black text-[#00FF41]/70 tracking-[0.2em] rounded uppercase italic">
-                      ACESSO EXCLUSIVO
+                <div className="flex-1 flex flex-col justify-center">
+                  <div className="flex flex-col font-black tracking-tighter text-white uppercase italic leading-[0.95] mb-3">
+                    <span className="text-[14px] lg:text-[18px] opacity-70">Faça parte da</span>
+                    <span className="text-[28px] lg:text-[46px] block">
+                      <AnomalyText text="MAIOR" className="text-[#00FF41]" /> BIBLIOTECA
                     </span>
-                    <div className="h-[1px] w-6 bg-[#00FF41]/10"></div>
+                    <span className="text-[20px] lg:text-[32px] opacity-90">
+                      do <AnomalyText text="DIGITAL" intensity="low" />
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2.5">
+                    <AnomalyText 
+                      text="ACESSO EXCLUSIVO" 
+                      intensity="low"
+                      className="px-2 py-0.5 bg-[#00FF41]/10 border border-[#00FF41]/20 text-[10px] lg:text-[11px] font-black text-[#00FF41] tracking-[0.2em] rounded uppercase italic" 
+                    />
+                    <div className="h-[1px] w-8 bg-[#00FF41]/20"></div>
                   </div>
                 </div>
               </div>
