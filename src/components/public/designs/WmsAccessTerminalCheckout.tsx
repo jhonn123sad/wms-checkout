@@ -461,15 +461,29 @@ function WmsAccessTerminalVisualShell({
         }
 
         @media (max-width: 1024px) {
+          .wms-access-pix-panel {
+            padding-bottom: 2rem !important;
+          }
           .wms-access-pix-panel .bg-white.p-4 {
-            width: 150px !important;
-            height: 150px !important;
+            width: 180px !important;
+            height: 180px !important;
+            max-width: 80vw !important;
+            max-height: 80vw !important;
           }
           .wms-access-pix-panel button.w-full.py-4 {
-            height: 2.75rem !important;
-            font-size: 0.7rem !important;
+            height: 3.25rem !important;
+            font-size: 0.75rem !important;
+          }
+          /* Garantir que o container do checkout no mobile não corte conteúdo */
+          .wms-access-terminal, 
+          .wms-access-terminal > div,
+          .wms-access-terminal .max-w-\[1100px\] {
+            height: auto !important;
+            min-height: 100vh !important;
+            overflow: visible !important;
           }
         }
+
       `}</style>
     </div>
   );
