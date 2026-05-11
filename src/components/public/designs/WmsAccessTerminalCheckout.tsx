@@ -202,16 +202,17 @@ function WmsAccessTerminalVisualShell({
             {/* Proof Section */}
             <div className="grid gap-3 grid-cols-1 md:grid-cols-3 mt-8 lg:mt-10">
               {[
-                { label: 'OPERAÇÃO', slot: proofMedia1Slot },
-                { label: 'REDE', slot: proofMedia2Slot },
-                { label: 'RESULTADO', slot: proofMedia3Slot }
+                { title: 'Prompts', desc: 'Obtenha vantagem', slot: proofMedia1Slot },
+                { title: 'Métodos', desc: 'Aplique com clareza', slot: proofMedia2Slot },
+                { title: 'Insights', desc: 'Siga com direção', slot: proofMedia3Slot }
               ].map((card, idx) => (
-                <div key={idx} className="bg-white/[0.02] border border-white/5 p-2 rounded-xl flex items-center gap-2 group hover:bg-[#00FF41]/5 transition-all duration-300">
+                <div key={idx} className="bg-white/[0.02] border border-white/5 p-2 rounded-xl flex items-center gap-2 group hover:bg-[#00FF41]/5 transition-all duration-300 min-w-0">
                   <div className="bg-black border border-white/10 rounded-lg flex items-center justify-center overflow-hidden shrink-0 group-hover:border-[#00FF41]/20 transition-colors w-10 h-7">
                     {card.slot}
                   </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="font-black text-gray-500 uppercase tracking-widest italic group-hover:text-[#00FF41]/60 transition-all text-[8px]">{card.label}</span>
+                  <div className="flex flex-col min-w-0 overflow-hidden">
+                    <span className="font-black text-gray-400 uppercase tracking-widest italic group-hover:text-[#00FF41]/80 transition-all text-[12px] truncate">{card.title}</span>
+                    <span className="text-[11px] text-gray-600 font-medium italic truncate">{card.desc}</span>
                   </div>
                 </div>
               ))}
