@@ -229,26 +229,19 @@ function WmsAccessTerminalVisualShell({
                   <div className="flex items-center justify-between bg-[#00FF41]/5 border border-[#00FF41]/10 px-4 py-3 rounded-2xl backdrop-blur-sm">
                     <div className="flex items-center gap-2.5">
                       <div className="w-2 h-2 rounded-full bg-[#00FF41] shadow-[0_0_10px_#00FF41] animate-pulse"></div>
-                      <h2 className="text-[10px] lg:text-xs font-black text-[#00FF41] tracking-[0.2em] uppercase italic">PIX GERADO</h2>
+                      <h2 className="text-[10px] lg:text-xs font-black text-[#00FF41] tracking-[0.2em] uppercase italic">Pix gerado</h2>
                     </div>
-                    <PriceDisplay integer={integerPart} decimal={decimalPart} label="TOTAL" size="small" />
+                    <PriceDisplay integer={integerPart} decimal={decimalPart} label="Total" size="small" />
                   </div>
                   <div className="flex flex-col gap-1 pl-1">
-                    <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed">
-                      Escaneie o QR ou copie o código. 
-                    </p>
-                    <p className="text-[9px] text-[#00FF41]/60 font-bold uppercase tracking-widest leading-relaxed italic">
-                      O acesso será liberado após a confirmação.
+                    <p className="text-[10px] lg:text-[11px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed break-words">
+                      Escaneie o QR Code ou copie o código Pix para concluir seu acesso.
                     </p>
                   </div>
                 </div>
               ) : (
                 <div className="flex flex-col gap-6">
                   <PriceDisplay integer={integerPart} decimal={decimalPart} />
-                  <div className="flex items-center gap-2 bg-[#00FF41]/5 border border-[#00FF41]/10 px-3 py-2 rounded-xl">
-                    <div className="w-1 h-1 rounded-full bg-[#00FF41]/40"></div>
-                    <span className="text-[9px] text-[#00FF41]/60 font-bold uppercase tracking-widest">LIBERAÇÃO AUTOMÁTICA VIA PIX</span>
-                  </div>
                 </div>
               )}
             </div>
