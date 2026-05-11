@@ -118,12 +118,12 @@ function WmsAccessTerminalVisualShell({
         <div className="w-full max-w-[1100px] bg-[#0A0A0A]/90 backdrop-blur-3xl lg:rounded-[32px] border border-white/5 shadow-[0_0_100px_rgba(0,0,0,1)] flex flex-col lg:grid lg:grid-cols-[1.1fr_0.9fr] overflow-hidden min-h-screen lg:min-h-0">
           
           {/* LEFT COLUMN: Authority & Visual */}
-          <div className={`p-6 lg:p-10 flex flex-col transition-all duration-500 ${hasPaymentData ? 'lg:py-8' : 'lg:py-10'}`}>
+          <div className={`p-6 lg:p-10 flex flex-col transition-all duration-500 ${hasPaymentData ? 'lg:py-6 lg:max-h-[700px]' : 'lg:py-10'}`}>
             
             {/* Header */}
-            <header className={`relative transition-all duration-500 ${hasPaymentData ? 'mb-6 lg:mb-8' : 'mb-8 lg:mb-10'}`}>
+            <header className={`relative transition-all duration-500 ${hasPaymentData ? 'mb-4 lg:mb-6' : 'mb-8 lg:mb-10'}`}>
               <div className="flex items-center gap-4 lg:gap-6 mb-4 lg:mb-6">
-                <div className={`relative flex items-center justify-center border border-[#00FF41]/20 rounded-xl p-1 bg-black/80 shadow-[0_0_30px_rgba(0,255,65,0.1)] group overflow-hidden transition-all duration-500 ${hasPaymentData ? 'w-12 h-12 lg:w-14 lg:h-14' : 'w-14 h-14 lg:w-18 lg:h-18'}`}>
+                <div className={`relative flex items-center justify-center border border-[#00FF41]/20 rounded-xl p-1 bg-black/80 shadow-[0_0_30px_rgba(0,255,65,0.1)] group overflow-hidden transition-all duration-500 ${hasPaymentData ? 'w-10 h-10 lg:w-12 lg:h-12' : 'w-14 h-14 lg:w-18 lg:h-18'}`}>
                   <div className="absolute inset-0 bg-gradient-to-br from-[#00FF41]/10 to-transparent"></div>
                   <div className="w-full h-full rounded-lg border border-dashed border-[#00FF41]/20 flex items-center justify-center overflow-hidden">
                     {logoIconSlot}
@@ -131,7 +131,7 @@ function WmsAccessTerminalVisualShell({
                 </div>
                 
                 <div className="flex-1">
-                  <GlitchTitle text="WEB MONEY SOCIETY" className={`font-black tracking-tighter text-white uppercase italic leading-none block mb-1.5 transition-all duration-500 ${hasPaymentData ? 'text-xl lg:text-2xl' : 'text-2xl lg:text-3xl'}`} />
+                  <GlitchTitle text="WEB MONEY SOCIETY" className={`font-black tracking-tighter text-white uppercase italic leading-none block mb-1.5 transition-all duration-500 ${hasPaymentData ? 'text-lg lg:text-xl' : 'text-2xl lg:text-3xl'}`} />
                   <div className="flex items-center gap-2.5">
                     <span className="px-1.5 py-0.5 bg-[#00FF41]/5 border border-[#00FF41]/10 text-[8px] font-black text-[#00FF41]/70 tracking-[0.2em] rounded uppercase italic">
                       {hasPaymentData ? 'TERMINAL_SECURE' : 'ESTADO PRIVADO'}
@@ -151,7 +151,7 @@ function WmsAccessTerminalVisualShell({
             </header>
 
             {/* Main Media Showcase */}
-            <div className={`relative w-full bg-black rounded-2xl border border-white/5 overflow-hidden shadow-2xl group transition-all duration-500 ${hasPaymentData ? 'aspect-video lg:max-w-md mx-auto mb-6 lg:mb-8' : 'aspect-[16/10] mb-8 lg:mb-10'}`}>
+            <div className={`relative w-full bg-black rounded-2xl border border-white/5 overflow-hidden shadow-2xl group transition-all duration-500 ${hasPaymentData ? 'aspect-video lg:max-w-[340px] mx-auto mb-4 lg:mb-6' : 'aspect-[16/10] mb-8 lg:mb-10'}`}>
               <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 via-transparent to-black/20"></div>
               <div className="absolute inset-0 flex items-center justify-center scale-105 group-hover:scale-100 transition-transform duration-700">
                 {mainMediaSlot}
@@ -163,18 +163,18 @@ function WmsAccessTerminalVisualShell({
             </div>
 
             {/* Proof Section */}
-            <div className={`grid gap-3 transition-all duration-500 ${hasPaymentData ? 'grid-cols-3 max-w-md mx-auto' : 'grid-cols-1 md:grid-cols-3 mt-auto'}`}>
+            <div className={`grid gap-3 transition-all duration-500 ${hasPaymentData ? 'grid-cols-3 max-w-[340px] mx-auto' : 'grid-cols-1 md:grid-cols-3 mt-auto'}`}>
               {[
                 { label: 'OPERAÇÃO', slot: proofMedia1Slot },
                 { label: 'REDE', slot: proofMedia2Slot },
                 { label: 'RESULTADO', slot: proofMedia3Slot }
               ].map((card, idx) => (
-                <div key={idx} className={`bg-white/[0.02] border border-white/5 p-2.5 rounded-xl flex items-center gap-3 group hover:bg-[#00FF41]/5 transition-all duration-300 ${hasPaymentData ? 'flex-col lg:flex-row' : ''}`}>
-                  <div className="w-10 h-7 bg-black border border-white/10 rounded-lg flex items-center justify-center overflow-hidden shrink-0 group-hover:border-[#00FF41]/20 transition-colors">
+                <div key={idx} className={`bg-white/[0.02] border border-white/5 p-2 rounded-xl flex items-center gap-2 group hover:bg-[#00FF41]/5 transition-all duration-300 ${hasPaymentData ? 'flex-col justify-center text-center' : ''}`}>
+                  <div className={`bg-black border border-white/10 rounded-lg flex items-center justify-center overflow-hidden shrink-0 group-hover:border-[#00FF41]/20 transition-colors ${hasPaymentData ? 'w-8 h-6' : 'w-10 h-7'}`}>
                     {card.slot}
                   </div>
                   <div className="flex flex-col min-w-0">
-                    <span className={`font-black text-gray-500 uppercase tracking-widest italic group-hover:text-[#00FF41]/60 transition-all ${hasPaymentData ? 'text-[7px]' : 'text-[8px]'}`}>{card.label}</span>
+                    <span className={`font-black text-gray-500 uppercase tracking-widest italic group-hover:text-[#00FF41]/60 transition-all ${hasPaymentData ? 'text-[6px]' : 'text-[8px]'}`}>{card.label}</span>
                   </div>
                 </div>
               ))}
