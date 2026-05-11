@@ -6,63 +6,14 @@ import { getSlotMedia } from "@/lib/designMediaSlots";
 import React from "react";
 
 /**
- * GlitchTitle
- * Efeito de glitch premium com camadas e burst controlado.
+ * AnomalyText
+ * Sistema de anomalia digital CSS-only, sem hooks ou JS.
  */
-function GlitchTitle({ text, className = "" }: { text: string; className?: string }) {
-  const [isGlitching, setIsGlitching] = React.useState(false);
-  const timeoutsRef = React.useRef<NodeJS.Timeout[]>([]);
-  const isMountedRef = React.useRef(true);
-
-  const clearAllTimeouts = React.useCallback(() => {
-    timeoutsRef.current.forEach(clearTimeout);
-    timeoutsRef.current = [];
-  }, []);
-
-  React.useEffect(() => {
-    isMountedRef.current = true;
-    const cycle = () => {
-      if (!isMountedRef.current) return;
-
-      const burstDuration = 250 + Math.random() * 200;
-      const waitDuration = 3000 + Math.random() * 5000;
-      
-      const waitTimeout = setTimeout(() => {
-        if (!isMountedRef.current) return;
-        setIsGlitching(true);
-        const burstTimeout = setTimeout(() => {
-          if (!isMountedRef.current) return;
-          setIsGlitching(false);
-          cycle();
-        }, burstDuration);
-        timeoutsRef.current.push(burstTimeout);
-      }, waitDuration);
-      
-      timeoutsRef.current.push(waitTimeout);
-    };
-    
-    cycle();
-    return () => {
-      isMountedRef.current = false;
-      clearAllTimeouts();
-    };
-  }, [clearAllTimeouts]);
-
+function AnomalyText({ text, className = "", intensity = "medium" }: { text: string; className?: string; intensity?: "low" | "medium" | "high" }) {
   return (
-    <div className={`relative inline-block ${className} ${isGlitching ? "glitch-active" : ""}`} data-text={text}>
-      <span className="relative z-10">{text}</span>
-      {isGlitching && (
-        <>
-          <span className="absolute inset-0 z-0 text-[#00FF41] opacity-60 translate-x-[1px] -translate-y-[0.5px] mix-blend-screen overflow-hidden whitespace-nowrap">
-            {text}
-          </span>
-          <span className="absolute inset-0 z-0 text-[#00e5ff] opacity-60 -translate-x-[1px] translate-y-[0.5px] mix-blend-screen overflow-hidden whitespace-nowrap">
-            {text}
-          </span>
-          <div className="absolute inset-0 z-20 bg-gradient-to-r from-transparent via-[#00FF41]/40 to-transparent w-full h-[2px] top-[40%] animate-scan-line-burst pointer-events-none shadow-[0_0_10px_#00FF41]"></div>
-        </>
-      )}
-    </div>
+    <span className={`anomaly-text ${intensity} ${className}`} data-text={text}>
+      {text}
+    </span>
   );
 }
 
