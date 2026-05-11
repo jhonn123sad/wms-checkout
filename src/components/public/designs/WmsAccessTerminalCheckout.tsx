@@ -11,7 +11,8 @@ import React from "react";
  */
 function GlitchTitle({ text, className = "" }: { text: string; className?: string }) {
   const [isGlitching, setIsGlitching] = React.useState(false);
-  const timeoutsRef = React.useRef<number[]>([]);
+  const timeoutsRef = React.useRef<NodeJS.Timeout[]>([]);
+  const isMountedRef = React.useRef(true);
 
   const clearAllTimeouts = React.useCallback(() => {
     timeoutsRef.current.forEach(clearTimeout);
@@ -19,13 +20,18 @@ function GlitchTitle({ text, className = "" }: { text: string; className?: strin
   }, []);
 
   React.useEffect(() => {
+    isMountedRef.current = true;
     const cycle = () => {
+      if (!isMountedRef.current) return;
+
       const burstDuration = 250 + Math.random() * 200;
       const waitDuration = 3000 + Math.random() * 5000;
       
-      const waitTimeout = window.setTimeout(() => {
+      const waitTimeout = setTimeout(() => {
+        if (!isMountedRef.current) return;
         setIsGlitching(true);
-        const burstTimeout = window.setTimeout(() => {
+        const burstTimeout = setTimeout(() => {
+          if (!isMountedRef.current) return;
           setIsGlitching(false);
           cycle();
         }, burstDuration);
@@ -36,7 +42,10 @@ function GlitchTitle({ text, className = "" }: { text: string; className?: strin
     };
     
     cycle();
-    return () => clearAllTimeouts();
+    return () => {
+      isMountedRef.current = false;
+      clearAllTimeouts();
+    };
   }, [clearAllTimeouts]);
 
   return (
@@ -103,12 +112,16 @@ function WmsAccessTerminalVisualShell({
 }: any) {
   const formatPriceParts = (price: any) => {
     try {
-      const formatted = typeof price === "number"
-        ? new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(price)
-        : String(price || "R$ 0,00");
+      const numericPrice = typeof price === 'number' 
+        ? price 
+        : (typeof price === 'string' ? parseFloat(price.replace(/[^\d]/g, '')) / 100 : 0);
       
-      const cleanPrice = formatted.replace("R$", "").trim();
-      const parts = cleanPrice.split(",");
+      const formatted = new Intl.NumberFormat("pt-BR", { 
+        style: "currency", 
+        currency: "BRL" 
+      }).format(isNaN(numericPrice) ? 0 : numericPrice);
+      
+      const parts = formatted.replace("R$", "").trim().split(",");
       
       return {
         integer: parts[0] || "0",
@@ -123,7 +136,7 @@ function WmsAccessTerminalVisualShell({
   const { integer: integerPart, decimal: decimalPart } = formatPriceParts(price);
 
   return (
-    <div className="min-h-screen bg-[#020202] text-[#E0E0E0] font-sans selection:bg-[#00FF41]/30 relative w-full wms-access-terminal">
+    <div className="min-h-screen bg-[#020202] text-[#E0E0E0] font-sans selection:bg-[#00FF41]/30 relative w-full wms-access-terminal overflow-x-hidden">
       {/* HUD OVERLAYS */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-[0.04]">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.04),rgba(0,255,0,0.01),rgba(0,0,255,0.04))] bg-[length:100%_2px,3px_100%]"></div>
@@ -140,7 +153,7 @@ function WmsAccessTerminalVisualShell({
       <div className="relative z-10 flex flex-col items-center justify-start min-h-screen py-0 lg:py-6 px-0 lg:px-4">
         
         {/* Main Container */}
-        <div className="w-full max-w-[1100px] bg-[#0A0A0A]/90 backdrop-blur-3xl lg:rounded-[32px] border border-white/5 shadow-[0_0_100px_rgba(0,0,0,1)] flex flex-col lg:grid lg:grid-cols-[1.1fr_0.9fr] lg:overflow-hidden min-h-screen lg:min-h-0 lg:max-h-none">
+        <div className="w-full max-w-[1100px] bg-[#0A0A0A]/90 backdrop-blur-3xl lg:rounded-[32px] border border-white/5 shadow-[0_0_100px_rgba(0,0,0,1)] flex flex-col lg:grid lg:grid-cols-[1.1fr_0.9fr] lg:overflow-hidden min-h-screen lg:min-h-0">
           
           {/* LEFT COLUMN: Authority & Visual */}
           <div className={`p-6 lg:p-10 flex flex-col transition-all duration-500 ${hasPaymentData ? 'lg:py-6 lg:max-h-[700px]' : 'lg:py-10'}`}>
@@ -244,15 +257,7 @@ function WmsAccessTerminalVisualShell({
             {/* Checkout Area */}
             <div className={`flex-1 relative z-10 flex flex-col wms-access-pix-panel ${hasPaymentData ? 'payment-focus' : ''}`}>
                <div className={`bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden transition-all duration-500 ${hasPaymentData ? 'p-0 bg-transparent border-none' : 'p-6 lg:p-8'}`}>
-                  {hasPaymentData ? (
-                    <div className="animate-in fade-in slide-in-from-bottom-3 duration-700">
-                       {pixSlot}
-                    </div>
-                  ) : (
-                    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-                       {formSlot}
-                    </div>
-                  )}
+                  {hasPaymentData ? pixSlot : formSlot}
                </div>
             </div>
 
@@ -353,6 +358,7 @@ function WmsAccessTerminalVisualShell({
           display: flex !important;
           align-items: center !important;
           justify-content: center !important;
+          overflow: hidden !important;
         }
 
         /* Subtext instruction */
@@ -439,6 +445,8 @@ function WmsAccessTerminalVisualShell({
           .wms-access-terminal, 
           .wms-access-terminal > div {
             overflow: visible !important;
+            height: auto !important;
+            min-height: 0 !important;
           }
         }
 
