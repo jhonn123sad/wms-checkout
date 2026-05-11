@@ -6,63 +6,14 @@ import { getSlotMedia } from "@/lib/designMediaSlots";
 import React from "react";
 
 /**
- * GlitchTitle
- * Efeito de glitch premium com camadas e burst controlado.
+ * AnomalyText
+ * Sistema de anomalia digital CSS-only, sem hooks ou JS.
  */
-function GlitchTitle({ text, className = "" }: { text: string; className?: string }) {
-  const [isGlitching, setIsGlitching] = React.useState(false);
-  const timeoutsRef = React.useRef<NodeJS.Timeout[]>([]);
-  const isMountedRef = React.useRef(true);
-
-  const clearAllTimeouts = React.useCallback(() => {
-    timeoutsRef.current.forEach(clearTimeout);
-    timeoutsRef.current = [];
-  }, []);
-
-  React.useEffect(() => {
-    isMountedRef.current = true;
-    const cycle = () => {
-      if (!isMountedRef.current) return;
-
-      const burstDuration = 250 + Math.random() * 200;
-      const waitDuration = 3000 + Math.random() * 5000;
-      
-      const waitTimeout = setTimeout(() => {
-        if (!isMountedRef.current) return;
-        setIsGlitching(true);
-        const burstTimeout = setTimeout(() => {
-          if (!isMountedRef.current) return;
-          setIsGlitching(false);
-          cycle();
-        }, burstDuration);
-        timeoutsRef.current.push(burstTimeout);
-      }, waitDuration);
-      
-      timeoutsRef.current.push(waitTimeout);
-    };
-    
-    cycle();
-    return () => {
-      isMountedRef.current = false;
-      clearAllTimeouts();
-    };
-  }, [clearAllTimeouts]);
-
+function AnomalyText({ text, className = "", intensity = "medium" }: { text: string; className?: string; intensity?: "low" | "medium" | "high" }) {
   return (
-    <div className={`relative inline-block ${className} ${isGlitching ? "glitch-active" : ""}`} data-text={text}>
-      <span className="relative z-10">{text}</span>
-      {isGlitching && (
-        <>
-          <span className="absolute inset-0 z-0 text-[#00FF41] opacity-60 translate-x-[1px] -translate-y-[0.5px] mix-blend-screen overflow-hidden whitespace-nowrap">
-            {text}
-          </span>
-          <span className="absolute inset-0 z-0 text-[#00e5ff] opacity-60 -translate-x-[1px] translate-y-[0.5px] mix-blend-screen overflow-hidden whitespace-nowrap">
-            {text}
-          </span>
-          <div className="absolute inset-0 z-20 bg-gradient-to-r from-transparent via-[#00FF41]/40 to-transparent w-full h-[2px] top-[40%] animate-scan-line-burst pointer-events-none shadow-[0_0_10px_#00FF41]"></div>
-        </>
-      )}
-    </div>
+    <span className={`anomaly-text ${intensity} ${className}`} data-text={text}>
+      {text}
+    </span>
   );
 }
 
@@ -70,25 +21,36 @@ function GlitchTitle({ text, className = "" }: { text: string; className?: strin
  * PriceDisplay
  * Renderiza o preço de forma refinada.
  */
-function PriceDisplay({ integer, decimal, label = "Valor do acesso", size = "large" }: any) {
+function PriceDisplay({ integer, decimal, label = "VALOR DO ACESSO", size = "large" }: any) {
   if (size === "small") {
     return (
       <div className="flex items-center gap-2 bg-[#00FF41]/10 border border-[#00FF41]/20 px-3 py-1 rounded-full backdrop-blur-sm">
-        <span className="text-[10px] lg:text-[11px] text-[#00FF41]/60 font-black uppercase tracking-widest">{label}:</span>
-        <span className="text-xs font-black text-white italic">R$ {integer},{decimal}</span>
+        <span className="text-[9px] lg:text-[10px] text-[#00FF41]/60 font-black uppercase tracking-widest">{label}:</span>
+        <span className="text-xs font-black text-white italic">R$ {integer},<span className="text-[#00FF41]">{decimal}</span></span>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col">
-      <span className="text-gray-500 text-[10px] lg:text-xs font-black tracking-[0.2em] uppercase italic mb-1">{label}</span>
-      <div className="flex items-baseline">
-        <span className="text-white text-[10px] lg:text-xs font-black mr-1 opacity-60">R$</span>
-        <span className="text-4xl lg:text-[44px] font-black text-white italic tracking-tighter leading-tight">{integer}</span>
-        <span className="text-xl lg:text-2xl font-black text-[#00FF41] italic opacity-90 leading-none">,{decimal}</span>
+    <div className="flex flex-col bg-white/[0.02] border border-white/5 p-4 lg:p-5 rounded-2xl group transition-all duration-300 hover:bg-white/[0.03]">
+      <span className="text-gray-500 text-[10px] lg:text-[11px] font-black tracking-[0.25em] uppercase italic mb-1 opacity-60">{label}</span>
+      <div className="flex items-baseline gap-1">
+        <span className="text-white text-[14px] lg:text-[18px] font-black opacity-40 italic">R$</span>
+        <div className="flex items-baseline">
+          <AnomalyText 
+            text={integer} 
+            intensity="low" 
+            className="text-[40px] lg:text-[52px] font-black text-white italic tracking-tighter leading-none" 
+          />
+          <span className="text-[20px] lg:text-[26px] font-black text-[#00FF41] italic leading-none ml-0.5">
+            <AnomalyText text={"," + decimal} intensity="low" />
+          </span>
+        </div>
       </div>
-      <span className="text-[10px] text-[#00FF41]/60 font-bold uppercase tracking-widest mt-1">Liberação imediata via Pix</span>
+      <div className="flex items-center gap-2 mt-2">
+        <div className="w-1 h-1 rounded-full bg-[#00FF41] animate-pulse"></div>
+        <span className="text-[9px] lg:text-[10px] text-[#00FF41]/60 font-black uppercase tracking-widest italic">Liberação imediata via Pix</span>
+      </div>
     </div>
   );
 }
@@ -169,50 +131,69 @@ function WmsAccessTerminalVisualShell({
                   </div>
                 </div>
                 
-                <div className="flex-1">
-                  <GlitchTitle text="Faça parte da maior Biblioteca do Digital" className="font-black tracking-tighter text-white uppercase italic leading-[1.1] block mb-2 text-[24px] lg:text-[40px] max-w-xl break-words" />
-                  <div className="flex items-center gap-2.5">
-                    <span className="px-1.5 py-0.5 bg-[#00FF41]/5 border border-[#00FF41]/10 text-[10px] lg:text-[11px] font-black text-[#00FF41]/70 tracking-[0.2em] rounded uppercase italic">
-                      ACESSO EXCLUSIVO
+                <div className="flex-1 flex flex-col justify-center">
+                  <div className="flex flex-col font-black tracking-tighter text-white uppercase italic leading-[0.95] mb-3">
+                    <span className="text-[14px] lg:text-[18px] opacity-70">FAÇA PARTE DA</span>
+                    <span className="text-[28px] lg:text-[46px] block">
+                      <AnomalyText text="MAIOR" className="text-[#00FF41]" /> BIBLIOTECA
                     </span>
-                    <div className="h-[1px] w-6 bg-[#00FF41]/10"></div>
+                    <span className="text-[20px] lg:text-[32px] opacity-90">
+                      DO <AnomalyText text="DIGITAL" intensity="low" />
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2.5">
+                    <AnomalyText 
+                      text="ACESSO EXCLUSIVO" 
+                      intensity="low"
+                      className="px-2 py-0.5 bg-[#00FF41]/10 border border-[#00FF41]/20 text-[10px] lg:text-[11px] font-black text-[#00FF41] tracking-[0.2em] rounded uppercase italic" 
+                    />
+                    <div className="h-[1px] w-8 bg-[#00FF41]/20"></div>
                   </div>
                 </div>
               </div>
               
-              <div className="relative pl-5 border-l-2 border-[#00FF41]/30">
-                <p className="text-gray-400 text-[14px] lg:text-[17px] font-medium leading-[1.5] italic max-w-md break-words">
+              <div className="relative pl-6 border-l border-[#00FF41]/20">
+                <p className="text-gray-400 text-[15px] lg:text-[18px] font-medium leading-relaxed italic max-w-md break-words opacity-80">
                   Uma biblioteca exclusiva para quem quer dominar a era da IA e acessar recursos, prompts, métodos e ferramentas poderosas.
                 </p>
               </div>
             </header>
 
             {/* Main Media Showcase */}
-            <div className="relative w-full bg-black rounded-2xl border border-white/5 overflow-hidden shadow-2xl group aspect-[16/10] mb-8 lg:mb-10 max-w-full">
+            <div className="relative w-full bg-black rounded-2xl border border-white/5 overflow-hidden shadow-2xl group aspect-[16/10] mb-6 lg:mb-8 max-w-full">
               <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 via-transparent to-black/20"></div>
               <div className="absolute inset-0 flex items-center justify-center scale-105 group-hover:scale-100 transition-transform duration-700">
                 {mainMediaSlot}
               </div>
-              <div className="absolute top-3 right-3 bg-black/80 backdrop-blur-xl border border-[#00FF41]/20 px-2.5 py-1 rounded-md z-20 flex items-center gap-1.5">
-                 <div className="w-1 h-1 rounded-full bg-[#00FF41] animate-pulse"></div>
-                 <span className="text-[10px] lg:text-[11px] text-[#00FF41] font-black uppercase tracking-widest italic">Faça parte — ou fique para trás</span>
+              <div className="absolute top-4 right-4 bg-black/80 backdrop-blur-xl border border-[#00FF41]/20 px-3 py-1.5 rounded-lg z-20 flex items-center gap-2">
+                 <div className="w-1.5 h-1.5 rounded-full bg-[#00FF41] animate-pulse shadow-[0_0_8px_#00FF41]"></div>
+                 <AnomalyText 
+                   text="Faça parte — ou fique para trás" 
+                   intensity="low"
+                   className="text-[10px] lg:text-[11px] text-[#00FF41] font-black uppercase tracking-[0.15em] italic" 
+                 />
               </div>
             </div>
 
             {/* Proof Section */}
-            <div className="grid gap-3 grid-cols-1 md:grid-cols-3 mt-8 lg:mt-10">
+            <div className="grid gap-4 grid-cols-1 md:grid-cols-3 mt-auto pt-6">
               {[
                 { title: 'Prompts', desc: 'Obtenha vantagem', slot: proofMedia1Slot },
                 { title: 'Métodos', desc: 'Aplique com clareza', slot: proofMedia2Slot },
                 { title: 'Insights', desc: 'Siga com direção', slot: proofMedia3Slot }
               ].map((card, idx) => (
-                <div key={idx} className="bg-white/[0.02] border border-white/5 p-2 rounded-xl flex items-center gap-2 group hover:bg-[#00FF41]/5 transition-all duration-300 min-w-0">
-                  <div className="bg-black border border-white/10 rounded-lg flex items-center justify-center overflow-hidden shrink-0 group-hover:border-[#00FF41]/20 transition-colors w-10 h-7">
+                <div key={idx} className="bg-white/[0.02] border border-white/5 p-3 rounded-2xl flex items-center gap-3 group hover:bg-[#00FF41]/5 transition-all duration-500 min-w-0">
+                  <div className="bg-black border border-white/10 rounded-xl flex items-center justify-center overflow-hidden shrink-0 group-hover:border-[#00FF41]/20 transition-colors w-12 h-9 shadow-lg">
                     {card.slot}
                   </div>
                   <div className="flex flex-col min-w-0 overflow-hidden">
-                    <span className="font-black text-gray-400 uppercase tracking-widest italic group-hover:text-[#00FF41]/80 transition-all text-[12px] truncate">{card.title}</span>
-                    <span className="text-[11px] text-gray-600 font-medium italic truncate">{card.desc}</span>
+                    <AnomalyText 
+                      text={card.title} 
+                      intensity="low"
+                      className="font-black text-gray-400 uppercase tracking-[0.2em] italic group-hover:text-[#00FF41]/90 transition-all text-[12px] lg:text-[13px] truncate" 
+                    />
+                    <span className="text-[11px] lg:text-[12px] text-gray-600 font-medium italic truncate opacity-80">{card.desc}</span>
                   </div>
                 </div>
               ))}
@@ -223,33 +204,35 @@ function WmsAccessTerminalVisualShell({
           <div className="bg-[#050505]/90 p-6 lg:p-10 flex flex-col border-t lg:border-t-0 lg:border-l border-white/10 relative overflow-hidden min-w-0 w-full">
             
             {/* Payment Header */}
-            <div className="relative z-10 mb-8 lg:mb-10">
+            <div className="relative z-10 mb-5 lg:mb-6">
               {hasPaymentData ? (
                 <div className="flex flex-col gap-3">
-                  <div className="flex items-center justify-between bg-[#00FF41]/5 border border-[#00FF41]/10 px-4 py-3 rounded-2xl backdrop-blur-sm">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-2 h-2 rounded-full bg-[#00FF41] shadow-[0_0_10px_#00FF41] animate-pulse"></div>
-                      <h2 className="text-[10px] lg:text-xs font-black text-[#00FF41] tracking-[0.2em] uppercase italic">Pix gerado</h2>
+                  <div className="flex items-center justify-between bg-[#00FF41]/5 border border-[#00FF41]/10 px-5 py-4 rounded-2xl backdrop-blur-md">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2.5 h-2.5 rounded-full bg-[#00FF41] shadow-[0_0_12px_#00FF41] animate-pulse"></div>
+                      <h2 className="text-[10px] lg:text-xs font-black text-[#00FF41] tracking-[0.25em] uppercase italic">Pix gerado</h2>
                     </div>
                     <PriceDisplay integer={integerPart} decimal={decimalPart} label="Total" size="small" />
                   </div>
                   <div className="flex flex-col gap-1 pl-1">
-                    <p className="text-[10px] lg:text-[11px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed break-words">
+                    <p className="text-[10px] lg:text-[11px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed break-words opacity-70">
                       Escaneie o QR Code ou copie o código Pix para concluir seu acesso.
                     </p>
                   </div>
                 </div>
               ) : (
-                <div className="flex flex-col gap-6">
-                  <PriceDisplay integer={integerPart} decimal={decimalPart} />
-                </div>
+                <PriceDisplay integer={integerPart} decimal={decimalPart} />
               )}
             </div>
 
             {/* Checkout Area */}
-            <div className="flex-1 relative z-10 flex flex-col wms-access-pix-panel">
-                <div className={`bg-white/[0.03] border border-white/10 rounded-2xl transition-all duration-500 ${hasPaymentData ? 'p-4 lg:p-6 overflow-visible' : 'p-6 lg:p-8 overflow-hidden'}`}>
-                   {hasPaymentData ? pixSlot : formSlot}
+            <div className="flex-1 relative z-10 flex flex-col wms-access-pix-panel min-h-0">
+                <div className={`bg-white/[0.03] border border-white/10 rounded-2xl transition-all duration-500 shadow-2xl ${hasPaymentData ? 'p-0 overflow-visible' : 'p-5 lg:p-7 overflow-hidden'}`}>
+                   {hasPaymentData ? (
+                     <div className="w-full max-w-full min-w-0 overflow-hidden rounded-2xl bg-white">
+                       {pixSlot}
+                     </div>
+                   ) : formSlot}
                 </div>
             </div>
 
@@ -283,24 +266,55 @@ function WmsAccessTerminalVisualShell({
           --wms-cyan: #00e5ff;
         }
 
-        @keyframes scan-line-burst {
-          0% { transform: translateY(-150%); opacity: 0; }
-          50% { opacity: 1; }
-          100% { transform: translateY(150%); opacity: 0; }
+        @keyframes anomaly-glitch-1 {
+          0%, 80%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); filter: none; }
+          82% { clip-path: inset(10% 0 80% 0); transform: translate(-2px, -1px); filter: hue-rotate(90deg) brightness(1.2); }
+          84% { clip-path: inset(50% 0 30% 0); transform: translate(2px, 1px); filter: hue-rotate(-90deg); }
+          86% { clip-path: inset(20% 0 60% 0); transform: translate(-1px, 2px); }
+          88% { clip-path: inset(70% 0 10% 0); transform: translate(1px, -2px); filter: saturate(2); }
+          90% { clip-path: inset(40% 0 40% 0); transform: translate(-3px, 0); }
+          92% { clip-path: inset(0 0 0 0); transform: translate(0); }
         }
-        .animate-scan-line-burst { animation: scan-line-burst 0.8s ease-in-out infinite; }
 
-        .glitch-active {
-          animation: glitch-skew 0.25s cubic-bezier(.25,.46,.45,.94) both infinite;
+        @keyframes anomaly-glitch-2 {
+          0%, 80%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); opacity: 0; }
+          82% { clip-path: inset(20% 0 50% 0); transform: translate(3px, 1px); opacity: 0.7; color: var(--wms-cyan); }
+          85% { clip-path: inset(60% 0 20% 0); transform: translate(-3px, -1px); opacity: 0.7; color: var(--wms-neon); }
+          88% { clip-path: inset(10% 0 70% 0); transform: translate(2px, 2px); opacity: 0.7; color: var(--wms-cyan); }
+          92% { clip-path: inset(0 0 0 0); transform: translate(0); opacity: 0; }
         }
-        @keyframes glitch-skew {
-          0% { transform: skew(0deg); }
-          20% { transform: skew(3deg); filter: hue-rotate(90deg); }
-          40% { transform: skew(-2deg); }
-          60% { transform: skew(1deg); filter: hue-rotate(-90deg); }
-          80% { transform: skew(-3deg); }
-          100% { transform: skew(0deg); }
+
+        .anomaly-text {
+          position: relative;
+          display: inline-block;
+          white-space: nowrap;
         }
+
+        .anomaly-text::before,
+        .anomaly-text::after {
+          content: attr(data-text);
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+        }
+
+        .anomaly-text::before {
+          z-index: -1;
+          animation: anomaly-glitch-1 8s infinite linear alternate-reverse;
+        }
+
+        .anomaly-text::after {
+          z-index: -2;
+          animation: anomaly-glitch-2 8s infinite linear alternate-reverse;
+          mix-blend-mode: screen;
+        }
+
+        .anomaly-text.low::before, .anomaly-text.low::after { animation-duration: 10s; }
+        .anomaly-text.high::before, .anomaly-text.high::after { animation-duration: 6s; }
+
 
         .sm-scanlines {
            background: linear-gradient(rgba(255,255,255,0) 50%, rgba(255,255,255,0.015) 50%);
