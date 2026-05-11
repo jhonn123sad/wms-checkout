@@ -70,11 +70,11 @@ function GlitchTitle({ text, className = "" }: { text: string; className?: strin
  * PriceDisplay
  * Renderiza o preço de forma refinada.
  */
-function PriceDisplay({ integer, decimal, label = "VALOR DO ACESSO", size = "large" }: any) {
+function PriceDisplay({ integer, decimal, label = "Valor do acesso", size = "large" }: any) {
   if (size === "small") {
     return (
       <div className="flex items-center gap-2 bg-[#00FF41]/10 border border-[#00FF41]/20 px-3 py-1 rounded-full backdrop-blur-sm">
-        <span className="text-[8px] text-[#00FF41]/60 font-black uppercase tracking-widest">{label}:</span>
+        <span className="text-[10px] lg:text-[11px] text-[#00FF41]/60 font-black uppercase tracking-widest">{label}:</span>
         <span className="text-xs font-black text-white italic">R$ {integer},{decimal}</span>
       </div>
     );
@@ -82,12 +82,13 @@ function PriceDisplay({ integer, decimal, label = "VALOR DO ACESSO", size = "lar
 
   return (
     <div className="flex flex-col">
-      <span className="text-gray-500 text-[9px] font-black tracking-[0.2em] uppercase italic mb-1">{label}</span>
+      <span className="text-gray-500 text-[10px] lg:text-xs font-black tracking-[0.2em] uppercase italic mb-1">{label}</span>
       <div className="flex items-baseline">
         <span className="text-white text-[10px] lg:text-xs font-black mr-1 opacity-60">R$</span>
-        <span className="text-4xl lg:text-5xl font-black text-white italic tracking-tighter leading-none">{integer}</span>
+        <span className="text-4xl lg:text-[44px] font-black text-white italic tracking-tighter leading-tight">{integer}</span>
         <span className="text-xl lg:text-2xl font-black text-[#00FF41] italic opacity-90 leading-none">,{decimal}</span>
       </div>
+      <span className="text-[10px] text-[#00FF41]/60 font-bold uppercase tracking-widest mt-1">Liberação imediata via Pix</span>
     </div>
   );
 }
@@ -150,13 +151,13 @@ function WmsAccessTerminalVisualShell({
         <div className="absolute inset-0 grayscale opacity-10">{heroBackgroundSlot}</div>
       </div>
 
-      <div className="relative z-10 flex flex-col items-center justify-start min-h-screen py-0 lg:py-6 px-0 lg:px-4">
+      <div className="relative z-10 flex flex-col items-center justify-start min-h-screen py-0 lg:py-6 px-0 lg:px-4 w-full max-w-full overflow-x-hidden">
         
         {/* Main Container */}
-        <div className="w-full max-w-[1100px] bg-[#0A0A0A]/90 backdrop-blur-3xl lg:rounded-[32px] border border-white/5 shadow-[0_0_100px_rgba(0,0,0,1)] flex flex-col lg:grid lg:grid-cols-[1.1fr_0.9fr] lg:overflow-visible min-h-screen lg:min-h-0">
+        <div className="w-full max-w-[1100px] bg-[#0A0A0A]/90 backdrop-blur-3xl lg:rounded-[32px] border border-white/5 shadow-[0_0_100px_rgba(0,0,0,1)] flex flex-col lg:grid lg:grid-cols-[1.1fr_0.9fr] lg:overflow-visible min-h-screen lg:min-h-0 min-w-0">
           
           {/* LEFT COLUMN: Authority & Visual */}
-          <div className="p-6 lg:p-10 flex flex-col py-6 lg:py-10">
+          <div className="p-6 lg:p-10 flex flex-col py-6 lg:py-10 min-w-0 w-full">
             
             {/* Header */}
             <header className="relative mb-8 lg:mb-10">
@@ -169,10 +170,10 @@ function WmsAccessTerminalVisualShell({
                 </div>
                 
                 <div className="flex-1">
-                  <GlitchTitle text="Ferramentas" className="font-black tracking-tighter text-white uppercase italic leading-none block mb-1.5 text-2xl lg:text-3xl" />
+                  <GlitchTitle text="Faça parte da maior Biblioteca do Digital" className="font-black tracking-tighter text-white uppercase italic leading-[1.1] block mb-2 text-[24px] lg:text-[40px] max-w-xl break-words" />
                   <div className="flex items-center gap-2.5">
-                    <span className="px-1.5 py-0.5 bg-[#00FF41]/5 border border-[#00FF41]/10 text-[8px] font-black text-[#00FF41]/70 tracking-[0.2em] rounded uppercase italic">
-                      ESTADO PRIVADO
+                    <span className="px-1.5 py-0.5 bg-[#00FF41]/5 border border-[#00FF41]/10 text-[10px] lg:text-[11px] font-black text-[#00FF41]/70 tracking-[0.2em] rounded uppercase italic">
+                      ACESSO EXCLUSIVO
                     </span>
                     <div className="h-[1px] w-6 bg-[#00FF41]/10"></div>
                   </div>
@@ -180,37 +181,38 @@ function WmsAccessTerminalVisualShell({
               </div>
               
               <div className="relative pl-5 border-l-2 border-[#00FF41]/30">
-                <p className="text-gray-400 text-xs font-medium leading-relaxed italic max-w-md lg:text-2xl">
-                  Acesso exclusivo ao terminal de operações WMS. Execute sua visão com método e tecnologia de ponta.
+                <p className="text-gray-400 text-[14px] lg:text-[17px] font-medium leading-[1.5] italic max-w-md break-words">
+                  Uma biblioteca exclusiva para quem quer dominar a era da IA e acessar recursos, prompts, métodos e ferramentas poderosas.
                 </p>
               </div>
             </header>
 
             {/* Main Media Showcase */}
-            <div className="relative w-full bg-black rounded-2xl border border-white/5 overflow-hidden shadow-2xl group aspect-[16/10] mb-8 lg:mb-10">
+            <div className="relative w-full bg-black rounded-2xl border border-white/5 overflow-hidden shadow-2xl group aspect-[16/10] mb-8 lg:mb-10 max-w-full">
               <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 via-transparent to-black/20"></div>
               <div className="absolute inset-0 flex items-center justify-center scale-105 group-hover:scale-100 transition-transform duration-700">
                 {mainMediaSlot}
               </div>
               <div className="absolute top-3 right-3 bg-black/80 backdrop-blur-xl border border-[#00FF41]/20 px-2.5 py-1 rounded-md z-20 flex items-center gap-1.5">
                  <div className="w-1 h-1 rounded-full bg-[#00FF41] animate-pulse"></div>
-                 <span className="text-[8px] text-[#00FF41] font-black uppercase tracking-widest italic">CONTEÚDO PROTEGIDO</span>
+                 <span className="text-[10px] lg:text-[11px] text-[#00FF41] font-black uppercase tracking-widest italic">Faça parte — ou fique para trás</span>
               </div>
             </div>
 
             {/* Proof Section */}
             <div className="grid gap-3 grid-cols-1 md:grid-cols-3 mt-8 lg:mt-10">
               {[
-                { label: 'OPERAÇÃO', slot: proofMedia1Slot },
-                { label: 'REDE', slot: proofMedia2Slot },
-                { label: 'RESULTADO', slot: proofMedia3Slot }
+                { title: 'Prompts', desc: 'Obtenha vantagem', slot: proofMedia1Slot },
+                { title: 'Métodos', desc: 'Aplique com clareza', slot: proofMedia2Slot },
+                { title: 'Insights', desc: 'Siga com direção', slot: proofMedia3Slot }
               ].map((card, idx) => (
-                <div key={idx} className="bg-white/[0.02] border border-white/5 p-2 rounded-xl flex items-center gap-2 group hover:bg-[#00FF41]/5 transition-all duration-300">
+                <div key={idx} className="bg-white/[0.02] border border-white/5 p-2 rounded-xl flex items-center gap-2 group hover:bg-[#00FF41]/5 transition-all duration-300 min-w-0">
                   <div className="bg-black border border-white/10 rounded-lg flex items-center justify-center overflow-hidden shrink-0 group-hover:border-[#00FF41]/20 transition-colors w-10 h-7">
                     {card.slot}
                   </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="font-black text-gray-500 uppercase tracking-widest italic group-hover:text-[#00FF41]/60 transition-all text-[8px]">{card.label}</span>
+                  <div className="flex flex-col min-w-0 overflow-hidden">
+                    <span className="font-black text-gray-400 uppercase tracking-widest italic group-hover:text-[#00FF41]/80 transition-all text-[12px] truncate">{card.title}</span>
+                    <span className="text-[11px] text-gray-600 font-medium italic truncate">{card.desc}</span>
                   </div>
                 </div>
               ))}
@@ -218,7 +220,7 @@ function WmsAccessTerminalVisualShell({
           </div>
 
           {/* RIGHT COLUMN: Transactional */}
-          <div className="bg-[#050505]/90 p-6 lg:p-10 flex flex-col border-t lg:border-t-0 lg:border-l border-white/10 relative overflow-hidden">
+          <div className="bg-[#050505]/90 p-6 lg:p-10 flex flex-col border-t lg:border-t-0 lg:border-l border-white/10 relative overflow-hidden min-w-0 w-full">
             
             {/* Payment Header */}
             <div className="relative z-10 mb-8 lg:mb-10">
@@ -227,26 +229,19 @@ function WmsAccessTerminalVisualShell({
                   <div className="flex items-center justify-between bg-[#00FF41]/5 border border-[#00FF41]/10 px-4 py-3 rounded-2xl backdrop-blur-sm">
                     <div className="flex items-center gap-2.5">
                       <div className="w-2 h-2 rounded-full bg-[#00FF41] shadow-[0_0_10px_#00FF41] animate-pulse"></div>
-                      <h2 className="text-[10px] lg:text-xs font-black text-[#00FF41] tracking-[0.2em] uppercase italic">PIX GERADO</h2>
+                      <h2 className="text-[10px] lg:text-xs font-black text-[#00FF41] tracking-[0.2em] uppercase italic">Pix gerado</h2>
                     </div>
-                    <PriceDisplay integer={integerPart} decimal={decimalPart} label="TOTAL" size="small" />
+                    <PriceDisplay integer={integerPart} decimal={decimalPart} label="Total" size="small" />
                   </div>
                   <div className="flex flex-col gap-1 pl-1">
-                    <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed">
-                      Escaneie o QR ou copie o código. 
-                    </p>
-                    <p className="text-[9px] text-[#00FF41]/60 font-bold uppercase tracking-widest leading-relaxed italic">
-                      O acesso será liberado após a confirmação.
+                    <p className="text-[10px] lg:text-[11px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed break-words">
+                      Escaneie o QR Code ou copie o código Pix para concluir seu acesso.
                     </p>
                   </div>
                 </div>
               ) : (
                 <div className="flex flex-col gap-6">
                   <PriceDisplay integer={integerPart} decimal={decimalPart} />
-                  <div className="flex items-center gap-2 bg-[#00FF41]/5 border border-[#00FF41]/10 px-3 py-2 rounded-xl">
-                    <div className="w-1 h-1 rounded-full bg-[#00FF41]/40"></div>
-                    <span className="text-[9px] text-[#00FF41]/60 font-bold uppercase tracking-widest">LIBERAÇÃO AUTOMÁTICA VIA PIX</span>
-                  </div>
                 </div>
               )}
             </div>
@@ -266,8 +261,8 @@ function WmsAccessTerminalVisualShell({
                   {trustBadgeSlot}
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-white text-[9px] font-black tracking-widest uppercase italic">PAGAMENTO SEGURO</span>
-                  <p className="text-[#00FF41]/50 text-[8px] font-bold uppercase tracking-widest italic">TERMINAL PROTEGIDO</p>
+                  <span className="text-white text-[11px] lg:text-[12px] font-black tracking-widest uppercase italic">Acesso protegido</span>
+                  <p className="text-[#00FF41]/50 text-[10px] lg:text-[11px] font-bold uppercase tracking-widest italic">A oportunidade é agora</p>
                 </div>
               </div>
               <div className="hidden sm:flex flex-col items-end opacity-20">
@@ -343,7 +338,7 @@ function WmsAccessTerminalVisualShell({
         @media (max-width: 1024px) {
           .wms-access-terminal, 
           .wms-access-terminal > div {
-            overflow: visible !important;
+            overflow-x: hidden !important;
             height: auto !important;
             min-height: 0 !important;
           }
@@ -426,7 +421,7 @@ export function WmsAccessTerminalCheckout(props: any) {
             <div key={field.id || field.field_name} className="group space-y-1.5">
               <Label 
                 htmlFor={field.field_name} 
-                className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1 group-focus-within:text-[#00FF41] transition-colors italic"
+                className="text-[10px] lg:text-[11px] font-black text-gray-500 uppercase tracking-widest ml-1 group-focus-within:text-[#00FF41] transition-colors italic"
               >
                 {field.field_label}
               </Label>
@@ -435,7 +430,7 @@ export function WmsAccessTerminalCheckout(props: any) {
                 type={field.field_type?.replace("hidden:", "") || "text"}
                 placeholder={`Seu ${field.field_label.toLowerCase()}`}
                 required={field.required}
-                className="h-12 bg-white/[0.04] border-white/5 text-white focus:bg-white/[0.06] focus:ring-1 focus:ring-[#00FF41]/30 focus:border-[#00FF41]/50 transition-all rounded-xl placeholder:text-gray-700 text-base px-5"
+                className="h-12 bg-white/[0.04] border-white/5 text-white focus:bg-white/[0.06] focus:ring-1 focus:ring-[#00FF41]/30 focus:border-[#00FF41]/50 transition-all rounded-xl placeholder:text-gray-700 text-base px-5 appearance-none"
                 value={formData[field.field_name] || ""}
                 onChange={(e) => handleInputChange(field.field_name, e.target.value)}
               />
@@ -447,9 +442,9 @@ export function WmsAccessTerminalCheckout(props: any) {
         <Button
           type="submit"
           disabled={loading}
-          className="w-full h-14 bg-[#00FF41] hover:bg-[#00FF41]/90 text-black font-black uppercase tracking-[0.1em] text-sm lg:text-base rounded-2xl shadow-[0_0_20px_rgba(0,255,65,0.2)] transition-all active:scale-[0.98] italic"
+          className="w-full h-14 bg-[#00FF41] hover:bg-[#00FF41]/90 text-black font-black uppercase tracking-tight text-[14px] lg:text-[16px] rounded-2xl shadow-[0_0_20px_rgba(0,255,65,0.2)] transition-all active:scale-[0.98] italic px-4"
         >
-          {loading ? "CONECTANDO..." : (checkout.cta_text || "LIBERAR ACESSO AGORA")}
+          {loading ? "Gerando acesso..." : (checkout.cta_text || "Acessar a biblioteca agora")}
         </Button>
       </div>
     </div>
