@@ -93,71 +93,6 @@ function PriceDisplay({ integer, decimal, label = "VALOR DO ACESSO", size = "lar
 }
 
 /**
- * PaymentOverlay
- * Camada fixa que isola o Pix acima de todo o layout.
- */
-function PaymentOverlay({ pixSlot, integer, decimal, logoIconSlot }: any) {
-  return (
-    <div className="fixed inset-0 z-[99999] isolate overflow-y-auto overflow-x-hidden bg-[#020202] flex flex-col items-center justify-start py-8 px-4">
-      {/* Background Visual Premium */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(0,255,65,0.08)_0%,transparent_70%,black_100%)]"></div>
-        <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(rgba(0,255,65,.5)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,65,.5)_1px,transparent_1px)] bg-[length:60px_60px]"></div>
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.04),rgba(0,255,0,0.01),rgba(0,0,255,0.04))] bg-[length:100%_2px,3px_100%] opacity-20"></div>
-      </div>
-
-      <div className="relative z-10 w-full max-w-[480px] animate-in fade-in zoom-in duration-500">
-        {/* Header no Overlay */}
-        <div className="flex flex-col items-center mb-8">
-           <div className="w-16 h-16 border border-[#00FF41]/20 rounded-2xl p-1 bg-black/80 shadow-[0_0_40px_rgba(0,255,65,0.15)] mb-4 flex items-center justify-center overflow-hidden">
-              {logoIconSlot}
-           </div>
-           <GlitchTitle text="WEB MONEY SOCIETY" className="text-2xl font-black tracking-tighter text-white uppercase italic mb-1" />
-           <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#00FF41] shadow-[0_0_10px_#00FF41] animate-pulse"></span>
-              <span className="text-[10px] text-[#00FF41] font-black tracking-[0.2em] uppercase italic">PAGAMENTO PENDENTE</span>
-           </div>
-        </div>
-
-        {/* Card Central do Pix */}
-        <div className="bg-[#0A0A0A] border border-white/10 rounded-[32px] p-6 lg:p-8 shadow-[0_40px_100px_rgba(0,0,0,0.8)] relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#00FF41]/40 to-transparent"></div>
-          
-          <div className="flex flex-col items-center gap-6">
-            <div className="flex flex-col items-center text-center gap-2">
-              <h3 className="text-white text-xl font-black italic tracking-tight uppercase">PIX GERADO</h3>
-              <p className="text-gray-400 text-[11px] font-bold uppercase tracking-widest leading-relaxed">
-                Escaneie o QR Code ou copie o código Pix abaixo.
-              </p>
-            </div>
-
-            <div className="w-full bg-[#00FF41]/5 border border-[#00FF41]/10 px-4 py-3 rounded-2xl flex items-center justify-between backdrop-blur-sm">
-              <span className="text-[9px] text-gray-500 font-black uppercase tracking-widest italic">VALOR TOTAL</span>
-              <PriceDisplay integer={integer} decimal={decimal} size="small" />
-            </div>
-
-            {/* Pix real dentro de container isolado */}
-            <div className="wms-access-pix-overlay-panel w-full">
-              {pixSlot}
-            </div>
-
-            <div className="flex flex-col items-center gap-2">
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-black/40 border border-white/5 rounded-full">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#00FF41]/40"></div>
-                <span className="text-[8px] text-gray-500 font-bold uppercase tracking-widest italic">PAGAMENTO SEGURO</span>
-              </div>
-              <p className="text-[9px] text-gray-600 font-medium uppercase tracking-[0.1em] italic text-center">
-                O acesso será liberado automaticamente após a confirmação.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/**
  * WmsAccessTerminalVisualShell
  */
 function WmsAccessTerminalVisualShell({
@@ -215,28 +150,18 @@ function WmsAccessTerminalVisualShell({
         <div className="absolute inset-0 grayscale opacity-10">{heroBackgroundSlot}</div>
       </div>
 
-      {/* PAYMENT OVERLAY - SEMPRE ACIMA SE TIVER DADOS */}
-      {hasPaymentData && (
-        <PaymentOverlay 
-          pixSlot={pixSlot} 
-          integer={integerPart} 
-          decimal={decimalPart} 
-          logoIconSlot={logoIconSlot} 
-        />
-      )}
-
       <div className="relative z-10 flex flex-col items-center justify-start min-h-screen py-0 lg:py-6 px-0 lg:px-4">
         
         {/* Main Container */}
         <div className="w-full max-w-[1100px] bg-[#0A0A0A]/90 backdrop-blur-3xl lg:rounded-[32px] border border-white/5 shadow-[0_0_100px_rgba(0,0,0,1)] flex flex-col lg:grid lg:grid-cols-[1.1fr_0.9fr] lg:overflow-hidden min-h-screen lg:min-h-0">
           
           {/* LEFT COLUMN: Authority & Visual */}
-          <div className={`p-6 lg:p-10 flex flex-col transition-all duration-500 ${hasPaymentData ? 'lg:py-6 lg:max-h-[700px]' : 'lg:py-10'}`}>
+          <div className="p-6 lg:p-10 flex flex-col py-6 lg:py-10">
             
             {/* Header */}
-            <header className={`relative transition-all duration-500 ${hasPaymentData ? 'mb-4 lg:mb-6' : 'mb-8 lg:mb-10'}`}>
+            <header className="relative mb-8 lg:mb-10">
               <div className="flex items-center gap-4 lg:gap-6 mb-4 lg:mb-6">
-                <div className={`relative flex items-center justify-center border border-[#00FF41]/20 rounded-xl p-1 bg-black/80 shadow-[0_0_30px_rgba(0,255,65,0.1)] group overflow-hidden transition-all duration-500 ${hasPaymentData ? 'w-10 h-10 lg:w-12 lg:h-12' : 'w-14 h-14 lg:w-18 lg:h-18'}`}>
+                <div className="relative flex items-center justify-center border border-[#00FF41]/20 rounded-xl p-1 bg-black/80 shadow-[0_0_30px_rgba(0,255,65,0.1)] group overflow-hidden w-14 h-14 lg:w-18 lg:h-18">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#00FF41]/10 to-transparent"></div>
                   <div className="w-full h-full rounded-lg border border-dashed border-[#00FF41]/20 flex items-center justify-center overflow-hidden">
                     {logoIconSlot}
@@ -244,27 +169,25 @@ function WmsAccessTerminalVisualShell({
                 </div>
                 
                 <div className="flex-1">
-                  <GlitchTitle text="WEB MONEY SOCIETY" className={`font-black tracking-tighter text-white uppercase italic leading-none block mb-1.5 transition-all duration-500 ${hasPaymentData ? 'text-lg lg:text-xl' : 'text-2xl lg:text-3xl'}`} />
+                  <GlitchTitle text="WEB MONEY SOCIETY" className="font-black tracking-tighter text-white uppercase italic leading-none block mb-1.5 text-2xl lg:text-3xl" />
                   <div className="flex items-center gap-2.5">
                     <span className="px-1.5 py-0.5 bg-[#00FF41]/5 border border-[#00FF41]/10 text-[8px] font-black text-[#00FF41]/70 tracking-[0.2em] rounded uppercase italic">
-                      {hasPaymentData ? 'TERMINAL_SECURE' : 'ESTADO PRIVADO'}
+                      ESTADO PRIVADO
                     </span>
                     <div className="h-[1px] w-6 bg-[#00FF41]/10"></div>
                   </div>
                 </div>
               </div>
               
-              {!hasPaymentData && (
-                <div className="relative pl-5 border-l-2 border-[#00FF41]/30">
-                  <p className="text-gray-400 text-xs lg:text-[13px] font-medium leading-relaxed italic max-w-md">
-                    Acesso exclusivo ao terminal de operações WMS. Execute sua visão com método e tecnologia de ponta.
-                  </p>
-                </div>
-              )}
+              <div className="relative pl-5 border-l-2 border-[#00FF41]/30">
+                <p className="text-gray-400 text-xs lg:text-[13px] font-medium leading-relaxed italic max-w-md">
+                  Acesso exclusivo ao terminal de operações WMS. Execute sua visão com método e tecnologia de ponta.
+                </p>
+              </div>
             </header>
 
             {/* Main Media Showcase */}
-            <div className={`relative w-full bg-black rounded-2xl border border-white/5 overflow-hidden shadow-2xl group transition-all duration-500 ${hasPaymentData ? 'hidden lg:block aspect-video lg:max-w-[340px] mx-auto mb-4 lg:mb-6' : 'aspect-[16/10] mb-8 lg:mb-10'}`}>
+            <div className="relative w-full bg-black rounded-2xl border border-white/5 overflow-hidden shadow-2xl group aspect-[16/10] mb-8 lg:mb-10">
               <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 via-transparent to-black/20"></div>
               <div className="absolute inset-0 flex items-center justify-center scale-105 group-hover:scale-100 transition-transform duration-700">
                 {mainMediaSlot}
@@ -275,20 +198,19 @@ function WmsAccessTerminalVisualShell({
               </div>
             </div>
 
-            {/* Proof Section - Escondida no mobile se tiver paymentData */}
-            <div className={`grid gap-3 transition-all duration-500 ${hasPaymentData ? 'hidden lg:grid grid-cols-3 max-w-[340px] mx-auto' : 'grid-cols-1 md:grid-cols-3 mt-auto'}`}>
-
+            {/* Proof Section */}
+            <div className="grid gap-3 grid-cols-1 md:grid-cols-3 mt-auto">
               {[
                 { label: 'OPERAÇÃO', slot: proofMedia1Slot },
                 { label: 'REDE', slot: proofMedia2Slot },
                 { label: 'RESULTADO', slot: proofMedia3Slot }
               ].map((card, idx) => (
-                <div key={idx} className={`bg-white/[0.02] border border-white/5 p-2 rounded-xl flex items-center gap-2 group hover:bg-[#00FF41]/5 transition-all duration-300 ${hasPaymentData ? 'flex-col justify-center text-center' : ''}`}>
-                  <div className={`bg-black border border-white/10 rounded-lg flex items-center justify-center overflow-hidden shrink-0 group-hover:border-[#00FF41]/20 transition-colors ${hasPaymentData ? 'w-8 h-6' : 'w-10 h-7'}`}>
+                <div key={idx} className="bg-white/[0.02] border border-white/5 p-2 rounded-xl flex items-center gap-2 group hover:bg-[#00FF41]/5 transition-all duration-300">
+                  <div className="bg-black border border-white/10 rounded-lg flex items-center justify-center overflow-hidden shrink-0 group-hover:border-[#00FF41]/20 transition-colors w-10 h-7">
                     {card.slot}
                   </div>
                   <div className="flex flex-col min-w-0">
-                    <span className={`font-black text-gray-500 uppercase tracking-widest italic group-hover:text-[#00FF41]/60 transition-all ${hasPaymentData ? 'text-[6px]' : 'text-[8px]'}`}>{card.label}</span>
+                    <span className="font-black text-gray-500 uppercase tracking-widest italic group-hover:text-[#00FF41]/60 transition-all text-[8px]">{card.label}</span>
                   </div>
                 </div>
               ))}
@@ -299,7 +221,7 @@ function WmsAccessTerminalVisualShell({
           <div className="bg-[#050505]/90 p-6 lg:p-10 flex flex-col border-t lg:border-t-0 lg:border-l border-white/10 relative overflow-hidden">
             
             {/* Payment Header */}
-            <div className={`relative z-10 transition-all duration-500 ${hasPaymentData ? 'mb-6 lg:mb-8' : 'mb-8 lg:mb-10'}`}>
+            <div className="relative z-10 mb-8 lg:mb-10">
               {hasPaymentData ? (
                 <div className="flex flex-col gap-3">
                   <div className="flex items-center justify-between bg-[#00FF41]/5 border border-[#00FF41]/10 px-4 py-3 rounded-2xl backdrop-blur-sm">
@@ -332,10 +254,10 @@ function WmsAccessTerminalVisualShell({
             {/* Checkout Area */}
             <div className={`flex-1 relative z-10 flex flex-col wms-access-pix-panel ${hasPaymentData ? 'payment-focus' : ''}`}>
                <div className={`bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden transition-all duration-500 ${hasPaymentData ? 'p-0 bg-transparent border-none' : 'p-6 lg:p-8'}`}>
-                  {/* Se tiver paymentData, o Pix renderiza no overlay acima, aqui deixamos vazio para evitar duplicação */}
-                  {hasPaymentData ? null : formSlot}
+                  {hasPaymentData ? pixSlot : formSlot}
                </div>
             </div>
+
 
             {/* Trust Section */}
             <footer className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between relative z-10">
