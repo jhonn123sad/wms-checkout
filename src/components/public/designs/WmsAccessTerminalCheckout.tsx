@@ -11,7 +11,8 @@ import React from "react";
  */
 function GlitchTitle({ text, className = "" }: { text: string; className?: string }) {
   const [isGlitching, setIsGlitching] = React.useState(false);
-  const timeoutsRef = React.useRef<number[]>([]);
+  const timeoutsRef = React.useRef<NodeJS.Timeout[]>([]);
+  const isMountedRef = React.useRef(true);
 
   const clearAllTimeouts = React.useCallback(() => {
     timeoutsRef.current.forEach(clearTimeout);
@@ -19,13 +20,18 @@ function GlitchTitle({ text, className = "" }: { text: string; className?: strin
   }, []);
 
   React.useEffect(() => {
+    isMountedRef.current = true;
     const cycle = () => {
+      if (!isMountedRef.current) return;
+
       const burstDuration = 250 + Math.random() * 200;
       const waitDuration = 3000 + Math.random() * 5000;
       
-      const waitTimeout = window.setTimeout(() => {
+      const waitTimeout = setTimeout(() => {
+        if (!isMountedRef.current) return;
         setIsGlitching(true);
-        const burstTimeout = window.setTimeout(() => {
+        const burstTimeout = setTimeout(() => {
+          if (!isMountedRef.current) return;
           setIsGlitching(false);
           cycle();
         }, burstDuration);
@@ -36,7 +42,10 @@ function GlitchTitle({ text, className = "" }: { text: string; className?: strin
     };
     
     cycle();
-    return () => clearAllTimeouts();
+    return () => {
+      isMountedRef.current = false;
+      clearAllTimeouts();
+    };
   }, [clearAllTimeouts]);
 
   return (
