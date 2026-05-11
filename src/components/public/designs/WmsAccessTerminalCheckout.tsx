@@ -11,23 +11,33 @@ import React from "react";
  */
 function GlitchTitle({ text, className = "" }: { text: string; className?: string }) {
   const [isGlitching, setIsGlitching] = React.useState(false);
+  const timeoutsRef = React.useRef<number[]>([]);
+
+  const clearAllTimeouts = React.useCallback(() => {
+    timeoutsRef.current.forEach(clearTimeout);
+    timeoutsRef.current = [];
+  }, []);
 
   React.useEffect(() => {
     const cycle = () => {
       const burstDuration = 250 + Math.random() * 200;
       const waitDuration = 3000 + Math.random() * 5000;
       
-      setTimeout(() => {
+      const waitTimeout = window.setTimeout(() => {
         setIsGlitching(true);
-        setTimeout(() => {
+        const burstTimeout = window.setTimeout(() => {
           setIsGlitching(false);
           cycle();
         }, burstDuration);
+        timeoutsRef.current.push(burstTimeout);
       }, waitDuration);
+      
+      timeoutsRef.current.push(waitTimeout);
     };
     
     cycle();
-  }, []);
+    return () => clearAllTimeouts();
+  }, [clearAllTimeouts]);
 
   return (
     <div className={`relative inline-block ${className} ${isGlitching ? "glitch-active" : ""}`} data-text={text}>
@@ -91,14 +101,29 @@ function WmsAccessTerminalVisualShell({
   pixSlot,
   hasPaymentData,
 }: any) {
-  const formattedPrice = typeof price === "number"
-    ? new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(price)
-    : price;
+  const formatPriceParts = (price: any) => {
+    try {
+      const formatted = typeof price === "number"
+        ? new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(price)
+        : String(price || "R$ 0,00");
+      
+      const cleanPrice = formatted.replace("R$", "").trim();
+      const parts = cleanPrice.split(",");
+      
+      return {
+        integer: parts[0] || "0",
+        decimal: parts[1] || "00",
+        full: formatted
+      };
+    } catch (e) {
+      return { integer: "0", decimal: "00", full: "R$ 0,00" };
+    }
+  };
 
-  const [integerPart, decimalPart] = formattedPrice.replace("R$", "").trim().split(",");
+  const { integer: integerPart, decimal: decimalPart } = formatPriceParts(price);
 
   return (
-    <div className="min-h-[100dvh] bg-[#020202] text-[#E0E0E0] font-sans selection:bg-[#00FF41]/30 relative overflow-x-hidden wms-access-terminal">
+    <div className="min-h-[100dvh] bg-[#020202] text-[#E0E0E0] font-sans selection:bg-[#00FF41]/30 relative w-full overflow-x-hidden wms-access-terminal">
       {/* HUD OVERLAYS */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-[0.04]">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.04),rgba(0,255,0,0.01),rgba(0,0,255,0.04))] bg-[length:100%_2px,3px_100%]"></div>
@@ -115,7 +140,7 @@ function WmsAccessTerminalVisualShell({
       <div className="relative z-10 flex flex-col items-center justify-start min-h-[100dvh] py-0 lg:py-6 px-0 lg:px-4">
         
         {/* Main Container */}
-        <div className="w-full max-w-[1100px] bg-[#0A0A0A]/90 backdrop-blur-3xl lg:rounded-[32px] border border-white/5 shadow-[0_0_100px_rgba(0,0,0,1)] flex flex-col lg:grid lg:grid-cols-[1.1fr_0.9fr] overflow-hidden min-h-screen lg:min-h-0">
+        <div className="w-full max-w-[1100px] bg-[#0A0A0A]/90 backdrop-blur-3xl lg:rounded-[32px] border border-white/5 shadow-[0_0_100px_rgba(0,0,0,1)] flex flex-col lg:grid lg:grid-cols-[1.1fr_0.9fr] overflow-hidden min-h-screen lg:min-h-0 lg:max-h-none">
           
           {/* LEFT COLUMN: Authority & Visual */}
           <div className={`p-6 lg:p-10 flex flex-col transition-all duration-500 ${hasPaymentData ? 'lg:py-6 lg:max-h-[700px]' : 'lg:py-10'}`}>
@@ -151,7 +176,7 @@ function WmsAccessTerminalVisualShell({
             </header>
 
             {/* Main Media Showcase */}
-            <div className={`relative w-full bg-black rounded-2xl border border-white/5 overflow-hidden shadow-2xl group transition-all duration-500 ${hasPaymentData ? 'aspect-video lg:max-w-[340px] mx-auto mb-4 lg:mb-6' : 'aspect-[16/10] mb-8 lg:mb-10'}`}>
+            <div className={`relative w-full bg-black rounded-2xl border border-white/5 overflow-hidden shadow-2xl group transition-all duration-500 ${hasPaymentData ? 'hidden lg:block aspect-video lg:max-w-[340px] mx-auto mb-4 lg:mb-6' : 'aspect-[16/10] mb-8 lg:mb-10'}`}>
               <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 via-transparent to-black/20"></div>
               <div className="absolute inset-0 flex items-center justify-center scale-105 group-hover:scale-100 transition-transform duration-700">
                 {mainMediaSlot}
@@ -162,8 +187,9 @@ function WmsAccessTerminalVisualShell({
               </div>
             </div>
 
-            {/* Proof Section */}
-            <div className={`grid gap-3 transition-all duration-500 ${hasPaymentData ? 'grid-cols-3 max-w-[340px] mx-auto' : 'grid-cols-1 md:grid-cols-3 mt-auto'}`}>
+            {/* Proof Section - Escondida no mobile se tiver paymentData */}
+            <div className={`grid gap-3 transition-all duration-500 ${hasPaymentData ? 'hidden lg:grid grid-cols-3 max-w-[340px] mx-auto' : 'grid-cols-1 md:grid-cols-3 mt-auto'}`}>
+
               {[
                 { label: 'OPERAÇÃO', slot: proofMedia1Slot },
                 { label: 'REDE', slot: proofMedia2Slot },
@@ -435,15 +461,29 @@ function WmsAccessTerminalVisualShell({
         }
 
         @media (max-width: 1024px) {
+          .wms-access-pix-panel {
+            padding-bottom: 2rem !important;
+          }
           .wms-access-pix-panel .bg-white.p-4 {
-            width: 150px !important;
-            height: 150px !important;
+            width: 180px !important;
+            height: 180px !important;
+            max-width: 80vw !important;
+            max-height: 80vw !important;
           }
           .wms-access-pix-panel button.w-full.py-4 {
-            height: 2.75rem !important;
-            font-size: 0.7rem !important;
+            height: 3.25rem !important;
+            font-size: 0.75rem !important;
+          }
+          /* Garantir que o container do checkout no mobile não corte conteúdo */
+          .wms-access-terminal, 
+          .wms-access-terminal > div,
+          .wms-access-terminal .max-w-\[1100px\] {
+            height: auto !important;
+            min-height: 100vh !important;
+            overflow: visible !important;
           }
         }
+
       `}</style>
     </div>
   );
@@ -594,13 +634,3 @@ export function WmsAccessTerminalCheckout(props: any) {
   );
 }
 
-export default function App() {
-  return <WmsAccessTerminalCheckout 
-    checkout={{ price: 147.90 }}
-    formData={{}}
-    loading={false}
-    handleInputChange={() => {}}
-    handleSubmit={(e: any) => e.preventDefault()}
-    InlinePixPanel={() => <div className="p-10 border border-white/10 rounded-xl text-center">PIX_PANEL_MOCK</div>}
-  />;
-}
