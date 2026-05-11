@@ -50,7 +50,7 @@ function GlitchTitle({ text, className = "" }: { text: string; className?: strin
 
   return (
     <div className={`relative inline-block ${className} ${isGlitching ? "glitch-active" : ""}`} data-text={text}>
-      <span className="text-gray-400 text-xs font-medium leading-relaxed italic max-w-md lg:text-2xl">{text}</span>
+      <span className="relative z-10">{text}</span>
       {isGlitching && (
         <>
           <span className="absolute inset-0 z-0 text-[#00FF41] opacity-60 translate-x-[1px] -translate-y-[0.5px] mix-blend-screen overflow-hidden whitespace-nowrap">
@@ -150,7 +150,7 @@ function WmsAccessTerminalVisualShell({
         <div className="absolute inset-0 grayscale opacity-10">{heroBackgroundSlot}</div>
       </div>
 
-      <div className="relative z-10 flex flex-col items-center justify-start min-h-screen py-0 lg:py-6 px-0 lg:px-4">
+      <div className="text-gray-400 text-xs font-medium leading-relaxed italic max-w-md lg:text-2xl flex flex-col items-center justify-start min-h-screen py-0 lg:py-6 px-0 lg:px-4">
         
         {/* Main Container */}
         <div className="w-full max-w-[1100px] bg-[#0A0A0A]/90 backdrop-blur-3xl lg:rounded-[32px] border border-white/5 shadow-[0_0_100px_rgba(0,0,0,1)] flex flex-col lg:grid lg:grid-cols-[1.1fr_0.9fr] lg:overflow-visible min-h-screen lg:min-h-0">
