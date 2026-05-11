@@ -170,10 +170,10 @@ function WmsAccessTerminalVisualShell({
                 </div>
                 
                 <div className="flex-1">
-                  <GlitchTitle text="Ferramentas" className="font-black tracking-tighter text-white uppercase italic leading-none block mb-1.5 text-2xl lg:text-3xl" />
+                  <GlitchTitle text="Faça parte da maior Biblioteca do Digital" className="font-black tracking-tighter text-white uppercase italic leading-[1.1] block mb-2 text-[24px] lg:text-[40px] max-w-xl break-words" />
                   <div className="flex items-center gap-2.5">
-                    <span className="px-1.5 py-0.5 bg-[#00FF41]/5 border border-[#00FF41]/10 text-[8px] font-black text-[#00FF41]/70 tracking-[0.2em] rounded uppercase italic">
-                      ESTADO PRIVADO
+                    <span className="px-1.5 py-0.5 bg-[#00FF41]/5 border border-[#00FF41]/10 text-[10px] lg:text-[11px] font-black text-[#00FF41]/70 tracking-[0.2em] rounded uppercase italic">
+                      ACESSO EXCLUSIVO
                     </span>
                     <div className="h-[1px] w-6 bg-[#00FF41]/10"></div>
                   </div>
@@ -181,8 +181,8 @@ function WmsAccessTerminalVisualShell({
               </div>
               
               <div className="relative pl-5 border-l-2 border-[#00FF41]/30">
-                <p className="text-gray-400 text-xs font-medium leading-relaxed italic max-w-md lg:text-2xl">
-                  Acesso exclusivo ao terminal de operações WMS. Execute sua visão com método e tecnologia de ponta.
+                <p className="text-gray-400 text-[14px] lg:text-[17px] font-medium leading-[1.5] italic max-w-md break-words">
+                  Uma biblioteca exclusiva para quem quer dominar a era da IA e acessar recursos, prompts, métodos e ferramentas poderosas.
                 </p>
               </div>
             </header>
