@@ -56,23 +56,33 @@ export const InlinePixPanel: React.FC<InlinePixPanelProps> = ({
   const qrSrc = getQrImageSrc(paymentData?.qr_code_base64);
 
   return (
-    <div className="w-full flex flex-col items-center animate-in fade-in slide-in-from-bottom-4 duration-500 py-2 max-w-sm mx-auto">
+    <div className="w-full flex flex-col items-center py-2 max-w-sm mx-auto">
       {/* Status Badge */}
-      <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-6 border transition-all duration-500 ${isPaid ? 'bg-green-500/10 border-green-500/20 text-green-500' : 'bg-white/5 border-white/5 text-gray-400'}`}>
+      <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-6 border transition-colors duration-500 ${isPaid ? 'bg-green-500/10 border-green-500/20 text-green-500' : 'bg-white/5 border-white/5 text-gray-400'}`}>
         <div className={`h-1.5 w-1.5 rounded-full ${isPaid ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-gray-400 animate-pulse'}`}></div>
         <span className="text-[10px] font-bold uppercase tracking-widest">
           {isPaid ? 'Pagamento Confirmado' : 'Aguardando Pagamento'}
         </span>
       </div>
 
-      {/* QR Code Container */}
-      <div className="relative group mb-8 flex items-center justify-center">
-        <div className="relative z-10 bg-white p-3 rounded-xl shadow-lg w-48 h-48 sm:w-52 sm:h-52 flex items-center justify-center overflow-hidden transition-transform duration-500">
+      {/* QR Code Container - BLINDAGEM CONTRA ZOOM */}
+      <div className="pix-qr-safe-shell mb-8 flex items-center justify-center w-full">
+        <div className="pix-qr-safe-frame bg-white p-3 rounded-xl shadow-lg w-48 h-48 sm:w-52 sm:h-52 flex items-center justify-center overflow-visible">
           {paymentData.qr_code_base64 ? (
             <img 
               src={qrSrc} 
               alt="QR Code Pix" 
-              className="block w-full h-full max-w-full object-contain"
+              className="pix-qr-safe-img"
+              style={{
+                imageRendering: "pixelated",
+                display: "block",
+                width: "192px",
+                height: "192px",
+                maxWidth: "100%",
+                objectFit: "contain",
+                transform: "none",
+                filter: "none"
+              }}
             />
           ) : (
             <div className="flex flex-col items-center justify-center text-center p-4">
@@ -82,6 +92,23 @@ export const InlinePixPanel: React.FC<InlinePixPanelProps> = ({
           )}
         </div>
       </div>
+
+      <style>{`
+        .pix-qr-safe-shell,
+        .pix-qr-safe-frame,
+        .pix-qr-safe-img {
+          transform: none !important;
+          transition: none !important;
+          filter: none !important;
+          opacity: 1 !important;
+          mix-blend-mode: normal !important;
+          backface-visibility: visible !important;
+          will-change: auto !important;
+        }
+        .pix-qr-safe-frame {
+          isolation: isolate;
+        }
+      `}</style>
 
       <p className="text-[10px] text-gray-500 uppercase tracking-widest text-center opacity-70 mb-8 max-w-[240px]">
         Escaneie o código acima no app do seu banco para pagar.
