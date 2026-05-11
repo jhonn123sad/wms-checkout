@@ -150,7 +150,7 @@ function WmsAccessTerminalVisualShell({
         <div className="absolute inset-0 grayscale opacity-10">{heroBackgroundSlot}</div>
       </div>
 
-      <div className="text-gray-400 text-xs font-medium leading-relaxed italic max-w-md lg:text-2xl flex flex-col items-center justify-start min-h-screen py-0 lg:py-6 px-0 lg:px-4">
+      <div className="relative z-10 flex flex-col items-center justify-start min-h-screen py-0 lg:py-6 px-0 lg:px-4">
         
         {/* Main Container */}
         <div className="w-full max-w-[1100px] bg-[#0A0A0A]/90 backdrop-blur-3xl lg:rounded-[32px] border border-white/5 shadow-[0_0_100px_rgba(0,0,0,1)] flex flex-col lg:grid lg:grid-cols-[1.1fr_0.9fr] lg:overflow-visible min-h-screen lg:min-h-0">
@@ -180,7 +180,7 @@ function WmsAccessTerminalVisualShell({
               </div>
               
               <div className="relative pl-5 border-l-2 border-[#00FF41]/30">
-                <p className="text-gray-400 text-xs lg:text-[13px] font-medium leading-relaxed italic max-w-md">
+                <p className="text-gray-400 text-xs font-medium leading-relaxed italic max-w-md lg:text-2xl">
                   Acesso exclusivo ao terminal de operações WMS. Execute sua visão com método e tecnologia de ponta.
                 </p>
               </div>
