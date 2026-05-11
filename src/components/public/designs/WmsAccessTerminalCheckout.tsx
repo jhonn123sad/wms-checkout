@@ -153,39 +153,47 @@ function WmsAccessTerminalVisualShell({
                 </div>
               </div>
               
-              <div className="relative pl-5 border-l-2 border-[#00FF41]/30">
-                <p className="text-gray-400 text-[14px] lg:text-[17px] font-medium leading-[1.5] italic max-w-md break-words">
+              <div className="relative pl-6 border-l border-[#00FF41]/20">
+                <p className="text-gray-400 text-[15px] lg:text-[18px] font-medium leading-relaxed italic max-w-md break-words opacity-80">
                   Uma biblioteca exclusiva para quem quer dominar a era da IA e acessar recursos, prompts, métodos e ferramentas poderosas.
                 </p>
               </div>
             </header>
 
             {/* Main Media Showcase */}
-            <div className="relative w-full bg-black rounded-2xl border border-white/5 overflow-hidden shadow-2xl group aspect-[16/10] mb-8 lg:mb-10 max-w-full">
+            <div className="relative w-full bg-black rounded-2xl border border-white/5 overflow-hidden shadow-2xl group aspect-[16/10] mb-6 lg:mb-8 max-w-full">
               <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 via-transparent to-black/20"></div>
               <div className="absolute inset-0 flex items-center justify-center scale-105 group-hover:scale-100 transition-transform duration-700">
                 {mainMediaSlot}
               </div>
-              <div className="absolute top-3 right-3 bg-black/80 backdrop-blur-xl border border-[#00FF41]/20 px-2.5 py-1 rounded-md z-20 flex items-center gap-1.5">
-                 <div className="w-1 h-1 rounded-full bg-[#00FF41] animate-pulse"></div>
-                 <span className="text-[10px] lg:text-[11px] text-[#00FF41] font-black uppercase tracking-widest italic">Faça parte — ou fique para trás</span>
+              <div className="absolute top-4 right-4 bg-black/80 backdrop-blur-xl border border-[#00FF41]/20 px-3 py-1.5 rounded-lg z-20 flex items-center gap-2">
+                 <div className="w-1.5 h-1.5 rounded-full bg-[#00FF41] animate-pulse shadow-[0_0_8px_#00FF41]"></div>
+                 <AnomalyText 
+                   text="Faça parte — ou fique para trás" 
+                   intensity="low"
+                   className="text-[10px] lg:text-[11px] text-[#00FF41] font-black uppercase tracking-[0.15em] italic" 
+                 />
               </div>
             </div>
 
             {/* Proof Section */}
-            <div className="grid gap-3 grid-cols-1 md:grid-cols-3 mt-8 lg:mt-10">
+            <div className="grid gap-4 grid-cols-1 md:grid-cols-3 mt-auto pt-6">
               {[
                 { title: 'Prompts', desc: 'Obtenha vantagem', slot: proofMedia1Slot },
                 { title: 'Métodos', desc: 'Aplique com clareza', slot: proofMedia2Slot },
                 { title: 'Insights', desc: 'Siga com direção', slot: proofMedia3Slot }
               ].map((card, idx) => (
-                <div key={idx} className="bg-white/[0.02] border border-white/5 p-2 rounded-xl flex items-center gap-2 group hover:bg-[#00FF41]/5 transition-all duration-300 min-w-0">
-                  <div className="bg-black border border-white/10 rounded-lg flex items-center justify-center overflow-hidden shrink-0 group-hover:border-[#00FF41]/20 transition-colors w-10 h-7">
+                <div key={idx} className="bg-white/[0.02] border border-white/5 p-3 rounded-2xl flex items-center gap-3 group hover:bg-[#00FF41]/5 transition-all duration-500 min-w-0">
+                  <div className="bg-black border border-white/10 rounded-xl flex items-center justify-center overflow-hidden shrink-0 group-hover:border-[#00FF41]/20 transition-colors w-12 h-9 shadow-lg">
                     {card.slot}
                   </div>
                   <div className="flex flex-col min-w-0 overflow-hidden">
-                    <span className="font-black text-gray-400 uppercase tracking-widest italic group-hover:text-[#00FF41]/80 transition-all text-[12px] truncate">{card.title}</span>
-                    <span className="text-[11px] text-gray-600 font-medium italic truncate">{card.desc}</span>
+                    <AnomalyText 
+                      text={card.title} 
+                      intensity="low"
+                      className="font-black text-gray-400 uppercase tracking-[0.2em] italic group-hover:text-[#00FF41]/90 transition-all text-[12px] lg:text-[13px] truncate" 
+                    />
+                    <span className="text-[11px] lg:text-[12px] text-gray-600 font-medium italic truncate opacity-80">{card.desc}</span>
                   </div>
                 </div>
               ))}
