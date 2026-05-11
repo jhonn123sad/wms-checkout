@@ -261,8 +261,8 @@ function WmsAccessTerminalVisualShell({
                   {trustBadgeSlot}
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-white text-[9px] font-black tracking-widest uppercase italic">PAGAMENTO SEGURO</span>
-                  <p className="text-[#00FF41]/50 text-[8px] font-bold uppercase tracking-widest italic">TERMINAL PROTEGIDO</p>
+                  <span className="text-white text-[11px] lg:text-[12px] font-black tracking-widest uppercase italic">Acesso protegido</span>
+                  <p className="text-[#00FF41]/50 text-[10px] lg:text-[11px] font-bold uppercase tracking-widest italic">A oportunidade é agora</p>
                 </div>
               </div>
               <div className="hidden sm:flex flex-col items-end opacity-20">
