@@ -257,15 +257,7 @@ function WmsAccessTerminalVisualShell({
             {/* Checkout Area */}
             <div className={`flex-1 relative z-10 flex flex-col wms-access-pix-panel ${hasPaymentData ? 'payment-focus' : ''}`}>
                <div className={`bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden transition-all duration-500 ${hasPaymentData ? 'p-0 bg-transparent border-none' : 'p-6 lg:p-8'}`}>
-                  {hasPaymentData ? (
-                    <div className="animate-in fade-in slide-in-from-bottom-3 duration-700">
-                       {pixSlot}
-                    </div>
-                  ) : (
-                    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-                       {formSlot}
-                    </div>
-                  )}
+                  {hasPaymentData ? pixSlot : formSlot}
                </div>
             </div>
 
