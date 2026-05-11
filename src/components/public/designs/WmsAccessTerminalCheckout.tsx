@@ -390,9 +390,33 @@ function WmsAccessTerminalVisualShell({
            background-size: 100% 3px;
         }
 
-        /* SCOPED PIX PANEL OVERRIDES */
-        .wms-access-pix-panel {
+        /* SCOPED PIX PANEL OVERRIDES (WORKS FOR BOTH COLUMN AND OVERLAY) */
+        .wms-access-pix-panel,
+        .wms-access-pix-overlay-panel {
           width: 100%;
+        }
+
+        .wms-access-pix-overlay-panel {
+          max-width: 100%;
+          min-width: 0;
+        }
+
+        .wms-access-pix-overlay-panel * {
+          max-width: 100%;
+          box-sizing: border-box;
+        }
+
+        .wms-access-pix-overlay-panel img {
+          max-width: 100%;
+          height: auto;
+          margin: 0 auto;
+        }
+
+        .wms-access-pix-overlay-panel code,
+        .wms-access-pix-overlay-panel pre,
+        .wms-access-pix-overlay-panel p {
+          overflow-wrap: anywhere;
+          word-break: break-word;
         }
 
         /* Status Badge Overrides - Target InlinePixPanel status box */
