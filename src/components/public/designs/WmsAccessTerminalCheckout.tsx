@@ -445,6 +445,8 @@ function WmsAccessTerminalVisualShell({
           .wms-access-terminal, 
           .wms-access-terminal > div {
             overflow: visible !important;
+            height: auto !important;
+            min-height: 0 !important;
           }
         }
 
