@@ -157,7 +157,7 @@ function WmsAccessTerminalVisualShell({
         <div className="w-full max-w-[1100px] bg-[#0A0A0A]/90 backdrop-blur-3xl lg:rounded-[32px] border border-white/5 shadow-[0_0_100px_rgba(0,0,0,1)] flex flex-col lg:grid lg:grid-cols-[1.1fr_0.9fr] lg:overflow-visible min-h-screen lg:min-h-0 min-w-0">
           
           {/* LEFT COLUMN: Authority & Visual */}
-          <div className="p-6 lg:p-10 flex flex-col py-6 lg:py-10">
+          <div className="p-6 lg:p-10 flex flex-col py-6 lg:py-10 min-w-0 w-full">
             
             {/* Header */}
             <header className="relative mb-8 lg:mb-10">
