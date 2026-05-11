@@ -50,7 +50,7 @@ function GlitchTitle({ text, className = "" }: { text: string; className?: strin
 
   return (
     <div className={`relative inline-block ${className} ${isGlitching ? "glitch-active" : ""}`} data-text={text}>
-      <span className="relative z-10">{text}</span>
+      <span className="text-gray-400 text-xs font-medium leading-relaxed italic max-w-md lg:text-2xl">{text}</span>
       {isGlitching && (
         <>
           <span className="absolute inset-0 z-0 text-[#00FF41] opacity-60 translate-x-[1px] -translate-y-[0.5px] mix-blend-screen overflow-hidden whitespace-nowrap">
@@ -169,7 +169,7 @@ function WmsAccessTerminalVisualShell({
                 </div>
                 
                 <div className="flex-1">
-                  <GlitchTitle text="WEB MONEY SOCIETY" className="font-black tracking-tighter text-white uppercase italic leading-none block mb-1.5 text-2xl lg:text-3xl" />
+                  <GlitchTitle text="Ferramentas" className="font-black tracking-tighter text-white uppercase italic leading-none block mb-1.5 text-2xl lg:text-3xl" />
                   <div className="flex items-center gap-2.5">
                     <span className="px-1.5 py-0.5 bg-[#00FF41]/5 border border-[#00FF41]/10 text-[8px] font-black text-[#00FF41]/70 tracking-[0.2em] rounded uppercase italic">
                       ESTADO PRIVADO
