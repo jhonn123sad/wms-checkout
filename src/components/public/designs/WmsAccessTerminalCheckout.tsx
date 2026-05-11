@@ -195,7 +195,7 @@ function WmsAccessTerminalVisualShell({
               </div>
               <div className="absolute top-3 right-3 bg-black/80 backdrop-blur-xl border border-[#00FF41]/20 px-2.5 py-1 rounded-md z-20 flex items-center gap-1.5">
                  <div className="w-1 h-1 rounded-full bg-[#00FF41] animate-pulse"></div>
-                 <span className="text-[8px] text-[#00FF41] font-black uppercase tracking-widest italic">CONTEÚDO PROTEGIDO</span>
+                 <span className="text-[10px] lg:text-[11px] text-[#00FF41] font-black uppercase tracking-widest italic">Faça parte — ou fique para trás</span>
               </div>
             </div>
 
