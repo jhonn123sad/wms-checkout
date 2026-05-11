@@ -151,10 +151,10 @@ function WmsAccessTerminalVisualShell({
         <div className="absolute inset-0 grayscale opacity-10">{heroBackgroundSlot}</div>
       </div>
 
-      <div className="relative z-10 flex flex-col items-center justify-start min-h-screen py-0 lg:py-6 px-0 lg:px-4">
+      <div className="relative z-10 flex flex-col items-center justify-start min-h-screen py-0 lg:py-6 px-0 lg:px-4 w-full max-w-full overflow-x-hidden">
         
         {/* Main Container */}
-        <div className="w-full max-w-[1100px] bg-[#0A0A0A]/90 backdrop-blur-3xl lg:rounded-[32px] border border-white/5 shadow-[0_0_100px_rgba(0,0,0,1)] flex flex-col lg:grid lg:grid-cols-[1.1fr_0.9fr] lg:overflow-visible min-h-screen lg:min-h-0">
+        <div className="w-full max-w-[1100px] bg-[#0A0A0A]/90 backdrop-blur-3xl lg:rounded-[32px] border border-white/5 shadow-[0_0_100px_rgba(0,0,0,1)] flex flex-col lg:grid lg:grid-cols-[1.1fr_0.9fr] lg:overflow-visible min-h-screen lg:min-h-0 min-w-0">
           
           {/* LEFT COLUMN: Authority & Visual */}
           <div className="p-6 lg:p-10 flex flex-col py-6 lg:py-10">
