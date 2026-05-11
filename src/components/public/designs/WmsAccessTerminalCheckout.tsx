@@ -266,24 +266,55 @@ function WmsAccessTerminalVisualShell({
           --wms-cyan: #00e5ff;
         }
 
-        @keyframes scan-line-burst {
-          0% { transform: translateY(-150%); opacity: 0; }
-          50% { opacity: 1; }
-          100% { transform: translateY(150%); opacity: 0; }
+        @keyframes anomaly-glitch-1 {
+          0%, 80%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); filter: none; }
+          82% { clip-path: inset(10% 0 80% 0); transform: translate(-2px, -1px); filter: hue-rotate(90deg) brightness(1.2); }
+          84% { clip-path: inset(50% 0 30% 0); transform: translate(2px, 1px); filter: hue-rotate(-90deg); }
+          86% { clip-path: inset(20% 0 60% 0); transform: translate(-1px, 2px); }
+          88% { clip-path: inset(70% 0 10% 0); transform: translate(1px, -2px); filter: saturate(2); }
+          90% { clip-path: inset(40% 0 40% 0); transform: translate(-3px, 0); }
+          92% { clip-path: inset(0 0 0 0); transform: translate(0); }
         }
-        .animate-scan-line-burst { animation: scan-line-burst 0.8s ease-in-out infinite; }
 
-        .glitch-active {
-          animation: glitch-skew 0.25s cubic-bezier(.25,.46,.45,.94) both infinite;
+        @keyframes anomaly-glitch-2 {
+          0%, 80%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); opacity: 0; }
+          82% { clip-path: inset(20% 0 50% 0); transform: translate(3px, 1px); opacity: 0.7; color: var(--wms-cyan); }
+          85% { clip-path: inset(60% 0 20% 0); transform: translate(-3px, -1px); opacity: 0.7; color: var(--wms-neon); }
+          88% { clip-path: inset(10% 0 70% 0); transform: translate(2px, 2px); opacity: 0.7; color: var(--wms-cyan); }
+          92% { clip-path: inset(0 0 0 0); transform: translate(0); opacity: 0; }
         }
-        @keyframes glitch-skew {
-          0% { transform: skew(0deg); }
-          20% { transform: skew(3deg); filter: hue-rotate(90deg); }
-          40% { transform: skew(-2deg); }
-          60% { transform: skew(1deg); filter: hue-rotate(-90deg); }
-          80% { transform: skew(-3deg); }
-          100% { transform: skew(0deg); }
+
+        .anomaly-text {
+          position: relative;
+          display: inline-block;
+          white-space: nowrap;
         }
+
+        .anomaly-text::before,
+        .anomaly-text::after {
+          content: attr(data-text);
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+        }
+
+        .anomaly-text::before {
+          z-index: -1;
+          animation: anomaly-glitch-1 8s infinite linear alternate-reverse;
+        }
+
+        .anomaly-text::after {
+          z-index: -2;
+          animation: anomaly-glitch-2 8s infinite linear alternate-reverse;
+          mix-blend-mode: screen;
+        }
+
+        .anomaly-text.low::before, .anomaly-text.low::after { animation-duration: 10s; }
+        .anomaly-text.high::before, .anomaly-text.high::after { animation-duration: 6s; }
+
 
         .sm-scanlines {
            background: linear-gradient(rgba(255,255,255,0) 50%, rgba(255,255,255,0.015) 50%);
