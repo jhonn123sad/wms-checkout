@@ -421,7 +421,7 @@ export function WmsAccessTerminalCheckout(props: any) {
             <div key={field.id || field.field_name} className="group space-y-1.5">
               <Label 
                 htmlFor={field.field_name} 
-                className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1 group-focus-within:text-[#00FF41] transition-colors italic"
+                className="text-[10px] lg:text-[11px] font-black text-gray-500 uppercase tracking-widest ml-1 group-focus-within:text-[#00FF41] transition-colors italic"
               >
                 {field.field_label}
               </Label>
@@ -430,7 +430,7 @@ export function WmsAccessTerminalCheckout(props: any) {
                 type={field.field_type?.replace("hidden:", "") || "text"}
                 placeholder={`Seu ${field.field_label.toLowerCase()}`}
                 required={field.required}
-                className="h-12 bg-white/[0.04] border-white/5 text-white focus:bg-white/[0.06] focus:ring-1 focus:ring-[#00FF41]/30 focus:border-[#00FF41]/50 transition-all rounded-xl placeholder:text-gray-700 text-base px-5"
+                className="h-12 bg-white/[0.04] border-white/5 text-white focus:bg-white/[0.06] focus:ring-1 focus:ring-[#00FF41]/30 focus:border-[#00FF41]/50 transition-all rounded-xl placeholder:text-gray-700 text-base px-5 appearance-none"
                 value={formData[field.field_name] || ""}
                 onChange={(e) => handleInputChange(field.field_name, e.target.value)}
               />
