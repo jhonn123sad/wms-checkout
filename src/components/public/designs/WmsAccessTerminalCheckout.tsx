@@ -204,33 +204,35 @@ function WmsAccessTerminalVisualShell({
           <div className="bg-[#050505]/90 p-6 lg:p-10 flex flex-col border-t lg:border-t-0 lg:border-l border-white/10 relative overflow-hidden min-w-0 w-full">
             
             {/* Payment Header */}
-            <div className="relative z-10 mb-8 lg:mb-10">
+            <div className="relative z-10 mb-5 lg:mb-6">
               {hasPaymentData ? (
                 <div className="flex flex-col gap-3">
-                  <div className="flex items-center justify-between bg-[#00FF41]/5 border border-[#00FF41]/10 px-4 py-3 rounded-2xl backdrop-blur-sm">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-2 h-2 rounded-full bg-[#00FF41] shadow-[0_0_10px_#00FF41] animate-pulse"></div>
-                      <h2 className="text-[10px] lg:text-xs font-black text-[#00FF41] tracking-[0.2em] uppercase italic">Pix gerado</h2>
+                  <div className="flex items-center justify-between bg-[#00FF41]/5 border border-[#00FF41]/10 px-5 py-4 rounded-2xl backdrop-blur-md">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2.5 h-2.5 rounded-full bg-[#00FF41] shadow-[0_0_12px_#00FF41] animate-pulse"></div>
+                      <h2 className="text-[10px] lg:text-xs font-black text-[#00FF41] tracking-[0.25em] uppercase italic">Pix gerado</h2>
                     </div>
                     <PriceDisplay integer={integerPart} decimal={decimalPart} label="Total" size="small" />
                   </div>
                   <div className="flex flex-col gap-1 pl-1">
-                    <p className="text-[10px] lg:text-[11px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed break-words">
+                    <p className="text-[10px] lg:text-[11px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed break-words opacity-70">
                       Escaneie o QR Code ou copie o código Pix para concluir seu acesso.
                     </p>
                   </div>
                 </div>
               ) : (
-                <div className="flex flex-col gap-6">
-                  <PriceDisplay integer={integerPart} decimal={decimalPart} />
-                </div>
+                <PriceDisplay integer={integerPart} decimal={decimalPart} />
               )}
             </div>
 
             {/* Checkout Area */}
-            <div className="flex-1 relative z-10 flex flex-col wms-access-pix-panel">
-                <div className={`bg-white/[0.03] border border-white/10 rounded-2xl transition-all duration-500 ${hasPaymentData ? 'p-4 lg:p-6 overflow-visible' : 'p-6 lg:p-8 overflow-hidden'}`}>
-                   {hasPaymentData ? pixSlot : formSlot}
+            <div className="flex-1 relative z-10 flex flex-col wms-access-pix-panel min-h-0">
+                <div className={`bg-white/[0.03] border border-white/10 rounded-2xl transition-all duration-500 shadow-2xl ${hasPaymentData ? 'p-0 overflow-visible' : 'p-5 lg:p-7 overflow-hidden'}`}>
+                   {hasPaymentData ? (
+                     <div className="w-full max-w-full min-w-0 overflow-hidden rounded-2xl bg-white">
+                       {pixSlot}
+                     </div>
+                   ) : formSlot}
                 </div>
             </div>
 
