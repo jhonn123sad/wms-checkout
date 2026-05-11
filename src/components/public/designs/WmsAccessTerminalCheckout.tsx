@@ -188,7 +188,7 @@ function WmsAccessTerminalVisualShell({
             </header>
 
             {/* Main Media Showcase */}
-            <div className="relative w-full bg-black rounded-2xl border border-white/5 overflow-hidden shadow-2xl group aspect-[16/10] mb-8 lg:mb-10">
+            <div className="relative w-full bg-black rounded-2xl border border-white/5 overflow-hidden shadow-2xl group aspect-[16/10] mb-8 lg:mb-10 max-w-full">
               <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 via-transparent to-black/20"></div>
               <div className="absolute inset-0 flex items-center justify-center scale-105 group-hover:scale-100 transition-transform duration-700">
                 {mainMediaSlot}
