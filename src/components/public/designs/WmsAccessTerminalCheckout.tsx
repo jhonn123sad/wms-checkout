@@ -153,7 +153,7 @@ function WmsAccessTerminalVisualShell({
       <div className="relative z-10 flex flex-col items-center justify-start min-h-screen py-0 lg:py-6 px-0 lg:px-4">
         
         {/* Main Container */}
-        <div className="w-full max-w-[1100px] bg-[#0A0A0A]/90 backdrop-blur-3xl lg:rounded-[32px] border border-white/5 shadow-[0_0_100px_rgba(0,0,0,1)] flex flex-col lg:grid lg:grid-cols-[1.1fr_0.9fr] lg:overflow-hidden min-h-screen lg:min-h-0">
+        <div className="w-full max-w-[1100px] bg-[#0A0A0A]/90 backdrop-blur-3xl lg:rounded-[32px] border border-white/5 shadow-[0_0_100px_rgba(0,0,0,1)] flex flex-col lg:grid lg:grid-cols-[1.1fr_0.9fr] lg:overflow-visible min-h-screen lg:min-h-0">
           
           {/* LEFT COLUMN: Authority & Visual */}
           <div className="p-6 lg:p-10 flex flex-col py-6 lg:py-10">
@@ -199,7 +199,7 @@ function WmsAccessTerminalVisualShell({
             </div>
 
             {/* Proof Section */}
-            <div className="grid gap-3 grid-cols-1 md:grid-cols-3 mt-auto">
+            <div className="grid gap-3 grid-cols-1 md:grid-cols-3 mt-8 lg:mt-10">
               {[
                 { label: 'OPERAÇÃO', slot: proofMedia1Slot },
                 { label: 'REDE', slot: proofMedia2Slot },
@@ -252,8 +252,8 @@ function WmsAccessTerminalVisualShell({
             </div>
 
             {/* Checkout Area */}
-            <div className={`flex-1 relative z-10 flex flex-col wms-access-pix-panel ${hasPaymentData ? 'payment-focus' : ''}`}>
-               <div className={`bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden transition-all duration-500 ${hasPaymentData ? 'p-0 bg-transparent border-none' : 'p-6 lg:p-8'}`}>
+            <div className="flex-1 relative z-10 flex flex-col wms-access-pix-panel">
+               <div className={`bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden transition-all duration-500 ${hasPaymentData ? 'p-4 lg:p-6' : 'p-6 lg:p-8'}`}>
                   {hasPaymentData ? pixSlot : formSlot}
                </div>
             </div>
@@ -312,11 +312,12 @@ function WmsAccessTerminalVisualShell({
            background-size: 100% 3px;
         }
 
-        /* SCOPED PIX PANEL OVERRIDES */
+        /* DEFENSIVE PIX PANEL */
         .wms-access-pix-panel {
           width: 100%;
           max-width: 100%;
           min-width: 0;
+          box-sizing: border-box;
         }
 
         .wms-access-pix-panel * {
@@ -327,139 +328,19 @@ function WmsAccessTerminalVisualShell({
         .wms-access-pix-panel img {
           max-width: 100%;
           height: auto;
+          display: block;
           margin: 0 auto;
         }
 
         .wms-access-pix-panel code,
         .wms-access-pix-panel pre,
-        .wms-access-pix-panel p {
+        .wms-access-pix-panel p,
+        .wms-access-pix-panel div {
           overflow-wrap: anywhere;
           word-break: break-word;
         }
 
-        /* Status Badge Overrides - Target InlinePixPanel status box */
-        .wms-access-pix-panel div[class*="bg-green-500/10"],
-        .wms-access-pix-panel div[class*="bg-white/5"] {
-          display: inline-flex !important;
-          background: rgba(0, 255, 65, 0.1) !important;
-          border: 1px solid rgba(0, 255, 65, 0.2) !important;
-          color: var(--wms-neon) !important;
-          padding: 6px 12px !important;
-          border-radius: 8px !important;
-          font-size: 10px !important;
-          font-weight: 900 !important;
-          text-transform: uppercase !important;
-          letter-spacing: 0.15em !important;
-          margin-bottom: 1.5rem !important;
-          font-style: italic !important;
-          height: auto !important;
-          width: auto !important;
-        }
-        
-        /* Pulse for status dot */
-        .wms-access-pix-panel div[class*="bg-green-500 shadow"],
-        .wms-access-pix-panel div[class*="bg-gray-400 animate-pulse"] {
-          background-color: var(--wms-neon) !important;
-        }
-
-        /* QR Code Container Refinement */
-        .wms-access-pix-panel .bg-white.p-3 {
-          padding: 0.6rem !important;
-          border-radius: 12px !important;
-          box-shadow: 0 8px 30px rgba(0,0,0,0.5) !important;
-          border: 4px solid #080808 !important;
-          width: 180px !important;
-          height: 180px !important;
-          margin-bottom: 0.5rem !important;
-          margin-left: auto !important;
-          margin-right: auto !important;
-          display: flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-          overflow: hidden !important;
-        }
-
-        /* Subtext instruction */
-        .wms-access-pix-panel p[class*="text-gray-500"][class*="tracking-widest"] {
-          font-size: 9px !important;
-          color: #555 !important;
-          margin-bottom: 1.5rem !important;
-        }
-
-        /* Copy & Paste Box Refinement */
-        .wms-access-pix-panel div[class*="bg-white/[0.03]"].rounded-xl.p-3 {
-          padding: 0.85rem 1rem !important;
-          background: rgba(255, 255, 255, 0.015) !important;
-          border: 1px solid rgba(255, 255, 255, 0.05) !important;
-          border-radius: 14px !important;
-          margin-bottom: 0.85rem !important;
-          width: 100% !important;
-          cursor: pointer !important;
-        }
-
-        .wms-access-pix-panel p[class*="break-all"].text-gray-400 {
-          font-size: 10px !important;
-          font-family: monospace !important;
-          line-height: 1.4 !important;
-          color: #999 !important;
-          text-align: left !important;
-          word-break: break-all !important;
-        }
-
-        /* Copy & Paste Label */
-        .wms-access-pix-panel p[class*="font-black"][class*="text-gray-500"] {
-          font-size: 9px !important;
-          font-weight: 800 !important;
-          color: #666 !important;
-          text-transform: uppercase !important;
-          letter-spacing: 0.1em !important;
-          margin-bottom: 0.4rem !important;
-          text-align: left !important;
-        }
-
-        /* Main Action Buttons (Copy / Reset) */
-        .wms-access-pix-panel button[style*="background-color: rgb(0, 255, 65)"],
-        .wms-access-pix-panel button[style*="background-color: #00FF41"] {
-          height: 3.25rem !important;
-          font-size: 0.75rem !important;
-          border-radius: 12px !important;
-          font-weight: 900 !important;
-          letter-spacing: 0.05em !important;
-          text-transform: uppercase !important;
-          background-color: var(--wms-neon) !important;
-          color: black !important;
-          border: none !important;
-          box-shadow: 0 4px 15px rgba(0, 255, 65, 0.2) !important;
-          transition: all 0.2s ease !important;
-          font-style: italic !important;
-          display: flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-          width: 100% !important;
-        }
-
-        .wms-access-pix-panel button[class*="text-gray-500"][class*="hover:text-white"] {
-          background: transparent !important;
-          border: 1px solid rgba(255, 255, 255, 0.05) !important;
-          color: #666 !important;
-          padding: 10px 16px !important;
-          border-radius: 10px !important;
-          height: auto !important;
-          font-size: 9px !important;
-          font-weight: 700 !important;
-          letter-spacing: 0.05em !important;
-          text-transform: uppercase !important;
-          width: 100% !important;
-          opacity: 1 !important;
-          margin-top: 0.5rem !important;
-        }
-
         @media (max-width: 1024px) {
-          .wms-access-pix-panel {
-            padding-bottom: 2rem !important;
-            width: 100% !important;
-            max-width: 100% !important;
-          }
           .wms-access-terminal, 
           .wms-access-terminal > div {
             overflow: visible !important;
@@ -467,6 +348,7 @@ function WmsAccessTerminalVisualShell({
             min-height: 0 !important;
           }
         }
+
 
       `}</style>
     </div>
