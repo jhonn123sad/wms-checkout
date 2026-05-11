@@ -338,7 +338,7 @@ function WmsAccessTerminalVisualShell({
         @media (max-width: 1024px) {
           .wms-access-terminal, 
           .wms-access-terminal > div {
-            overflow: visible !important;
+            overflow-x: hidden !important;
             height: auto !important;
             min-height: 0 !important;
           }
