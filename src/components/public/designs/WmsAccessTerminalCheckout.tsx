@@ -103,12 +103,16 @@ function WmsAccessTerminalVisualShell({
 }: any) {
   const formatPriceParts = (price: any) => {
     try {
-      const formatted = typeof price === "number"
-        ? new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(price)
-        : String(price || "R$ 0,00");
+      const numericPrice = typeof price === 'number' 
+        ? price 
+        : (typeof price === 'string' ? parseFloat(price.replace(/[^\d]/g, '')) / 100 : 0);
       
-      const cleanPrice = formatted.replace("R$", "").trim();
-      const parts = cleanPrice.split(",");
+      const formatted = new Intl.NumberFormat("pt-BR", { 
+        style: "currency", 
+        currency: "BRL" 
+      }).format(isNaN(numericPrice) ? 0 : numericPrice);
+      
+      const parts = formatted.replace("R$", "").trim().split(",");
       
       return {
         integer: parts[0] || "0",
