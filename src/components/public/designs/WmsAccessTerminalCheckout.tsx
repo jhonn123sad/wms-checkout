@@ -37,13 +37,11 @@ function PriceDisplay({ integer, decimal, label = "VALOR DO ACESSO", size = "lar
       <div className="flex items-baseline gap-1">
         <span className="text-white text-[14px] lg:text-[18px] font-black opacity-40 italic">R$</span>
         <div className="flex items-baseline">
-          <AnomalyText 
-            text={integer} 
-            intensity="low" 
-            className="text-[40px] lg:text-[52px] font-black text-white italic tracking-tighter leading-none" 
-          />
+          <span className="text-[40px] lg:text-[52px] font-black text-white italic tracking-tighter leading-none">
+            {integer}
+          </span>
           <span className="text-[20px] lg:text-[26px] font-black text-[#00FF41] italic leading-none ml-0.5">
-            <AnomalyText text={"," + decimal} intensity="low" />
+            ,{decimal}
           </span>
         </div>
       </div>
