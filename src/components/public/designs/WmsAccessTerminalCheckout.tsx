@@ -24,9 +24,9 @@ function AnomalyText({ text, className = "", intensity = "medium" }: { text: str
 function PriceDisplay({ integer, decimal, label = "VALOR DO ACESSO", size = "large" }: any) {
   if (size === "small") {
     return (
-      <div className="flex items-center gap-2 bg-[#00FF41]/10 border border-[#00FF41]/20 px-3 py-1 rounded-full backdrop-blur-sm">
+      <div className="flex items-center gap-2 bg-[#00FF41]/10 border border-[#00FF41]/20 px-3 py-1.5 rounded-full backdrop-blur-sm shadow-[0_0_15px_rgba(0,255,65,0.05)]">
         <span className="text-[9px] lg:text-[10px] text-[#00FF41]/60 font-black uppercase tracking-widest">{label}:</span>
-        <span className="text-xs font-black text-white italic">R$ {integer},<span className="text-[#00FF41]">{decimal}</span></span>
+        <span className="text-xs font-black text-white italic">R$ <AnomalyText text={integer} className="inline-block" intensity="low" />,<span className="text-[#00FF41]">{decimal}</span></span>
       </div>
     );
   }
@@ -38,7 +38,7 @@ function PriceDisplay({ integer, decimal, label = "VALOR DO ACESSO", size = "lar
         <span className="text-white text-[14px] lg:text-[18px] font-black opacity-40 italic">R$</span>
         <div className="flex items-baseline">
           <span className="text-[40px] lg:text-[52px] font-black text-white italic tracking-tighter leading-none">
-            {integer}
+            <AnomalyText text={integer} />
           </span>
           <span className="text-[20px] lg:text-[26px] font-black text-[#00FF41] italic leading-none ml-0.5">
             ,{decimal}
@@ -99,22 +99,25 @@ function WmsAccessTerminalVisualShell({
   return (
     <div className="min-h-screen bg-[#020202] text-[#E0E0E0] font-sans selection:bg-[#00FF41]/30 relative w-full wms-access-terminal overflow-x-hidden">
       {/* HUD OVERLAYS */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-[0.04]">
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.04),rgba(0,255,0,0.01),rgba(0,0,255,0.04))] bg-[length:100%_2px,3px_100%]"></div>
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-[0.06]">
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]"></div>
         <div className="absolute inset-0 bg-[#00FF41]/5 animate-pulse"></div>
-        <div className="absolute top-0 left-1/4 w-[1px] h-full bg-[#00FF41]/20 animate-glitch-line"></div>
-        <div className="absolute top-0 right-1/4 w-[1px] h-full bg-[#00FF41]/10 animate-glitch-line [animation-delay:4s]"></div>
+        <div className="absolute top-0 left-1/4 w-[1px] h-full bg-[#00FF41]/30 animate-glitch-line"></div>
+        <div className="absolute top-0 right-1/4 w-[1px] h-full bg-[#00FF41]/20 animate-glitch-line [animation-delay:4s]"></div>
+        <div className="absolute top-1/2 left-0 w-full h-[1px] bg-[#00FF41]/10 animate-pulse"></div>
       </div>
 
       {/* BACKGROUND SCENE */}
       <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(0,255,65,0.04)_0%,transparent_70%,black_100%)]"></div>
-        <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(rgba(0,255,65,.5)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,65,.5)_1px,transparent_1px)] bg-[length:60px_60px]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(0,255,65,0.05)_0%,transparent_70%,black_100%)]"></div>
+        <div className="absolute inset-0 opacity-[0.04] bg-[linear-gradient(rgba(0,255,65,.5)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,65,.5)_1px,transparent_1px)] bg-[length:60px_60px]"></div>
         <div className="absolute inset-0 grayscale opacity-10">{heroBackgroundSlot}</div>
         
         {/* Environmental Glitch Blocks */}
-        <div className="absolute top-20 left-0 w-32 h-[2px] bg-[#00FF41]/10 blur-[1px] animate-pulse"></div>
-        <div className="absolute bottom-40 right-0 w-48 h-[1px] bg-[#00FF41]/5 blur-[2px] animate-pulse [animation-delay:2s]"></div>
+        <div className="absolute top-20 left-10 w-48 h-[2px] bg-[#00FF41]/20 blur-[1px] animate-pulse"></div>
+        <div className="absolute bottom-40 right-10 w-64 h-[1px] bg-[#00FF41]/15 blur-[2px] animate-pulse [animation-delay:2.5s]"></div>
+        <div className="absolute top-1/3 right-0 w-24 h-24 border-r border-t border-[#00FF41]/10 opacity-30"></div>
+        <div className="absolute bottom-1/4 left-0 w-32 h-32 border-l border-b border-[#00FF41]/10 opacity-30"></div>
       </div>
 
       <div className="relative z-10 flex flex-col items-center justify-start min-h-screen py-0 lg:py-6 px-0 lg:px-4 w-full max-w-full overflow-x-hidden">
@@ -139,7 +142,7 @@ function WmsAccessTerminalVisualShell({
                   <div className="flex flex-col font-black tracking-tighter text-white uppercase italic leading-[0.95] mb-3">
                     <span className="text-[14px] lg:text-[18px] opacity-70">FAÇA PARTE DA</span>
                     <span className="text-[28px] lg:text-[46px] block">
-                      <AnomalyText text="MAIOR" className="text-[#00FF41]" /> BIBLIOTECA
+                      <AnomalyText text="MAIOR" className="text-[#00FF41]" intensity="high" /> BIBLIOTECA
                     </span>
                     <span className="text-[20px] lg:text-[32px] opacity-90">
                       DO DIGITAL
@@ -147,10 +150,10 @@ function WmsAccessTerminalVisualShell({
                   </div>
                   
                   <div className="flex items-center gap-2.5">
-                    <span className="px-2 py-0.5 bg-[#00FF41]/10 border border-[#00FF41]/20 text-[10px] lg:text-[11px] font-black text-[#00FF41] tracking-[0.2em] rounded uppercase italic">
-                      ACESSO EXCLUSIVO
+                    <span className="px-2 py-0.5 bg-[#00FF41]/15 border border-[#00FF41]/30 text-[10px] lg:text-[11px] font-black text-[#00FF41] tracking-[0.2em] rounded uppercase italic shadow-[0_0_10px_rgba(0,255,65,0.1)]">
+                      <AnomalyText text="ACESSO EXCLUSIVO" intensity="low" />
                     </span>
-                    <div className="h-[1px] w-8 bg-[#00FF41]/20"></div>
+                    <div className="h-[1px] w-8 bg-[#00FF41]/30"></div>
                   </div>
                 </div>
               </div>
@@ -183,15 +186,15 @@ function WmsAccessTerminalVisualShell({
                 { title: 'Métodos', desc: 'Aplique com clareza', slot: proofMedia2Slot },
                 { title: 'Insights', desc: 'Siga com direção', slot: proofMedia3Slot }
               ].map((card, idx) => (
-                <div key={idx} className="bg-white/[0.02] border border-white/5 p-3 rounded-2xl flex items-center gap-3 group hover:bg-[#00FF41]/5 transition-all duration-500 min-w-0">
+                <div key={idx} className="bg-white/[0.02] border border-white/5 p-3 rounded-2xl flex items-center gap-3 group hover:bg-[#00FF41]/5 transition-all duration-500 min-w-0 flex-1">
                   <div className="bg-black border border-white/10 rounded-xl flex items-center justify-center overflow-hidden shrink-0 group-hover:border-[#00FF41]/20 transition-colors w-12 h-9 shadow-lg">
                     {card.slot}
                   </div>
                   <div className="flex flex-col min-w-0 overflow-hidden">
-                    <span className="font-black text-gray-400 uppercase tracking-[0.2em] italic group-hover:text-[#00FF41]/90 transition-all text-[12px] lg:text-[13px] truncate">
+                    <span className="font-black text-gray-400 uppercase tracking-[0.15em] italic group-hover:text-[#00FF41]/90 transition-all text-[11px] lg:text-[13px] truncate">
                       {card.title}
                     </span>
-                    <span className="text-[11px] lg:text-[12px] text-gray-600 font-medium italic truncate opacity-80">{card.desc}</span>
+                    <span className="text-[10px] lg:text-[11px] text-gray-600 font-medium italic truncate opacity-80">{card.desc}</span>
                   </div>
                 </div>
               ))}
@@ -224,16 +227,15 @@ function WmsAccessTerminalVisualShell({
             </div>
 
             {/* Checkout Area */}
-            <div className="flex-1 relative z-10 flex flex-col wms-access-pix-panel min-h-0">
+            <div className="flex-1 relative z-10 flex flex-col min-h-0">
                 <div className={`bg-white/[0.03] border border-white/10 rounded-2xl transition-all duration-500 shadow-2xl ${hasPaymentData ? 'p-0 overflow-visible' : 'p-5 lg:p-7 overflow-hidden'}`}>
                    {hasPaymentData ? (
-                     <div className="w-full max-w-full min-w-0 overflow-hidden rounded-2xl">
+                     <div className="w-full max-w-full min-w-0 overflow-hidden rounded-2xl wms-access-pix-panel p-4 sm:p-6 lg:p-8">
                        {pixSlot}
                      </div>
                    ) : formSlot}
                 </div>
             </div>
-
 
             {/* Trust Section */}
             <footer className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between relative z-10">
@@ -246,9 +248,9 @@ function WmsAccessTerminalVisualShell({
                   <p className="text-[#00FF41]/50 text-[10px] lg:text-[11px] font-bold uppercase tracking-widest italic">A oportunidade é agora</p>
                 </div>
               </div>
-              <div className="hidden sm:flex flex-col items-end opacity-20">
-                <span className="text-[7px] font-mono tracking-tighter">WMS_ACCESS_v1.0.8</span>
-                <span className="text-[7px] font-mono text-[#00FF41] tracking-tighter uppercase">SECURE_LINK_ENCRYPTED</span>
+              <div className="hidden sm:flex flex-col items-end opacity-40 group hover:opacity-100 transition-opacity">
+                <span className="text-[8px] font-mono tracking-tighter text-white">WMS_ACCESS_v1.0.8</span>
+                <span className="text-[8px] font-mono text-[#00FF41] tracking-tighter uppercase">SECURE_LINK_ENCRYPTED</span>
               </div>
             </footer>
             
@@ -265,21 +267,19 @@ function WmsAccessTerminalVisualShell({
         }
 
         @keyframes anomaly-glitch-1 {
-          0%, 80%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); filter: none; }
-          82% { clip-path: inset(10% 0 80% 0); transform: translate(-2px, -1px); filter: hue-rotate(90deg) brightness(1.2); }
-          84% { clip-path: inset(50% 0 30% 0); transform: translate(2px, 1px); filter: hue-rotate(-90deg); }
-          86% { clip-path: inset(20% 0 60% 0); transform: translate(-1px, 2px); }
-          88% { clip-path: inset(70% 0 10% 0); transform: translate(1px, -2px); filter: saturate(2); }
+          0%, 20%, 40%, 60%, 80%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); filter: none; }
+          22% { clip-path: inset(10% 0 80% 0); transform: translate(-2px, -1px); filter: hue-rotate(90deg) brightness(1.2); }
+          24% { clip-path: inset(50% 0 30% 0); transform: translate(2px, 1px); filter: hue-rotate(-90deg); }
+          62% { clip-path: inset(20% 0 60% 0); transform: translate(-1px, 2px); }
+          64% { clip-path: inset(70% 0 10% 0); transform: translate(1px, -2px); filter: saturate(2); }
           90% { clip-path: inset(40% 0 40% 0); transform: translate(-3px, 0); }
-          92% { clip-path: inset(0 0 0 0); transform: translate(0); }
         }
 
         @keyframes anomaly-glitch-2 {
-          0%, 80%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); opacity: 0; }
-          82% { clip-path: inset(20% 0 50% 0); transform: translate(3px, 1px); opacity: 0.7; color: var(--wms-cyan); }
-          85% { clip-path: inset(60% 0 20% 0); transform: translate(-3px, -1px); opacity: 0.7; color: var(--wms-neon); }
-          88% { clip-path: inset(10% 0 70% 0); transform: translate(2px, 2px); opacity: 0.7; color: var(--wms-cyan); }
-          92% { clip-path: inset(0 0 0 0); transform: translate(0); opacity: 0; }
+          0%, 20%, 40%, 60%, 80%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); opacity: 0; }
+          25% { clip-path: inset(20% 0 50% 0); transform: translate(3px, 1px); opacity: 0.8; color: var(--wms-cyan); }
+          65% { clip-path: inset(60% 0 20% 0); transform: translate(-3px, -1px); opacity: 0.8; color: var(--wms-neon); }
+          85% { clip-path: inset(10% 0 70% 0); transform: translate(2px, 2px); opacity: 0.8; color: var(--wms-cyan); }
         }
 
         .anomaly-text {
@@ -301,17 +301,18 @@ function WmsAccessTerminalVisualShell({
 
         .anomaly-text::before {
           z-index: -1;
-          animation: anomaly-glitch-1 8s infinite linear alternate-reverse;
+          animation: anomaly-glitch-1 4s infinite linear alternate-reverse;
         }
 
         .anomaly-text::after {
           z-index: -2;
-          animation: anomaly-glitch-2 8s infinite linear alternate-reverse;
+          animation: anomaly-glitch-2 4s infinite linear alternate-reverse;
           mix-blend-mode: screen;
         }
 
-        .anomaly-text.low::before, .anomaly-text.low::after { animation-duration: 10s; }
-        .anomaly-text.high::before, .anomaly-text.high::after { animation-duration: 6s; }
+        .anomaly-text.low::before, .anomaly-text.low::after { animation-duration: 8s; }
+        .anomaly-text.medium::before, .anomaly-text.medium::after { animation-duration: 4s; }
+        .anomaly-text.high::before, .anomaly-text.high::after { animation-duration: 2s; }
 
 
         .sm-scanlines {
@@ -345,12 +346,35 @@ function WmsAccessTerminalVisualShell({
           width: 100%;
           max-width: 100%;
           min-width: 0;
+          overflow: hidden;
           box-sizing: border-box;
         }
 
         .wms-access-pix-panel * {
-          max-width: 100%;
           box-sizing: border-box;
+          max-width: 100%;
+        }
+
+        .wms-access-pix-panel p,
+        .wms-access-pix-panel span,
+        .wms-access-pix-panel div {
+          min-width: 0;
+        }
+
+        .wms-access-pix-panel code,
+        .wms-access-pix-panel pre {
+          overflow-wrap: anywhere;
+          word-break: break-word;
+          max-width: 100%;
+          display: block;
+          white-space: pre-wrap;
+        }
+
+        .wms-access-pix-panel button {
+          max-width: 100%;
+          white-space: normal;
+          height: auto;
+          min-height: 3.5rem;
         }
 
         .wms-access-pix-panel img {
@@ -358,16 +382,7 @@ function WmsAccessTerminalVisualShell({
           height: auto;
           display: block;
           margin: 0 auto;
-          /* Ensure QR code visibility if it's black on white internal to component */
           filter: drop-shadow(0 0 1px white);
-        }
-
-        .wms-access-pix-panel code,
-        .wms-access-pix-panel pre,
-        .wms-access-pix-panel p,
-        .wms-access-pix-panel div {
-          overflow-wrap: anywhere;
-          word-break: break-word;
         }
 
         @media (max-width: 1024px) {
