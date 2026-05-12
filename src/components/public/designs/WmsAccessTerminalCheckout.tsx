@@ -199,9 +199,9 @@ function WmsAccessTerminalVisualShell({
               <div className="absolute inset-0 flex items-center justify-center scale-105 group-hover:scale-100 transition-transform duration-700">
                 {mainMediaSlot}
               </div>
-              <div className="absolute top-4 right-4 bg-black/80 backdrop-blur-xl border border-[#00FF41]/20 px-3 py-1.5 rounded-lg z-20 flex items-center gap-2">
-                 <div className="w-1.5 h-1.5 rounded-full bg-[#00FF41] animate-pulse shadow-[0_0_8px_#00FF41]"></div>
-                 <span className="text-[10px] lg:text-[11px] text-[#00FF41] font-black uppercase tracking-[0.15em] italic">
+              <div className="absolute top-2 right-2 lg:top-4 lg:right-4 max-w-[calc(100%-1rem)] lg:max-w-[80%] bg-black/80 backdrop-blur-xl border border-[#00FF41]/20 px-2 py-1 lg:px-3 lg:py-1.5 rounded-lg z-20 flex items-center gap-1.5 lg:gap-2 min-w-0">
+                 <div className="w-1.5 h-1.5 rounded-full bg-[#00FF41] animate-pulse shadow-[0_0_8px_#00FF41] shrink-0"></div>
+                 <span className="text-[8px] sm:text-[9px] lg:text-[11px] text-[#00FF41] font-black uppercase tracking-[0.1em] lg:tracking-[0.15em] italic truncate">
                    <AnomalyText text="Faça parte — ou fique para trás" intensity="medium" />
                  </span>
               </div>
