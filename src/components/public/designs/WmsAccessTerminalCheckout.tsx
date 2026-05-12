@@ -24,9 +24,9 @@ function AnomalyText({ text, className = "", intensity = "medium" }: { text: str
 function PriceDisplay({ integer, decimal, label = "VALOR DO ACESSO", size = "large" }: any) {
   if (size === "small") {
     return (
-      <div className="flex items-center gap-2 bg-[#00FF41]/10 border border-[#00FF41]/20 px-3 py-1 rounded-full backdrop-blur-sm">
+      <div className="flex items-center gap-2 bg-[#00FF41]/10 border border-[#00FF41]/20 px-3 py-1.5 rounded-full backdrop-blur-sm shadow-[0_0_15px_rgba(0,255,65,0.05)]">
         <span className="text-[9px] lg:text-[10px] text-[#00FF41]/60 font-black uppercase tracking-widest">{label}:</span>
-        <span className="text-xs font-black text-white italic">R$ {integer},<span className="text-[#00FF41]">{decimal}</span></span>
+        <span className="text-xs font-black text-white italic">R$ <AnomalyText text={integer} className="inline-block" intensity="low" />,<span className="text-[#00FF41]">{decimal}</span></span>
       </div>
     );
   }
@@ -38,7 +38,7 @@ function PriceDisplay({ integer, decimal, label = "VALOR DO ACESSO", size = "lar
         <span className="text-white text-[14px] lg:text-[18px] font-black opacity-40 italic">R$</span>
         <div className="flex items-baseline">
           <span className="text-[40px] lg:text-[52px] font-black text-white italic tracking-tighter leading-none">
-            {integer}
+            <AnomalyText text={integer} />
           </span>
           <span className="text-[20px] lg:text-[26px] font-black text-[#00FF41] italic leading-none ml-0.5">
             ,{decimal}
