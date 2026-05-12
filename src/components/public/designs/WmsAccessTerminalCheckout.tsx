@@ -37,13 +37,11 @@ function PriceDisplay({ integer, decimal, label = "VALOR DO ACESSO", size = "lar
       <div className="flex items-baseline gap-1">
         <span className="text-white text-[14px] lg:text-[18px] font-black opacity-40 italic">R$</span>
         <div className="flex items-baseline">
-          <AnomalyText 
-            text={integer} 
-            intensity="low" 
-            className="text-[40px] lg:text-[52px] font-black text-white italic tracking-tighter leading-none" 
-          />
+          <span className="text-[40px] lg:text-[52px] font-black text-white italic tracking-tighter leading-none">
+            {integer}
+          </span>
           <span className="text-[20px] lg:text-[26px] font-black text-[#00FF41] italic leading-none ml-0.5">
-            <AnomalyText text={"," + decimal} intensity="low" />
+            ,{decimal}
           </span>
         </div>
       </div>
@@ -104,6 +102,8 @@ function WmsAccessTerminalVisualShell({
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-[0.04]">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.04),rgba(0,255,0,0.01),rgba(0,0,255,0.04))] bg-[length:100%_2px,3px_100%]"></div>
         <div className="absolute inset-0 bg-[#00FF41]/5 animate-pulse"></div>
+        <div className="absolute top-0 left-1/4 w-[1px] h-full bg-[#00FF41]/20 animate-glitch-line"></div>
+        <div className="absolute top-0 right-1/4 w-[1px] h-full bg-[#00FF41]/10 animate-glitch-line [animation-delay:4s]"></div>
       </div>
 
       {/* BACKGROUND SCENE */}
@@ -111,6 +111,10 @@ function WmsAccessTerminalVisualShell({
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(0,255,65,0.04)_0%,transparent_70%,black_100%)]"></div>
         <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(rgba(0,255,65,.5)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,65,.5)_1px,transparent_1px)] bg-[length:60px_60px]"></div>
         <div className="absolute inset-0 grayscale opacity-10">{heroBackgroundSlot}</div>
+        
+        {/* Environmental Glitch Blocks */}
+        <div className="absolute top-20 left-0 w-32 h-[2px] bg-[#00FF41]/10 blur-[1px] animate-pulse"></div>
+        <div className="absolute bottom-40 right-0 w-48 h-[1px] bg-[#00FF41]/5 blur-[2px] animate-pulse [animation-delay:2s]"></div>
       </div>
 
       <div className="relative z-10 flex flex-col items-center justify-start min-h-screen py-0 lg:py-6 px-0 lg:px-4 w-full max-w-full overflow-x-hidden">
@@ -138,16 +142,14 @@ function WmsAccessTerminalVisualShell({
                       <AnomalyText text="MAIOR" className="text-[#00FF41]" /> BIBLIOTECA
                     </span>
                     <span className="text-[20px] lg:text-[32px] opacity-90">
-                      DO <AnomalyText text="DIGITAL" intensity="low" />
+                      DO DIGITAL
                     </span>
                   </div>
                   
                   <div className="flex items-center gap-2.5">
-                    <AnomalyText 
-                      text="ACESSO EXCLUSIVO" 
-                      intensity="low"
-                      className="px-2 py-0.5 bg-[#00FF41]/10 border border-[#00FF41]/20 text-[10px] lg:text-[11px] font-black text-[#00FF41] tracking-[0.2em] rounded uppercase italic" 
-                    />
+                    <span className="px-2 py-0.5 bg-[#00FF41]/10 border border-[#00FF41]/20 text-[10px] lg:text-[11px] font-black text-[#00FF41] tracking-[0.2em] rounded uppercase italic">
+                      ACESSO EXCLUSIVO
+                    </span>
                     <div className="h-[1px] w-8 bg-[#00FF41]/20"></div>
                   </div>
                 </div>
@@ -168,11 +170,9 @@ function WmsAccessTerminalVisualShell({
               </div>
               <div className="absolute top-4 right-4 bg-black/80 backdrop-blur-xl border border-[#00FF41]/20 px-3 py-1.5 rounded-lg z-20 flex items-center gap-2">
                  <div className="w-1.5 h-1.5 rounded-full bg-[#00FF41] animate-pulse shadow-[0_0_8px_#00FF41]"></div>
-                 <AnomalyText 
-                   text="Faça parte — ou fique para trás" 
-                   intensity="low"
-                   className="text-[10px] lg:text-[11px] text-[#00FF41] font-black uppercase tracking-[0.15em] italic" 
-                 />
+                 <span className="text-[10px] lg:text-[11px] text-[#00FF41] font-black uppercase tracking-[0.15em] italic">
+                   Faça parte — ou fique para trás
+                 </span>
               </div>
             </div>
 
@@ -188,11 +188,9 @@ function WmsAccessTerminalVisualShell({
                     {card.slot}
                   </div>
                   <div className="flex flex-col min-w-0 overflow-hidden">
-                    <AnomalyText 
-                      text={card.title} 
-                      intensity="low"
-                      className="font-black text-gray-400 uppercase tracking-[0.2em] italic group-hover:text-[#00FF41]/90 transition-all text-[12px] lg:text-[13px] truncate" 
-                    />
+                    <span className="font-black text-gray-400 uppercase tracking-[0.2em] italic group-hover:text-[#00FF41]/90 transition-all text-[12px] lg:text-[13px] truncate">
+                      {card.title}
+                    </span>
                     <span className="text-[11px] lg:text-[12px] text-gray-600 font-medium italic truncate opacity-80">{card.desc}</span>
                   </div>
                 </div>
@@ -229,7 +227,7 @@ function WmsAccessTerminalVisualShell({
             <div className="flex-1 relative z-10 flex flex-col wms-access-pix-panel min-h-0">
                 <div className={`bg-white/[0.03] border border-white/10 rounded-2xl transition-all duration-500 shadow-2xl ${hasPaymentData ? 'p-0 overflow-visible' : 'p-5 lg:p-7 overflow-hidden'}`}>
                    {hasPaymentData ? (
-                     <div className="w-full max-w-full min-w-0 overflow-hidden rounded-2xl bg-white">
+                     <div className="w-full max-w-full min-w-0 overflow-hidden rounded-2xl">
                        {pixSlot}
                      </div>
                    ) : formSlot}
@@ -321,6 +319,27 @@ function WmsAccessTerminalVisualShell({
            background-size: 100% 3px;
         }
 
+        @keyframes glitch-line {
+          0% { transform: translateY(-100%); opacity: 0; }
+          10% { opacity: 0.5; }
+          90% { opacity: 0.5; }
+          100% { transform: translateY(100vh); opacity: 0; }
+        }
+        .animate-glitch-line {
+          animation: glitch-line 12s linear infinite;
+        }
+
+        /* INPUTS LEGIBILITY */
+        .wms-access-terminal input::placeholder {
+          color: rgba(255, 255, 255, 0.4) !important;
+          opacity: 1 !important;
+        }
+        .wms-access-terminal input {
+          background-color: rgba(255, 255, 255, 0.05) !important;
+          border: 1px solid rgba(255, 255, 255, 0.1) !important;
+          color: white !important;
+        }
+
         /* DEFENSIVE PIX PANEL */
         .wms-access-pix-panel {
           width: 100%;
@@ -339,6 +358,8 @@ function WmsAccessTerminalVisualShell({
           height: auto;
           display: block;
           margin: 0 auto;
+          /* Ensure QR code visibility if it's black on white internal to component */
+          filter: drop-shadow(0 0 1px white);
         }
 
         .wms-access-pix-panel code,
@@ -353,8 +374,6 @@ function WmsAccessTerminalVisualShell({
           .wms-access-terminal, 
           .wms-access-terminal > div {
             overflow-x: hidden !important;
-            height: auto !important;
-            min-height: 0 !important;
           }
         }
 
