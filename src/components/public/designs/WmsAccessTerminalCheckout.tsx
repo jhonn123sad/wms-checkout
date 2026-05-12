@@ -99,22 +99,25 @@ function WmsAccessTerminalVisualShell({
   return (
     <div className="min-h-screen bg-[#020202] text-[#E0E0E0] font-sans selection:bg-[#00FF41]/30 relative w-full wms-access-terminal overflow-x-hidden">
       {/* HUD OVERLAYS */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-[0.04]">
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.04),rgba(0,255,0,0.01),rgba(0,0,255,0.04))] bg-[length:100%_2px,3px_100%]"></div>
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-[0.06]">
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]"></div>
         <div className="absolute inset-0 bg-[#00FF41]/5 animate-pulse"></div>
-        <div className="absolute top-0 left-1/4 w-[1px] h-full bg-[#00FF41]/20 animate-glitch-line"></div>
-        <div className="absolute top-0 right-1/4 w-[1px] h-full bg-[#00FF41]/10 animate-glitch-line [animation-delay:4s]"></div>
+        <div className="absolute top-0 left-1/4 w-[1px] h-full bg-[#00FF41]/30 animate-glitch-line"></div>
+        <div className="absolute top-0 right-1/4 w-[1px] h-full bg-[#00FF41]/20 animate-glitch-line [animation-delay:4s]"></div>
+        <div className="absolute top-1/2 left-0 w-full h-[1px] bg-[#00FF41]/10 animate-pulse"></div>
       </div>
 
       {/* BACKGROUND SCENE */}
       <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(0,255,65,0.04)_0%,transparent_70%,black_100%)]"></div>
-        <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(rgba(0,255,65,.5)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,65,.5)_1px,transparent_1px)] bg-[length:60px_60px]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(0,255,65,0.05)_0%,transparent_70%,black_100%)]"></div>
+        <div className="absolute inset-0 opacity-[0.04] bg-[linear-gradient(rgba(0,255,65,.5)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,65,.5)_1px,transparent_1px)] bg-[length:60px_60px]"></div>
         <div className="absolute inset-0 grayscale opacity-10">{heroBackgroundSlot}</div>
         
         {/* Environmental Glitch Blocks */}
-        <div className="absolute top-20 left-0 w-32 h-[2px] bg-[#00FF41]/10 blur-[1px] animate-pulse"></div>
-        <div className="absolute bottom-40 right-0 w-48 h-[1px] bg-[#00FF41]/5 blur-[2px] animate-pulse [animation-delay:2s]"></div>
+        <div className="absolute top-20 left-10 w-48 h-[2px] bg-[#00FF41]/20 blur-[1px] animate-pulse"></div>
+        <div className="absolute bottom-40 right-10 w-64 h-[1px] bg-[#00FF41]/15 blur-[2px] animate-pulse [animation-delay:2.5s]"></div>
+        <div className="absolute top-1/3 right-0 w-24 h-24 border-r border-t border-[#00FF41]/10 opacity-30"></div>
+        <div className="absolute bottom-1/4 left-0 w-32 h-32 border-l border-b border-[#00FF41]/10 opacity-30"></div>
       </div>
 
       <div className="relative z-10 flex flex-col items-center justify-start min-h-screen py-0 lg:py-6 px-0 lg:px-4 w-full max-w-full overflow-x-hidden">
