@@ -227,7 +227,7 @@ function WmsAccessTerminalVisualShell({
             <div className="flex-1 relative z-10 flex flex-col wms-access-pix-panel min-h-0">
                 <div className={`bg-white/[0.03] border border-white/10 rounded-2xl transition-all duration-500 shadow-2xl ${hasPaymentData ? 'p-0 overflow-visible' : 'p-5 lg:p-7 overflow-hidden'}`}>
                    {hasPaymentData ? (
-                     <div className="w-full max-w-full min-w-0 overflow-hidden rounded-2xl bg-white">
+                     <div className="w-full max-w-full min-w-0 overflow-hidden rounded-2xl">
                        {pixSlot}
                      </div>
                    ) : formSlot}
