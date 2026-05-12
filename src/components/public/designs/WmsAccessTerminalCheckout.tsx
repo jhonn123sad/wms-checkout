@@ -102,6 +102,8 @@ function WmsAccessTerminalVisualShell({
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-[0.04]">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.04),rgba(0,255,0,0.01),rgba(0,0,255,0.04))] bg-[length:100%_2px,3px_100%]"></div>
         <div className="absolute inset-0 bg-[#00FF41]/5 animate-pulse"></div>
+        <div className="absolute top-0 left-1/4 w-[1px] h-full bg-[#00FF41]/20 animate-glitch-line"></div>
+        <div className="absolute top-0 right-1/4 w-[1px] h-full bg-[#00FF41]/10 animate-glitch-line [animation-delay:4s]"></div>
       </div>
 
       {/* BACKGROUND SCENE */}
@@ -109,6 +111,10 @@ function WmsAccessTerminalVisualShell({
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(0,255,65,0.04)_0%,transparent_70%,black_100%)]"></div>
         <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(rgba(0,255,65,.5)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,65,.5)_1px,transparent_1px)] bg-[length:60px_60px]"></div>
         <div className="absolute inset-0 grayscale opacity-10">{heroBackgroundSlot}</div>
+        
+        {/* Environmental Glitch Blocks */}
+        <div className="absolute top-20 left-0 w-32 h-[2px] bg-[#00FF41]/10 blur-[1px] animate-pulse"></div>
+        <div className="absolute bottom-40 right-0 w-48 h-[1px] bg-[#00FF41]/5 blur-[2px] animate-pulse [animation-delay:2s]"></div>
       </div>
 
       <div className="relative z-10 flex flex-col items-center justify-start min-h-screen py-0 lg:py-6 px-0 lg:px-4 w-full max-w-full overflow-x-hidden">
