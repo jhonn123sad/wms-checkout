@@ -164,11 +164,9 @@ function WmsAccessTerminalVisualShell({
               </div>
               <div className="absolute top-4 right-4 bg-black/80 backdrop-blur-xl border border-[#00FF41]/20 px-3 py-1.5 rounded-lg z-20 flex items-center gap-2">
                  <div className="w-1.5 h-1.5 rounded-full bg-[#00FF41] animate-pulse shadow-[0_0_8px_#00FF41]"></div>
-                 <AnomalyText 
-                   text="Faça parte — ou fique para trás" 
-                   intensity="low"
-                   className="text-[10px] lg:text-[11px] text-[#00FF41] font-black uppercase tracking-[0.15em] italic" 
-                 />
+                 <span className="text-[10px] lg:text-[11px] text-[#00FF41] font-black uppercase tracking-[0.15em] italic">
+                   Faça parte — ou fique para trás
+                 </span>
               </div>
             </div>
 
