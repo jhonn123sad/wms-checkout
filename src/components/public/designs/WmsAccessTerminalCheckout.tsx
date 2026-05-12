@@ -10,8 +10,36 @@ import React from "react";
  * Sistema de anomalia digital CSS-only, sem hooks ou JS.
  */
 function AnomalyText({ text, className = "", intensity = "medium" }: { text: string; className?: string; intensity?: "low" | "medium" | "high" }) {
+  const [active, setActive] = React.useState(false);
+
+  React.useEffect(() => {
+    // Intervalos randômicos baseados na intensidade
+    // high: a cada 2-5s | medium: a cada 5-10s | low: a cada 10-20s
+    const config = {
+      high: { min: 2000, max: 5000 },
+      medium: { min: 5000, max: 10000 },
+      low: { min: 10000, max: 20000 }
+    };
+    
+    const { min, max } = config[intensity];
+    
+    const scheduleNext = () => {
+      const delay = Math.random() * (max - min) + min;
+      return setTimeout(() => {
+        setActive(true);
+        setTimeout(() => {
+          setActive(false);
+          scheduleNext();
+        }, 1500); // Duração exata de 1.5s como pedido
+      }, delay);
+    };
+
+    const timer = scheduleNext();
+    return () => clearTimeout(timer);
+  }, [intensity]);
+
   return (
-    <span className={`anomaly-text ${intensity} ${className}`} data-text={text}>
+    <span className={`anomaly-text ${active ? 'active' : ''} ${intensity} ${className}`} data-text={text}>
       {text}
     </span>
   );
