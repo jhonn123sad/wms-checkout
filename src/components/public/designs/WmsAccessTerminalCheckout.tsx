@@ -267,19 +267,32 @@ function WmsAccessTerminalVisualShell({
         }
 
         @keyframes anomaly-glitch-1 {
-          0%, 20%, 40%, 60%, 80%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); filter: none; }
-          22% { clip-path: inset(10% 0 80% 0); transform: translate(-2px, -1px); filter: hue-rotate(90deg) brightness(1.2); }
-          24% { clip-path: inset(50% 0 30% 0); transform: translate(2px, 1px); filter: hue-rotate(-90deg); }
-          62% { clip-path: inset(20% 0 60% 0); transform: translate(-1px, 2px); }
-          64% { clip-path: inset(70% 0 10% 0); transform: translate(1px, -2px); filter: saturate(2); }
-          90% { clip-path: inset(40% 0 40% 0); transform: translate(-3px, 0); }
+          0%, 6%, 14%, 22%, 38%, 52%, 68%, 84%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); filter: none; }
+          7% { clip-path: inset(8% 0 82% 0); transform: translate(-3px, -1px); filter: hue-rotate(120deg) brightness(1.4); }
+          9% { clip-path: inset(48% 0 28% 0); transform: translate(4px, 2px); filter: hue-rotate(-110deg) saturate(2); }
+          15% { clip-path: inset(72% 0 8% 0); transform: translate(-2px, 3px); filter: hue-rotate(60deg); }
+          17% { clip-path: inset(24% 0 56% 0); transform: translate(3px, -2px); filter: brightness(1.6) contrast(1.4); }
+          39% { clip-path: inset(18% 0 64% 0); transform: translate(-4px, 1px); filter: hue-rotate(200deg); }
+          41% { clip-path: inset(58% 0 18% 0); transform: translate(2px, -3px); filter: saturate(2.5) hue-rotate(-60deg); }
+          53% { clip-path: inset(10% 0 76% 0); transform: translate(-3px, 2px) skewX(-2deg); }
+          55% { clip-path: inset(66% 0 12% 0); transform: translate(4px, 1px) skewX(2deg); filter: hue-rotate(45deg); }
+          69% { clip-path: inset(34% 0 44% 0); transform: translate(-2px, -2px); filter: invert(0.15); }
+          71% { clip-path: inset(78% 0 4% 0); transform: translate(3px, 2px); filter: hue-rotate(-30deg) brightness(1.3); }
+          85% { clip-path: inset(20% 0 60% 0); transform: translate(-4px, 0) skewX(1deg); filter: saturate(3); }
+          87% { clip-path: inset(50% 0 30% 0); transform: translate(2px, 3px); filter: hue-rotate(150deg); }
         }
 
         @keyframes anomaly-glitch-2 {
-          0%, 20%, 40%, 60%, 80%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); opacity: 0; }
-          25% { clip-path: inset(20% 0 50% 0); transform: translate(3px, 1px); opacity: 0.8; color: var(--wms-cyan); }
-          65% { clip-path: inset(60% 0 20% 0); transform: translate(-3px, -1px); opacity: 0.8; color: var(--wms-neon); }
-          85% { clip-path: inset(10% 0 70% 0); transform: translate(2px, 2px); opacity: 0.8; color: var(--wms-cyan); }
+          0%, 8%, 18%, 30%, 46%, 60%, 76%, 92%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); opacity: 0; }
+          9% { clip-path: inset(22% 0 52% 0); transform: translate(4px, 2px); opacity: 0.85; color: var(--wms-cyan); }
+          11% { clip-path: inset(64% 0 16% 0); transform: translate(-4px, -2px); opacity: 0.9; color: var(--wms-neon); }
+          19% { clip-path: inset(8% 0 74% 0); transform: translate(3px, 3px); opacity: 0.8; color: var(--wms-cyan); }
+          21% { clip-path: inset(72% 0 6% 0); transform: translate(-3px, 1px); opacity: 0.95; color: var(--wms-neon); }
+          31% { clip-path: inset(38% 0 38% 0); transform: translate(5px, -1px) skewX(-3deg); opacity: 0.85; color: var(--wms-cyan); }
+          47% { clip-path: inset(14% 0 70% 0); transform: translate(-5px, 2px); opacity: 0.9; color: var(--wms-neon); }
+          61% { clip-path: inset(56% 0 22% 0); transform: translate(4px, -3px) skewX(2deg); opacity: 0.85; color: var(--wms-cyan); }
+          77% { clip-path: inset(28% 0 48% 0); transform: translate(-4px, 3px); opacity: 0.9; color: var(--wms-neon); }
+          93% { clip-path: inset(68% 0 10% 0); transform: translate(3px, 2px); opacity: 0.85; color: var(--wms-cyan); }
         }
 
         .anomaly-text {
@@ -301,18 +314,29 @@ function WmsAccessTerminalVisualShell({
 
         .anomaly-text::before {
           z-index: -1;
-          animation: anomaly-glitch-1 4s infinite linear alternate-reverse;
+          animation: anomaly-glitch-1 11s infinite steps(1, end);
         }
 
         .anomaly-text::after {
           z-index: -2;
-          animation: anomaly-glitch-2 4s infinite linear alternate-reverse;
+          animation: anomaly-glitch-2 13s infinite steps(1, end);
           mix-blend-mode: screen;
         }
 
-        .anomaly-text.low::before, .anomaly-text.low::after { animation-duration: 8s; }
-        .anomaly-text.medium::before, .anomaly-text.medium::after { animation-duration: 4s; }
-        .anomaly-text.high::before, .anomaly-text.high::after { animation-duration: 2s; }
+        .anomaly-text.low::before { animation-duration: 17s; }
+        .anomaly-text.low::after { animation-duration: 19s; }
+        .anomaly-text.medium::before { animation-duration: 11s; }
+        .anomaly-text.medium::after { animation-duration: 13s; }
+        .anomaly-text.high::before { animation-duration: 7s; }
+        .anomaly-text.high::after { animation-duration: 8s; }
+
+        /* Randomize start offsets so glitches feel non-synchronized */
+        .anomaly-text:nth-of-type(3n)::before { animation-delay: -2.3s; }
+        .anomaly-text:nth-of-type(3n)::after { animation-delay: -3.7s; }
+        .anomaly-text:nth-of-type(3n+1)::before { animation-delay: -5.1s; }
+        .anomaly-text:nth-of-type(3n+1)::after { animation-delay: -1.4s; }
+        .anomaly-text:nth-of-type(3n+2)::before { animation-delay: -8.2s; }
+        .anomaly-text:nth-of-type(3n+2)::after { animation-delay: -6.6s; }
 
 
         .sm-scanlines {
