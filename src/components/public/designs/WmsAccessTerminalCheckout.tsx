@@ -319,6 +319,27 @@ function WmsAccessTerminalVisualShell({
            background-size: 100% 3px;
         }
 
+        @keyframes glitch-line {
+          0% { transform: translateY(-100%); opacity: 0; }
+          10% { opacity: 0.5; }
+          90% { opacity: 0.5; }
+          100% { transform: translateY(100vh); opacity: 0; }
+        }
+        .animate-glitch-line {
+          animation: glitch-line 12s linear infinite;
+        }
+
+        /* INPUTS LEGIBILITY */
+        .wms-access-terminal input::placeholder {
+          color: rgba(255, 255, 255, 0.4) !important;
+          opacity: 1 !important;
+        }
+        .wms-access-terminal input {
+          background-color: rgba(255, 255, 255, 0.05) !important;
+          border: 1px solid rgba(255, 255, 255, 0.1) !important;
+          color: white !important;
+        }
+
         /* DEFENSIVE PIX PANEL */
         .wms-access-pix-panel {
           width: 100%;
@@ -337,6 +358,8 @@ function WmsAccessTerminalVisualShell({
           height: auto;
           display: block;
           margin: 0 auto;
+          /* Ensure QR code visibility if it's black on white internal to component */
+          filter: drop-shadow(0 0 1px white);
         }
 
         .wms-access-pix-panel code,
@@ -351,8 +374,6 @@ function WmsAccessTerminalVisualShell({
           .wms-access-terminal, 
           .wms-access-terminal > div {
             overflow-x: hidden !important;
-            height: auto !important;
-            min-height: 0 !important;
           }
         }
 
