@@ -267,21 +267,19 @@ function WmsAccessTerminalVisualShell({
         }
 
         @keyframes anomaly-glitch-1 {
-          0%, 80%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); filter: none; }
-          82% { clip-path: inset(10% 0 80% 0); transform: translate(-2px, -1px); filter: hue-rotate(90deg) brightness(1.2); }
-          84% { clip-path: inset(50% 0 30% 0); transform: translate(2px, 1px); filter: hue-rotate(-90deg); }
-          86% { clip-path: inset(20% 0 60% 0); transform: translate(-1px, 2px); }
-          88% { clip-path: inset(70% 0 10% 0); transform: translate(1px, -2px); filter: saturate(2); }
+          0%, 20%, 40%, 60%, 80%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); filter: none; }
+          22% { clip-path: inset(10% 0 80% 0); transform: translate(-2px, -1px); filter: hue-rotate(90deg) brightness(1.2); }
+          24% { clip-path: inset(50% 0 30% 0); transform: translate(2px, 1px); filter: hue-rotate(-90deg); }
+          62% { clip-path: inset(20% 0 60% 0); transform: translate(-1px, 2px); }
+          64% { clip-path: inset(70% 0 10% 0); transform: translate(1px, -2px); filter: saturate(2); }
           90% { clip-path: inset(40% 0 40% 0); transform: translate(-3px, 0); }
-          92% { clip-path: inset(0 0 0 0); transform: translate(0); }
         }
 
         @keyframes anomaly-glitch-2 {
-          0%, 80%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); opacity: 0; }
-          82% { clip-path: inset(20% 0 50% 0); transform: translate(3px, 1px); opacity: 0.7; color: var(--wms-cyan); }
-          85% { clip-path: inset(60% 0 20% 0); transform: translate(-3px, -1px); opacity: 0.7; color: var(--wms-neon); }
-          88% { clip-path: inset(10% 0 70% 0); transform: translate(2px, 2px); opacity: 0.7; color: var(--wms-cyan); }
-          92% { clip-path: inset(0 0 0 0); transform: translate(0); opacity: 0; }
+          0%, 20%, 40%, 60%, 80%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); opacity: 0; }
+          25% { clip-path: inset(20% 0 50% 0); transform: translate(3px, 1px); opacity: 0.8; color: var(--wms-cyan); }
+          65% { clip-path: inset(60% 0 20% 0); transform: translate(-3px, -1px); opacity: 0.8; color: var(--wms-neon); }
+          85% { clip-path: inset(10% 0 70% 0); transform: translate(2px, 2px); opacity: 0.8; color: var(--wms-cyan); }
         }
 
         .anomaly-text {
@@ -303,17 +301,18 @@ function WmsAccessTerminalVisualShell({
 
         .anomaly-text::before {
           z-index: -1;
-          animation: anomaly-glitch-1 8s infinite linear alternate-reverse;
+          animation: anomaly-glitch-1 4s infinite linear alternate-reverse;
         }
 
         .anomaly-text::after {
           z-index: -2;
-          animation: anomaly-glitch-2 8s infinite linear alternate-reverse;
+          animation: anomaly-glitch-2 4s infinite linear alternate-reverse;
           mix-blend-mode: screen;
         }
 
-        .anomaly-text.low::before, .anomaly-text.low::after { animation-duration: 10s; }
-        .anomaly-text.high::before, .anomaly-text.high::after { animation-duration: 6s; }
+        .anomaly-text.low::before, .anomaly-text.low::after { animation-duration: 8s; }
+        .anomaly-text.medium::before, .anomaly-text.medium::after { animation-duration: 4s; }
+        .anomaly-text.high::before, .anomaly-text.high::after { animation-duration: 2s; }
 
 
         .sm-scanlines {
