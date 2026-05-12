@@ -182,11 +182,9 @@ function WmsAccessTerminalVisualShell({
                     {card.slot}
                   </div>
                   <div className="flex flex-col min-w-0 overflow-hidden">
-                    <AnomalyText 
-                      text={card.title} 
-                      intensity="low"
-                      className="font-black text-gray-400 uppercase tracking-[0.2em] italic group-hover:text-[#00FF41]/90 transition-all text-[12px] lg:text-[13px] truncate" 
-                    />
+                    <span className="font-black text-gray-400 uppercase tracking-[0.2em] italic group-hover:text-[#00FF41]/90 transition-all text-[12px] lg:text-[13px] truncate">
+                      {card.title}
+                    </span>
                     <span className="text-[11px] lg:text-[12px] text-gray-600 font-medium italic truncate opacity-80">{card.desc}</span>
                   </div>
                 </div>
