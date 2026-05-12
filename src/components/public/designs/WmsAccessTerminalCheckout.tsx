@@ -136,16 +136,14 @@ function WmsAccessTerminalVisualShell({
                       <AnomalyText text="MAIOR" className="text-[#00FF41]" /> BIBLIOTECA
                     </span>
                     <span className="text-[20px] lg:text-[32px] opacity-90">
-                      DO <AnomalyText text="DIGITAL" intensity="low" />
+                      DO DIGITAL
                     </span>
                   </div>
                   
                   <div className="flex items-center gap-2.5">
-                    <AnomalyText 
-                      text="ACESSO EXCLUSIVO" 
-                      intensity="low"
-                      className="px-2 py-0.5 bg-[#00FF41]/10 border border-[#00FF41]/20 text-[10px] lg:text-[11px] font-black text-[#00FF41] tracking-[0.2em] rounded uppercase italic" 
-                    />
+                    <span className="px-2 py-0.5 bg-[#00FF41]/10 border border-[#00FF41]/20 text-[10px] lg:text-[11px] font-black text-[#00FF41] tracking-[0.2em] rounded uppercase italic">
+                      ACESSO EXCLUSIVO
+                    </span>
                     <div className="h-[1px] w-8 bg-[#00FF41]/20"></div>
                   </div>
                 </div>
