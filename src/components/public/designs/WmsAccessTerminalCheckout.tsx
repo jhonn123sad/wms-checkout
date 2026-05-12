@@ -140,12 +140,12 @@ function WmsAccessTerminalVisualShell({
                 
                 <div className="flex-1 flex flex-col justify-center">
                   <div className="flex flex-col font-black tracking-tighter text-white uppercase italic leading-[0.95] mb-3">
-                    <span className="text-[14px] lg:text-[18px] opacity-70">FAÇA PARTE DA</span>
+                    <span className="text-[14px] lg:text-[18px] opacity-70"><AnomalyText text="FAÇA PARTE DA" intensity="low" /></span>
                     <span className="text-[28px] lg:text-[46px] block">
-                      <AnomalyText text="MAIOR" className="text-[#00FF41]" intensity="high" /> BIBLIOTECA
+                      <AnomalyText text="MAIOR" className="text-[#00FF41]" intensity="high" /> <AnomalyText text="BIBLIOTECA" intensity="medium" />
                     </span>
                     <span className="text-[20px] lg:text-[32px] opacity-90">
-                      DO DIGITAL
+                      <AnomalyText text="DO DIGITAL" intensity="high" />
                     </span>
                   </div>
                   
