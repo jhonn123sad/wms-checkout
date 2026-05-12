@@ -186,15 +186,15 @@ function WmsAccessTerminalVisualShell({
                 { title: 'Métodos', desc: 'Aplique com clareza', slot: proofMedia2Slot },
                 { title: 'Insights', desc: 'Siga com direção', slot: proofMedia3Slot }
               ].map((card, idx) => (
-                <div key={idx} className="bg-white/[0.02] border border-white/5 p-3 rounded-2xl flex items-center gap-3 group hover:bg-[#00FF41]/5 transition-all duration-500 min-w-0">
+                <div key={idx} className="bg-white/[0.02] border border-white/5 p-3 rounded-2xl flex items-center gap-3 group hover:bg-[#00FF41]/5 transition-all duration-500 min-w-0 flex-1">
                   <div className="bg-black border border-white/10 rounded-xl flex items-center justify-center overflow-hidden shrink-0 group-hover:border-[#00FF41]/20 transition-colors w-12 h-9 shadow-lg">
                     {card.slot}
                   </div>
                   <div className="flex flex-col min-w-0 overflow-hidden">
-                    <span className="font-black text-gray-400 uppercase tracking-[0.2em] italic group-hover:text-[#00FF41]/90 transition-all text-[12px] lg:text-[13px] truncate">
+                    <span className="font-black text-gray-400 uppercase tracking-[0.15em] italic group-hover:text-[#00FF41]/90 transition-all text-[11px] lg:text-[13px] truncate">
                       {card.title}
                     </span>
-                    <span className="text-[11px] lg:text-[12px] text-gray-600 font-medium italic truncate opacity-80">{card.desc}</span>
+                    <span className="text-[10px] lg:text-[11px] text-gray-600 font-medium italic truncate opacity-80">{card.desc}</span>
                   </div>
                 </div>
               ))}
