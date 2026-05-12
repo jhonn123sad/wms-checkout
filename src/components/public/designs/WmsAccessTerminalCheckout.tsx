@@ -227,16 +227,15 @@ function WmsAccessTerminalVisualShell({
             </div>
 
             {/* Checkout Area */}
-            <div className="flex-1 relative z-10 flex flex-col wms-access-pix-panel min-h-0">
+            <div className="flex-1 relative z-10 flex flex-col min-h-0">
                 <div className={`bg-white/[0.03] border border-white/10 rounded-2xl transition-all duration-500 shadow-2xl ${hasPaymentData ? 'p-0 overflow-visible' : 'p-5 lg:p-7 overflow-hidden'}`}>
                    {hasPaymentData ? (
-                     <div className="w-full max-w-full min-w-0 overflow-hidden rounded-2xl">
+                     <div className="w-full max-w-full min-w-0 overflow-hidden rounded-2xl wms-access-pix-panel p-4 sm:p-6 lg:p-8">
                        {pixSlot}
                      </div>
                    ) : formSlot}
                 </div>
             </div>
-
 
             {/* Trust Section */}
             <footer className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between relative z-10">
@@ -249,9 +248,9 @@ function WmsAccessTerminalVisualShell({
                   <p className="text-[#00FF41]/50 text-[10px] lg:text-[11px] font-bold uppercase tracking-widest italic">A oportunidade é agora</p>
                 </div>
               </div>
-              <div className="hidden sm:flex flex-col items-end opacity-20">
-                <span className="text-[7px] font-mono tracking-tighter">WMS_ACCESS_v1.0.8</span>
-                <span className="text-[7px] font-mono text-[#00FF41] tracking-tighter uppercase">SECURE_LINK_ENCRYPTED</span>
+              <div className="hidden sm:flex flex-col items-end opacity-40 group hover:opacity-100 transition-opacity">
+                <span className="text-[8px] font-mono tracking-tighter text-white">WMS_ACCESS_v1.0.8</span>
+                <span className="text-[8px] font-mono text-[#00FF41] tracking-tighter uppercase">SECURE_LINK_ENCRYPTED</span>
               </div>
             </footer>
             
