@@ -346,12 +346,35 @@ function WmsAccessTerminalVisualShell({
           width: 100%;
           max-width: 100%;
           min-width: 0;
+          overflow: hidden;
           box-sizing: border-box;
         }
 
         .wms-access-pix-panel * {
-          max-width: 100%;
           box-sizing: border-box;
+          max-width: 100%;
+        }
+
+        .wms-access-pix-panel p,
+        .wms-access-pix-panel span,
+        .wms-access-pix-panel div {
+          min-width: 0;
+        }
+
+        .wms-access-pix-panel code,
+        .wms-access-pix-panel pre {
+          overflow-wrap: anywhere;
+          word-break: break-word;
+          max-width: 100%;
+          display: block;
+          white-space: pre-wrap;
+        }
+
+        .wms-access-pix-panel button {
+          max-width: 100%;
+          white-space: normal;
+          height: auto;
+          min-height: 3.5rem;
         }
 
         .wms-access-pix-panel img {
@@ -359,16 +382,7 @@ function WmsAccessTerminalVisualShell({
           height: auto;
           display: block;
           margin: 0 auto;
-          /* Ensure QR code visibility if it's black on white internal to component */
           filter: drop-shadow(0 0 1px white);
-        }
-
-        .wms-access-pix-panel code,
-        .wms-access-pix-panel pre,
-        .wms-access-pix-panel p,
-        .wms-access-pix-panel div {
-          overflow-wrap: anywhere;
-          word-break: break-word;
         }
 
         @media (max-width: 1024px) {
